@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Audiotrack
 import androidx.compose.material.icons.rounded.Headphones
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
@@ -40,7 +41,7 @@ fun PlaylistItemComposable(track: Track, isPlaying: Boolean, onClick: () -> Unit
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (isPlaying) {
                 Icon(
-                    imageVector = Icons.Rounded.Headphones,
+                    imageVector = Icons.Outlined.Audiotrack,
                     contentDescription = "Now Playing",
                     modifier = Modifier.size(20.dp)
                 )

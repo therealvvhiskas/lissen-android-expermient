@@ -54,7 +54,7 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
                     .height(spacing.large)
                     .weight(1f))
 
-                PlayerNavBarComposable(viewModel)
+                PlayerNavBarComposable()
             }
         }
     )

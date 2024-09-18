@@ -8,8 +8,25 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.automirrored.rounded.MenuBook
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Headset
+import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Podcasts
+import androidx.compose.material.icons.outlined.AdminPanelSettings
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.LibraryBooks
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.SettingsApplications
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.TimerOff
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material.icons.rounded.Timer
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
@@ -28,8 +45,7 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
-fun PlayerNavBarComposable(viewModel: PlayerViewModel) {
-    val speed by viewModel.speed.observeAsState(1f)
+fun PlayerNavBarComposable() {
     val accentColor = colorScheme.primary
 
     NavigationBar(
@@ -42,11 +58,11 @@ fun PlayerNavBarComposable(viewModel: PlayerViewModel) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    Icons.AutoMirrored.Rounded.MenuBook,
+                    Icons.Filled.Headset,
                     contentDescription = "Fragments list",
                 )
             },
-            label = { Text("Books") },
+            label = { Text("Library") },
             selected = false,
             onClick = { },
             colors = NavigationBarItemDefaults.colors(
@@ -55,32 +71,12 @@ fun PlayerNavBarComposable(viewModel: PlayerViewModel) {
                 indicatorColor = Color.Transparent
             )
         )
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Rounded.Speed,
-                    contentDescription = "Playback speed"
-                )
-            },
-            label = { Text("${speed}x") },
-            selected = false,
-            onClick = {
-                val newSpeed = when (speed) {
-                    1f -> 1.5f
-                    1.5f -> 2f
-                    else -> 1f
-                }
 
-                viewModel.changeSpeed(newSpeed)
-            },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = accentColor,
-                selectedTextColor = accentColor,
-                indicatorColor = Color.Transparent
-            )
-        )
         NavigationBarItem(
-            icon = { Icon(Icons.Rounded.Timer, contentDescription = "Timer") },
+            icon = { Icon(
+                Icons.Outlined.Timer,
+                contentDescription = "Timer"
+            ) },
             label = { Text("Timer") },
             selected = false,
             onClick = { },
@@ -93,11 +89,27 @@ fun PlayerNavBarComposable(viewModel: PlayerViewModel) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    Icons.AutoMirrored.Rounded.List,
+                    Icons.Outlined.Book,
                     contentDescription = "Chapters list"
                 )
             },
             label = { Text("Chapters") },
+            selected = false,
+            onClick = { },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = accentColor,
+                selectedTextColor = accentColor,
+                indicatorColor = Color.Transparent
+            )
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Outlined.Settings,
+                    contentDescription = "Preferences"
+                )
+            },
+            label = { Text("Settings") },
             selected = false,
             onClick = { },
             colors = NavigationBarItemDefaults.colors(
