@@ -1,14 +1,10 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,41 +15,38 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
-fun PlayingQueueComposable(viewModel: PlayerViewModel) {
+fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modifier) {
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(1)
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
-    val endIndex = (currentTrackIndex + 2).coerceAtMost(playlist.size - 1)
-
-    val adjustedStartIndex = (endIndex - 3).coerceAtLeast(0)
-    val adjustedEndIndex = (adjustedStartIndex + 3).coerceAtMost(playlist.size - 1)
-
-    val visiblePlaylist = playlist.subList(adjustedStartIndex, adjustedEndIndex + 1)
-
     Column(
-        modifier = Modifier.padding(horizontal = 24.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = "Now Playing",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(vertical = 8.dp)
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        LazyColumn {
-            itemsIndexed(visiblePlaylist) { visibleIndex, track ->
-                val realIndex = adjustedStartIndex + visibleIndex
 
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            itemsIndexed(playlist) { index, track ->
                 PlaylistItemComposable(
                     track = track,
-                    isPlaying = realIndex == currentTrackIndex,
+                    isPlaying = index == currentTrackIndex,
                     onClick = {
-                        viewModel.setChapter(realIndex)
+                        viewModel.setChapter(index)
                     },
                 )
-                if (visibleIndex < visiblePlaylist.size - 1) {
+
+                if (index < playlist.size - 1) {
                     HorizontalDivider(
-                        color = colorScheme.onBackground.copy(alpha = 0.1f),
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )

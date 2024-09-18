@@ -14,25 +14,15 @@ private val LightColorScheme = lightColorScheme(
     tertiary = FoxOrange
 )
 
-val LocalSpacing = staticCompositionLocalOf { Spacing() }
-
-data class Spacing(
-    val small: Dp = 4.dp,
-    val medium: Dp = 12.dp,
-    val large: Dp = 12.dp
-)
 
 @Composable
 fun LissenTheme(
     content: @Composable () -> Unit
 ) {
-    CompositionLocalProvider(
-        LocalSpacing provides Spacing()
-    ) {
-        MaterialTheme(
-            colorScheme = LightColorScheme,
-            typography = Typography,
-            content = content
-        )
-    }
+    MaterialTheme(
+        colorScheme = LightColorScheme,
+        typography = Typography,
+        content = content
+    )
+
 }

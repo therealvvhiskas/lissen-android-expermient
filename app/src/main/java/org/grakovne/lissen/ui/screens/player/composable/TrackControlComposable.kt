@@ -41,7 +41,9 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding(4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
         Slider(
             value = currentPosition,
@@ -73,8 +75,6 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         }
     }
 
-    Spacer(modifier = Modifier.height(8.dp))
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -85,7 +85,8 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
                 if (currentTrackIndex > 0) {
                     viewModel.previousTrack()
                 }
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,
@@ -98,7 +99,8 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         IconButton(
             onClick = {
                 viewModel.seekTo(maxOf(0f, currentPosition - 10f))
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.Replay30,
@@ -110,7 +112,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
 
         IconButton(
             onClick = { viewModel.togglePlayPause() },
-            modifier = Modifier.size(72.dp)
+            modifier = Modifier.size(72.dp).weight(1.5f)
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Rounded.PauseCircleFilled else Icons.Rounded.PlayCircleFilled,
@@ -123,13 +125,14 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         IconButton(
             onClick = {
                 viewModel.seekTo(minOf(duration, currentPosition + 30f))
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Default.Forward30,
                 contentDescription = "Forward",
                 tint = colorScheme.onBackground,
-                modifier = Modifier.size(52.dp)
+                modifier = Modifier.size(36.dp)
             )
         }
 
@@ -138,7 +141,8 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
                 if (currentTrackIndex < playlist.size.minus(1)) {
                     viewModel.nextTrack()
                 }
-            }
+            },
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.SkipNext,
@@ -148,5 +152,4 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
             )
         }
     }
-
 }

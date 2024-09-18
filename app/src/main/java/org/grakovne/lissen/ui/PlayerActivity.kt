@@ -18,7 +18,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 class PlayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContent {
             LissenTheme {
                 PlayerScreen(viewModel = PlayerViewModel())
