@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,13 +49,14 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.viewmodel.ConnectionViewModel
+import org.grakovne.lissen.viewmodel.Library
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun SettingsScreen(
+    viewModel: ConnectionViewModel,
     onBack: () -> Unit,
-    onRateApp: () -> Unit,
-    onOpenGitHub: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -94,8 +96,8 @@ fun SettingsScreen(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    ServerSection()
-                    LibrarySection(false)
+                    ServerSection(viewModel)
+                    LibrarySection(viewModel)
                 }
                 AdditionalSection()
             }
@@ -105,20 +107,17 @@ fun SettingsScreen(
 
 
 @Composable
-fun LibrarySection(isServerConnected: Boolean) {
-    val libraries = if (isServerConnected) {
-        listOf("Sci-Fi", "Tales")
-    } else {
-        listOf("Server is not available")
-    }
+fun LibrarySection(viewModel: ConnectionViewModel) {
+    val isServerConnected by viewModel.isConnected.observeAsState(false)
+    val libraries by viewModel.libraries.observeAsState(emptyList())
+    val preferredLibrary by viewModel.preferredLibrary.observeAsState()
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedLibrary by remember { mutableStateOf(libraries.first()) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = "Active Library",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            text = "Preferred Library",
+            style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
@@ -128,7 +127,7 @@ fun LibrarySection(isServerConnected: Boolean) {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isServerConnected
             ) {
-                Text(selectedLibrary)
+                Text(preferredLibrary?.title ?: "No Library Selected")
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = if (expanded) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowDropDown,
@@ -138,30 +137,32 @@ fun LibrarySection(isServerConnected: Boolean) {
 
             DropdownMenu(
                 expanded = expanded,
-                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                modifier = Modifier.background(color = colorScheme.background),
                 onDismissRequest = { expanded = false }
             ) {
-                libraries.forEach { library ->
-                    DropdownMenuItem(
-                        text = { Text(library) },
-                        onClick = {
-                            if (isServerConnected) {
-                                selectedLibrary = library
-                            }
-                            expanded = false
-                        },
-                        enabled = isServerConnected
-                    )
-                }
+                libraries
+                    .forEach { library ->
+                        DropdownMenuItem(
+                            text = { Text(library.title) },
+                            onClick = {
+                                if (isServerConnected) {
+                                    viewModel.preferLibrary(library)
+                                }
+                                expanded = false
+                            },
+                            enabled = isServerConnected
+                        )
+                    }
             }
         }
     }
 }
 
 @Composable
-fun ServerSection() {
-    var serverUrl by remember { mutableStateOf("") }
-    var login by remember { mutableStateOf("") }
+fun ServerSection(viewModel: ConnectionViewModel) {
+    val serverUrl by viewModel.url.observeAsState("")
+    val login by viewModel.login.observeAsState("")
+
     var password by remember { mutableStateOf("") }
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }
 
@@ -174,7 +175,7 @@ fun ServerSection() {
 
         OutlinedTextField(
             value = serverUrl,
-            onValueChange = { serverUrl = it },
+            onValueChange = { viewModel.updateServerUrl(it) },
             label = { Text("Server URL") },
             shape = RoundedCornerShape(16.dp),
             singleLine = true,
@@ -185,7 +186,7 @@ fun ServerSection() {
 
         OutlinedTextField(
             value = login,
-            onValueChange = { login = it },
+            onValueChange = { viewModel.updateLogin(it) },
             label = { Text("Login") },
             shape = RoundedCornerShape(16.dp),
             singleLine = true,

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.ui.theme.LissenTheme
+import org.grakovne.lissen.viewmodel.ConnectionViewModel
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +14,7 @@ class SettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LissenTheme {
-                SettingsScreen({}, {}, {})
+                SettingsScreen(ConnectionViewModel()) {}
             }
         }
     }
