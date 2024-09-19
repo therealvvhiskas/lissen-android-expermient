@@ -25,7 +25,11 @@ class PlayerViewModel : ViewModel() {
             Track("Chapter 1", "13:15"),
             Track("Chapter 2", "15:20"),
             Track("Chapter 3", "12:30"),
-            Track("Chapter 4", "14:45")
+            Track("Chapter 4", "14:45"),
+            Track("Chapter 5", "14:45"),
+            Track("Chapter 6", "14:45"),
+            Track("Chapter 7", "14:45"),
+            Track("Chapter 8", "14:45"),
         )
     )
     val playlist: LiveData<List<Track>> = _playlist

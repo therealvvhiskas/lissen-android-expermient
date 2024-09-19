@@ -1,8 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,8 +19,10 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modifier) {
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(1)
+    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val playlist by viewModel.playlist.observeAsState(emptyList())
+
+    val listState = rememberLazyListState()
 
     Column(
         modifier = modifier
@@ -33,20 +38,23 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
         )
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            state = listState,
         ) {
-            itemsIndexed(playlist) { index, track ->
+            val start = (currentTrackIndex - 3).coerceAtLeast(0)
+            val end = (start + 3).coerceAtMost(playlist.size - 1)
+
+            itemsIndexed(playlist.subList(start, end + 1)) { relativeIndex, track ->
+                val index = start + relativeIndex
+
                 PlaylistItemComposable(
                     track = track,
                     isPlaying = index == currentTrackIndex,
-                    onClick = {
-                        viewModel.setChapter(index)
-                    },
+                    onClick = { viewModel.setChapter(index) },
                 )
 
-                if (index < playlist.size - 1) {
+                if (index < end) {
                     HorizontalDivider(
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
