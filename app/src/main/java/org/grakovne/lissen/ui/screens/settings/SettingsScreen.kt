@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -211,8 +213,22 @@ fun ServerSection() {
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .padding(top = 4.dp)
+                .align(Alignment.CenterHorizontally),
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text(text = "Connect")
+        }
     }
 }
+
 
 @Composable
 fun AdditionalSection() {
@@ -223,7 +239,7 @@ fun AdditionalSection() {
     ) {
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 12.dp),
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            color = colorScheme.onSurface.copy(alpha = 0.2f)
         )
 
         ListItem(
