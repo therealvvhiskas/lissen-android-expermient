@@ -26,7 +26,7 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
     ) {
         Text(
             text = "Now Playing",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 8.dp)

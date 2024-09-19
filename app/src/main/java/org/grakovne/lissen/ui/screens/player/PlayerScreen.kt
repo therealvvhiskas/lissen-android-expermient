@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +21,8 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun PlayerScreen(viewModel: PlayerViewModel) {
 
     Scaffold(
+        topBar = { Spacer(modifier = Modifier.height(24.dp)) },
+        bottomBar = { PlayerNavBarComposable() },
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxHeight(),
@@ -27,18 +30,10 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
             Column(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
-
-                TrackDetailsComposable(
-                    viewModel,
-                    Modifier.weight(1f)
-                )
-
+                TrackDetailsComposable(viewModel, Modifier.weight(1f))
                 TrackControlComposable(viewModel)
                 PlayingQueueComposable(viewModel)
-                PlayerNavBarComposable()
             }
         }
     )

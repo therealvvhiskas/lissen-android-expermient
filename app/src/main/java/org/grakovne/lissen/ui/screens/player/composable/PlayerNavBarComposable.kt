@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
+import org.grakovne.lissen.ui.theme.LissenTheme
 @Composable
 fun PlayerNavBarComposable(modifier: Modifier = Modifier) {
     val accentColor = colorScheme.primary
