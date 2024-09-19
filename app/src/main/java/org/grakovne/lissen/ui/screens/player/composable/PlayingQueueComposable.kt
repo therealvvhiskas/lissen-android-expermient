@@ -70,7 +70,7 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
 
                 PlaylistItemComposable(
                     track = track,
-                    onClick = { viewModel.setChapter(index) },
+                    onClick = {  },
                     isSelected = index == currentTrackIndex
                 )
 

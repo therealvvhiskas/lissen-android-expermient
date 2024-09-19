@@ -37,7 +37,7 @@ fun PlaylistItemComposable(
             .padding(vertical = 8.dp)
             .clickable(
                 onClick = onClick,
-                indication = rememberRipple(color = colorScheme.onBackground),
+                indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ),
         horizontalArrangement = Arrangement.SpaceBetween

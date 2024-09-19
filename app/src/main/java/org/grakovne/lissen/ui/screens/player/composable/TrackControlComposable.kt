@@ -26,10 +26,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.ui.formatTime
+import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
@@ -81,6 +83,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
+            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 if (currentTrackIndex > 0) {
                     viewModel.previousTrack()
@@ -97,6 +100,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         }
 
         IconButton(
+            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 viewModel.seekTo(maxOf(0f, currentPosition - 10f))
             },
@@ -111,6 +115,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         }
 
         IconButton(
+            interactionSource = remember { noRippleInteractionSource },
             onClick = { viewModel.togglePlayPause() },
             modifier = Modifier.size(72.dp).weight(1.5f)
         ) {
@@ -123,6 +128,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         }
 
         IconButton(
+            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 viewModel.seekTo(minOf(duration, currentPosition + 30f))
             },
@@ -137,6 +143,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
         }
 
         IconButton(
+            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 if (currentTrackIndex < playlist.size.minus(1)) {
                     viewModel.nextTrack()
@@ -148,7 +155,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
                 imageVector = Icons.Rounded.SkipNext,
                 contentDescription = "Next Track",
                 tint = colorScheme.onBackground,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(36.dp),
             )
         }
     }
