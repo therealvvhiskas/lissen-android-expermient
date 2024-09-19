@@ -18,6 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
+private const val VISIBLE_ITEMS_COUNT = 4
+private const val TRACK_POSITION_IN_VIEW = 1
+private const val HORIZONTAL_PADDING = 16
+
 @Composable
 fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modifier) {
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
@@ -26,18 +30,19 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
     val listState = rememberLazyListState()
 
     LaunchedEffect(currentTrackIndex) {
-        val scrollToIndex = if (currentTrackIndex >= playlist.size - 2) {
-            (playlist.size - 4).coerceAtLeast(0)
-        } else {
-            (currentTrackIndex - 1).coerceAtLeast(0)
-        }
+        val scrollToIndex =
+            if (currentTrackIndex >= playlist.size - (VISIBLE_ITEMS_COUNT - TRACK_POSITION_IN_VIEW)) {
+                (playlist.size - VISIBLE_ITEMS_COUNT).coerceAtLeast(0)
+            } else {
+                (currentTrackIndex - TRACK_POSITION_IN_VIEW).coerceAtLeast(0)
+            }
         listState.scrollToItem(scrollToIndex)
     }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = HORIZONTAL_PADDING.dp)
     ) {
         Text(
             text = "Now Playing",
@@ -51,27 +56,28 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
             modifier = Modifier.fillMaxWidth(),
             state = listState,
         ) {
-            val start = if (currentTrackIndex >= playlist.size - 2) {
-                (playlist.size - 4).coerceAtLeast(0)
-            } else {
-                (currentTrackIndex - 1).coerceAtLeast(0)
-            }
+            val start =
+                if (currentTrackIndex >= playlist.size - (VISIBLE_ITEMS_COUNT - TRACK_POSITION_IN_VIEW)) {
+                    (playlist.size - VISIBLE_ITEMS_COUNT).coerceAtLeast(0)
+                } else {
+                    (currentTrackIndex - TRACK_POSITION_IN_VIEW).coerceAtLeast(0)
+                }
 
-            val end = (start + 3).coerceAtMost(playlist.size - 1)
+            val end = (start + VISIBLE_ITEMS_COUNT - 1).coerceAtMost(playlist.size - 1)
 
             itemsIndexed(playlist.subList(start, end + 1)) { relativeIndex, track ->
                 val index = start + relativeIndex
 
                 PlaylistItemComposable(
                     track = track,
-                    isPlaying = index == currentTrackIndex,
                     onClick = { viewModel.setChapter(index) },
+                    isSelected = index == currentTrackIndex
                 )
 
                 if (index < end) {
                     HorizontalDivider(
                         thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING.dp)
                     )
                 }
             }

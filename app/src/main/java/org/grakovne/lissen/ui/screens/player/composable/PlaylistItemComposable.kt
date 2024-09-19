@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Audiotrack
-import androidx.compose.material.icons.rounded.Headphones
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,11 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.ui.screens.player.Track
 
 @Composable
-fun PlaylistItemComposable(track: Track, isPlaying: Boolean, onClick: () -> Unit) {
+fun PlaylistItemComposable(
+    track: Track,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -39,7 +43,7 @@ fun PlaylistItemComposable(track: Track, isPlaying: Boolean, onClick: () -> Unit
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (isPlaying) {
+            if (isSelected) {
                 Icon(
                     imageVector = Icons.Outlined.Audiotrack,
                     contentDescription = "Now Playing",
@@ -50,12 +54,14 @@ fun PlaylistItemComposable(track: Track, isPlaying: Boolean, onClick: () -> Unit
             Text(
                 text = track.title,
                 style = MaterialTheme.typography.bodyMedium,
-                color = colorScheme.onBackground
+                color = colorScheme.onBackground,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             )
         }
         Text(
             text = track.duration,
             style = MaterialTheme.typography.bodySmall,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = colorScheme.onBackground.copy(alpha = 0.6f)
         )
     }
