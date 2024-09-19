@@ -3,6 +3,7 @@ package org.grakovne.lissen.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import org.grakovne.lissen.ui.screens.settings.Library
 
 class ConnectionViewModel : ViewModel() {
     private val _isConnected = MutableLiveData(false)
@@ -32,8 +33,3 @@ class ConnectionViewModel : ViewModel() {
         _login.value = login
     }
 }
-
-data class Library(
-    val id: String,
-    val title: String
-)
