@@ -1,54 +1,53 @@
 package org.grakovne.lissen.ui.screens.settings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
-import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.outlined.StarRate
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
@@ -56,31 +55,60 @@ fun SettingsScreen(
     onOpenGitHub: () -> Unit
 ) {
     Scaffold(
-        topBar = { Spacer(modifier = Modifier.height(24.dp)) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Preferences",
+                        style = typography.titleMedium,
+                        color = colorScheme.onSurface
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = "Back",
+                            tint = colorScheme.onSurface
+                        )
+                    }
+                }
+            )
+        },
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxHeight(),
         content = { innerPadding ->
             Column(
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
-                ServerSection()
-                LibrarySection()
-                AdditionalSection({}, {})
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ServerSection()
+                    LibrarySection(false)
+                }
+                AdditionalSection()
             }
         }
     )
 }
 
+
 @Composable
-fun LibrarySection() {
-    val libraries = listOf(
-        "Historical",
-        "Sci-Fi",
-        "Tales"
-    )
+fun LibrarySection(isServerConnected: Boolean) {
+    val libraries = if (isServerConnected) {
+        listOf("Sci-Fi", "Tales")
+    } else {
+        listOf("Server is not available")
+    }
 
     var expanded by remember { mutableStateOf(false) }
     var selectedLibrary by remember { mutableStateOf(libraries.first()) }
@@ -92,11 +120,11 @@ fun LibrarySection() {
             modifier = Modifier.padding(bottom = 12.dp)
         )
 
-        Box { // Изменено с Row на Box для корректного отображения DropdownMenu
+        Box {
             OutlinedButton(
-                onClick = { expanded = !expanded },
-                modifier = Modifier
-                    .fillMaxWidth()
+                onClick = { if (isServerConnected) expanded = !expanded },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isServerConnected
             ) {
                 Text(selectedLibrary)
                 Spacer(modifier = Modifier.weight(1f))
@@ -106,125 +134,114 @@ fun LibrarySection() {
                 )
             }
 
-            MaterialTheme() {
-                DropdownMenu(
-                    expanded = expanded,
-                    modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
-                    onDismissRequest = {
-                        expanded = false
-                    }
-                ) {
-                    libraries.forEach { library ->
-                        DropdownMenuItem(
-                            text = { Text(library) },
-                            onClick = {
+            DropdownMenu(
+                expanded = expanded,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.background),
+                onDismissRequest = { expanded = false }
+            ) {
+                libraries.forEach { library ->
+                    DropdownMenuItem(
+                        text = { Text(library) },
+                        onClick = {
+                            if (isServerConnected) {
                                 selectedLibrary = library
-                                expanded = false
                             }
-                        )
-                    }
+                            expanded = false
+                        },
+                        enabled = isServerConnected
+                    )
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun ServerSection() {
-    var serverUrl by remember { mutableStateOf("https://example.com") }
+    var serverUrl by remember { mutableStateOf("") }
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Настройки сервера",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            OutlinedTextField(
-                value = serverUrl,
-                onValueChange = { serverUrl = it },
-                label = { Text("URL сервера") },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-            OutlinedTextField(
-                value = login,
-                onValueChange = { login = it },
-                label = { Text("Логин") },
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Пароль") },
-                visualTransformation = PasswordVisualTransformation(),
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Server Connection",
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
 
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-            )
-        }
+        OutlinedTextField(
+            value = serverUrl,
+            onValueChange = { serverUrl = it },
+            label = { Text("Server URL") },
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+
+        OutlinedTextField(
+            value = login,
+            onValueChange = { login = it },
+            label = { Text("Login") },
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+
+        OutlinedTextField(
+            value = password,
+            visualTransformation = if (!passwordVisibility) PasswordVisualTransformation() else VisualTransformation.None,
+            onValueChange = { password = it },
+            trailingIcon = {
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                    Icon(
+                        imageVector = if (passwordVisibility) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                        contentDescription = "Show Password"
+                    )
+                }
+            },
+            label = { Text("Password") },
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
     }
 }
 
 @Composable
-fun AdditionalSection(onRateApp: () -> Unit, onOpenGitHub: () -> Unit) {
-    Card(
+fun AdditionalSection() {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            .padding(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Дополнительно",
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        imageVector = Icons.Outlined.StarRate,
-                        contentDescription = "Оценить приложение",
-                        tint = MaterialTheme.colorScheme.primary
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+        )
+
+        ListItem(
+            headlineContent = {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .align(Alignment.CenterHorizontally),
+                    text = "Lissen v 0.10\n\nMax Grakov © 2024 MIT Licence",
+                    style = TextStyle(
+                        fontFamily = FontFamily.Monospace,
+                        textAlign = TextAlign.Center
                     )
-                },
-                headlineContent = { Text("Оценить приложение") },
-                modifier = Modifier
-                    .clickable { onRateApp() }
-            )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-            ListItem(
-                leadingContent = {
-                    Icon(
-                        imageVector = Icons.Outlined.Star,
-                        contentDescription = "GitHub автора",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                },
-                headlineContent = { Text("GitHub автора") },
-                modifier = Modifier
-                    .clickable { onOpenGitHub() }
-            )
-            Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
-        }
+                )
+            }
+        )
     }
 }
+
 
