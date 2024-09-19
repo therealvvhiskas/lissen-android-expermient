@@ -25,13 +25,11 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
 
     val listState = rememberLazyListState()
 
-    // Прокручиваем список к нужной позиции
     LaunchedEffect(currentTrackIndex) {
-        // Если текущий трек находится на одном из последних 2-х мест, корректируем scroll
         val scrollToIndex = if (currentTrackIndex >= playlist.size - 2) {
-            (playlist.size - 4).coerceAtLeast(0) // Скроллим, чтобы показывалось последние 4 элемента
+            (playlist.size - 4).coerceAtLeast(0)
         } else {
-            (currentTrackIndex - 1).coerceAtLeast(0) // Стандартный случай: текущий трек на второй позиции
+            (currentTrackIndex - 1).coerceAtLeast(0)
         }
         listState.scrollToItem(scrollToIndex)
     }
@@ -56,7 +54,7 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
             val start = if (currentTrackIndex >= playlist.size - 2) {
                 (playlist.size - 4).coerceAtLeast(0)
             } else {
-                (currentTrackIndex - 2).coerceAtLeast(0)
+                (currentTrackIndex - 1).coerceAtLeast(0)
             }
 
             val end = (start + 3).coerceAtMost(playlist.size - 1)
