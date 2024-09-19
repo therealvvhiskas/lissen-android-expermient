@@ -10,6 +10,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -23,6 +24,17 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
     val listState = rememberLazyListState()
+
+    // Прокручиваем список к нужной позиции
+    LaunchedEffect(currentTrackIndex) {
+        // Если текущий трек находится на одном из последних 2-х мест, корректируем scroll
+        val scrollToIndex = if (currentTrackIndex >= playlist.size - 2) {
+            (playlist.size - 4).coerceAtLeast(0) // Скроллим, чтобы показывалось последние 4 элемента
+        } else {
+            (currentTrackIndex - 1).coerceAtLeast(0) // Стандартный случай: текущий трек на второй позиции
+        }
+        listState.scrollToItem(scrollToIndex)
+    }
 
     Column(
         modifier = modifier
@@ -41,7 +53,12 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
             modifier = Modifier.fillMaxWidth(),
             state = listState,
         ) {
-            val start = (currentTrackIndex - 3).coerceAtLeast(0)
+            val start = if (currentTrackIndex >= playlist.size - 2) {
+                (playlist.size - 4).coerceAtLeast(0)
+            } else {
+                (currentTrackIndex - 2).coerceAtLeast(0)
+            }
+
             val end = (start + 3).coerceAtMost(playlist.size - 1)
 
             itemsIndexed(playlist.subList(start, end + 1)) { relativeIndex, track ->
