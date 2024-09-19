@@ -3,6 +3,7 @@ package org.grakovne.lissen.ui.screens.player.composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Headset
 import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.Headset
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Icon
@@ -14,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import org.grakovne.lissen.ui.theme.LissenTheme
 @Composable
 fun PlayerNavBarComposable(modifier: Modifier = Modifier) {
     val accentColor = colorScheme.primary
@@ -27,7 +27,7 @@ fun PlayerNavBarComposable(modifier: Modifier = Modifier) {
         NavigationBarItem(
             icon = {
                 Icon(
-                    Icons.Filled.Headset,
+                    Icons.Outlined.Headset,
                     contentDescription = "Fragments list",
                 )
             },
