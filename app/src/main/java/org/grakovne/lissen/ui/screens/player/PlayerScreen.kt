@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
@@ -18,11 +19,14 @@ import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
-fun PlayerScreen(viewModel: PlayerViewModel) {
+fun PlayerScreen(
+    viewModel: PlayerViewModel,
+    navController: NavController
+) {
 
     Scaffold(
         topBar = { Spacer(modifier = Modifier.height(24.dp)) },
-        bottomBar = { PlayerNavBarComposable() },
+        bottomBar = { PlayerNavBarComposable(navController) },
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxHeight(),

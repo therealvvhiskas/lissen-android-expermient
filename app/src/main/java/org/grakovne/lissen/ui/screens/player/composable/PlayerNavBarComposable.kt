@@ -15,10 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
 import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
 
 @Composable
-fun PlayerNavBarComposable(modifier: Modifier = Modifier) {
+fun PlayerNavBarComposable(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+) {
     val accentColor = colorScheme.primary
 
     NavigationBar(
@@ -94,7 +98,7 @@ fun PlayerNavBarComposable(modifier: Modifier = Modifier) {
                 },
                 label = { Text("Settings") },
                 selected = false,
-                onClick = { },
+                onClick = { navController.navigate("settings_screen") },
                 interactionSource = remember { noRippleInteractionSource },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = accentColor,
