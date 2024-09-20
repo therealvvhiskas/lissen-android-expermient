@@ -74,10 +74,6 @@ fun PlayingQueueComposable(
                         available: Offset,
                         source: NestedScrollSource
                     ): Offset {
-                        if (available.y > with(density) { 10.dp.toPx() } && listState.firstVisibleItemIndex == 0 && playingQueueExpanded) {
-                            viewModel.closePlayingQueue()
-                        }
-
                         return if (playingQueueExpanded) Offset.Zero else available
                     }
                 }),
