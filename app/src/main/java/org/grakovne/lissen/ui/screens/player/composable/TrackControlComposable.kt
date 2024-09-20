@@ -35,7 +35,10 @@ import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
-fun TrackControlComposable(viewModel: PlayerViewModel) {
+fun TrackControlComposable(
+    viewModel: PlayerViewModel,
+    modifier: Modifier = Modifier
+) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
     val currentPosition by viewModel.currentPosition.observeAsState(0f)
     val duration = viewModel.duration
@@ -43,7 +46,7 @@ fun TrackControlComposable(viewModel: PlayerViewModel) {
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {

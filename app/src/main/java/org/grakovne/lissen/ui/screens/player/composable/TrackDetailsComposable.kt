@@ -2,7 +2,10 @@ package org.grakovne.lissen.ui.screens.player.composable
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +33,9 @@ fun TrackDetailsComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
         painter = painterResource(id = R.drawable.fallback_cover),
         contentDescription = "Book Description",
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp)),
+            .padding(horizontal = 24.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .aspectRatio(1f),
         contentScale = ContentScale.Fit
     )
     Spacer(modifier = Modifier.height(16.dp))
@@ -45,4 +50,5 @@ fun TrackDetailsComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
         style = MaterialTheme.typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)
     )
+
 }
