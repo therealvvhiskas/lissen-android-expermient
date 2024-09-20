@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
-import org.grakovne.lissen.ui.screens.player.PlayerScreen
+import org.grakovne.lissen.ui.screens.player.composable.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.viewmodel.ConnectionViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel

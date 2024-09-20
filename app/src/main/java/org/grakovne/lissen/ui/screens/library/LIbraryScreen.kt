@@ -19,15 +19,29 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,36 +49,97 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     navController: NavController
 ) {
+    val listState = rememberLazyListState()
+
+    var isSearchActive by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+
+    val topBarTitle by remember {
+        derivedStateOf {
+            when {
+                listState.firstVisibleItemIndex > 1 -> "Library"
+                listState.firstVisibleItemIndex == 1 && listState.firstVisibleItemScrollOffset > 0 -> "Library"
+                else -> "Continue Listening"
+            }
+        }
+    }
 
     Scaffold(
-        topBar = { Spacer(modifier = Modifier.height(24.dp)) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    if (isSearchActive) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            placeholder = { Text("Search Library") },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Search
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onSearch = {
+                                }
+                            )
+                        )
+                    } else {
+                        Text(
+                            text = topBarTitle,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                },
+                actions = {
+                    if (!isSearchActive) {
+                        // Показываем иконку поиска только если отображается "Library"
+                        if (topBarTitle == "Library") {
+                            IconButton(onClick = { isSearchActive = true }) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search"
+                                )
+                            }
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            isSearchActive = false
+                            searchQuery = TextFieldValue("")
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close Search"
+                            )
+                        }
+                    }
+                }
+            )
+        },
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxSize(),
         content = { innerPadding ->
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
-                    Text(
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        text = "Continue Listening"
-                    )
-                }
 
                 item {
                     ImageCarousel()
