@@ -12,11 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,33 +50,34 @@ fun LibraryScreen(
             .systemBarsPadding()
             .fillMaxSize(),
         content = { innerPadding ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, bottom = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                item {
                     Text(
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         text = "Continue Listening"
                     )
-
-                    Spacer(
-                        Modifier.weight(1f)
-                    )
-
-                    //Text(text = "See All", color = MaterialTheme.colorScheme.primary)
                 }
 
-                ImageCarousel()
+                item {
+                    ImageCarousel()
+                }
+
+                item {
+                    Text(
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                        text = "Library"
+                    )
+                }
+
+                items(getSampleBooks()) { book ->
+                    BookItem(book = book)
+                }
             }
         }
     )
@@ -88,7 +96,6 @@ fun ImageCarousel() {
     val images = List(10) { R.drawable.fallback_cover }
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = spacing),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -96,7 +103,7 @@ fun ImageCarousel() {
             Column(
                 modifier = Modifier
                     .width(itemWidth)
-                    .clickable {}
+                    .clickable { }
             ) {
                 Image(
                     painter = painterResource(id = imageRes),
@@ -105,7 +112,7 @@ fun ImageCarousel() {
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Crop
                 )
 
                 Row(
@@ -137,3 +144,75 @@ fun ImageCarousel() {
         }
     }
 }
+
+data class Book(
+    val title: String,
+    val author: String,
+    val downloaded: Boolean
+)
+
+fun getSampleBooks(): List<Book> {
+    return List(20) { index ->
+        Book(
+            title = "Book Title $index",
+            author = "Author $index",
+            downloaded = index % 2 == 0
+        )
+    }
+}
+
+@Composable
+fun BookItem(book: Book) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.fallback_cover),
+            contentDescription = "Book Cover",
+            modifier = Modifier
+                .size(60.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+        ) {
+            Text(
+                text = book.title,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = book.author,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            )
+        }
+
+        Column(
+            modifier = Modifier.wrapContentSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = if (book.downloaded) Icons.Outlined.CloudDownload else Icons.Outlined.Cloud,
+                contentDescription = "Cloud Icon",
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "12h 24m",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
