@@ -20,7 +20,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +37,6 @@ fun PlayingQueueComposable(
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val listState = rememberLazyListState()
-
-    val density = LocalDensity.current
 
     val fontSize by animateFloatAsState(
         targetValue = if (playingQueueExpanded) 24f else 18f,
