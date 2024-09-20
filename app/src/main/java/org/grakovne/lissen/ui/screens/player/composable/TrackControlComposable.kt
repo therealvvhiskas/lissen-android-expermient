@@ -3,10 +3,8 @@ package org.grakovne.lissen.ui.screens.player.composable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -120,7 +118,9 @@ fun TrackControlComposable(
         IconButton(
             interactionSource = remember { noRippleInteractionSource },
             onClick = { viewModel.togglePlayPause() },
-            modifier = Modifier.size(72.dp).weight(1.5f)
+            modifier = Modifier
+                .size(72.dp)
+                .weight(1.5f)
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Rounded.PauseCircleFilled else Icons.Rounded.PlayCircleFilled,
