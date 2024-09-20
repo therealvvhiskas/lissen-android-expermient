@@ -105,7 +105,6 @@ fun LibraryScreen(
                 },
                 actions = {
                     if (!isSearchActive) {
-                        // Показываем иконку поиска только если отображается "Library"
                         if (topBarTitle == "Library") {
                             IconButton(onClick = { isSearchActive = true }) {
                                 Icon(
