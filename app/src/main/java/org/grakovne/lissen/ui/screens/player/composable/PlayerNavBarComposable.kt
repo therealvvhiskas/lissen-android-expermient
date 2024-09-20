@@ -22,7 +22,7 @@ import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
 fun PlayerNavBarComposable(
     navController: NavController,
     modifier: Modifier = Modifier,
-    onChaptersClick: () -> Unit // Новый параметр
+    onChaptersClick: () -> Unit
 ) {
     val accentColor = colorScheme.primary
 

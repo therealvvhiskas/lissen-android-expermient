@@ -6,6 +6,10 @@ import androidx.lifecycle.ViewModel
 import org.grakovne.lissen.ui.screens.player.Track
 
 class PlayerViewModel : ViewModel() {
+
+    private val _playingQueueExpanded = MutableLiveData(false)
+    val playingQueueExpanded = _playingQueueExpanded
+
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
 
@@ -33,6 +37,10 @@ class PlayerViewModel : ViewModel() {
         )
     )
     val playlist: LiveData<List<Track>> = _playlist
+
+    fun togglePlayingQueue() {
+        _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
+    }
 
     fun changeSpeed(float: Float) {
         _speed.value = float

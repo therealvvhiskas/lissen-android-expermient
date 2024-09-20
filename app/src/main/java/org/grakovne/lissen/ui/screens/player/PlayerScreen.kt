@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,27 +28,27 @@ import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
+
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
     navController: NavController
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = { Spacer(modifier = Modifier.height(24.dp)) },
         bottomBar = {
             PlayerNavBarComposable(
                 navController = navController,
-                onChaptersClick = {
-                    isExpanded = !isExpanded
-                }
+                onChaptersClick = { viewModel.togglePlayingQueue() }
             )
         },
         modifier = Modifier
             .systemBarsPadding()
             .fillMaxHeight(),
         content = { innerPadding ->
+
+            val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -55,7 +56,7 @@ fun PlayerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 AnimatedVisibility(
-                    visible = !isExpanded,
+                    visible = !playingQueueExpanded,
                     enter = expandVertically(animationSpec = tween(500)),
                     exit = shrinkVertically(animationSpec = tween(500))
                 ) {
@@ -84,7 +85,7 @@ fun PlayerScreen(
                     viewModel = viewModel,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(if (isExpanded) 5f else 2f)
+                        .weight(if (playingQueueExpanded) 5f else 2f)
                         .animateContentSize()
                         .padding(horizontal = 16.dp)
                 )
