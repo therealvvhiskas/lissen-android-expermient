@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.navigation
 
+import LoginScreen
 import PlayerScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -13,11 +14,15 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "player_screen"
+        startDestination = "login_screen"
     ) {
 
         composable("player_screen") {
             PlayerScreen(viewModel = PlayerViewModel(), navController)
+        }
+
+        composable("login_screen") {
+            LoginScreen( navController)
         }
 
         composable("settings_screen") {
