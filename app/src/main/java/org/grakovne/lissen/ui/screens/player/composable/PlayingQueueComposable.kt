@@ -10,6 +10,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -25,6 +26,10 @@ fun PlayingQueueComposable(viewModel: PlayerViewModel, modifier: Modifier = Modi
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
     val listState = rememberLazyListState()
+
+    LaunchedEffect(currentTrackIndex) {
+        listState.animateScrollToItem(currentTrackIndex)
+    }
 
     Column(
         modifier = modifier
