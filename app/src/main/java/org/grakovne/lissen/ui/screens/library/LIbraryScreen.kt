@@ -1,3 +1,5 @@
+package org.grakovne.lissen.ui.screens.library
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,9 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-
 @Composable
-fun LoginScreen(
+fun LibraryScreen(
     navController: NavController
 ) {
 

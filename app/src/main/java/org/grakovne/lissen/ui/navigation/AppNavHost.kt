@@ -1,11 +1,12 @@
 package org.grakovne.lissen.ui.navigation
 
-import LoginScreen
-import PlayerScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import org.grakovne.lissen.ui.screens.library.LibraryScreen
+import org.grakovne.lissen.ui.screens.login.LoginScreen
+import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.viewmodel.ConnectionViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
@@ -16,6 +17,10 @@ fun AppNavHost(navController: NavHostController) {
         navController = navController,
         startDestination = "player_screen"
     ) {
+
+        composable("library_screen") {
+            LibraryScreen(navController)
+        }
 
         composable("player_screen") {
             PlayerScreen(viewModel = PlayerViewModel(), navController)
