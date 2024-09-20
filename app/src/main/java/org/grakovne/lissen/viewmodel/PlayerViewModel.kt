@@ -25,22 +25,23 @@ class PlayerViewModel : ViewModel() {
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
 
     private val _playlist = MutableLiveData(
-        listOf(
-            Track("Chapter 1", "13:15"),
-            Track("Chapter 2", "15:20"),
-            Track("Chapter 3", "12:30"),
-            Track("Chapter 4", "14:45"),
-            Track("Chapter 5", "14:45"),
-            Track("Chapter 6", "14:45"),
-            Track("Chapter 7", "14:45"),
-            Track("Chapter 8", "14:45"),
-        )
+
+        (1..100).map { Track("Chapter $it", "13:15") }
     )
     val playlist: LiveData<List<Track>> = _playlist
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }
+
+    fun closePlayingQueue() {
+        _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
+    }
+
+    fun expandPlayingQueue() {
+        _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: true)
+    }
+
 
     fun changeSpeed(float: Float) {
         _speed.value = float

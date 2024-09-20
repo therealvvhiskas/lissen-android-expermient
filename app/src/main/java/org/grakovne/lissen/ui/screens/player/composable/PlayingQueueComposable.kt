@@ -2,6 +2,7 @@ package org.grakovne.lissen.ui.screens.player.composable
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.consumeAllChanges
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +41,8 @@ fun PlayingQueueComposable(
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val listState = rememberLazyListState()
+
+    val density = LocalDensity.current
 
     val fontSize by animateFloatAsState(
         targetValue = if (playingQueueExpanded) 24f else 18f,
@@ -57,9 +67,23 @@ fun PlayingQueueComposable(
         )
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .nestedScroll(object : NestedScrollConnection {
+                    override fun onPreScroll(
+                        available: Offset,
+                        source: NestedScrollSource
+                    ): Offset {
+                        if (available.y > with(density) { 10.dp.toPx() } && listState.firstVisibleItemIndex == 0 && playingQueueExpanded) {
+                            viewModel.closePlayingQueue()
+                        }
+
+                        return if (playingQueueExpanded) Offset.Zero else available
+                    }
+                }),
             state = listState,
-        ) {
+
+            ) {
             itemsIndexed(playlist) { index, track ->
                 PlaylistItemComposable(
                     track = track,
