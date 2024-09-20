@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
@@ -23,15 +24,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.ui.screens.settings.Library
 import org.grakovne.lissen.viewmodel.ConnectionViewModel
 
 @Composable
 fun LibraryComposable(viewModel: ConnectionViewModel) {
     val isServerConnected by viewModel.isConnected.observeAsState(false)
-    val libraries by viewModel.libraries.observeAsState(emptyList())
-    val preferredLibrary by viewModel.preferredLibrary.observeAsState()
+    val libraries by viewModel.libraries.observeAsState(
+        listOf(
+            Library("id", "Sci-Hub"),
+            Library("id", "Fiction"),
+            Library("id", "Tales"),
+        )
+    )
+    val preferredLibrary by viewModel.preferredLibrary.observeAsState(Library("id", "Sci-Hub"))
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -48,7 +57,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = isServerConnected
             ) {
-                Text(preferredLibrary?.title ?: "No Library Selected")
+                Text(preferredLibrary.title)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = if (expanded) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowDropDown,
@@ -58,7 +67,8 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
 
             DropdownMenu(
                 expanded = expanded,
-                modifier = Modifier.background(color = colorScheme.background),
+                modifier = Modifier
+                    .background(color = colorScheme.background),
                 onDismissRequest = { expanded = false }
             ) {
                 libraries
@@ -71,7 +81,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
                                 }
                                 expanded = false
                             },
-                            enabled = isServerConnected
+                            enabled = true
                         )
                     }
             }
