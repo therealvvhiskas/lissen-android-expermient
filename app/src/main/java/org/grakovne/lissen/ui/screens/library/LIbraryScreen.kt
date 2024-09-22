@@ -79,7 +79,7 @@ fun LibraryScreen(
             }
         },
         bottomBar = {
-            MiniPlayer()
+            MiniPlayer(navController)
         },
         modifier = Modifier
             .systemBarsPadding()
@@ -254,6 +254,7 @@ fun BookItem(book: Book) {
 
 @Composable
 fun MiniPlayer(
+    navController: NavController,
     modifier: Modifier = Modifier,
     currentBook: Book = Book(
         title = "What Does Fox Says?",
@@ -279,6 +280,7 @@ fun MiniPlayer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clickable { navController.navigate("player_screen") }
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

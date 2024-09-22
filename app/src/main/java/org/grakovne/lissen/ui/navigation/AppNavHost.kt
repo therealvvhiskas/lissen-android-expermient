@@ -15,7 +15,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun AppNavHost(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "player_screen"
+        startDestination = "library_screen"
     ) {
 
         composable("library_screen") {
@@ -23,7 +23,13 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("player_screen") {
-            PlayerScreen(viewModel = PlayerViewModel(), navController)
+            PlayerScreen(
+                viewModel = PlayerViewModel(),
+                navController = navController,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable("login_screen") {

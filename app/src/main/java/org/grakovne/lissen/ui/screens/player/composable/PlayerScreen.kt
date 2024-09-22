@@ -13,7 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,13 +33,34 @@ import androidx.navigation.NavController
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
     viewModel: PlayerViewModel,
-    navController: NavController
+    navController: NavController,
+    onBack: () -> Unit,
 ) {
     Scaffold(
-        topBar = { Spacer(modifier = Modifier.height(24.dp)) },
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Library",
+                        style = typography.titleMedium,
+                        color = colorScheme.onSurface
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { onBack() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.ArrowBack,
+                            contentDescription = "Back",
+                            tint = colorScheme.onSurface
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = {
             PlayerNavBarComposable(
                 viewModel,
