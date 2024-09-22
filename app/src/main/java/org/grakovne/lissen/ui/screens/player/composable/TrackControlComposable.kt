@@ -24,12 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.ui.formatTime
-import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable

@@ -33,6 +33,7 @@ fun PlayerScreen(
         topBar = { Spacer(modifier = Modifier.height(24.dp)) },
         bottomBar = {
             PlayerNavBarComposable(
+                viewModel,
                 navController = navController,
                 onChaptersClick = { viewModel.togglePlayingQueue() }
             )

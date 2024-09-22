@@ -12,19 +12,21 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import org.grakovne.lissen.ui.screens.player.custom.noRippleInteractionSource
+import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun PlayerNavBarComposable(
+    viewModel: PlayerViewModel,
     navController: NavController,
     modifier: Modifier = Modifier,
     onChaptersClick: () -> Unit
 ) {
-    val accentColor = colorScheme.primary
+    val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     NavigationBar(
         containerColor = Color.Transparent,
@@ -47,8 +49,8 @@ fun PlayerNavBarComposable(
                 selected = false,
                 onClick = { },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = accentColor,
-                    selectedTextColor = accentColor,
+                    selectedIconColor = colorScheme.primary,
+                    selectedTextColor = colorScheme.primary,
                     indicatorColor = Color.Transparent,
                     unselectedIconColor = colorScheme.onBackground,
                     unselectedTextColor = colorScheme.onBackground
@@ -66,8 +68,8 @@ fun PlayerNavBarComposable(
                 selected = false,
                 onClick = { },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = accentColor,
-                    selectedTextColor = accentColor,
+                    selectedIconColor = colorScheme.primary,
+                    selectedTextColor = colorScheme.primary,
                     indicatorColor = Color.Transparent
                 )
             )
@@ -79,11 +81,11 @@ fun PlayerNavBarComposable(
                     )
                 },
                 label = { Text("Chapters") },
-                selected = false,
+                selected = playingQueueExpanded,
                 onClick = { onChaptersClick() },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = accentColor,
-                    selectedTextColor = accentColor,
+                    selectedIconColor = colorScheme.primary,
+                    selectedTextColor = colorScheme.primary,
                     indicatorColor = Color.Transparent
                 )
             )
@@ -94,12 +96,12 @@ fun PlayerNavBarComposable(
                         contentDescription = "Preferences"
                     )
                 },
-                label = { Text("Settings") },
+                label = { Text("Preferences") },
                 selected = false,
                 onClick = { navController.navigate("settings_screen") },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = accentColor,
-                    selectedTextColor = accentColor,
+                    selectedIconColor = colorScheme.primary,
+                    selectedTextColor = colorScheme.primary,
                     indicatorColor = Color.Transparent
                 )
             )
