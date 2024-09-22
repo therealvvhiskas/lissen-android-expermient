@@ -46,7 +46,6 @@ fun PlayerNavBarComposable(
                 label = { Text("Library") },
                 selected = false,
                 onClick = { },
-                interactionSource = remember { noRippleInteractionSource },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = accentColor,
                     selectedTextColor = accentColor,
@@ -66,7 +65,6 @@ fun PlayerNavBarComposable(
                 label = { Text("Timer") },
                 selected = false,
                 onClick = { },
-                interactionSource = remember { noRippleInteractionSource },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = accentColor,
                     selectedTextColor = accentColor,
@@ -83,7 +81,6 @@ fun PlayerNavBarComposable(
                 label = { Text("Chapters") },
                 selected = false,
                 onClick = { onChaptersClick() },
-                interactionSource = remember { noRippleInteractionSource },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = accentColor,
                     selectedTextColor = accentColor,
@@ -100,7 +97,6 @@ fun PlayerNavBarComposable(
                 label = { Text("Settings") },
                 selected = false,
                 onClick = { navController.navigate("settings_screen") },
-                interactionSource = remember { noRippleInteractionSource },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = accentColor,
                     selectedTextColor = accentColor,

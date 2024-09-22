@@ -84,7 +84,6 @@ fun TrackControlComposable(
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
-            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 if (currentTrackIndex > 0) {
                     viewModel.previousTrack()
@@ -101,7 +100,6 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 viewModel.seekTo(maxOf(0f, currentPosition - 10f))
             },
@@ -116,7 +114,6 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            interactionSource = remember { noRippleInteractionSource },
             onClick = { viewModel.togglePlayPause() },
             modifier = Modifier
                 .size(72.dp)
@@ -131,7 +128,6 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 viewModel.seekTo(minOf(duration, currentPosition + 30f))
             },
@@ -146,7 +142,6 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            interactionSource = remember { noRippleInteractionSource },
             onClick = {
                 if (currentTrackIndex < playlist.size.minus(1)) {
                     viewModel.nextTrack()
