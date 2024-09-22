@@ -2,6 +2,7 @@ package org.grakovne.lissen.ui.screens.library
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
@@ -271,15 +273,18 @@ fun MiniPlayer(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column {
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .pointerInput(Unit) {
+                        detectVerticalDragGestures(
+                            onVerticalDrag = { _, dragAmount ->
+                                if (dragAmount < 0) {
+                                    navController.navigate("player_screen")
+                                }
+                            }
+                        )
+                    }
                     .clickable { navController.navigate("player_screen") }
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
