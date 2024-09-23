@@ -1,5 +1,7 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import android.app.Application
+import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Headset
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import org.grakovne.lissen.viewmodel.PlayerViewModel
+import java.security.AccessController.getContext
 
 @Composable
 fun PlayerNavBarComposable(
@@ -50,10 +53,6 @@ fun PlayerNavBarComposable(
                 onClick = { },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    selectedTextColor = colorScheme.primary,
-                    indicatorColor = Color.Transparent,
-                    unselectedIconColor = colorScheme.onBackground,
-                    unselectedTextColor = colorScheme.onBackground
                 )
             )
 
@@ -66,13 +65,15 @@ fun PlayerNavBarComposable(
                 },
                 label = { Text("Timer") },
                 selected = false,
-                onClick = { },
+                onClick = {},
+                enabled = false,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    selectedTextColor = colorScheme.primary,
-                    indicatorColor = Color.Transparent
+                    unselectedIconColor = colorScheme.onSurface.copy(alpha = 0.4f),
+                    unselectedTextColor = colorScheme.onSurface.copy(alpha = 0.4f)
                 )
             )
+
             NavigationBarItem(
                 icon = {
                     Icon(
@@ -85,8 +86,6 @@ fun PlayerNavBarComposable(
                 onClick = { onChaptersClick() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    selectedTextColor = colorScheme.primary,
-                    indicatorColor = Color.Transparent
                 )
             )
             NavigationBarItem(
@@ -101,8 +100,6 @@ fun PlayerNavBarComposable(
                 onClick = { navController.navigate("settings_screen") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    selectedTextColor = colorScheme.primary,
-                    indicatorColor = Color.Transparent
                 )
             )
         }

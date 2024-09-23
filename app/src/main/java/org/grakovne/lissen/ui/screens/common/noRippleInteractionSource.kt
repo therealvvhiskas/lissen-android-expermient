@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui.screens.player.custom
+package org.grakovne.lissen.ui.screens.common
 
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
