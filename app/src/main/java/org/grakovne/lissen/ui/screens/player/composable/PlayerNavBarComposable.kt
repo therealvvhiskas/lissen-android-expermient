@@ -18,9 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import org.grakovne.lissen.viewmodel.PlayerViewModel
-import java.security.AccessController.getContext
 
 @Composable
 fun PlayerNavBarComposable(
@@ -30,6 +30,7 @@ fun PlayerNavBarComposable(
     onChaptersClick: () -> Unit
 ) {
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+    val context = LocalContext.current
 
     NavigationBar(
         containerColor = Color.Transparent,
@@ -65,8 +66,10 @@ fun PlayerNavBarComposable(
                 },
                 label = { Text("Timer") },
                 selected = false,
-                onClick = {},
-                enabled = false,
+                onClick = {
+                    Toast.makeText(context, "Timer Feature Under Construction Yet", Toast.LENGTH_SHORT).show()
+                },
+                enabled = true,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                     unselectedIconColor = colorScheme.onSurface.copy(alpha = 0.4f),
