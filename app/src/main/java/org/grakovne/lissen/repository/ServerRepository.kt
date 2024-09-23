@@ -7,20 +7,22 @@ import javax.inject.Inject
 
 class ServerRepository @Inject constructor() {
 
-    private val apiService: AudiobookshelfApiClient =
-        ApiClient.retrofit.create(AudiobookshelfApiClient::class.java)
-
     suspend fun fetchToken(
         host: String?,
         username: String?,
         password: String?
     ): ApiResult<String> {
+        val apiClient = ApiClient(host ?: "")
+        val apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
 
-        val response = apiService
-            .login(LoginRequest(username ?: "grakovne", password ?: "redH0rse"))
+        val response = apiService.login(LoginRequest(username ?: "", password ?: ""))
 
         return when (response.isSuccessful) {
-            true -> response.body()?.user?.token?.let { ApiResult.Success(it) } ?: ApiResult.Error(500, "")
+            true -> response.body()?.user?.token?.let { ApiResult.Success(it) } ?: ApiResult.Error(
+                500,
+                ""
+            )
+
             false -> ApiResult.Error(response.code(), response.errorBody()?.string() ?: "")
         }
     }

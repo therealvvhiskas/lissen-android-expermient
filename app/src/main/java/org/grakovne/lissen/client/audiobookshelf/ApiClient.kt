@@ -6,8 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-object ApiClient {
-    private const val BASE_URL = "https://audiobook.grakovne.org"
+class ApiClient(host: String) {
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -18,7 +17,7 @@ object ApiClient {
         .build()
 
     val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(host)
         .client(httpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
