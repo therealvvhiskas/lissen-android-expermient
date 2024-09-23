@@ -51,10 +51,10 @@ android {
 
 dependencies {
 
-    implementation("androidx.palette:palette-ktx:1.0.0")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation(libs.androidx.palette.ktx)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.navigation.compose)
 
     implementation(libs.androidx.compose.material.icons.extended)
 
