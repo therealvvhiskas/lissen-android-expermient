@@ -47,13 +47,12 @@ class ServerConnectionViewModel @Inject constructor(
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
 
-            //val result = repository.fetchToken(host.value, username.value, password.value)
-            val response = Result.success("host")
+            val response = repository.fetchToken(host.value, username.value, password.value)
 
             val result = response
                 .fold(
                     onSuccess = { token -> LoginState.Success(token) },
-                    onFailure = { error -> LoginState.Error(error.message ?: "Unknown error") }
+                    onFailure = { error -> LoginState.Error(error.message) }
                 )
 
             _loginState.value = result
