@@ -30,7 +30,7 @@ import org.grakovne.lissen.viewmodel.ConnectionViewModel
 
 @Composable
 fun LibraryComposable(viewModel: ConnectionViewModel) {
-    val isServerConnected by viewModel.isConnected.observeAsState(false)
+    val isServerConnected = true
     val libraries by viewModel.libraries.observeAsState(
         listOf(
             Library("id", "Sci-Hub"),
@@ -38,6 +38,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
             Library("id", "Tales"),
         )
     )
+
     val preferredLibrary by viewModel.preferredLibrary.observeAsState(Library("id", "Sci-Hub"))
 
     var expanded by remember { mutableStateOf(false) }
@@ -53,7 +54,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
             OutlinedButton(
                 onClick = { if (isServerConnected) expanded = !expanded },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = isServerConnected
+                enabled = true
             ) {
                 Text(preferredLibrary.title)
                 Spacer(modifier = Modifier.weight(1f))
@@ -65,8 +66,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
 
             DropdownMenu(
                 expanded = expanded,
-                modifier = Modifier
-                    .background(color = colorScheme.background),
+                modifier = Modifier.background(color = colorScheme.background),
                 onDismissRequest = { expanded = false }
             ) {
                 libraries
@@ -74,9 +74,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
                         DropdownMenuItem(
                             text = { Text(library.title) },
                             onClick = {
-                                if (isServerConnected) {
-                                    viewModel.preferLibrary(library)
-                                }
+                                viewModel.preferLibrary(library)
                                 expanded = false
                             },
                             enabled = true

@@ -27,7 +27,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.grakovne.lissen.ui.formatTime
+import org.grakovne.lissen.ui.extensions.formatTime
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable

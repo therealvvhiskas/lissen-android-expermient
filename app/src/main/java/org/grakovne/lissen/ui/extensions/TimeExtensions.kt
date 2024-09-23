@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui
+package org.grakovne.lissen.ui.extensions
 
 
 fun Int.formatTime(): String {
