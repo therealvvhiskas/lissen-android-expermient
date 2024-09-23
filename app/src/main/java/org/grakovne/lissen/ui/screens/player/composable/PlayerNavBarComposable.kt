@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import android.app.Application
 import android.widget.Toast
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
@@ -67,7 +66,11 @@ fun PlayerNavBarComposable(
                 label = { Text("Timer") },
                 selected = false,
                 onClick = {
-                    Toast.makeText(context, "Timer Feature Under Construction Yet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Timer Feature Under Construction Yet",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 },
                 enabled = true,
                 colors = NavigationBarItemDefaults.colors(

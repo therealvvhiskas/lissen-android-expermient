@@ -8,7 +8,7 @@ import org.grakovne.lissen.ui.screens.settings.Library
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectionViewModel  @Inject constructor() : ViewModel() {
+class ConnectionViewModel @Inject constructor() : ViewModel() {
     private val _isConnected = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
 

@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.login
 
-import ServerConnectionPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +17,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,16 +36,33 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import org.grakovne.lissen.viewmodel.ServerConnectionViewModel
+import org.grakovne.lissen.viewmodel.ServerConnectionViewModel.LoginState
 
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     viewModel: ServerConnectionViewModel = hiltViewModel()
 ) {
 
-    var serverUrl by remember { mutableStateOf("https://audiobook.grakovne.org") }
-    var login by remember { mutableStateOf("grakovne") }
-    var password by remember { mutableStateOf("password") }
+    val loginState by viewModel.loginState.collectAsState()
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is LoginState.Success -> {
+                navController
+                    .navigate("library_screen") {
+                        popUpTo("login_screen") { inclusive = true }
+                    }
+            }
+
+            else -> {}
+        }
+    }
+
+    val host by viewModel.host.observeAsState("")
+    val username by viewModel.username.observeAsState("")
+    val password by viewModel.password.observeAsState("")
 
     var showPassword by remember { mutableStateOf(false) }
 
@@ -73,9 +92,9 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = serverUrl,
+                    value = host,
                     onValueChange = {
-                        serverUrl = it
+                        viewModel.setHost(it)
                     },
                     label = { Text("Server URL") },
                     shape = RoundedCornerShape(16.dp),
@@ -86,9 +105,9 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = login,
+                    value = username,
                     onValueChange = {
-                        login = it
+                        viewModel.setUsername(it)
                     },
                     label = { Text("Login") },
                     shape = RoundedCornerShape(16.dp),
@@ -102,7 +121,7 @@ fun LoginScreen(
                     value = password,
                     visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
                     onValueChange = {
-                        password = it
+                        viewModel.setPassword(it)
                     },
                     trailingIcon = {
                         IconButton(
@@ -123,7 +142,9 @@ fun LoginScreen(
                 )
 
                 Button(
-                    onClick = { },
+                    onClick = {
+                        viewModel.login()
+                    },
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 32.dp)

@@ -3,18 +3,35 @@ import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import dagger.hilt.android.qualifiers.ApplicationContext
+import org.grakovne.lissen.LissenApplication
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ServerConnectionPreferences(context: Context) {
+@Singleton
+class ServerConnectionPreferences @Inject constructor(@ApplicationContext context: Context) {
+
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
     companion object {
+        @Volatile
+        private var instance: ServerConnectionPreferences? = null
+
+        fun getInstance(): ServerConnectionPreferences {
+            return instance ?: synchronized(this) {
+                instance ?: ServerConnectionPreferences(LissenApplication.appContext).also {
+                    instance = it
+                }
+            }
+        }
+
         private const val KEY_ALIAS = "secure_key_alias"
         private const val KEY_HOST = "host"
         private const val KEY_USERNAME = "username"

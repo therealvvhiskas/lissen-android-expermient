@@ -34,7 +34,7 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable("login_screen") {
-            LoginScreen()
+            LoginScreen(navController)
         }
 
         composable("settings_screen") {
