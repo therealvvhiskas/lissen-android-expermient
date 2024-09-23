@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.login
 
+import ServerConnectionPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,12 +31,14 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.viewmodel.ServerConnectionViewModel
 
 
 @Composable
 fun LoginScreen(
-    navController: NavController
+    viewModel: ServerConnectionViewModel = hiltViewModel()
 ) {
 
     var serverUrl by remember { mutableStateOf("https://audiobook.grakovne.org") }

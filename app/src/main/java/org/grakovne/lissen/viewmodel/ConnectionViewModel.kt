@@ -3,9 +3,12 @@ package org.grakovne.lissen.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.grakovne.lissen.ui.screens.settings.Library
+import javax.inject.Inject
 
-class ConnectionViewModel : ViewModel() {
+@HiltViewModel
+class ConnectionViewModel  @Inject constructor() : ViewModel() {
     private val _isConnected = MutableLiveData(false)
     val isConnected: LiveData<Boolean> = _isConnected
 
