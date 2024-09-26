@@ -34,18 +34,7 @@ fun ServerComposable(
     val host by viewModel.host.observeAsState("")
     val username by viewModel.username.observeAsState("")
 
-    LaunchedEffect(host) {
-        if (host == null) {
-            navController.navigate("login_screen") {
-                popUpTo("settings_screen") {
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
-        }
-    }
-
-    Column() {
+    Column {
         Text(
             text = "Server Connection",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -55,9 +44,7 @@ fun ServerComposable(
         ListItem(
             headlineContent = {
                 Row(
-                    modifier = Modifier
-
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -67,13 +54,8 @@ fun ServerComposable(
                             .padding(start = 10.dp, end = 10.dp)
                             .size(24.dp)
                     )
-                    Column(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 modifier = Modifier.padding(start = 10.dp),
                                 text = host ?: "",
@@ -90,7 +72,15 @@ fun ServerComposable(
             },
             trailingContent = {
                 IconButton(
-                    onClick = { viewModel.logout() }
+                    onClick = {
+                        navController.navigate("login_screen") {
+                            popUpTo("settings_screen") {
+                                inclusive = true
+                            }
+                            launchSingleTop = true
+                        }
+                        viewModel.logout()
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.Delete,

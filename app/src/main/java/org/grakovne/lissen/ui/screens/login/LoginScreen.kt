@@ -63,7 +63,7 @@ fun LoginScreen(
             is LoginState.Success -> {
                 navController
                     .navigate("library_screen") {
-                        popUpTo("login_screen") { inclusive = true }
+                        popUpTo("library_screen") { inclusive = true }
                     }
             }
 

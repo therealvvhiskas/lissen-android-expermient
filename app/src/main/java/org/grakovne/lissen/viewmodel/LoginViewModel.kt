@@ -29,13 +29,13 @@ class LoginViewModel @Inject constructor(
     private val _loginError: MutableLiveData<String> = MutableLiveData()
     val loginError = _loginError
 
-    private val _host = MutableLiveData(preferences.getHost() ?: "https://")
+    private val _host = MutableLiveData(preferences.getHost() ?: "https://audiobook.grakovne.org")
     val host = _host
 
-    private val _username = MutableLiveData(preferences.getUsername() ?: "")
+    private val _username = MutableLiveData(preferences.getUsername() ?: "grakovne")
     val username = _username
 
-    private val _password = MutableLiveData("")
+    private val _password = MutableLiveData("redH0rse")
     val password = _password
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)

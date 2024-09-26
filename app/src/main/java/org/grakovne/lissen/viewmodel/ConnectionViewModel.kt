@@ -50,15 +50,15 @@ class ConnectionViewModel @Inject constructor(
     fun fetchLibraries() {
         viewModelScope.launch {
             _isLoading.value = true
-            val response = serverRepository.fetchLibraries()
 
+            val response = serverRepository.fetchLibraries()
             when (response) {
                 is ApiResult.Success -> {
                     _libraries.value = response.data.libraries.map { Library(it.id, it.name) }
                     _preferredLibrary.value = _libraries.value?.firstOrNull()
                 }
                 is ApiResult.Error -> {
-
+                    // show from cache if any
                 }
             }
 

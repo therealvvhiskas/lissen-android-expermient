@@ -15,7 +15,6 @@ import javax.inject.Singleton
 class ServerRepository @Inject constructor(
 ) {
     private val preferences = ServerConnectionPreferences.getInstance()
-    private lateinit var apiService: AudiobookshelfApiClient
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
         safeApiCall { getClientInstance().getLibraries() }
@@ -29,6 +28,8 @@ class ServerRepository @Inject constructor(
         if (host.isBlank() || !urlPattern.matches(host)) {
             return ApiResult.Error(FetchTokenApiError.InvalidCredentialsHost)
         }
+
+        lateinit var apiService: AudiobookshelfApiClient
 
         try {
             val apiClient = ApiClient(host)
@@ -75,11 +76,7 @@ class ServerRepository @Inject constructor(
         }
     }
 
-    fun getClientInstance(): AudiobookshelfApiClient {
-        if (::apiService.isInitialized) {
-            return apiService
-        }
-
+    private fun getClientInstance(): AudiobookshelfApiClient {
         val host = preferences.getHost()
         val token = preferences.getToken()
 
