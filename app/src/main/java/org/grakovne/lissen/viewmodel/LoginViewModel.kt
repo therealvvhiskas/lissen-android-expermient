@@ -20,7 +20,7 @@ import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class ServerConnectionViewModel @Inject constructor(
+class LoginViewModel @Inject constructor(
     private val repository: ServerRepository
 ) : ViewModel() {
 

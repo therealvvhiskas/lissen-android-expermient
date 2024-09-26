@@ -48,7 +48,9 @@ fun AppNavHost(navController: NavHostController) {
 
         composable("settings_screen") {
             SettingsScreen(
-                onBack = { navController.popBackStack() })
+                onBack = { navController.popBackStack() },
+                navController = navController
+            )
         }
     }
 }

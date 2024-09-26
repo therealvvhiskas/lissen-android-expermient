@@ -15,7 +15,19 @@ import javax.inject.Inject
 class ConnectionViewModel @Inject constructor(
     private val serverRepository: ServerRepository
 ) : ViewModel() {
-    private val _isConnected = MutableLiveData(false)
+
+    private val preferences = ServerConnectionPreferences.getInstance()
+
+    private val _host = MutableLiveData(preferences.getHost())
+    val host = _host
+
+    private val _username = MutableLiveData(preferences.getUsername())
+    val username = _username
+
+    private val _isLoading = MutableLiveData(true)
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isConnected = MutableLiveData(true)
     val isConnected: LiveData<Boolean> = _isConnected
 
     private val _libraries = MutableLiveData<List<Library>>()
@@ -28,8 +40,16 @@ class ConnectionViewModel @Inject constructor(
         fetchLibraries()
     }
 
-    private fun fetchLibraries() {
+    fun logout() {
+        preferences.clearCredentials()
+
+        _host.value = preferences.getHost()
+        _username.value = preferences.getUsername()
+    }
+
+    fun fetchLibraries() {
         viewModelScope.launch {
+            _isLoading.value = true
             val response = serverRepository.fetchLibraries()
 
             when (response) {
@@ -41,6 +61,8 @@ class ConnectionViewModel @Inject constructor(
 
                 }
             }
+
+            _isLoading.value = false
         }
     }
 

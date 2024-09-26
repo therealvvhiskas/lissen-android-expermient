@@ -9,28 +9,41 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Podcasts
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import org.grakovne.lissen.viewmodel.ConnectionViewModel
 
 @Composable
-fun ServerComposable(viewModel: ConnectionViewModel) {
+fun ServerComposable(
+    navController: NavController,
+    viewModel: ConnectionViewModel
+) {
+    val host by viewModel.host.observeAsState("")
+    val username by viewModel.username.observeAsState("")
 
-    var password by remember { mutableStateOf("") }
-    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
+    LaunchedEffect(host) {
+        if (host == null) {
+            navController.navigate("login_screen") {
+                popUpTo("settings_screen") {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }
+    }
 
     Column() {
         Text(
@@ -63,24 +76,27 @@ fun ServerComposable(viewModel: ConnectionViewModel) {
 
                             Text(
                                 modifier = Modifier.padding(start = 10.dp),
-                                text = "audiobook.grakovne.org",
+                                text = host ?: "",
                                 style = TextStyle(fontFamily = FontFamily.Monospace)
                             )
                         }
                         Text(
                             modifier = Modifier.padding(start = 10.dp, top = 4.dp),
-                            text = "2.13.4",
+                            text = "Connected as $username",
                             style = TextStyle(fontFamily = FontFamily.Monospace)
                         )
                     }
                 }
             },
             trailingContent = {
-                Icon(
-                    Icons.Outlined.Delete,
-                    contentDescription = "Close",
-                    modifier = Modifier.size(24.dp)
-                )
+                IconButton(
+                    onClick = { viewModel.logout() }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Logout"
+                    )
+                }
             }
         )
     }

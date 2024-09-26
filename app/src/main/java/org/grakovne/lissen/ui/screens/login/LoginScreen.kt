@@ -37,14 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import org.grakovne.lissen.viewmodel.ServerConnectionViewModel
-import org.grakovne.lissen.viewmodel.ServerConnectionViewModel.LoginState
+import org.grakovne.lissen.viewmodel.LoginViewModel
+import org.grakovne.lissen.viewmodel.LoginViewModel.LoginState
 
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: ServerConnectionViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
 
     val loginState by viewModel.loginState.collectAsState()

@@ -48,6 +48,12 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
         return host != null && username != null
     }
 
+    fun clearCredentials() {
+        sharedPreferences.edit().putString(KEY_HOST, null).apply()
+        sharedPreferences.edit().putString(KEY_USERNAME, null).apply()
+        sharedPreferences.edit().putString(KEY_TOKEN, null).apply()
+    }
+
     fun saveHost(host: String) {
         sharedPreferences.edit().putString(KEY_HOST, host).apply()
     }
