@@ -21,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
 import org.grakovne.lissen.ui.screens.settings.composable.LibraryComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerComposable
@@ -29,9 +30,11 @@ import org.grakovne.lissen.viewmodel.ConnectionViewModel
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SettingsScreen(
-    viewModel: ConnectionViewModel,
     onBack: () -> Unit,
 ) {
+
+    val viewModel: ConnectionViewModel = hiltViewModel()
+
     Scaffold(
         topBar = {
             TopAppBar(

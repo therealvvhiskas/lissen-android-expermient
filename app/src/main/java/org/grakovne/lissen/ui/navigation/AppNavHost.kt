@@ -48,7 +48,6 @@ fun AppNavHost(navController: NavHostController) {
 
         composable("settings_screen") {
             SettingsScreen(
-                viewModel = ConnectionViewModel(),
                 onBack = { navController.popBackStack() })
         }
     }

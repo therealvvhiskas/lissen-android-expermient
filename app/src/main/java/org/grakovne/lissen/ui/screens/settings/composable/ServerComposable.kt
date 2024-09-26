@@ -28,8 +28,6 @@ import org.grakovne.lissen.viewmodel.ConnectionViewModel
 
 @Composable
 fun ServerComposable(viewModel: ConnectionViewModel) {
-    val serverUrl by viewModel.url.observeAsState("")
-    val login by viewModel.login.observeAsState("")
 
     var password by remember { mutableStateOf("") }
     var passwordVisibility: Boolean by remember { mutableStateOf(false) }

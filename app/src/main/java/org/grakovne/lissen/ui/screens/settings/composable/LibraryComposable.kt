@@ -31,13 +31,7 @@ import org.grakovne.lissen.viewmodel.ConnectionViewModel
 @Composable
 fun LibraryComposable(viewModel: ConnectionViewModel) {
     val isServerConnected = true
-    val libraries by viewModel.libraries.observeAsState(
-        listOf(
-            Library("id", "Sci-Hub"),
-            Library("id", "Fiction"),
-            Library("id", "Tales"),
-        )
-    )
+    val libraries by viewModel.libraries.observeAsState(emptyList())
 
     val preferredLibrary by viewModel.preferredLibrary.observeAsState(Library("id", "Sci-Hub"))
 
