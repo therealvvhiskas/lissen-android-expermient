@@ -92,6 +92,7 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TrackDetailsComposable(
+                            navController = navController,
                             viewModel = viewModel,
                             modifier = Modifier
                                 .fillMaxWidth()
