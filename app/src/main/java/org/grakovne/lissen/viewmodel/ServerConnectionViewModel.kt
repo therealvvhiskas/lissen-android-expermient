@@ -9,6 +9,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.repository.FetchTokenApiError
+import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
+import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
+import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsHost
+import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsPassword
+import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsUsername
+import org.grakovne.lissen.repository.FetchTokenApiError.Unauthorized
 import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
@@ -18,6 +25,9 @@ class ServerConnectionViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val preferences = ServerConnectionPreferences.getInstance()
+
+    private val _loginError: MutableLiveData<String> = MutableLiveData()
+    val loginError = _loginError
 
     private val _host = MutableLiveData(preferences.getHost() ?: "https://")
     val host = _host
@@ -43,27 +53,59 @@ class ServerConnectionViewModel @Inject constructor(
         _password.value = password
     }
 
+    fun readyToLogin() {
+        _loginState.value = LoginState.Idle
+    }
+
     fun login() {
         viewModelScope.launch {
             _loginState.value = LoginState.Loading
 
-            val response = repository.fetchToken(host.value, username.value, password.value)
+            val host = host.value ?: run {
+                _loginState.value = LoginState.Error(MissingCredentialsHost)
+                return@launch
+            }
+
+            val username = username.value ?: run {
+                _loginState.value = LoginState.Error(MissingCredentialsUsername)
+                return@launch
+            }
+
+            val password = password.value ?: run {
+                _loginState.value = LoginState.Error(MissingCredentialsPassword)
+                return@launch
+            }
+
+            val response = repository.fetchToken(host, username, password)
 
             val result = response
                 .fold(
                     onSuccess = { token -> LoginState.Success(token) },
-                    onFailure = { error -> LoginState.Error(error.message) }
+                    onFailure = { error -> onLoginFailure(error.code) }
                 )
 
             _loginState.value = result
         }
     }
 
-    sealed class LoginState {
-        object Idle : LoginState()
-        object Loading : LoginState()
-        data class Success(val token: String) : LoginState()
-        data class Error(val message: String) : LoginState()
+    private fun onLoginFailure(error: FetchTokenApiError): LoginState.Error {
+        _loginError.value = when (error) {
+            InternalError -> "Host is down"
+            MissingCredentialsHost -> "Host URL is missing"
+            MissingCredentialsPassword -> "Username is missing"
+            MissingCredentialsUsername -> "Password is missing"
+            Unauthorized -> "Credentials are invalid"
+            InvalidCredentialsHost -> "Host URL shall be https:// or http://"
+            FetchTokenApiError.NetworkError -> "Connection Error"
+        }
+
+        return LoginState.Error(error)
     }
 
+    sealed class LoginState {
+        data object Idle : LoginState()
+        data object Loading : LoginState()
+        data class Success(val token: String) : LoginState()
+        data class Error(val message: FetchTokenApiError) : LoginState()
+    }
 }

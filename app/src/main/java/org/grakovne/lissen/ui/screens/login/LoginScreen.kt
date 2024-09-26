@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -46,6 +48,15 @@ fun LoginScreen(
 ) {
 
     val loginState by viewModel.loginState.collectAsState()
+    val loginError by viewModel.loginError.observeAsState()
+
+    val host by viewModel.host.observeAsState("")
+    val username by viewModel.username.observeAsState("")
+    val password by viewModel.password.observeAsState("")
+
+    var showPassword by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     LaunchedEffect(loginState) {
         when (loginState) {
@@ -56,15 +67,19 @@ fun LoginScreen(
                     }
             }
 
-            else -> {}
+            is LoginState.Error -> loginError
+                ?.let {
+                    if (it.isNotBlank()) {
+                        Toast.makeText(context, loginError, Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            is LoginState.Idle -> {}
+            is LoginState.Loading -> {}
         }
+
+        viewModel.readyToLogin()
     }
-
-    val host by viewModel.host.observeAsState("")
-    val username by viewModel.username.observeAsState("")
-    val password by viewModel.password.observeAsState("")
-
-    var showPassword by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier

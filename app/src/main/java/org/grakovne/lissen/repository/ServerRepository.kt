@@ -3,43 +3,68 @@ package org.grakovne.lissen.repository
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
+import retrofit2.Response
+import java.io.IOException
 import javax.inject.Inject
 
 class ServerRepository @Inject constructor() {
+    private lateinit var apiService: AudiobookshelfApiClient
 
     suspend fun fetchToken(
-        host: String?,
-        username: String?,
-        password: String?
+        host: String,
+        username: String,
+        password: String
     ): ApiResult<String> {
-        val apiClient = ApiClient(host ?: "")
-        val apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
 
-        val response = apiService.login(LoginRequest(username ?: "", password ?: ""))
+        if (host.isBlank() || !urlPattern.matches(host)) {
+            return ApiResult.Error(FetchTokenApiError.InvalidCredentialsHost)
+        }
 
-        return when (response.isSuccessful) {
-            true -> response.body()?.user?.token?.let { ApiResult.Success(it) } ?: ApiResult.Error(
-                500,
-                ""
-            )
+        try {
+            val apiClient = ApiClient(host)
+            apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
+        } catch (e: Exception) {
+            return ApiResult.Error(FetchTokenApiError.InternalError)
+        }
 
-            false -> ApiResult.Error(response.code(), response.errorBody()?.string() ?: "")
+        val response = safeApiCall { apiService.login(LoginRequest(username, password)) }
+
+        return when (response) {
+            is ApiResult.Error -> ApiResult.Error(response.code)
+            is ApiResult.Success -> response.data
+                .user
+                .token
+                .let { ApiResult.Success(it) }
         }
     }
-}
 
+    private suspend fun <T> safeApiCall(
+        apiCall: suspend () -> Response<T>
+    ): ApiResult<T> {
+        return try {
+            val response = apiCall.invoke()
 
-sealed class ApiResult<T> {
-    data class Success<T>(val data: T) : ApiResult<T>()
-    data class Error<T>(val code: Int, val message: String) : ApiResult<T>()
+            return when (response.code()) {
+                200 -> when (val body = response.body()) {
+                    null -> ApiResult.Error(FetchTokenApiError.InternalError)
+                    else -> ApiResult.Success(body)
+                }
 
-    fun <R> fold(
-        onSuccess: (T) -> R,
-        onFailure: (Error<T>) -> R
-    ): R {
-        return when (this) {
-            is Success -> onSuccess(this.data)
-            is Error -> onFailure(this)
+                400 -> ApiResult.Error(FetchTokenApiError.InternalError)
+                401 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
+                403 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
+                404 -> ApiResult.Error(FetchTokenApiError.InternalError)
+                500 -> ApiResult.Error(FetchTokenApiError.InternalError)
+                else -> ApiResult.Error(FetchTokenApiError.InternalError)
+            }
+        } catch (e: IOException) {
+            ApiResult.Error(FetchTokenApiError.NetworkError)
+        } catch (e: Exception) {
+            ApiResult.Error(FetchTokenApiError.InternalError)
         }
+    }
+
+    companion object {
+        val urlPattern = Regex("^(http|https)://.*\$")
     }
 }
