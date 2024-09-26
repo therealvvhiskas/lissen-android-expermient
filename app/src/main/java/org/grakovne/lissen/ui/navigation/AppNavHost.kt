@@ -20,8 +20,7 @@ fun AppNavHost(navController: NavHostController) {
     val serverPrefs = remember { ServerConnectionPreferences.getInstance() }
     val hasCredentials by remember { mutableStateOf(serverPrefs.hasCredentials()) }
 
-    val startDestination = if (hasCredentials) "settings_screen" else "login_screen"
-
+    val startDestination = if (hasCredentials) "library_screen" else "login_screen"
 
     NavHost(
         navController = navController,
