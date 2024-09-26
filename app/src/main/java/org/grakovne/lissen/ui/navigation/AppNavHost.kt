@@ -1,6 +1,10 @@
 package org.grakovne.lissen.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,10 +17,15 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
+    val serverPrefs = remember { ServerConnectionPreferences.getInstance() }
+    val hasCredentials by remember { mutableStateOf(serverPrefs.hasCredentials()) }
+
+    val startDestination = if (hasCredentials) "library_screen" else "login_screen"
+
 
     NavHost(
         navController = navController,
-        startDestination = "login_screen"
+        startDestination = startDestination
     ) {
 
         composable("library_screen") {

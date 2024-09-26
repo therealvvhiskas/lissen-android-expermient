@@ -94,8 +94,8 @@ class ServerConnectionViewModel @Inject constructor(
         token: String
     ) {
         preferences.saveHost(host)
-        preferences.saveHost(username)
-        preferences.saveHost(token)
+        preferences.saveUsername(username)
+        preferences.saveToken(token)
     }
 
     private fun onLoginSuccessful(
