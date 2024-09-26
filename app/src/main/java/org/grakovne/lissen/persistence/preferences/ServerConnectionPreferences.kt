@@ -37,7 +37,6 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
         private const val KEY_USERNAME = "username"
         private const val KEY_TOKEN = "token"
 
-        private const val PREF_PASSWORD = "password"
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
     }
@@ -67,21 +66,11 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
 
     fun saveToken(password: String) {
         val encryptedPassword = encrypt(password)
-        sharedPreferences.edit().putString(PREF_PASSWORD, encryptedPassword).apply()
+        sharedPreferences.edit().putString(KEY_TOKEN, encryptedPassword).apply()
     }
 
     fun getToken(): String? {
         val encryptedPassword = sharedPreferences.getString(KEY_TOKEN, null) ?: return null
-        return decrypt(encryptedPassword)
-    }
-
-    fun savePassword(password: String) {
-        val encryptedPassword = encrypt(password)
-        sharedPreferences.edit().putString(KEY_TOKEN, encryptedPassword).apply()
-    }
-
-    fun getPassword(): String? {
-        val encryptedPassword = sharedPreferences.getString(PREF_PASSWORD, null) ?: return null
         return decrypt(encryptedPassword)
     }
 

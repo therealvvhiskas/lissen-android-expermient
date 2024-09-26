@@ -35,7 +35,7 @@ class ServerConnectionViewModel @Inject constructor(
     private val _username = MutableLiveData(preferences.getUsername() ?: "")
     val username = _username
 
-    private val _password = MutableLiveData(preferences.getPassword() ?: "")
+    private val _password = MutableLiveData("")
     val password = _password
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
@@ -80,12 +80,36 @@ class ServerConnectionViewModel @Inject constructor(
 
             val result = response
                 .fold(
-                    onSuccess = { token -> LoginState.Success(token) },
+                    onSuccess = { token -> onLoginSuccessful(host, username, token) },
                     onFailure = { error -> onLoginFailure(error.code) }
                 )
 
             _loginState.value = result
         }
+    }
+
+    private fun persistCredentials(
+        host: String,
+        username: String,
+        token: String
+    ) {
+        preferences.saveHost(host)
+        preferences.saveHost(username)
+        preferences.saveHost(token)
+    }
+
+    private fun onLoginSuccessful(
+        host: String,
+        username: String,
+        token: String
+    ): LoginState.Success {
+        persistCredentials(
+            host = host,
+            username = username,
+            token = token
+        )
+
+        return LoginState.Success
     }
 
     private fun onLoginFailure(error: FetchTokenApiError): LoginState.Error {
@@ -105,7 +129,7 @@ class ServerConnectionViewModel @Inject constructor(
     sealed class LoginState {
         data object Idle : LoginState()
         data object Loading : LoginState()
-        data class Success(val token: String) : LoginState()
+        data object Success : LoginState()
         data class Error(val message: FetchTokenApiError) : LoginState()
     }
 }
