@@ -33,7 +33,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
     val isServerConnected = true
     val libraries by viewModel.libraries.observeAsState(emptyList())
 
-    val preferredLibrary by viewModel.preferredLibrary.observeAsState(Library("id", "Sci-Hub"))
+    val preferredLibrary by viewModel.preferredLibrary.observeAsState()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -50,7 +50,7 @@ fun LibraryComposable(viewModel: ConnectionViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 enabled = true
             ) {
-                Text(preferredLibrary.title)
+                Text(preferredLibrary?.title ?: "")
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = if (expanded) Icons.Outlined.ArrowDropUp else Icons.Outlined.ArrowDropDown,
