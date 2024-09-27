@@ -120,7 +120,7 @@ fun LibraryScreen(
                 }
 
                 items(books) { book ->
-                    LibraryItemComposable(book = book)
+                    LibraryItemComposable(book = book, viewModel = viewModel)
                 }
             }
         }

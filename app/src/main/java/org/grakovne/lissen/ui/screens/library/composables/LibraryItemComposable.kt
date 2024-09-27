@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,29 +20,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.extensions.hhmm
-import org.grakovne.lissen.ui.extensions.hhmmss
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
-fun LibraryItemComposable(book: Book) {
+fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fallback_cover),
-            contentDescription = "Book Cover",
+        AsyncImage(
+            model = book.id,
+            imageLoader = viewModel.imageLoader,
+            contentDescription = "${book.title} cover",
+            contentScale = ContentScale.Fit,
             modifier = Modifier
-                .size(60.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .size(64.dp)
+                .clip(RoundedCornerShape(4.dp)),
+            placeholder = painterResource(R.drawable.fallback_cover),
+            error = painterResource(R.drawable.fallback_cover)
         )
 
         Spacer(modifier = Modifier.width(16.dp))

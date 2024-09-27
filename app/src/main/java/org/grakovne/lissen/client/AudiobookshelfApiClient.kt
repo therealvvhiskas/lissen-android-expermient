@@ -10,6 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
 
 interface AudiobookshelfApiClient {
 
@@ -17,9 +18,10 @@ interface AudiobookshelfApiClient {
     suspend fun getLibraries(): Response<LibraryResponse>
 
     @GET("/api/items/{itemId}/cover")
+    @Streaming
     suspend fun getItemCover(
         @Path("itemId") itemId: String,
-    ): Response<Byte>
+    ): Response<ByteArray>
 
     @POST("login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
