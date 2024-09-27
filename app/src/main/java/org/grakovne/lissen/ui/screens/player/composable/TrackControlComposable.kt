@@ -27,7 +27,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.grakovne.lissen.ui.extensions.formatTime
+import org.grakovne.lissen.ui.extensions.hhmmss
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
@@ -64,12 +64,12 @@ fun TrackControlComposable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = currentPosition.toInt().formatTime(),
+                text = currentPosition.toInt().hhmmss(),
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${(duration - currentPosition).toInt().formatTime()}",
+                text = "-${(duration - currentPosition).toInt().hhmmss()}",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )

@@ -37,5 +37,24 @@ data class Media(
     val numAudioFiles: Int,
     val numChapters: Int,
     val duration: Double,
+    val metadata: Metadata,
     val size: Long
+)
+
+data class Metadata(
+    val title: String,
+    val titleIgnorePrefix: String,
+    val subtitle: String?,
+    val authorName: String,
+    val narratorName: String,
+    val seriesName: String,
+    val genres: List<String>,
+    val publishedYear: String?,
+    val publishedDate: String?,
+    val publisher: String?,
+    val description: String?,
+    val isbn: String?,
+    val asin: String?,
+    val language: String?,
+    val explicit: Boolean,
 )

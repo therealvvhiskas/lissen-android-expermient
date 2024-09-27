@@ -1,6 +1,6 @@
 package org.grakovne.lissen.repository
 
-import ServerConnectionPreferences
+import LissenSharedPreferences
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
@@ -16,16 +16,18 @@ import javax.inject.Singleton
 @Singleton
 class ServerRepository @Inject constructor(
 ) {
-    private val preferences = ServerConnectionPreferences.getInstance()
+    private val preferences = LissenSharedPreferences.getInstance()
 
     @Volatile
     private var secureClient: AudiobookshelfApiClient? = null
 
     suspend fun fetchLibraryItems(
-        libraryId: Int,
+        libraryId: String,
         page: Int = 1,
         pageSize: Int = 20
-    ): ApiResult<LibraryItemsResponse> = safeApiCall { getClientInstance().getLibraryItems(libraryId, page, pageSize) }
+    ): ApiResult<LibraryItemsResponse> {
+        return safeApiCall { getClientInstance().getLibraryItems(libraryId, page, pageSize) }
+    }
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> = safeApiCall { getClientInstance().getLibraries() }
 

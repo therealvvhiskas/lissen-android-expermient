@@ -46,7 +46,8 @@ fun MiniPlayerComposable(
         title = "What Does Fox Says?",
         author = "John Show",
         downloaded = true,
-        duration = 42
+        duration = 42,
+        id = "1"
     )
 ) {
     var isPlaying: Boolean by remember { mutableStateOf(false) }

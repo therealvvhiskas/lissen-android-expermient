@@ -27,6 +27,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.ui.extensions.hhmm
+import org.grakovne.lissen.ui.extensions.hhmmss
 
 @Composable
 fun LibraryItemComposable(book: Book) {
@@ -79,7 +81,7 @@ fun LibraryItemComposable(book: Book) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "12h 24m",
+                text = book.duration.hhmm(),
                 style = MaterialTheme.typography.bodySmall
             )
         }

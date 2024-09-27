@@ -15,7 +15,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ServerConnectionPreferences @Inject constructor(@ApplicationContext context: Context) {
+class LissenSharedPreferences @Inject constructor(@ApplicationContext context: Context) {
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
@@ -73,11 +73,11 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
 
     companion object {
         @Volatile
-        private var instance: ServerConnectionPreferences? = null
+        private var instance: LissenSharedPreferences? = null
 
-        fun getInstance(): ServerConnectionPreferences {
+        fun getInstance(): LissenSharedPreferences {
             return instance ?: synchronized(this) {
-                instance ?: ServerConnectionPreferences(LissenApplication.appContext).also {
+                instance ?: LissenSharedPreferences(LissenApplication.appContext).also {
                     instance = it
                 }
             }

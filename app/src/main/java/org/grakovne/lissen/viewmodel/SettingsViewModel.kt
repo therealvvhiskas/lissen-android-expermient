@@ -16,7 +16,7 @@ class SettingsViewModel @Inject constructor(
     private val serverRepository: ServerRepository
 ) : ViewModel() {
 
-    private val preferences = ServerConnectionPreferences.getInstance()
+    private val preferences = LissenSharedPreferences.getInstance()
 
     private val _host = MutableLiveData(preferences.getHost())
     val host = _host

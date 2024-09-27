@@ -15,7 +15,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    val serverPrefs = remember { ServerConnectionPreferences.getInstance() }
+    val serverPrefs = remember { LissenSharedPreferences.getInstance() }
     val hasCredentials by remember { mutableStateOf(serverPrefs.hasCredentials()) }
 
     val startDestination = if (hasCredentials) "library_screen" else "login_screen"

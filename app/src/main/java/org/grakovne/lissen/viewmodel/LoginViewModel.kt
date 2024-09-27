@@ -1,6 +1,6 @@
 package org.grakovne.lissen.viewmodel
 
-import ServerConnectionPreferences
+import LissenSharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +26,7 @@ class LoginViewModel @Inject constructor(
     private val repository: ServerRepository
 ) : ViewModel() {
 
-    private val preferences = ServerConnectionPreferences.getInstance()
+    private val preferences = LissenSharedPreferences.getInstance()
 
     private val _loginError: MutableLiveData<String> = MutableLiveData()
     val loginError = _loginError

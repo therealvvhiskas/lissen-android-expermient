@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
-fun LibraryComposable(viewModel: SettingsViewModel) {
+fun PreferredLibraryComposable(viewModel: SettingsViewModel) {
     val isServerConnected by viewModel.isConnected.observeAsState(false)
     val libraries by viewModel.libraries.observeAsState(emptyList())
     val preferredLibrary by viewModel.preferredLibrary.observeAsState()
