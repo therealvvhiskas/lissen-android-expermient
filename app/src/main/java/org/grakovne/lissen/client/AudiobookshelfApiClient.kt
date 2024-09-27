@@ -16,6 +16,11 @@ interface AudiobookshelfApiClient {
     @GET("/api/libraries")
     suspend fun getLibraries(): Response<LibraryResponse>
 
+    @GET("/api/items/{itemId}/cover")
+    suspend fun getItemCover(
+        @Path("itemId") itemId: String,
+    ): Response<Byte>
+
     @POST("login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 

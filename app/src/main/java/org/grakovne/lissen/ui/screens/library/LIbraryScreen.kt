@@ -64,12 +64,7 @@ fun LibraryScreen(
 ) {
 
     val listState = rememberLazyListState()
-
     val books by viewModel.books.observeAsState(emptyList())
-
-    LaunchedEffect(books) {
-        Log.d("LibraryScreen", "Books updated: ${books.size}")
-    }
 
     val showAppBarTitle by remember {
         derivedStateOf {
