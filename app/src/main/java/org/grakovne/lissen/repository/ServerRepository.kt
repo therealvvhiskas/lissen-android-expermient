@@ -3,6 +3,7 @@ package org.grakovne.lissen.repository
 import ServerConnectionPreferences
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
+import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
@@ -20,8 +21,13 @@ class ServerRepository @Inject constructor(
     @Volatile
     private var secureClient: AudiobookshelfApiClient? = null
 
-    suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
-        safeApiCall { getClientInstance().getLibraries() }
+    suspend fun fetchLibraryItems(
+        libraryId: Int,
+        page: Int = 1,
+        pageSize: Int = 20
+    ): ApiResult<LibraryItemsResponse> = safeApiCall { getClientInstance().getLibraryItems(libraryId, page, pageSize) }
+
+    suspend fun fetchLibraries(): ApiResult<LibraryResponse> = safeApiCall { getClientInstance().getLibraries() }
 
     fun logout() {
         secureClient = null
