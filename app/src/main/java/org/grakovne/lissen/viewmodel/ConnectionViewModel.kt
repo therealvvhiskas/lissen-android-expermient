@@ -42,6 +42,7 @@ class ConnectionViewModel @Inject constructor(
 
     fun logout() {
         preferences.clearCredentials()
+        serverRepository.logout()
 
         _host.value = preferences.getHost()
         _username.value = preferences.getUsername()

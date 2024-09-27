@@ -1,7 +1,6 @@
 package org.grakovne.lissen.repository
 
 import ServerConnectionPreferences
-import android.util.Log
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
@@ -16,8 +15,14 @@ class ServerRepository @Inject constructor(
 ) {
     private val preferences = ServerConnectionPreferences.getInstance()
 
+    private var secureClient: AudiobookshelfApiClient? = null
+
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
         safeApiCall { getClientInstance().getLibraries() }
+
+    fun logout() {
+        secureClient = null
+    }
 
     suspend fun fetchToken(
         host: String,
@@ -71,7 +76,6 @@ class ServerRepository @Inject constructor(
         } catch (e: IOException) {
             ApiResult.Error(FetchTokenApiError.NetworkError)
         } catch (e: Exception) {
-            Log.d("TAG", e.message ?: "")
             ApiResult.Error(FetchTokenApiError.InternalError)
         }
     }
@@ -84,8 +88,10 @@ class ServerRepository @Inject constructor(
             throw IllegalStateException("Host or token is missing")
         }
 
-        val apiClient = ApiClient(host, token)
-        return apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
+        return secureClient ?: run {
+            val apiClient = ApiClient(host, token)
+            apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
+        }
     }
 
     companion object {
