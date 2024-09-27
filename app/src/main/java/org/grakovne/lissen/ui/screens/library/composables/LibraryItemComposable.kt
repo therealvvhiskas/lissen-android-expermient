@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,9 +50,10 @@ fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
                 .build(),
             imageLoader = viewModel.imageLoader,
             contentDescription = "${book.title} cover",
-            contentScale = ContentScale.Fit,
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .size(64.dp)
+                .aspectRatio(1f)
                 .clip(RoundedCornerShape(4.dp)),
             placeholder = painterResource(R.drawable.fallback_cover),
             error = painterResource(R.drawable.fallback_cover)
