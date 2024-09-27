@@ -4,9 +4,11 @@ import android.content.Context
 import android.net.Uri
 import coil.ImageLoader
 import coil.decode.ImageSource
+import coil.disk.DiskCache
 import coil.fetch.FetchResult
 import coil.fetch.Fetcher
 import coil.fetch.SourceResult
+import coil.memory.MemoryCache
 import coil.request.Options
 import okio.Buffer
 import okio.buffer
@@ -45,7 +47,8 @@ class BookCoverFetcher(
 }
 
 fun provideCustomImageLoader(context: Context, repository: ServerMediaRepository): ImageLoader {
-    return ImageLoader.Builder(context)
+    return ImageLoader
+        .Builder(context)
         .components {
             add(BookCoverFetcherFactory(repository, context))
         }

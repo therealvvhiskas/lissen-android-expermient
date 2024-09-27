@@ -41,7 +41,7 @@ fun RecentBooksComposable() {
     val images = List(10) { R.drawable.fallback_cover }
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = spacing),
+        contentPadding = PaddingValues(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier.fillMaxWidth()
     ) {

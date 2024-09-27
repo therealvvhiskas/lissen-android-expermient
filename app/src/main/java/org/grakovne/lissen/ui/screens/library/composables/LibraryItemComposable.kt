@@ -21,11 +21,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.extensions.hhmm
@@ -36,11 +39,14 @@ fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         AsyncImage(
-            model = book.id,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(book.id)
+                .crossfade(true)
+                .build(),
             imageLoader = viewModel.imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.Fit,
