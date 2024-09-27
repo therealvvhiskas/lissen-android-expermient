@@ -8,11 +8,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.repository.ApiResult
 import org.grakovne.lissen.repository.ServerRepository
-import org.grakovne.lissen.ui.screens.settings.Library
+import org.grakovne.lissen.domain.Library
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectionViewModel @Inject constructor(
+class SettingsViewModel @Inject constructor(
     private val serverRepository: ServerRepository
 ) : ViewModel() {
 
@@ -33,7 +33,7 @@ class ConnectionViewModel @Inject constructor(
     private val _libraries = MutableLiveData<List<Library>>()
     val libraries = _libraries
 
-    private val _preferredLibrary = MutableLiveData<Library>()
+    private val _preferredLibrary = MutableLiveData<Library>(preferences.getActiveLibrary())
     val preferredLibrary = _preferredLibrary
 
     init {
@@ -58,8 +58,9 @@ class ConnectionViewModel @Inject constructor(
                     _libraries.value = response.data.libraries.map { Library(it.id, it.name) }
                     _preferredLibrary.value = _libraries.value?.firstOrNull()
                 }
+
                 is ApiResult.Error -> {
-                    // show from cache if any
+                    preferences.getActiveLibrary()
                 }
             }
 

@@ -14,7 +14,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,12 +23,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import org.grakovne.lissen.viewmodel.ConnectionViewModel
+import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
 fun ServerComposable(
     navController: NavController,
-    viewModel: ConnectionViewModel
+    viewModel: SettingsViewModel
 ) {
     val host by viewModel.host.observeAsState("")
     val username by viewModel.username.observeAsState("")

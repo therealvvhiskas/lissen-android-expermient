@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui.screens.settings
+package org.grakovne.lissen.domain
 
 data class Library(
     val id: String,

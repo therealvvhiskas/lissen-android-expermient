@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +11,6 @@ import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
 import org.grakovne.lissen.ui.screens.player.composable.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
-import org.grakovne.lissen.viewmodel.ConnectionViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable

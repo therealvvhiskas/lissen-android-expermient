@@ -29,7 +29,7 @@ import androidx.navigation.NavController
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
 import org.grakovne.lissen.ui.screens.settings.composable.LibraryComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerComposable
-import org.grakovne.lissen.viewmodel.ConnectionViewModel
+import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +38,7 @@ fun SettingsScreen(
     navController: NavController,
 ) {
 
-    val viewModel: ConnectionViewModel = hiltViewModel()
+    val viewModel: SettingsViewModel = hiltViewModel()
     val isLoading by viewModel.isLoading.observeAsState(true)
 
     LaunchedEffect(Unit) {

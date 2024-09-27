@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.ArrowDropUp
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -23,15 +22,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.grakovne.lissen.ui.screens.settings.Library
-import org.grakovne.lissen.viewmodel.ConnectionViewModel
+import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
-fun LibraryComposable(viewModel: ConnectionViewModel) {
+fun LibraryComposable(viewModel: SettingsViewModel) {
     val isServerConnected by viewModel.isConnected.observeAsState(false)
     val libraries by viewModel.libraries.observeAsState(emptyList())
     val preferredLibrary by viewModel.preferredLibrary.observeAsState()

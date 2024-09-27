@@ -15,6 +15,7 @@ class ServerRepository @Inject constructor(
 ) {
     private val preferences = ServerConnectionPreferences.getInstance()
 
+    @Volatile
     private var secureClient: AudiobookshelfApiClient? = null
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
