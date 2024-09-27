@@ -13,4 +13,14 @@ sealed class ApiResult<T> {
             is Error -> onFailure(this)
         }
     }
+
+    suspend fun <R> foldAsync(
+        onSuccess: suspend (T) -> R,
+        onFailure: suspend (Error<T>) -> R
+    ): R {
+        return when (this) {
+            is Success -> onSuccess(this.data)
+            is Error -> onFailure(this)
+        }
+    }
 }

@@ -5,6 +5,8 @@ import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
+import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.domain.UserAccount
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
@@ -25,11 +27,11 @@ class ServerRepository @Inject constructor(
         secureClient = null
     }
 
-    suspend fun fetchToken(
+    suspend fun authorize(
         host: String,
         username: String,
         password: String
-    ): ApiResult<String> {
+    ): ApiResult<UserAccount> {
 
         if (host.isBlank() || !urlPattern.matches(host)) {
             return ApiResult.Error(FetchTokenApiError.InvalidCredentialsHost)
@@ -44,13 +46,17 @@ class ServerRepository @Inject constructor(
             return ApiResult.Error(FetchTokenApiError.InternalError)
         }
 
-        val response = safeApiCall { apiService.login(LoginRequest(username, password)) }
+        val response: ApiResult<LoginResponse> = safeApiCall { apiService.login(LoginRequest(username, password)) }
 
         return when (response) {
             is ApiResult.Error -> ApiResult.Error(response.code)
             is ApiResult.Success -> response.data
-                .user
-                .token
+                .let {
+                    UserAccount(
+                        token = it.user.token,
+                        preferredLibraryId = it.userDefaultLibraryId
+                    )
+                }
                 .let { ApiResult.Success(it) }
         }
     }

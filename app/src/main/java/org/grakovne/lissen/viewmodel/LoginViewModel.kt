@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.repository.FetchTokenApiError
 import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
 import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
@@ -76,11 +78,11 @@ class LoginViewModel @Inject constructor(
                 return@launch
             }
 
-            val response = repository.fetchToken(host, username, password)
+            val response = repository.authorize(host, username, password)
 
             val result = response
-                .fold(
-                    onSuccess = { token -> onLoginSuccessful(host, username, token) },
+                .foldAsync(
+                    onSuccess = { account -> onLoginSuccessful(host, username, account) },
                     onFailure = { error -> onLoginFailure(error.code) }
                 )
 
@@ -98,16 +100,38 @@ class LoginViewModel @Inject constructor(
         preferences.saveToken(token)
     }
 
-    private fun onLoginSuccessful(
+    private suspend fun onLoginSuccessful(
         host: String,
         username: String,
-        token: String
+        account: UserAccount
     ): LoginState.Success {
+
         persistCredentials(
             host = host,
             username = username,
-            token = token
+            token = account.token
         )
+
+        repository
+            .fetchLibraries()
+            .fold(
+                onSuccess = {
+                    it
+                        .libraries
+                        .find { item -> item.id == account.preferredLibraryId }
+                        ?.let { library ->
+                            preferences.savePreferredLibrary(Library(library.id, library.name))
+                        }
+                },
+                onFailure = {
+                    preferences.savePreferredLibrary(
+                        Library(
+                            account.preferredLibraryId,
+                            "Default Library"
+                        )
+                    )
+                }
+            )
 
         return LoginState.Success
     }

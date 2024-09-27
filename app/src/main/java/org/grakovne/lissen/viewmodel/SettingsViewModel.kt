@@ -24,16 +24,13 @@ class SettingsViewModel @Inject constructor(
     private val _username = MutableLiveData(preferences.getUsername())
     val username = _username
 
-    private val _isLoading = MutableLiveData(true)
-    val isLoading: LiveData<Boolean> = _isLoading
-
     private val _isConnected = MutableLiveData(true)
     val isConnected: LiveData<Boolean> = _isConnected
 
     private val _libraries = MutableLiveData<List<Library>>()
     val libraries = _libraries
 
-    private val _preferredLibrary = MutableLiveData<Library>(preferences.getActiveLibrary())
+    private val _preferredLibrary = MutableLiveData<Library>(preferences.getPreferredLibrary())
     val preferredLibrary = _preferredLibrary
 
     init {
@@ -50,25 +47,24 @@ class SettingsViewModel @Inject constructor(
 
     fun fetchLibraries() {
         viewModelScope.launch {
-            _isLoading.value = true
-
             val response = serverRepository.fetchLibraries()
+
             when (response) {
                 is ApiResult.Success -> {
                     _libraries.value = response.data.libraries.map { Library(it.id, it.name) }
-                    _preferredLibrary.value = _libraries.value?.firstOrNull()
+                    _preferredLibrary.value = preferences.getPreferredLibrary()
                 }
 
                 is ApiResult.Error -> {
-                    preferences.getActiveLibrary()
+                    preferences.getPreferredLibrary()
                 }
             }
 
-            _isLoading.value = false
         }
     }
 
     fun preferLibrary(library: Library) {
         _preferredLibrary.value = library
+        preferences.savePreferredLibrary(library)
     }
 }

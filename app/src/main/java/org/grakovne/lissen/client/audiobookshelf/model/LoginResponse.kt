@@ -1,7 +1,8 @@
 package org.grakovne.lissen.client.audiobookshelf.model
 
 data class LoginResponse(
-    val user: User
+    val user: User,
+    val userDefaultLibraryId: String
 )
 
 data class User(
@@ -11,6 +12,5 @@ data class User(
     val type: String,
     val token: String,
     val isActive: Boolean,
-    val isLocked: Boolean,
-
-    )
+    val isLocked: Boolean
+)

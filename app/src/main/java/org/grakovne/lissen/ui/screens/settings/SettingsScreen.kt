@@ -39,7 +39,6 @@ fun SettingsScreen(
 ) {
 
     val viewModel: SettingsViewModel = hiltViewModel()
-    val isLoading by viewModel.isLoading.observeAsState(true)
 
     LaunchedEffect(Unit) {
         viewModel.fetchLibraries()
@@ -83,14 +82,8 @@ fun SettingsScreen(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
-                    when (isLoading) {
-                        true -> CircularProgressIndicator()
-                        false -> {
-                            ServerComposable(navController, viewModel)
-                            LibraryComposable(viewModel)
-                        }
-                    }
+                    ServerComposable(navController, viewModel)
+                    LibraryComposable(viewModel)
                 }
                 AdditionalComposable()
             }

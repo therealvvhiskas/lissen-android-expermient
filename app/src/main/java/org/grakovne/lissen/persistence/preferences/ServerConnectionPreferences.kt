@@ -37,23 +37,23 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
     fun getHost(): String? = sharedPreferences.getString(KEY_HOST, null)
 
 
-    fun getActiveLibrary(): Library? {
-        val id = getActiveLibraryId() ?: return null
-        val name = getActiveLibraryName() ?: return null
+    fun getPreferredLibrary(): Library? {
+        val id = getPreferredLibraryId() ?: return null
+        val name = getPreferredLibraryName() ?: return null
 
         return Library(id, name)
     }
 
-    fun saveActiveLibrary(id: String, name: String) {
-        saveActiveLibraryId(id)
-        saveActiveLibraryName(name)
+    fun savePreferredLibrary(library: Library) {
+        saveActiveLibraryId(library.id)
+        saveActiveLibraryName(library.title)
     }
 
-    private fun saveActiveLibraryId(host: String) = sharedPreferences.edit().putString(KEY_ACTIVE_LIBRARY_ID, host).apply()
-    private fun getActiveLibraryId(): String? = sharedPreferences.getString(KEY_ACTIVE_LIBRARY_ID, null)
+    private fun saveActiveLibraryId(host: String) = sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_ID, host).apply()
+    private fun getPreferredLibraryId(): String? = sharedPreferences.getString(KEY_PREFERRED_LIBRARY_ID, null)
 
-    private fun saveActiveLibraryName(host: String) = sharedPreferences.edit().putString(KEY_ACTIVE_LIBRARY_NAME, host).apply()
-    private fun getActiveLibraryName(): String? = sharedPreferences.getString(KEY_ACTIVE_LIBRARY_NAME, null)
+    private fun saveActiveLibraryName(host: String) = sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_NAME, host).apply()
+    private fun getPreferredLibraryName(): String? = sharedPreferences.getString(KEY_PREFERRED_LIBRARY_NAME, null)
 
 
     fun saveUsername(username: String) =
@@ -88,8 +88,8 @@ class ServerConnectionPreferences @Inject constructor(@ApplicationContext contex
         private const val KEY_USERNAME = "username"
         private const val KEY_TOKEN = "token"
 
-        private const val KEY_ACTIVE_LIBRARY_ID = "active_library_id"
-        private const val KEY_ACTIVE_LIBRARY_NAME = "active_library_name"
+        private const val KEY_PREFERRED_LIBRARY_ID = "preferred_library_id"
+        private const val KEY_PREFERRED_LIBRARY_NAME = "preferred_library_name"
 
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
