@@ -1,18 +1,20 @@
 package org.grakovne.lissen.ui.screens.library
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -30,6 +32,7 @@ import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     navController: NavController,
@@ -46,10 +49,30 @@ fun LibraryScreen(
             .getImageLoader()
     }
 
+    val navBarTitle by remember {
+        derivedStateOf {
+            val firstVisibleItemIndex = listState.firstVisibleItemIndex
+            if (firstVisibleItemIndex >= 2) {
+                "Library"
+            } else {
+                "Continue Listening"
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
-            Spacer(modifier = Modifier.height(24.dp))
+            TopAppBar(
+                title = {
+                    Crossfade(targetState = navBarTitle) { title ->
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
+                },
+                modifier = Modifier.systemBarsPadding()
+            )
         },
         bottomBar = {
             MiniPlayerComposable(navController)
@@ -66,13 +89,6 @@ fun LibraryScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item(key = "continue_listening_title") {
-                    Text(
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        text = "Continue Listening"
-                    )
-                }
-
                 item(key = "recent_books") {
                     RecentBooksComposable(recentBooks = recentBooks, imageLoader)
                 }
@@ -85,6 +101,10 @@ fun LibraryScreen(
                 }
 
                 item(key = "library_list") {
+                    LibraryComposable(books = books, imageLoader)
+                }
+
+                item(key = "library_lis33t") {
                     LibraryComposable(books = books, imageLoader)
                 }
             }

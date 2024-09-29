@@ -37,7 +37,8 @@ import org.grakovne.lissen.domain.RecentBook
 @Composable
 fun RecentBooksComposable(
     recentBooks: List<RecentBook>,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    modifier: Modifier = Modifier
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = remember { configuration.screenWidthDp.dp }
@@ -53,7 +54,7 @@ fun RecentBooksComposable(
         state = listState,
         contentPadding = PaddingValues(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         items(recentBooks, key = { it.id }) { book ->
             RecentBookItemComposable(book = book, width = itemWidth, imageLoader = imageLoader)
