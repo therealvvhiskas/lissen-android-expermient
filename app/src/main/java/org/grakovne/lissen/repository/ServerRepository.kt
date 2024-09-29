@@ -22,11 +22,9 @@ class ServerRepository @Inject constructor(
     private var secureClient: AudiobookshelfApiClient? = null
 
     suspend fun fetchLibraryItems(
-        libraryId: String,
-        page: Int = 1,
-        pageSize: Int = 20
+        libraryId: String
     ): ApiResult<LibraryItemsResponse> {
-        return safeApiCall { getClientInstance().getLibraryItems(libraryId, page, pageSize) }
+        return safeApiCall { getClientInstance().getLibraryItems(libraryId) }
     }
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> = safeApiCall { getClientInstance().getLibraries() }

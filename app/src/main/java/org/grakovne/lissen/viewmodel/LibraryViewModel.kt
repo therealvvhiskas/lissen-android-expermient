@@ -39,11 +39,7 @@ class LibraryViewModel @Inject constructor(
 
     fun fetchLibrary() {
         viewModelScope.launch {
-            val response = repository.fetchLibraryItems(
-                preferences.getPreferredLibrary()?.id ?: "",
-                1,
-                100
-            )
+            val response = repository.fetchLibraryItems(preferences.getPreferredLibrary()?.id ?: "")
 
             response.fold(
                 onSuccess = { item ->

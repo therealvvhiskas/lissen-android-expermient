@@ -28,8 +28,6 @@ interface AudiobookshelfApiClient {
 
     @GET("api/libraries/{libraryId}/items")
     suspend fun getLibraryItems(
-        @Path("libraryId") libraryId: String,
-        @Query("page") page: Int,
-        @Query("pageSize") pageSize: Int
+        @Path("libraryId") libraryId: String
     ): Response<LibraryItemsResponse>
 }

@@ -20,10 +20,8 @@ class BookCoverFetcher(
     private val context: Context
 ) : Fetcher {
 
-    override suspend fun fetch(): FetchResult? {
-        val response = repository.fetchBookCover(uri.toString())
-
-        return when (response) {
+    override suspend fun fetch(): FetchResult? =
+        when (val response = repository.fetchBookCover(uri.toString())) {
             is ApiResult.Error -> {
                 null
             }
@@ -38,28 +36,32 @@ class BookCoverFetcher(
 
                 SourceResult(
                     source = imageSource,
-                    mimeType = "image/jpeg",
+                    mimeType = null,
                     dataSource = coil.decode.DataSource.NETWORK
                 )
             }
         }
-    }
 }
 
-fun provideCustomImageLoader(context: Context, repository: ServerMediaRepository): ImageLoader {
-    return ImageLoader
+fun provideCustomImageLoader(context: Context, repository: ServerMediaRepository) =
+    ImageLoader
         .Builder(context)
-        .components {
-            add(BookCoverFetcherFactory(repository, context))
+        .components { add(BookCoverFetcherFactory(repository, context)) }
+        .memoryCache {
+            MemoryCache.Builder(context)
+                .build()
+        }
+        .diskCache {
+            DiskCache.Builder()
+                .directory(context.cacheDir.resolve("сover_cache"))
+                .build()
         }
         .build()
-}
 
 class BookCoverFetcherFactory(
     private val repository: ServerMediaRepository,
     private val context: Context
 ) : Fetcher.Factory<Uri> {
-    override fun create(data: Uri, options: Options, imageLoader: ImageLoader): Fetcher {
-        return BookCoverFetcher(repository, data, context)
-    }
+
+    override fun create(data: Uri, options: Options, imageLoader: ImageLoader) = BookCoverFetcher(repository, data, context)
 }
