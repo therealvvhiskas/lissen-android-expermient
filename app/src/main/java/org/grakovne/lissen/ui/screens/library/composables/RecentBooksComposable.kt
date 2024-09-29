@@ -68,11 +68,16 @@ fun RecentBookItemComposable(
             .width(width)
             .clickable { /* TODO: Handle click */ }
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
+        val context = LocalContext.current
+        val imageRequest = remember(book.id) {
+            ImageRequest.Builder(context)
                 .data(book.id)
                 .crossfade(true)
-                .build(),
+                .build()
+        }
+
+        AsyncImage(
+            model = imageRequest,
             imageLoader = imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.FillBounds,

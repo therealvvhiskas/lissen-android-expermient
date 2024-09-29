@@ -26,7 +26,7 @@ import androidx.navigation.NavController
 import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
-import org.grakovne.lissen.ui.screens.library.composables.LibraryListComposable
+import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
@@ -101,7 +101,7 @@ fun LibraryScreen(
                 }
 
                 item(key = "library_list") {
-                    LibraryListComposable(books = books, imageLoader)
+                    LibraryComposable(books = books, imageLoader)
                 }
             }
         }

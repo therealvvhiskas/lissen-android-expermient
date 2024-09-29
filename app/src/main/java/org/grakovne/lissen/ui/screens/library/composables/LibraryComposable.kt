@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +37,7 @@ import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.extensions.hhmm
 
 @Composable
-fun LibraryListComposable(
+fun LibraryComposable(
     books: List<Book>,
     imageLoader: ImageLoader
 ) {
@@ -57,11 +58,16 @@ fun LibraryItemComposable(
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
+        val context = LocalContext.current
+        val imageRequest = remember(book.id) {
+            ImageRequest.Builder(context)
                 .data(book.id)
                 .crossfade(true)
-                .build(),
+                .build()
+        }
+
+        AsyncImage(
+            model = imageRequest,
             imageLoader = imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.FillBounds,
