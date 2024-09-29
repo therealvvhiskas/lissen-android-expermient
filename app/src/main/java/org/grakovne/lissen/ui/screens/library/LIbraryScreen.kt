@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -25,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
+import org.grakovne.lissen.ui.screens.library.composables.LibraryListComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
@@ -34,7 +34,6 @@ fun LibraryScreen(
     navController: NavController,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
-
     val listState = rememberLazyListState()
 
     val books by viewModel.books.observeAsState(emptyList())
@@ -93,12 +92,13 @@ fun LibraryScreen(
                     )
                 }
 
-                items(books) { book ->
-                    LibraryItemComposable(book = book)
+                item {
+                    LibraryListComposable(books = books)
                 }
             }
         }
     )
 }
+
 
 

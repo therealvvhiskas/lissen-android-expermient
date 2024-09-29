@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import dagger.hilt.android.EntryPointAccessors
@@ -46,13 +47,19 @@ fun RecentBooksComposable(
     val totalSpacing = spacing * (itemsVisible + 1)
     val itemWidth = (screenWidth - totalSpacing) / itemsVisible
 
+    val context = LocalContext.current
+    val imageLoader = remember {
+        EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
+            .getImageLoader()
+    }
+
     LazyRow(
         contentPadding = PaddingValues(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(recentBooks) {
-            RecentBookItemComposable(book = it, width = itemWidth)
+            RecentBookItemComposable(book = it, width = itemWidth, imageLoader = imageLoader)
         }
     }
 }
@@ -60,14 +67,9 @@ fun RecentBooksComposable(
 @Composable
 fun RecentBookItemComposable(
     book: RecentBook,
-    width: Dp
+    width: Dp,
+    imageLoader: ImageLoader
 ) {
-
-    val context = LocalContext.current
-    val imageLoader = remember {
-        EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
-            .getImageLoader()
-    }
 
     Column(
         modifier = Modifier
