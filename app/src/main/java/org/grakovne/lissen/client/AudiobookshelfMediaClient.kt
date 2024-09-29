@@ -12,6 +12,6 @@ interface AudiobookshelfMediaClient {
     @Streaming
     suspend fun getItemCover(
         @Path("itemId") itemId: String,
-    ):  Response<ResponseBody>
+    ): Response<ResponseBody>
 
 }

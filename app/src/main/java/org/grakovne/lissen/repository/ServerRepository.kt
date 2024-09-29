@@ -28,9 +28,11 @@ class ServerRepository @Inject constructor(
         return safeApiCall { getClientInstance().getLibraryItems(libraryId) }
     }
 
-    suspend fun fetchLibraries(): ApiResult<LibraryResponse> = safeApiCall { getClientInstance().getLibraries() }
+    suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
+        safeApiCall { getClientInstance().getLibraries() }
 
-    suspend fun getRecentItems(): ApiResult<RecentListeningResponse> = safeApiCall { getClientInstance().getRecentItems() }
+    suspend fun getRecentItems(): ApiResult<RecentListeningResponse> =
+        safeApiCall { getClientInstance().getRecentItems() }
 
     fun logout() {
         secureClient = null
@@ -55,7 +57,8 @@ class ServerRepository @Inject constructor(
             return ApiResult.Error(FetchTokenApiError.InternalError)
         }
 
-        val response: ApiResult<LoginResponse> = safeApiCall { apiService.login(LoginRequest(username, password)) }
+        val response: ApiResult<LoginResponse> =
+            safeApiCall { apiService.login(LoginRequest(username, password)) }
 
         return when (response) {
             is ApiResult.Error -> ApiResult.Error(response.code)

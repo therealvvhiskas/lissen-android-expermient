@@ -49,11 +49,17 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         saveActiveLibraryName(library.title)
     }
 
-    private fun saveActiveLibraryId(host: String) = sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_ID, host).apply()
-    private fun getPreferredLibraryId(): String? = sharedPreferences.getString(KEY_PREFERRED_LIBRARY_ID, null)
+    private fun saveActiveLibraryId(host: String) =
+        sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_ID, host).apply()
 
-    private fun saveActiveLibraryName(host: String) = sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_NAME, host).apply()
-    private fun getPreferredLibraryName(): String? = sharedPreferences.getString(KEY_PREFERRED_LIBRARY_NAME, null)
+    private fun getPreferredLibraryId(): String? =
+        sharedPreferences.getString(KEY_PREFERRED_LIBRARY_ID, null)
+
+    private fun saveActiveLibraryName(host: String) =
+        sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_NAME, host).apply()
+
+    private fun getPreferredLibraryName(): String? =
+        sharedPreferences.getString(KEY_PREFERRED_LIBRARY_NAME, null)
 
 
     fun saveUsername(username: String) =

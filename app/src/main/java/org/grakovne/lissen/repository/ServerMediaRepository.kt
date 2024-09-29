@@ -2,15 +2,8 @@ package org.grakovne.lissen.repository
 
 import LissenSharedPreferences
 import okhttp3.ResponseBody
-import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.AudiobookshelfMediaClient
-import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.BinaryApiClient
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
-import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
-import org.grakovne.lissen.domain.UserAccount
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
@@ -24,9 +17,10 @@ class ServerMediaRepository @Inject constructor(
     @Volatile
     private var secureClient: AudiobookshelfMediaClient? = null
 
-    suspend fun fetchBookCover(itemId: String): ApiResult<ByteArray> = safeApiCall { getClientInstance().getItemCover(itemId) }
+    suspend fun fetchBookCover(itemId: String): ApiResult<ByteArray> =
+        safeApiCall { getClientInstance().getItemCover(itemId) }
 
-    private suspend fun  safeApiCall(
+    private suspend fun safeApiCall(
         apiCall: suspend () -> Response<ResponseBody>
     ): ApiResult<ByteArray> {
         return try {

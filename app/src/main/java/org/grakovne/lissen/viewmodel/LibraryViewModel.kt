@@ -11,7 +11,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
-import org.grakovne.lissen.repository.ServerMediaRepository
 import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
