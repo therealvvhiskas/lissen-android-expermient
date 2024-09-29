@@ -62,7 +62,6 @@ fun LibraryItemComposable(
         val imageRequest = remember(book.id) {
             ImageRequest.Builder(context)
                 .data(book.id)
-                .crossfade(true)
                 .build()
         }
 

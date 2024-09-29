@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,9 +47,12 @@ fun RecentBooksComposable(
     val totalSpacing = spacing * (itemsVisible + 1)
     val itemWidth = (screenWidth - totalSpacing) / itemsVisible
 
+    val listState = rememberLazyListState()
+
     LazyRow(
+        state = listState,
         contentPadding = PaddingValues(horizontal = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(spacing),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier.fillMaxWidth()
     ) {
         items(recentBooks, key = { it.id }) { book ->
@@ -72,7 +76,6 @@ fun RecentBookItemComposable(
         val imageRequest = remember(book.id) {
             ImageRequest.Builder(context)
                 .data(book.id)
-                .crossfade(true)
                 .build()
         }
 

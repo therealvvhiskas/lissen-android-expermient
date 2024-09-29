@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -47,25 +46,10 @@ fun LibraryScreen(
             .getImageLoader()
     }
 
-    val showAppBarTitle by remember {
-        derivedStateOf {
-            val libraryItemIndex = 2
-            !listState.layoutInfo.visibleItemsInfo.any { it.index == libraryItemIndex }
-        }
-    }
 
     Scaffold(
         topBar = {
-            if (showAppBarTitle) {
-                Text(
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    text = "Library",
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
-            } else {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+            Spacer(modifier = Modifier.height(24.dp))
         },
         bottomBar = {
             MiniPlayerComposable(navController)
