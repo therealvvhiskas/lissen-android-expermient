@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
@@ -36,6 +37,7 @@ fun LibraryScreen(
 
     val listState = rememberLazyListState()
     val books by viewModel.books.observeAsState(emptyList())
+    val recentBook: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val showAppBarTitle by remember {
         derivedStateOf {
@@ -58,7 +60,7 @@ fun LibraryScreen(
             }
         },
         bottomBar = {
-            MiniPlayerComposable(navController)
+            //MiniPlayerComposable(navController)
         },
         modifier = Modifier
             .systemBarsPadding()
@@ -80,7 +82,7 @@ fun LibraryScreen(
                 }
 
                 item {
-                    RecentBooksComposable()
+                    RecentBooksComposable(recentBooks = recentBook, viewModel = viewModel)
                 }
 
                 item {

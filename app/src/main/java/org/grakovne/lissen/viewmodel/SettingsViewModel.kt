@@ -47,9 +47,7 @@ class SettingsViewModel @Inject constructor(
 
     fun fetchLibraries() {
         viewModelScope.launch {
-            val response = serverRepository.fetchLibraries()
-
-            when (response) {
+            when (val response = serverRepository.fetchLibraries()) {
                 is ApiResult.Success -> {
                     _libraries.value = response.data.libraries.map { Library(it.id, it.name) }
                     _preferredLibrary.value = preferences.getPreferredLibrary()

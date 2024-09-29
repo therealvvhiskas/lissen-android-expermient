@@ -4,6 +4,7 @@ import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,6 +17,9 @@ interface AudiobookshelfApiClient {
 
     @GET("/api/libraries")
     suspend fun getLibraries(): Response<LibraryResponse>
+
+    @GET("/api/me/listening-stats")
+    suspend fun getRecentItems(): Response<RecentListeningResponse>
 
     @GET("/api/items/{itemId}/cover")
     @Streaming

@@ -7,6 +7,7 @@ import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.domain.UserAccount
 import retrofit2.Response
 import java.io.IOException
@@ -28,7 +29,8 @@ class ServerRepository @Inject constructor(
     }
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> = safeApiCall { getClientInstance().getLibraries() }
-    suspend fun fetchBookCover(itemId: String): ApiResult<ByteArray> = safeApiCall { getClientInstance().getItemCover(itemId) }
+
+    suspend fun getRecentItems(): ApiResult<RecentListeningResponse> = safeApiCall { getClientInstance().getRecentItems() }
 
     fun logout() {
         secureClient = null

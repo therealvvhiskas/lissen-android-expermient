@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.repository.ServerMediaRepository
 import org.grakovne.lissen.repository.ServerRepository
 import org.grakovne.lissen.repository.provideCustomImageLoader
@@ -19,11 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val repository: ServerRepository,
-    private val mediaRepository: ServerMediaRepository,
+    mediaRepository: ServerMediaRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
+
+
+    private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
+    val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
     private val _books = MutableLiveData<List<Book>>(emptyList())
     val books: LiveData<List<Book>> = _books
@@ -32,6 +37,32 @@ class LibraryViewModel @Inject constructor(
 
     init {
         fetchLibrary()
+        fetchRecentListening()
+    }
+
+    fun fetchRecentListening() {
+        viewModelScope.launch {
+            val response = repository.getRecentItems()
+
+            response.fold(
+                onSuccess = { item ->
+                    _recentBooks.value = item
+                        .items
+                        .values
+                        .take(5)
+                        .map {
+                            RecentBook(
+                                id = it.id,
+                                title = it.mediaMetadata.title,
+                                author = it.mediaMetadata.authors.joinToString { it.name }
+                            )
+                        }
+                },
+                onFailure = {
+
+                }
+            )
+        }
     }
 
     fun fetchLibrary() {

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -21,15 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.RecentBook
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
-fun RecentBooksComposable() {
+fun RecentBooksComposable(
+    recentBooks: List<RecentBook>,
+    viewModel: LibraryViewModel
+) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
 
@@ -38,47 +47,55 @@ fun RecentBooksComposable() {
     val totalSpacing = spacing * (itemsVisible + 1)
     val itemWidth = (screenWidth - totalSpacing) / itemsVisible
 
-    val images = List(10) { R.drawable.fallback_cover }
-
     LazyRow(
         contentPadding = PaddingValues(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(spacing),
         modifier = Modifier.fillMaxWidth()
     ) {
-        items(images) { imageRes ->
-            RecentBookItemComposable(imageRes = imageRes, width = itemWidth)
+        items(recentBooks) {
+            RecentBookItemComposable(book = it, viewModel = viewModel, width = itemWidth)
         }
     }
 }
 
 @Composable
-fun RecentBookItemComposable(imageRes: Int, width: Dp) {
+fun RecentBookItemComposable(
+    book: RecentBook,
+    viewModel: LibraryViewModel,
+    width: Dp
+) {
     Column(
         modifier = Modifier
             .width(width)
             .clickable { /* TODO: Handle click */ }
     ) {
-        Image(
-            painter = painterResource(id = imageRes),
-            contentDescription = "Book Cover",
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(book.id)
+                .crossfade(true)
+                .build(),
+            imageLoader = viewModel.imageLoader,
+            contentDescription = "${book.title} cover",
+            contentScale = ContentScale.FillBounds,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop
+            placeholder = painterResource(R.drawable.fallback_cover),
+            error = painterResource(R.drawable.fallback_cover)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Column(modifier = Modifier.padding(horizontal = 4.dp)) {
             Text(
-                text = "What Does the Fox Say?",
+                text = book.title,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "John Show",
+                text = book.author,
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

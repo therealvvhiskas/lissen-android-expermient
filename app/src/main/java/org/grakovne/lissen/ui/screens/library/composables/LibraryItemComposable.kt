@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,6 +40,7 @@ fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { /* TODO: Handle click */ }
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
