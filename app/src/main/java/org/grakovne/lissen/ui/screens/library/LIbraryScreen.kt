@@ -49,6 +49,9 @@ fun LibraryScreen(
     navController: NavController,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
+    val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
+
     val listState = rememberLazyListState()
 
     val books by viewModel.books.observeAsState(emptyList())
@@ -71,14 +74,11 @@ fun LibraryScreen(
         }
     }
 
-    val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-    val titleHeightDp: Dp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Crossfade(targetState = navBarTitle) { title ->
+                    Crossfade(targetState = navBarTitle, label = "navbar_title_fade") { title ->
                         Text(
                             text = title,
                             style = titleTextStyle
@@ -116,9 +116,9 @@ fun LibraryScreen(
                                     300
                                 )
                             )
-                        }
-                    ) { title ->
-                        if (title != "Library") {
+                        }, label = "library_header_fade"
+                    ) {
+                        if (it != "Library") {
                             Text(
                                 style = titleTextStyle,
                                 text = "Library",
