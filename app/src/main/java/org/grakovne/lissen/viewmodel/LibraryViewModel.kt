@@ -1,6 +1,5 @@
 package org.grakovne.lissen.viewmodel
 
-import LissenSharedPreferences
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 

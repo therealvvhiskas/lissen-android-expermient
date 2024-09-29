@@ -1,9 +1,9 @@
 package org.grakovne.lissen.repository
 
-import LissenSharedPreferences
 import okhttp3.ResponseBody
 import org.grakovne.lissen.client.AudiobookshelfMediaClient
 import org.grakovne.lissen.client.audiobookshelf.BinaryApiClient
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject

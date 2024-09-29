@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.navigation
 
-import LissenSharedPreferences
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
 import org.grakovne.lissen.ui.screens.player.composable.PlayerScreen
@@ -16,9 +16,11 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
-    val serverPrefs = remember { LissenSharedPreferences.getInstance() }
-    val hasCredentials by remember { mutableStateOf(serverPrefs.hasCredentials()) }
-
+    val hasCredentials by remember {
+        mutableStateOf(
+            LissenSharedPreferences.getInstance().hasCredentials()
+        )
+    }
     val startDestination = if (hasCredentials) "library_screen" else "login_screen"
 
     NavHost(

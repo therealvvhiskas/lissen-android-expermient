@@ -1,6 +1,5 @@
 package org.grakovne.lissen.repository
 
-import LissenSharedPreferences
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
@@ -9,6 +8,7 @@ import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.domain.UserAccount
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject

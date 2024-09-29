@@ -1,6 +1,5 @@
 package org.grakovne.lissen.viewmodel
 
-import LissenSharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.FetchTokenApiError
 import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
 import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
