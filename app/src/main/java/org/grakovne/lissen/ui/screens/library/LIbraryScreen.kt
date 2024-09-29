@@ -2,7 +2,6 @@ package org.grakovne.lissen.ui.screens.library
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -44,7 +43,7 @@ import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     navController: NavController,
@@ -136,10 +135,6 @@ fun LibraryScreen(
                 }
 
                 item(key = "library_list") {
-                    LibraryComposable(books = books, imageLoader)
-                }
-
-                item(key = "library_lis33t") {
                     LibraryComposable(books = books, imageLoader)
                 }
             }
