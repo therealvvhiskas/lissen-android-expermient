@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.ImageLoader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
@@ -14,13 +13,11 @@ import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.repository.ServerMediaRepository
 import org.grakovne.lissen.repository.ServerRepository
-import org.grakovne.lissen.repository.provideCustomImageLoader
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val repository: ServerRepository,
-    mediaRepository: ServerMediaRepository,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -33,7 +30,6 @@ class LibraryViewModel @Inject constructor(
     private val _books = MutableLiveData<List<Book>>(emptyList())
     val books: LiveData<List<Book>> = _books
 
-    val imageLoader: ImageLoader = provideCustomImageLoader(context, mediaRepository)
 
     init {
         fetchLibrary()

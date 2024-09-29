@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,13 +31,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.extensions.hhmm
-import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
-fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
+fun LibraryItemComposable(
+    book: Book
+) {
+    val context = LocalContext.current
+    val imageLoader = remember {
+        EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
+            .getImageLoader()
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +59,7 @@ fun LibraryItemComposable(book: Book, viewModel: LibraryViewModel) {
                 .data(book.id)
                 .crossfade(true)
                 .build(),
-            imageLoader = viewModel.imageLoader,
+            imageLoader = imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier

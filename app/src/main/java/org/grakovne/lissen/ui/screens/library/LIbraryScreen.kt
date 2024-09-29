@@ -36,8 +36,9 @@ fun LibraryScreen(
 ) {
 
     val listState = rememberLazyListState()
+
     val books by viewModel.books.observeAsState(emptyList())
-    val recentBook: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
+    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val showAppBarTitle by remember {
         derivedStateOf {
@@ -60,7 +61,7 @@ fun LibraryScreen(
             }
         },
         bottomBar = {
-            //MiniPlayerComposable(navController)
+            MiniPlayerComposable(navController)
         },
         modifier = Modifier
             .systemBarsPadding()
@@ -82,7 +83,7 @@ fun LibraryScreen(
                 }
 
                 item {
-                    RecentBooksComposable(recentBooks = recentBook, viewModel = viewModel)
+                    RecentBooksComposable(recentBooks = recentBooks)
                 }
 
                 item {
@@ -93,7 +94,7 @@ fun LibraryScreen(
                 }
 
                 items(books) { book ->
-                    LibraryItemComposable(book = book, viewModel = viewModel)
+                    LibraryItemComposable(book = book)
                 }
             }
         }
