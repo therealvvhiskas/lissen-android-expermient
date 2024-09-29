@@ -6,7 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -113,7 +112,11 @@ fun LibraryScreen(
                     AnimatedContent(
                         targetState = navBarTitle,
                         transitionSpec = {
-                            fadeIn(animationSpec = tween(300)) with fadeOut(animationSpec = tween(300))
+                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                animationSpec = tween(
+                                    300
+                                )
+                            )
                         }
                     ) { title ->
                         if (title != "Library") {
