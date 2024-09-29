@@ -1,9 +1,18 @@
 package org.grakovne.lissen.ui.screens.library
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +29,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -32,7 +44,8 @@ import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun LibraryScreen(
     navController: NavController,
@@ -60,6 +73,9 @@ fun LibraryScreen(
         }
     }
 
+    val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val titleHeightDp: Dp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,7 +83,7 @@ fun LibraryScreen(
                     Crossfade(targetState = navBarTitle) { title ->
                         Text(
                             text = title,
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                            style = titleTextStyle
                         )
                     }
                 },
@@ -94,10 +110,26 @@ fun LibraryScreen(
                 }
 
                 item(key = "library_title") {
-                    Text(
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        text = "Library"
-                    )
+                    AnimatedContent(
+                        targetState = navBarTitle,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(300)) with fadeOut(animationSpec = tween(300))
+                        }
+                    ) { title ->
+                        if (title != "Library") {
+                            Text(
+                                style = titleTextStyle,
+                                text = "Library",
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(titleHeightDp)
+                            )
+                        }
+                    }
                 }
 
                 item(key = "library_list") {
