@@ -28,10 +28,7 @@ class LibraryViewModel @Inject constructor(
     private val _books = MutableLiveData<List<Book>>(emptyList())
     val books: LiveData<List<Book>> = _books
 
-    val imageLoader: ImageLoader by lazy {
-        provideCustomImageLoader(context, mediaRepository)
-    }
-
+    val imageLoader: ImageLoader = provideCustomImageLoader(context, mediaRepository)
 
     init {
         fetchLibrary()
