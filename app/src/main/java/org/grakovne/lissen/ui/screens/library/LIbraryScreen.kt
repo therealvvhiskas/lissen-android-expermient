@@ -52,7 +52,7 @@ fun LibraryScreen(
     val navBarTitle by remember {
         derivedStateOf {
             val firstVisibleItemIndex = listState.firstVisibleItemIndex
-            if (firstVisibleItemIndex >= 2) {
+            if (firstVisibleItemIndex >= 1) {
                 "Library"
             } else {
                 "Continue Listening"
