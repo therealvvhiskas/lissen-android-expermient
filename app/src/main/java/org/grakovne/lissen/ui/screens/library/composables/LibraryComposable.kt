@@ -35,6 +35,7 @@ import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.extensions.hhmm
+import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
 
 @Composable
 fun LibraryComposable(
@@ -65,8 +66,8 @@ fun LibraryItemComposable(
                 .build()
         }
 
-        AsyncImage(
-            model = imageRequest,
+        AsyncShimmeringImage(
+            imageRequest = imageRequest,
             imageLoader = imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.FillBounds,
@@ -74,7 +75,6 @@ fun LibraryItemComposable(
                 .size(64.dp)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(4.dp)),
-            placeholder = painterResource(R.drawable.fallback_cover),
             error = painterResource(R.drawable.fallback_cover)
         )
 
