@@ -5,12 +5,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
-import org.grakovne.lissen.ui.screens.player.composable.PlayerScreen
+import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -32,13 +34,19 @@ fun AppNavHost(navController: NavHostController) {
             LibraryScreen(navController)
         }
 
-        composable("player_screen") {
+        composable(
+            "player_screen/{libraryItemId}",
+            arguments = listOf(navArgument("libraryItemId") { type = NavType.StringType })
+        ) { navigationStack ->
+            val libraryItemId = navigationStack.arguments?.getString("libraryItemId")
+
             PlayerScreen(
                 viewModel = PlayerViewModel(),
                 navController = navController,
                 onBack = {
                     navController.popBackStack()
-                }
+                },
+                libraryItemId = libraryItemId
             )
         }
 

@@ -265,7 +265,7 @@ fun LibraryScreen(
                     if (books.isEmpty()) {
                         LibraryPlaceholderComposable(modifier = Modifier)
                     } else {
-                        LibraryComposable(books = books, imageLoader = imageLoader, modifier = Modifier)
+                        LibraryComposable(books = books, imageLoader = imageLoader, navController = navController)
                     }
                 }
             }

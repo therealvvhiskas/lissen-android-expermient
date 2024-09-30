@@ -26,7 +26,6 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun TrackDetailsComposable(
-    navController: NavController,
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -34,7 +33,6 @@ fun TrackDetailsComposable(
     val playlist by viewModel.playlist.observeAsState(emptyList())
 
     Image(
-
         painter = painterResource(id = R.drawable.fallback_cover),
         contentDescription = "Book Description",
         modifier = modifier
@@ -45,7 +43,7 @@ fun TrackDetailsComposable(
                 detectVerticalDragGestures(
                     onVerticalDrag = { _, dragAmount ->
                         if (dragAmount > 0) {
-                            navController.navigate("library_screen")
+                            // move back
                         }
                     }
                 )

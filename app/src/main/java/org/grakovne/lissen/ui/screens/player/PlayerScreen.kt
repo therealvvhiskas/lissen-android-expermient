@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui.screens.player.composable
+package org.grakovne.lissen.ui.screens.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -27,16 +27,22 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
+import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
+import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
+import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
-    viewModel: PlayerViewModel,
     navController: NavController,
+    viewModel: PlayerViewModel = hiltViewModel(),
     onBack: () -> Unit,
+    libraryItemId: String?
 ) {
     Scaffold(
         topBar = {
@@ -91,7 +97,6 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         TrackDetailsComposable(
-                            navController = navController,
                             viewModel = viewModel,
                             modifier = Modifier
                                 .fillMaxWidth()

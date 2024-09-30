@@ -34,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
@@ -45,22 +46,27 @@ import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
 fun LibraryComposable(
     books: List<Book>,
     imageLoader: ImageLoader,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     books.forEach { book ->
-        LibraryItemComposable(book = book, imageLoader = imageLoader)
+        LibraryItemComposable(
+            book = book,
+            imageLoader = imageLoader,
+            navController = navController
+        )
     }
 }
 
 @Composable
 fun LibraryItemComposable(
     book: Book,
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    navController: NavController
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* TODO: Handle click */ }
+            .clickable { navController.navigate("player_screen/${book.id}") }
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
