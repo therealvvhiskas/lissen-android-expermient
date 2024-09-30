@@ -34,6 +34,11 @@ class LibraryViewModel @Inject constructor(
     private val _refreshing = MutableLiveData(false)
      val refreshing: LiveData<Boolean> = _refreshing
 
+    init {
+        fetchRecentListening()
+        fetchLibrary()
+    }
+
     fun refreshContent() {
         _refreshing.value = true
 

@@ -29,10 +29,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
+import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBookPlaceholderComposable
 
 @Composable
 fun RecentBooksComposable(
@@ -74,14 +75,17 @@ fun RecentBookItemComposable(
             .clickable { /* TODO: Handle click */ }
     ) {
         val context = LocalContext.current
+
         val imageRequest = remember(book.id) {
-            ImageRequest.Builder(context)
+            ImageRequest
+                .Builder(context)
                 .data(book.id)
+                .crossfade(300)
                 .build()
         }
 
-        AsyncImage(
-            model = imageRequest,
+        AsyncShimmeringImage(
+            imageRequest = imageRequest,
             imageLoader = imageLoader,
             contentDescription = "${book.title} cover",
             contentScale = ContentScale.FillBounds,
@@ -89,7 +93,6 @@ fun RecentBookItemComposable(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(16.dp)),
-            placeholder = painterResource(R.drawable.fallback_cover),
             error = painterResource(R.drawable.fallback_cover)
         )
 
@@ -109,5 +112,26 @@ fun RecentBookItemComposable(
                 overflow = TextOverflow.Ellipsis
             )
         }
+    }
+}
+
+@Composable
+fun RecentBooksPlaceholderComposable(
+    itemCount: Int = 5
+) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = remember { configuration.screenWidthDp.dp }
+
+    val itemsVisible = 2.3f
+    val spacing = 16.dp
+    val totalSpacing = spacing * (itemsVisible + 1)
+    val itemWidth = (screenWidth - totalSpacing) / itemsVisible
+
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        items(itemCount) { RecentBookPlaceholderComposable(width = itemWidth) }
     }
 }

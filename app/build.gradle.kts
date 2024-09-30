@@ -34,7 +34,7 @@ android {
         debug {
             matchingFallbacks.add("release")
             isMinifyEnabled = false
-            isDebuggable = true
+            isDebuggable = false
         }
     }
 
@@ -67,6 +67,7 @@ dependencies {
     implementation(libs.material3)
 
     implementation ("androidx.compose.material:material:1.7.2")
+    implementation("com.valentinilk.shimmer:compose-shimmer-android:1.3.1")
 
 
     implementation (libs.retrofit)
