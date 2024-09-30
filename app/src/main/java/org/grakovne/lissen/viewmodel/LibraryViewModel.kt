@@ -61,7 +61,6 @@ class LibraryViewModel @Inject constructor(
                     _recentBooks.value = item
                         .items
                         .values
-                        .take(5)
                         .map {
                             RecentBook(
                                 id = it.id,
