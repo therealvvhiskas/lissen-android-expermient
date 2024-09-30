@@ -59,6 +59,7 @@ import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
+import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
@@ -261,7 +262,11 @@ fun LibraryScreen(
                 }
 
                 item(key = "library_list") {
-                    LibraryComposable(books = books, imageLoader)
+                    if (books.isEmpty()) {
+                        LibraryPlaceholderComposable(modifier = Modifier)
+                    } else {
+                        LibraryComposable(books = books, imageLoader = imageLoader, modifier = Modifier)
+                    }
                 }
             }
         }
