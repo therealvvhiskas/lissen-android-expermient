@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material3)
 
+    implementation ("androidx.compose.material:material:1.7.2")
+
 
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
