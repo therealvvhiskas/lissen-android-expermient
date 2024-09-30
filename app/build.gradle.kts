@@ -66,9 +66,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material3)
 
-    implementation ("androidx.compose.material:material:1.7.2")
-    implementation("com.valentinilk.shimmer:compose-shimmer-android:1.3.1")
-
+    implementation (libs.androidx.material)
+    implementation(libs.compose.shimmer.android)
 
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
