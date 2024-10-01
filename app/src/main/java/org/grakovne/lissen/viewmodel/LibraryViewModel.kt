@@ -38,7 +38,7 @@ class LibraryViewModel @Inject constructor(
         fetchLibrary()
     }
 
-    fun refreshContent() {
+    fun onPullRefreshed() {
         _refreshing.value = true
 
         viewModelScope.launch {
