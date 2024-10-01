@@ -8,11 +8,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ServerRepository
+import org.grakovne.lissen.ui.extensions.withMinimumTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,10 +42,14 @@ class LibraryViewModel @Inject constructor(
         _refreshing.value = true
 
         viewModelScope.launch {
-            val fetchRecentJob = async { fetchRecentListening() }
-            val fetchLibraryJob = async { fetchLibrary() }
+            withMinimumTime(1000L) {
+                coroutineScope {
+                    val fetchRecentJob = async { fetchRecentListening() }
+                    val fetchLibraryJob = async { fetchLibrary() }
 
-            awaitAll(fetchRecentJob, fetchLibraryJob)
+                    awaitAll(fetchRecentJob, fetchLibraryJob)
+                }
+            }
 
             _refreshing.value = false
         }
