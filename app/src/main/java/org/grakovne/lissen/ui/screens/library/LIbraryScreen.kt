@@ -278,6 +278,7 @@ fun LibraryScreen(
         scale = true,
         modifier = Modifier
             .fillMaxSize()
+            .padding(top = 24.dp)
             .wrapContentSize(Alignment.TopCenter)
     )
 }
