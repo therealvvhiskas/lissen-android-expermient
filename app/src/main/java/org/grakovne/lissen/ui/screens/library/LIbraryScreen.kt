@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -202,83 +203,84 @@ fun LibraryScreen(
         },
         modifier = Modifier
             .systemBarsPadding()
-            .pullRefresh(pullRefreshState)
             .fillMaxSize(),
         content = { innerPadding ->
-            LazyColumn(
-                state = listState,
+            Box(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .pullRefresh(pullRefreshState)
+                    .fillMaxSize()
             ) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
 
-                item(key = "recent_books") {
-                    Crossfade(
-                        targetState = recentBooks.isEmpty(),
-                        label = "recent_book_cover_cross_fade"
-                    ) { isLoading ->
-                        if (isLoading) {
-                            RecentBooksPlaceholderComposable()
-                        } else {
-                            RecentBooksComposable(
-                                recentBooks = recentBooks,
-                                imageLoader = imageLoader
-                            )
-                        }
-                    }
-                }
-
-                item(key = "library_title") {
-                    AnimatedContent(
-                        targetState = navBarTitle,
-                        transitionSpec = {
-                            fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
-                                animationSpec = tween(
-                                    300
+                    item(key = "recent_books") {
+                        Crossfade(
+                            targetState = recentBooks.isEmpty(),
+                            label = "recent_book_cover_cross_fade"
+                        ) { isLoading ->
+                            if (isLoading) {
+                                RecentBooksPlaceholderComposable()
+                            } else {
+                                RecentBooksComposable(
+                                    recentBooks = recentBooks,
+                                    imageLoader = imageLoader
                                 )
-                            )
-                        }, label = "library_header_fade"
-                    ) {
-                        if (it != "Library") {
-                            Text(
-                                style = titleTextStyle,
-                                text = "Library",
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            }
+                        }
+                    }
+
+                    item(key = "library_title") {
+                        AnimatedContent(
+                            targetState = navBarTitle,
+                            transitionSpec = {
+                                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                    animationSpec = tween(
+                                        300
+                                    )
+                                )
+                            }, label = "library_header_fade"
+                        ) {
+                            if (it != "Library") {
+                                Text(
+                                    style = titleTextStyle,
+                                    text = "Library",
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            } else {
+                                Spacer(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(titleHeightDp)
+                                )
+                            }
+                        }
+                    }
+
+                    item(key = "library_list") {
+                        if (books.isEmpty()) {
+                            LibraryPlaceholderComposable(modifier = Modifier)
                         } else {
-                            Spacer(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(titleHeightDp)
+                            LibraryComposable(
+                                books = books,
+                                imageLoader = imageLoader,
+                                navController = navController
                             )
                         }
                     }
                 }
 
-                item(key = "library_list") {
-                    if (books.isEmpty()) {
-                        LibraryPlaceholderComposable(modifier = Modifier)
-                    } else {
-                        LibraryComposable(
-                            books = books,
-                            imageLoader = imageLoader,
-                            navController = navController
-                        )
-                    }
-                }
+                PullRefreshIndicator(
+                    refreshing = refreshing,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             }
         }
-    )
-
-    PullRefreshIndicator(
-        refreshing = refreshing,
-        state = pullRefreshState,
-        scale = true,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 24.dp)
-            .wrapContentSize(Alignment.TopCenter)
     )
 }
