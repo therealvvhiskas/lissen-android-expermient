@@ -1,12 +1,10 @@
 package org.grakovne.lissen.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -19,8 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val repository: ServerRepository,
-    @ApplicationContext private val context: Context
+    private val repository: ServerRepository
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -32,7 +29,7 @@ class LibraryViewModel @Inject constructor(
     val books: LiveData<List<Book>> = _books
 
     private val _refreshing = MutableLiveData(false)
-     val refreshing: LiveData<Boolean> = _refreshing
+    val refreshing: LiveData<Boolean> = _refreshing
 
     init {
         fetchRecentListening()

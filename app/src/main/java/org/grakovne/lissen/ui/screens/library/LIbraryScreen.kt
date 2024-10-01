@@ -38,7 +38,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -85,6 +84,7 @@ fun LibraryScreen(
     val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val context = LocalContext.current
+
     val imageLoader = remember {
         EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
             .getImageLoader()
@@ -99,10 +99,6 @@ fun LibraryScreen(
                 "Continue Listening"
             }
         }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.refreshContent()
     }
 
     Scaffold(
@@ -265,7 +261,11 @@ fun LibraryScreen(
                     if (books.isEmpty()) {
                         LibraryPlaceholderComposable(modifier = Modifier)
                     } else {
-                        LibraryComposable(books = books, imageLoader = imageLoader, navController = navController)
+                        LibraryComposable(
+                            books = books,
+                            imageLoader = imageLoader,
+                            navController = navController
+                        )
                     }
                 }
             }
