@@ -54,7 +54,7 @@ fun RecentBookPlaceholderComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(8.dp))
                 .shimmer()
                 .background(Color.Gray)
         )
