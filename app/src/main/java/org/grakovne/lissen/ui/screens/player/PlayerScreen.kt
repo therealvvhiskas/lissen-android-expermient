@@ -41,10 +41,10 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @Composable
 fun PlayerScreen(
     navController: NavController,
-    viewModel: PlayerViewModel = hiltViewModel(),
     onBack: () -> Unit,
     bookId: String?
 ) {
+    val viewModel: PlayerViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
         bookId?.let { viewModel.fetchBookDetails(it) }

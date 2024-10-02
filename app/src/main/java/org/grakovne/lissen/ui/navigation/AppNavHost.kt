@@ -43,7 +43,6 @@ fun AppNavHost(navController: NavHostController) {
             val bookId = navigationStack.arguments?.getString("bookId")
 
             PlayerScreen(
-                viewModel = PlayerViewModel(),
                 navController = navController,
                 onBack = {
                     navController.popBackStack()

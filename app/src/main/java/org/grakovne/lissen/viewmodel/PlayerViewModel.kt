@@ -3,13 +3,20 @@ package org.grakovne.lissen.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.repository.ServerRepository
 import org.grakovne.lissen.ui.screens.player.Track
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayerViewModel @Inject constructor() : ViewModel() {
+class PlayerViewModel @Inject constructor(
+    private val serverRepository: ServerRepository,
+    private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter
+) : ViewModel() {
     private val _book = MutableLiveData<DetailedBook>()
     private val book: LiveData<DetailedBook> = _book
 
@@ -38,6 +45,19 @@ class PlayerViewModel @Inject constructor() : ViewModel() {
     }
 
     fun fetchBookDetails(bookId: String) {
+        viewModelScope
+            .launch {
+                serverRepository
+                    .getLibraryItem(bookId)
+                    .fold(
+                        onSuccess = {
+                            _book.value = libraryItemIdResponseConverter.apply(it)
+                        },
+                        onFailure = {
+                            // ahaha, loshara
+                        }
+                    )
+            }
 
     }
 

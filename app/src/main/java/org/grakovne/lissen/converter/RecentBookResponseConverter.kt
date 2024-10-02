@@ -1,5 +1,6 @@
 package org.grakovne.lissen.converter
 
+import org.grakovne.lissen.client.audiobookshelf.model.Author
 import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.domain.RecentBook
 import javax.inject.Inject
@@ -13,7 +14,7 @@ class RecentBookResponseConverter @Inject constructor() {
             RecentBook(
                 id = it.id,
                 title = it.mediaMetadata.title,
-                author = it.mediaMetadata.authors.joinToString { it.name }
+                author = it.mediaMetadata.authors.joinToString(", ", transform = Author::name),
             )
         }
 }

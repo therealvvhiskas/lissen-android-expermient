@@ -1,11 +1,9 @@
 package org.grakovne.lissen.domain
 
-import org.grakovne.lissen.client.audiobookshelf.model.Author
-
 data class DetailedBook(
     val id: String,
     val title: String,
-    val author: Author,
+    val author: String,
     val chapters: List<BookChapter>,
     val progress: Progress?
 )
@@ -13,7 +11,7 @@ data class DetailedBook(
 data class BookChapter(
     val id: String,
     val name: String,
-    val duration: Int,
+    val duration: Double,
 )
 
 data class Progress(
