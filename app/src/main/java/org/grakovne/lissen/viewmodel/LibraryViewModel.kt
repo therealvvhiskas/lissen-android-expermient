@@ -10,6 +10,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.converter.LibraryItemResponseConverter
+import org.grakovne.lissen.converter.RecentBookResponseConverter
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -19,7 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val repository: ServerRepository
+    private val repository: ServerRepository,
+    private val recentBookResponseConverter: RecentBookResponseConverter,
+    private val libraryItemResponseConverter: LibraryItemResponseConverter
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -42,7 +46,7 @@ class LibraryViewModel @Inject constructor(
         _refreshing.value = true
 
         viewModelScope.launch {
-            withMinimumTime(1000L) {
+            withMinimumTime(700) {
                 coroutineScope {
                     val fetchRecentJob = async { fetchRecentListening() }
                     val fetchLibraryJob = async { fetchLibrary() }
@@ -60,40 +64,21 @@ class LibraryViewModel @Inject constructor(
             val response = repository.getRecentItems()
 
             response.fold(
-                onSuccess = { item ->
-                    _recentBooks.value = item
-                        .items
-                        .values
-                        .map {
-                            RecentBook(
-                                id = it.id,
-                                title = it.mediaMetadata.title,
-                                author = it.mediaMetadata.authors.joinToString { it.name }
-                            )
-                        }
-                },
-                onFailure = {
-
-                }
+                onSuccess = { _recentBooks.value = recentBookResponseConverter.apply(it) },
+                onFailure = {}
             )
         }
     }
 
     fun fetchLibrary(): Job = viewModelScope.launch {
-        val response = repository.fetchLibraryItems(preferences.getPreferredLibrary()?.id ?: "")
+        val response =
+            repository
+                .fetchLibraryItems(
+                    preferences.getPreferredLibrary()?.id ?: return@launch
+                )
 
         response.fold(
-            onSuccess = { item ->
-                _books.value = item.results.map {
-                    Book(
-                        id = it.id,
-                        title = it.media.metadata.title,
-                        author = it.media.metadata.authorName,
-                        downloaded = false,
-                        duration = it.media.duration.toInt()
-                    )
-                }
-            },
+            onSuccess = { _books.value = libraryItemResponseConverter.apply(it) },
             onFailure = {
                 // fetch local cached books
             }

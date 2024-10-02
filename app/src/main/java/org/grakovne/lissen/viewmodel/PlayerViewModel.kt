@@ -4,11 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.ui.screens.player.Track
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor() : ViewModel() {
+    private val _book = MutableLiveData<DetailedBook>()
+    private val book: LiveData<DetailedBook> = _book
+
+    private val _playlist = MutableLiveData((1..100).map { Track("Chapter $it", "13:15") })
+    val playlist: LiveData<List<Track>> = _playlist
 
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
@@ -27,22 +33,12 @@ class PlayerViewModel @Inject constructor() : ViewModel() {
     private val _currentTrackIndex = MutableLiveData(0)
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
 
-    private val _playlist = MutableLiveData(
-
-        (1..100).map { Track("Chapter $it", "13:15") }
-    )
-    val playlist: LiveData<List<Track>> = _playlist
-
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }
 
-    fun closePlayingQueue() {
-        _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
-    }
+    fun fetchBookDetails(bookId: String) {
 
-    fun expandPlayingQueue() {
-        _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: true)
     }
 
 

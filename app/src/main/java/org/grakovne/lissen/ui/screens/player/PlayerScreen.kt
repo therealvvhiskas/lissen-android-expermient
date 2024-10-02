@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -42,8 +43,13 @@ fun PlayerScreen(
     navController: NavController,
     viewModel: PlayerViewModel = hiltViewModel(),
     onBack: () -> Unit,
-    libraryItemId: String?
+    bookId: String?
 ) {
+
+    LaunchedEffect(Unit) {
+        bookId?.let { viewModel.fetchBookDetails(it) }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -76,7 +82,6 @@ fun PlayerScreen(
             .systemBarsPadding()
             .fillMaxHeight(),
         content = { innerPadding ->
-
             val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
             Column(

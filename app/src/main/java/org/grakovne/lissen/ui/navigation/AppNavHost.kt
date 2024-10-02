@@ -23,7 +23,9 @@ fun AppNavHost(navController: NavHostController) {
             LissenSharedPreferences.getInstance().hasCredentials()
         )
     }
-    val startDestination = if (hasCredentials) "library_screen" else "login_screen"
+    //val startDestination = if (hasCredentials) "library_screen" else "login_screen"
+    val startDestination =
+        if (hasCredentials) "player_screen/0464ed43-cccc-4f9f-b0f7-f6a82eee42e6" else "login_screen"
 
     NavHost(
         navController = navController,
@@ -35,10 +37,10 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         composable(
-            "player_screen/{libraryItemId}",
-            arguments = listOf(navArgument("libraryItemId") { type = NavType.StringType })
+            "player_screen/{bookId}",
+            arguments = listOf(navArgument("bookId") { type = NavType.StringType })
         ) { navigationStack ->
-            val libraryItemId = navigationStack.arguments?.getString("libraryItemId")
+            val bookId = navigationStack.arguments?.getString("bookId")
 
             PlayerScreen(
                 viewModel = PlayerViewModel(),
@@ -46,7 +48,7 @@ fun AppNavHost(navController: NavHostController) {
                 onBack = {
                     navController.popBackStack()
                 },
-                libraryItemId = libraryItemId
+                bookId = bookId
             )
         }
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.converter.LibraryResponseConverter
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ApiResult
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val serverRepository: ServerRepository
+    private val serverRepository: ServerRepository,
+    private val libraryResponseConverter: LibraryResponseConverter
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -50,8 +52,15 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (val response = serverRepository.fetchLibraries()) {
                 is ApiResult.Success -> {
-                    _libraries.value = response.data.libraries.map { Library(it.id, it.name) }
-                    _preferredLibrary.value = preferences.getPreferredLibrary()
+                    val libraries = libraryResponseConverter.apply(response.data)
+                    _libraries.value = libraries
+
+                    when (val preferredLibrary = preferences.getPreferredLibrary()) {
+                        null -> libraries.firstOrNull()
+                        else -> libraries
+                            .find { it.id == preferredLibrary.id }
+                            ?: libraries.firstOrNull()
+                    }
                 }
 
                 is ApiResult.Error -> {

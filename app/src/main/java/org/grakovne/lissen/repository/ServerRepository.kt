@@ -7,6 +7,7 @@ import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.converter.LoginResponseConverter
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
@@ -16,6 +17,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ServerRepository @Inject constructor(
+    private val loginResponseConverter: LoginResponseConverter
 ) {
     private val preferences = LissenSharedPreferences.getInstance()
 
@@ -33,6 +35,9 @@ class ServerRepository @Inject constructor(
 
     suspend fun getRecentItems(): ApiResult<RecentListeningResponse> =
         safeApiCall { getClientInstance().getRecentItems() }
+
+    suspend fun getLibraryItem(itemId: String) =
+        safeApiCall { getClientInstance().getLibraryItem(itemId) }
 
     fun logout() {
         secureClient = null
@@ -59,18 +64,15 @@ class ServerRepository @Inject constructor(
 
         val response: ApiResult<LoginResponse> =
             safeApiCall { apiService.login(LoginRequest(username, password)) }
+        return response.fold(
+            onSuccess = {
+                loginResponseConverter
+                    .apply(it)
+                    .let { ApiResult.Success(it) }
+            },
+            onFailure = { ApiResult.Error(it.code) }
+        )
 
-        return when (response) {
-            is ApiResult.Error -> ApiResult.Error(response.code)
-            is ApiResult.Success -> response.data
-                .let {
-                    UserAccount(
-                        token = it.user.token,
-                        preferredLibraryId = it.userDefaultLibraryId
-                    )
-                }
-                .let { ApiResult.Success(it) }
-        }
     }
 
     private suspend fun <T> safeApiCall(
