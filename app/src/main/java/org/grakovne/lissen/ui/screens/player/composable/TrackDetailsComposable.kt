@@ -20,6 +20,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.request.ImageRequest
 import dagger.hilt.android.EntryPointAccessors
@@ -73,8 +76,12 @@ fun TrackDetailsComposable(
         style = typography.headlineMedium,
         fontWeight = FontWeight.SemiBold,
         color = colorScheme.onBackground,
-        maxLines = 3
+        textAlign = TextAlign.Center,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = 2
     )
+
+    Spacer(Modifier.padding(vertical = 4.dp))
 
     Text(
         text = "Chapter ${currentTrackIndex + 1} of ${book?.chapters?.size ?: "?"}",
