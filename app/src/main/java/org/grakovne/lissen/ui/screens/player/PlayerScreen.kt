@@ -35,6 +35,7 @@ import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
+import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +45,7 @@ fun PlayerScreen(
     onBack: () -> Unit,
     bookId: String?
 ) {
+
     val viewModel: PlayerViewModel = hiltViewModel()
 
     LaunchedEffect(Unit) {
