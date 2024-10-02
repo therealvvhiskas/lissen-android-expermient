@@ -14,13 +14,15 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.icons.rounded.Replay30
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
-import androidx.compose.material3.Text
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Slider
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.SliderDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -55,7 +57,7 @@ fun TrackControlComposable(
             modifier = Modifier.fillMaxWidth(),
             colors = SliderDefaults.colors(
                 thumbColor = colorScheme.primary,
-                activeTrackColor = colorScheme.primary,
+                activeTrackColor = colorScheme.onBackground.copy(alpha =1f),
             )
         )
 
