@@ -18,7 +18,7 @@ class PlayerViewModel @Inject constructor(
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter
 ) : ViewModel() {
     private val _book = MutableLiveData<DetailedBook>()
-    private val book: LiveData<DetailedBook> = _book
+    val book: LiveData<DetailedBook> = _book
 
     private val _playlist = MutableLiveData((1..100).map { Track("Chapter $it", "13:15") })
     val playlist: LiveData<List<Track>> = _playlist
