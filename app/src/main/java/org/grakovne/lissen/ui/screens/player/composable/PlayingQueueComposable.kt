@@ -40,7 +40,7 @@ fun PlayingQueueComposable(
     val listState = rememberLazyListState()
 
     val fontSize by animateFloatAsState(
-        targetValue = if (playingQueueExpanded) 24f else 24f,
+        targetValue = if (playingQueueExpanded) 24f else 20f,
         animationSpec = tween(durationMillis = 300)
     )
 
