@@ -3,8 +3,10 @@ package org.grakovne.lissen.ui.screens.player.composable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,14 +48,19 @@ fun PlaylistItemComposable(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Outlined.Audiotrack,
-                    contentDescription = "Now Playing",
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+            Box(
+                modifier = Modifier.size(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isSelected) {
+                    Icon(
+                        imageVector = Icons.Outlined.Audiotrack,
+                        contentDescription = "Now Playing",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = track.name,
                 style = MaterialTheme.typography.titleMedium,
@@ -64,6 +71,7 @@ fun PlaylistItemComposable(
         Text(
             text = track.duration.toInt().mmssOver60(),
             style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.padding(end = 8.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = colorScheme.onBackground.copy(alpha = 0.6f)
         )

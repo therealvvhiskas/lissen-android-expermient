@@ -85,7 +85,7 @@ fun PlayingQueueComposable(
                 if (index < chapters.size - 1) {
                     HorizontalDivider(
                         thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
             }
