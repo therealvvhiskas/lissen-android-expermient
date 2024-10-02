@@ -42,7 +42,7 @@ fun PlayingQueueComposable(
 
     val fontSize by animateFloatAsState(
         targetValue = if (playingQueueExpanded) 24f else 18f,
-        animationSpec = tween(durationMillis = 500)
+        animationSpec = tween(durationMillis = 300)
     )
 
     LaunchedEffect(currentTrackIndex) {

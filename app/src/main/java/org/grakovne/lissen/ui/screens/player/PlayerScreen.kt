@@ -106,7 +106,7 @@ fun PlayerScreen(
                             viewModel = viewModel,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
+                                .padding(horizontal = 24.dp)
                         )
 
                         TrackControlComposable(

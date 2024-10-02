@@ -1,8 +1,6 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -63,6 +61,7 @@ fun TrackDetailsComposable(
         fontWeight = FontWeight.Bold,
         color = colorScheme.onBackground
     )
+
     Text(
         text = "Chapter ${currentTrackIndex + 1} of ${book?.chapters?.size}",
         style = MaterialTheme.typography.bodyMedium,
