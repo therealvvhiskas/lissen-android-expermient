@@ -56,16 +56,17 @@ fun TrackControlComposable(
             modifier = Modifier
                 .height(36.dp)
                 .fillMaxWidth(),
-            colors = SliderDefaults.colors(
-                thumbColor = colorScheme.primary,
-                activeTrackColor = colorScheme.primary,
-            )
+            colors = SliderDefaults
+                .colors(
+                    thumbColor = colorScheme.primary,
+                    activeTrackColor = colorScheme.primary
+                )
         )
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
+                .padding(horizontal = 4.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
