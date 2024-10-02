@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -29,7 +30,10 @@ fun AsyncShimmeringImage(
 ) {
     var isLoading by remember { mutableStateOf(true) }
 
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
         if (isLoading) {
             Box(
                 modifier = Modifier
@@ -44,7 +48,7 @@ fun AsyncShimmeringImage(
             imageLoader = imageLoader,
             contentDescription = contentDescription,
             contentScale = contentScale,
-            modifier = modifier,
+            modifier = Modifier.fillMaxSize(),
             onSuccess = { isLoading = false },
             error = error
         )

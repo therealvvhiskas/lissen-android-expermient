@@ -1,17 +1,23 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,28 +50,33 @@ fun TrackDetailsComposable(
             .getImageLoader()
     }
 
-    AsyncShimmeringImage(
-        imageRequest = imageRequest,
-        imageLoader = imageLoader,
-        contentDescription = "${book?.title} cover",
-        contentScale = ContentScale.FillBounds,
-        modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
-            .aspectRatio(1f),
-        error = painterResource(R.drawable.fallback_cover)
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        AsyncShimmeringImage(
+            imageRequest = imageRequest,
+            imageLoader = imageLoader,
+            contentDescription = "${book?.title} cover",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(12.dp)),
+            error = painterResource(R.drawable.fallback_cover)
+        )
+    }
 
     Text(
         text = book?.title ?: "Unknown",
-        style = MaterialTheme.typography.headlineMedium,
+        style = typography.headlineMedium,
         fontWeight = FontWeight.Bold,
         color = colorScheme.onBackground
     )
 
     Text(
-        text = "Chapter ${currentTrackIndex + 1} of ${book?.chapters?.size}",
-        style = MaterialTheme.typography.bodyMedium,
+        text = "Chapter ${currentTrackIndex + 1} of ${book?.chapters?.size ?: "?"}",
+        style = typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)
     )
-
 }
