@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -14,15 +15,13 @@ import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.icons.rounded.Replay30
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Slider
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -54,10 +53,12 @@ fun TrackControlComposable(
             value = currentPosition,
             onValueChange = { newPosition -> viewModel.seekTo(newPosition) },
             valueRange = 0f..duration,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .height(36.dp)
+                .fillMaxWidth(),
             colors = SliderDefaults.colors(
                 thumbColor = colorScheme.primary,
-                activeTrackColor = colorScheme.onBackground.copy(alpha =1f),
+                activeTrackColor = colorScheme.primary,
             )
         )
 
