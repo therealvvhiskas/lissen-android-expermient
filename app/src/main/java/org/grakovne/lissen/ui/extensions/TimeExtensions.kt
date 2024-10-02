@@ -18,3 +18,11 @@ fun Int.hhmm(): String {
 
     return String.format("%02dh %02dm", hours, minutes)
 }
+
+
+fun Int.mmssOver60(): String {
+    val minutes = this / 60
+    val remainingSeconds = this % 60
+
+    return String.format("%02d:%02d", minutes, remainingSeconds)
+}

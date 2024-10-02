@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
-private const val HORIZONTAL_PADDING = 16
 
 @Composable
 fun PlayingQueueComposable(
@@ -41,7 +40,7 @@ fun PlayingQueueComposable(
     val listState = rememberLazyListState()
 
     val fontSize by animateFloatAsState(
-        targetValue = if (playingQueueExpanded) 24f else 18f,
+        targetValue = if (playingQueueExpanded) 24f else 24f,
         animationSpec = tween(durationMillis = 300)
     )
 
@@ -52,7 +51,7 @@ fun PlayingQueueComposable(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = HORIZONTAL_PADDING.dp)
+            .padding(horizontal = 16.dp)
     ) {
         Text(
             text = "Now Playing",
@@ -86,7 +85,7 @@ fun PlayingQueueComposable(
                 if (index < chapters.size - 1) {
                     HorizontalDivider(
                         thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             }

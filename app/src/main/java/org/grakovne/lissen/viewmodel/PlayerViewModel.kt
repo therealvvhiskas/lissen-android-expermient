@@ -31,9 +31,6 @@ class PlayerViewModel @Inject constructor(
 
     val duration = (1 * 60 * 60 + 31 * 60 + 14).toFloat()
 
-    private val _speed = MutableLiveData(1f)
-    val speed: LiveData<Float> = _speed
-
     private val _currentTrackIndex = MutableLiveData(0)
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
 
@@ -56,11 +53,6 @@ class PlayerViewModel @Inject constructor(
                     )
             }
 
-    }
-
-
-    fun changeSpeed(float: Float) {
-        _speed.value = float
     }
 
     fun play() {

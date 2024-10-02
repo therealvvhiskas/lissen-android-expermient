@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.ui.extensions.hhmm
 import org.grakovne.lissen.ui.extensions.hhmmss
+import org.grakovne.lissen.ui.extensions.mmssOver60
 import org.grakovne.lissen.ui.screens.player.Track
 
 @Composable
@@ -49,19 +50,19 @@ fun PlaylistItemComposable(
                 Icon(
                     imageVector = Icons.Outlined.Audiotrack,
                     contentDescription = "Now Playing",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
             }
             Text(
                 text = track.name,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.titleMedium,
                 color = colorScheme.onBackground,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             )
         }
         Text(
-            text = track.duration.toInt().hhmmss(),
+            text = track.duration.toInt().mmssOver60(),
             style = MaterialTheme.typography.bodySmall,
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = colorScheme.onBackground.copy(alpha = 0.6f)
