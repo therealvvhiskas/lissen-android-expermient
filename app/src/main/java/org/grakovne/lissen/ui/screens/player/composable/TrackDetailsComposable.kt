@@ -57,7 +57,6 @@ fun TrackDetailsComposable(
         error = painterResource(R.drawable.fallback_cover)
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
     Text(
         text = book?.title ?: "Unknown",
         style = MaterialTheme.typography.headlineMedium,
