@@ -39,7 +39,9 @@ fun TrackControlComposable(
     val currentPosition by viewModel.currentPosition.observeAsState(0f)
     val duration = viewModel.duration
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
-    val playlist by viewModel.playlist.observeAsState(emptyList())
+
+    val book by viewModel.book.observeAsState()
+    val chapters = book?.chapters ?: emptyList()
 
     Column(
         modifier = modifier
@@ -141,7 +143,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                if (currentTrackIndex < playlist.size.minus(1)) {
+                if (currentTrackIndex < chapters.size.minus(1)) {
                     viewModel.nextTrack()
                 }
             },

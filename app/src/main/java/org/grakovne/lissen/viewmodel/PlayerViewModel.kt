@@ -20,9 +20,6 @@ class PlayerViewModel @Inject constructor(
     private val _book = MutableLiveData<DetailedBook>()
     val book: LiveData<DetailedBook> = _book
 
-    private val _playlist = MutableLiveData((1..100).map { Track("Chapter $it", "13:15") })
-    val playlist: LiveData<List<Track>> = _playlist
-
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
 

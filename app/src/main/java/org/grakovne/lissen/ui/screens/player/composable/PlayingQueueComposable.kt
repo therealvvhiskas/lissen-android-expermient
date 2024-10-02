@@ -33,7 +33,9 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier,
 ) {
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
-    val playlist by viewModel.playlist.observeAsState(emptyList())
+    val book by viewModel.book.observeAsState()
+    val chapters = book?.chapters ?: emptyList()
+
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val listState = rememberLazyListState()
@@ -74,14 +76,14 @@ fun PlayingQueueComposable(
             state = listState,
 
             ) {
-            itemsIndexed(playlist) { index, track ->
+            itemsIndexed(chapters) { index, track ->
                 PlaylistItemComposable(
                     track = track,
                     onClick = { viewModel.setChapter(index) },
                     isSelected = index == currentTrackIndex
                 )
 
-                if (index < playlist.size - 1) {
+                if (index < chapters.size - 1) {
                     HorizontalDivider(
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = HORIZONTAL_PADDING.dp)
