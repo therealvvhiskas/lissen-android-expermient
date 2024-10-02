@@ -24,7 +24,7 @@ fun AppNavHost(navController: NavHostController) {
         )
     }
     //val startDestination = if (hasCredentials) "library_screen" else "login_screen"
-    val startDestination = if (hasCredentials) "player_screen/3c21990a-35bb-4f4f-ac8f-7237ec2ac019" else "login_screen"
+    val startDestination = if (hasCredentials) "player_screen/37f41e0a-e23b-4af2-86b2-ebab0f7b1c01" else "login_screen"
 
     NavHost(
         navController = navController,

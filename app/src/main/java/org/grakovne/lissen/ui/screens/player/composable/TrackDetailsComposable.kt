@@ -77,7 +77,8 @@ fun TrackDetailsComposable(
         color = colorScheme.onBackground,
         textAlign = TextAlign.Center,
         overflow = TextOverflow.Ellipsis,
-        maxLines = 2
+        maxLines = 2,
+        modifier = Modifier.padding(horizontal = 16.dp)
     )
 
     Spacer(Modifier.padding(vertical = 4.dp))
