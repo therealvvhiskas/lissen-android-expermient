@@ -1,9 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -67,11 +69,14 @@ fun TrackDetailsComposable(
         )
     }
 
+    Spacer(Modifier.padding(vertical = 8.dp))
+
     Text(
         text = book?.title ?: "Unknown",
         style = typography.headlineMedium,
-        fontWeight = FontWeight.Bold,
-        color = colorScheme.onBackground
+        fontWeight = FontWeight.SemiBold,
+        color = colorScheme.onBackground,
+        maxLines = 3
     )
 
     Text(
