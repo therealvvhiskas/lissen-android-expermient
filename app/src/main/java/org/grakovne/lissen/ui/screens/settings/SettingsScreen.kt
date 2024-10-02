@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
@@ -36,6 +37,7 @@ fun SettingsScreen(
 ) {
 
     val viewModel: SettingsViewModel = hiltViewModel()
+    val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
 
     LaunchedEffect(Unit) {
         viewModel.fetchLibraries()
@@ -47,7 +49,7 @@ fun SettingsScreen(
                 title = {
                     Text(
                         text = "Preferences",
-                        style = typography.titleMedium,
+                        style = titleTextStyle,
                         color = colorScheme.onSurface
                     )
                 },

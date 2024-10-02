@@ -23,8 +23,8 @@ fun AppNavHost(navController: NavHostController) {
             LissenSharedPreferences.getInstance().hasCredentials()
         )
     }
-    //val startDestination = if (hasCredentials) "library_screen" else "login_screen"
-    val startDestination = if (hasCredentials) "player_screen/3c21990a-35bb-4f4f-ac8f-7237ec2ac019" else "login_screen"
+    val startDestination = if (hasCredentials) "library_screen" else "login_screen"
+    //val startDestination = if (hasCredentials) "player_screen/3c21990a-35bb-4f4f-ac8f-7237ec2ac019" else "login_screen"
 
     NavHost(
         navController = navController,
