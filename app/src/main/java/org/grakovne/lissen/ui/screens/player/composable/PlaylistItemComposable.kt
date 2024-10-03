@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.ui.extensions.hhmm
@@ -44,34 +45,34 @@ fun PlaylistItemComposable(
                 onClick = onClick,
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
-            ),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                modifier = Modifier.size(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isSelected) {
-                    Icon(
-                        imageVector = Icons.Outlined.Audiotrack,
-                        contentDescription = "Now Playing",
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = track.name,
-                style = MaterialTheme.typography.titleMedium,
-                color = colorScheme.onBackground,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             )
+    ) {
+        Box(
+            modifier = Modifier.size(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isSelected) {
+                Icon(
+                    imageVector = Icons.Outlined.Audiotrack,
+                    contentDescription = "Now Playing",
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = track.name,
+            style = MaterialTheme.typography.titleMedium,
+            color = colorScheme.onBackground,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.weight(1f)
+        )
         Text(
             text = track.duration.toInt().mmssOver60(),
             style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(end = 8.dp),
+            modifier = Modifier.padding(start = 8.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = colorScheme.onBackground.copy(alpha = 0.6f)
         )

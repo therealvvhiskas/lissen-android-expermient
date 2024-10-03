@@ -26,10 +26,8 @@ class PlayerViewModel @Inject constructor(
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
 
-    private val _currentPosition = MutableLiveData(136f)
+    private val _currentPosition = MutableLiveData(0f)
     val currentPosition: LiveData<Float> = _currentPosition
-
-    val duration = (1 * 60 * 60 + 31 * 60 + 14).toFloat()
 
     private val _currentTrackIndex = MutableLiveData(0)
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex

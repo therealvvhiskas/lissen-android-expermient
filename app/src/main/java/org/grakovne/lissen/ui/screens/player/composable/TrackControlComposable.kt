@@ -38,21 +38,23 @@ fun TrackControlComposable(
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
     val currentPosition by viewModel.currentPosition.observeAsState(0f)
-    val duration = viewModel.duration
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
+
+    val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
+
         Slider(
             value = currentPosition,
             onValueChange = { newPosition -> viewModel.seekTo(newPosition) },
-            valueRange = 0f..duration,
+            valueRange = 0f..(duration),
             modifier = Modifier
                 .height(36.dp)
                 .fillMaxWidth(),
