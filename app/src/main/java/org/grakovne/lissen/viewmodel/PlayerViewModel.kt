@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
@@ -15,7 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val serverRepository: ServerRepository,
-    private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter
+    private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
+    private val mediaSession: MediaSession,
+    private val exoPlayer: ExoPlayer
 ) : ViewModel() {
 
     private val _book = MutableLiveData<DetailedBook>()
@@ -34,6 +38,7 @@ class PlayerViewModel @Inject constructor(
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
 
     fun togglePlayingQueue() {
+        mediaSession.player
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }
 

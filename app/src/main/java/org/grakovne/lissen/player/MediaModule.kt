@@ -11,20 +11,22 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ServiceScoped
+import dagger.hilt.components.SingletonComponent
 import org.grakovne.lissen.ui.activity.AppActivity
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ServiceComponent::class)
+@InstallIn(SingletonComponent::class)
 object MediaModule {
 
     @Provides
-    @ServiceScoped
+    @Singleton
     fun provideExoPlayer(@ApplicationContext context: Context): ExoPlayer {
         return ExoPlayer.Builder(context).build()
     }
 
     @Provides
-    @ServiceScoped
+    @Singleton
     fun provideMediaSession(
         @ApplicationContext context: Context,
         exoPlayer: ExoPlayer
