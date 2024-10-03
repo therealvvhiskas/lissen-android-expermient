@@ -7,9 +7,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaSession
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,9 +17,16 @@ import javax.inject.Singleton
 @Singleton
 class MediaRepository @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val exoPlayer: ExoPlayer,
-    private val mediaSession: MediaSession
+    private val exoPlayer: ExoPlayer
 ) {
+
+    init {
+        exoPlayer.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                _isPlaying.postValue(isPlaying)
+            }
+        })
+    }
 
     private val _isPlaying = MutableLiveData<Boolean>()
     val isPlaying: LiveData<Boolean> = _isPlaying
@@ -30,7 +37,6 @@ class MediaRepository @Inject constructor(
         exoPlayer.setMediaItem(mediaItem)
         exoPlayer.prepare()
         exoPlayer.playWhenReady = true
-        _isPlaying.postValue(true)
     }
 
     fun pauseAudio() {
