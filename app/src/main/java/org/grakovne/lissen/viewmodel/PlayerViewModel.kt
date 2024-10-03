@@ -17,6 +17,7 @@ class PlayerViewModel @Inject constructor(
     private val serverRepository: ServerRepository,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter
 ) : ViewModel() {
+
     private val _book = MutableLiveData<DetailedBook>()
     val book: LiveData<DetailedBook> = _book
 

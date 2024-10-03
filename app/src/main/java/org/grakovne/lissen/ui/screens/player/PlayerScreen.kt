@@ -37,6 +37,7 @@ import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
@@ -50,6 +51,7 @@ fun PlayerScreen(
 
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val book by viewModel.book.observeAsState()
 
     LaunchedEffect(Unit) {
         bookId?.let { viewModel.fetchBookDetails(it) }

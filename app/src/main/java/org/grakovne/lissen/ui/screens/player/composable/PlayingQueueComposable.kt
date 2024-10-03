@@ -3,6 +3,7 @@ package org.grakovne.lissen.ui.screens.player.composable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +46,10 @@ fun PlayingQueueComposable(
     )
 
     LaunchedEffect(currentTrackIndex) {
-        listState.animateScrollToItem(currentTrackIndex)
+        when {
+            currentTrackIndex > 1 -> listState.animateScrollToItem(currentTrackIndex - 1)
+            else -> listState.animateScrollToItem(currentTrackIndex)
+        }
     }
 
     Column(
@@ -88,7 +92,9 @@ fun PlayingQueueComposable(
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
+
             }
+
         }
     }
 }
