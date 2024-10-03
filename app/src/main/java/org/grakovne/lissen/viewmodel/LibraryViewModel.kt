@@ -59,7 +59,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun fetchRecentListening() {
+    private fun fetchRecentListening() {
         viewModelScope.launch {
             val response = repository.getRecentItems()
 
@@ -70,7 +70,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun fetchLibrary(): Job = viewModelScope.launch {
+    private fun fetchLibrary(): Job = viewModelScope.launch {
         val response =
             repository
                 .fetchLibraryItems(
