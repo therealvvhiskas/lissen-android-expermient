@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,18 +47,16 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .shimmer()
                         .background(Color.Gray)
                 )
 
                 Spacer(Modifier.height(8.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .shimmer()
-                        .background(Color.Gray)
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
 
                 Spacer(Modifier.height(8.dp))

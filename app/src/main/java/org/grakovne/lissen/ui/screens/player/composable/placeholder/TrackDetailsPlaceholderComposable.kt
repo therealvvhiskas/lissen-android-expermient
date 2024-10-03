@@ -23,19 +23,16 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun TrackDetailsPlaceholderComposable(
-    viewModel: PlayerViewModel,
-    modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.Gray.copy(alpha = 0.3f))
                 .shimmer()
                 .background(Color.Gray)
 
@@ -48,18 +45,21 @@ fun TrackDetailsPlaceholderComposable(
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .fillMaxWidth()
-            .background(Color.Gray.copy(alpha = 0.3f))
+            .clip(RoundedCornerShape(8.dp))
             .shimmer()
             .background(Color.Gray)
+
     ) {
         Text(
             text = "",
             style = typography.headlineMedium,
             fontWeight = FontWeight.SemiBold,
-            color = colorScheme.onBackground.copy(alpha = 0.0f),
+            color = colorScheme.onBackground,
             textAlign = TextAlign.Center,
+
             modifier = Modifier
                 .padding(horizontal = 16.dp)
+
         )
     }
 

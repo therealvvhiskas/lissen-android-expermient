@@ -113,8 +113,6 @@ fun PlayerScreen(
 
                         if (null == book) {
                             TrackDetailsPlaceholderComposable(
-                                viewModel = viewModel,
-                                modifier = Modifier.fillMaxWidth()
                             )
                         } else {
                             TrackDetailsComposable(
