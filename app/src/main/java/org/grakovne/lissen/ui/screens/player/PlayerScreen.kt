@@ -37,6 +37,8 @@ import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
+import org.grakovne.lissen.ui.screens.player.composable.placeholder.PlayingQueuePlaceholderComposable
+import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetailsPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -109,31 +111,39 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        TrackDetailsComposable(
-                            viewModel = viewModel,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        )
+                        if (null == book) {
+                            TrackDetailsPlaceholderComposable(
+                                viewModel = viewModel,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        } else {
+                            TrackDetailsComposable(
+                                viewModel = viewModel,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
 
-                        Spacer(
-                            modifier = Modifier
-                                .height(8.dp)
-                        )
+                        Spacer(modifier = Modifier.height(8.dp))
 
                         TrackControlComposable(
                             viewModel = viewModel,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
 
-                PlayingQueueComposable(
-                    viewModel = viewModel,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize()
-                )
+                if (null == book) {
+                    PlayingQueuePlaceholderComposable(
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    PlayingQueueComposable(
+                        viewModel = viewModel,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+
             }
         }
     )

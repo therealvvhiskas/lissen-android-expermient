@@ -71,7 +71,7 @@ fun TrackDetailsComposable(
     Spacer(Modifier.padding(vertical = 8.dp))
 
     Text(
-        text = book?.title ?: "Unknown",
+        text = book?.title ?: return,
         style = typography.headlineMedium,
         fontWeight = FontWeight.SemiBold,
         color = colorScheme.onBackground,

@@ -35,7 +35,6 @@ fun LibraryItemPlaceholderComposable() {
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
     ) {
-        // Placeholder for the image
         Spacer(
             modifier = Modifier
                 .size(64.dp)
@@ -50,7 +49,6 @@ fun LibraryItemPlaceholderComposable() {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            // Placeholder for the title
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -61,7 +59,6 @@ fun LibraryItemPlaceholderComposable() {
             )
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Placeholder for the author
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -74,7 +71,6 @@ fun LibraryItemPlaceholderComposable() {
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Placeholder for the download icon and duration
         Column(
             horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
