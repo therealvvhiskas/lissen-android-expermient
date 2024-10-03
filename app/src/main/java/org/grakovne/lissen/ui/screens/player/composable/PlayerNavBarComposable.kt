@@ -50,7 +50,7 @@ fun PlayerNavBarComposable(
                 },
                 label = { Text("Library") },
                 selected = false,
-                onClick = { },
+                onClick = { navController.navigate("library_screen") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                 )

@@ -14,7 +14,6 @@ import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
 import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
-import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -23,8 +22,8 @@ fun AppNavHost(navController: NavHostController) {
             LissenSharedPreferences.getInstance().hasCredentials()
         )
     }
-    val startDestination = if (hasCredentials) "library_screen" else "login_screen"
-    //val startDestination = if (hasCredentials) "player_screen/37f41e0a-e23b-4af2-86b2-ebab0f7b1c01" else "login_screen"
+    //val startDestination = if (hasCredentials) "library_screen" else "login_screen"
+    val startDestination = if (hasCredentials) "player_screen/37f41e0a-e23b-4af2-86b2-ebab0f7b1c01" else "login_screen"
 
     NavHost(
         navController = navController,
