@@ -219,18 +219,13 @@ fun LibraryScreen(
                 ) {
 
                     item(key = "recent_books") {
-                        Crossfade(
-                            targetState = recentBooks.isEmpty(),
-                            label = "recent_book_cover_cross_fade"
-                        ) { isLoading ->
-                            if (isLoading) {
-                                RecentBooksPlaceholderComposable()
-                            } else {
-                                RecentBooksComposable(
-                                    recentBooks = recentBooks,
-                                    imageLoader = imageLoader
-                                )
-                            }
+                        if (recentBooks.isEmpty()) {
+                            RecentBooksPlaceholderComposable()
+                        } else {
+                            RecentBooksComposable(
+                                recentBooks = recentBooks,
+                                imageLoader = imageLoader
+                            )
                         }
                     }
 
