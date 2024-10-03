@@ -80,6 +80,7 @@ dependencies {
 
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.media3.session)
     kapt(libs.hilt.android.compiler)
 
     implementation(libs.androidx.core.ktx)
@@ -91,6 +92,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runtime.livedata)
+
+    implementation("androidx.media3:media3-exoplayer:1.4.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.4.1")
+    implementation("androidx.media3:media3-ui:1.4.1")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
