@@ -25,7 +25,7 @@ class AudioPlayerService : MediaSessionService() {
 
     companion object {
         private const val CHANNEL_ID = "audio_player_channel"
-        private const val NOTIFICATION_ID = 1
+        private const val NOTIFICATION_ID = 1001
         const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
         const val ACTION_STOP_FOREGROUND = "org.grakovne.lissen.player.service.STOP_FOREGROUND"
     }
@@ -80,10 +80,10 @@ class AudioPlayerService : MediaSessionService() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "Audio Player",
+            "Now playing",
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "Notifications for audio player"
+            description = "Currently playing book"
         }
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)
