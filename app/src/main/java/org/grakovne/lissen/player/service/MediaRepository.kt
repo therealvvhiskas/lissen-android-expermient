@@ -63,7 +63,14 @@ class MediaRepository @Inject constructor(
         mediaController.setMediaItem(mediaItem)
         mediaController.prepare()
         mediaController.play()
+
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_START_FOREGROUND
+        }
+
+        ContextCompat.startForegroundService(context, intent)
     }
+
 
     fun pauseAudio() {
         //mediaController.pause()

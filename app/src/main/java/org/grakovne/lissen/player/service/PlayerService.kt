@@ -3,6 +3,7 @@ package org.grakovne.lissen.player.service
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.util.UnstableApi
@@ -25,12 +26,22 @@ class AudioPlayerService : MediaSessionService() {
     companion object {
         private const val CHANNEL_ID = "audio_player_channel"
         private const val NOTIFICATION_ID = 1
+        const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
     }
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        startForeground(NOTIFICATION_ID, createMediaNotification())
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
+        if (intent?.action == ACTION_START_FOREGROUND) {
+            startForeground(NOTIFICATION_ID, createMediaNotification())
+        }
+
+        return START_STICKY
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
