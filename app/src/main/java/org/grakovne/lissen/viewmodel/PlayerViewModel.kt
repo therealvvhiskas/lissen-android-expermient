@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
@@ -28,8 +26,7 @@ class PlayerViewModel @Inject constructor(
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
 
-    private val _isPlaying = MutableLiveData(false)
-    val isPlaying: LiveData<Boolean> = _isPlaying
+    val isPlaying = mediaRepository.isPlaying
 
     private val _currentPosition = MutableLiveData(0f)
     val currentPosition: LiveData<Float> = _currentPosition
@@ -59,11 +56,12 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun play() {
-        _isPlaying.value = true
+        mediaRepository.playAudio("https://audiobook.grakovne.org/api/items/0464ed43-cccc-4f9f-b0f7-f6a82eee42e6/file/-5532926160821631312?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
+        mediaRepository._isPlaying.postValue(true)
     }
 
     fun pause() {
-        _isPlaying.value = false
+        mediaRepository._isPlaying.postValue(false)
     }
 
     fun seekTo(position: Float) {
@@ -83,7 +81,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun togglePlayPause() {
-        if (_isPlaying.value == true) {
+        if (isPlaying.value == true) {
             pause()
         } else {
             play()

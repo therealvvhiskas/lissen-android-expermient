@@ -28,7 +28,7 @@ class MediaRepository @Inject constructor(
         })
     }
 
-    private val _isPlaying = MutableLiveData<Boolean>()
+     val _isPlaying = MutableLiveData<Boolean>()
     val isPlaying: LiveData<Boolean> = _isPlaying
 
     fun playAudio(url: String) {
