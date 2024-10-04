@@ -26,7 +26,7 @@ class PlayerViewModel @Inject constructor(
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
 
-    val isPlaying = mediaRepository.isPlaying
+    val isPlaying = mediaRepository._isPlaying
 
     private val _currentPosition = MutableLiveData(0f)
     val currentPosition: LiveData<Float> = _currentPosition
