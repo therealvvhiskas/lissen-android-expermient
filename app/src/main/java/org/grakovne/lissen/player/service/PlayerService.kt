@@ -2,7 +2,6 @@ package org.grakovne.lissen.player.service
 
 import android.app.Notification
 import androidx.core.app.NotificationCompat
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.MediaStyleNotificationHelper
@@ -10,7 +9,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.grakovne.lissen.R
 import javax.inject.Inject
 
-@UnstableApi
 @AndroidEntryPoint
 class AudioPlayerService : MediaSessionService() {
 
