@@ -2,6 +2,7 @@ package org.grakovne.lissen.player.service
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -28,15 +29,19 @@ class MediaRepository @Inject constructor(
         })
     }
 
-     val _isPlaying = MutableLiveData<Boolean>()
+    val _isPlaying = MutableLiveData<Boolean>()
     val isPlaying: LiveData<Boolean> = _isPlaying
 
     fun playAudio(url: String) {
-        startAudioService()
-        val mediaItem = MediaItem.fromUri(url)
-        exoPlayer.setMediaItem(mediaItem)
-        exoPlayer.prepare()
-        exoPlayer.playWhenReady = true
+        try {
+            startAudioService()
+            val mediaItem = MediaItem.fromUri(url)
+            exoPlayer.setMediaItem(mediaItem)
+            exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
+        } catch (e: Exception) {
+            Log.e("MediaRepository", "Error playing audio", e)
+        }
     }
 
     fun pauseAudio() {
