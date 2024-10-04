@@ -3,7 +3,9 @@ package org.grakovne.lissen.player.service
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import androidx.annotation.OptIn
 import androidx.core.app.NotificationCompat
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -41,10 +43,9 @@ class AudioPlayerService : MediaSessionService() {
         super.onDestroy()
     }
 
+    @OptIn(UnstableApi::class)
     private fun createMediaNotification(): Notification {
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Track Title")
-            .setContentText("Artist Name - Album Name")
             .setSmallIcon(R.drawable.fallback_cover)
             .setStyle(androidx.media3.session.MediaStyleNotificationHelper.MediaStyle(mediaSession))
             .setPriority(NotificationCompat.PRIORITY_LOW)

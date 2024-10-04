@@ -10,7 +10,6 @@ import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.player.service.MediaRepository
 import org.grakovne.lissen.repository.ServerRepository
-import org.grakovne.lissen.ui.screens.player.Track
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,7 +55,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun play() {
-        mediaRepository.playAudio("https://audiobook.grakovne.org/api/items/0464ed43-cccc-4f9f-b0f7-f6a82eee42e6/file/-5532926160821631312?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
+        mediaRepository.playAudio("https://audiobook.grakovne.org/api/items/82c176ce-4387-4df6-976e-42669ed0502b/file/-113301814924710012?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
         mediaRepository._isPlaying.postValue(true)
     }
 
