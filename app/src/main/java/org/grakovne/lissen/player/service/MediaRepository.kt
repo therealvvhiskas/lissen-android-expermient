@@ -3,10 +3,13 @@ package org.grakovne.lissen.player.service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.common.Timeline
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.FutureCallback
@@ -15,7 +18,6 @@ import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
-
 
 @Singleton
 class MediaRepository @Inject constructor(
@@ -27,6 +29,17 @@ class MediaRepository @Inject constructor(
     private lateinit var mediaController: MediaController
 
     val _isPlaying = MutableLiveData(false)
+    val _currentPosition = MutableLiveData<Long>()
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val updateProgressAction = object : Runnable {
+        override fun run() {
+            val currentPosition = mediaController.currentPosition
+            _currentPosition.postValue(currentPosition / 1000)
+            handler.postDelayed(this, 500L)
+        }
+    }
 
     init {
         val controllerBuilder = MediaController.Builder(context, sessionToken)
@@ -41,11 +54,34 @@ class MediaRepository @Inject constructor(
                     controller.addListener(object : Player.Listener {
                         override fun onPlaybackStateChanged(playbackState: Int) {
                             _isPlaying.postValue(playbackState == Player.STATE_READY && controller.isPlaying)
+
+                            when (controller.isPlaying) {
+                                true -> startUpdatingProgress()
+                                else -> stopUpdatingProgress()
+                            }
                         }
 
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.postValue(isPlaying)
+
+                            when (isPlaying) {
+                                true -> startUpdatingProgress()
+                                false -> stopUpdatingProgress()
+                            }
                         }
+
+                        override fun onPositionDiscontinuity(
+                            oldPosition: Player.PositionInfo,
+                            newPosition: Player.PositionInfo,
+                            reason: Int
+                        ) = _currentPosition.postValue(mediaController.currentPosition)
+
+
+                        override fun onTimelineChanged(
+                            timeline: Timeline,
+                            reason: Int
+                        ) = _currentPosition.postValue(mediaController.currentPosition)
+
                     })
                 }
 
@@ -54,7 +90,6 @@ class MediaRepository @Inject constructor(
             },
             MoreExecutors.directExecutor()
         )
-
     }
 
     fun playAudio(url: String) {
@@ -72,7 +107,6 @@ class MediaRepository @Inject constructor(
         ContextCompat.startForegroundService(context, intent)
     }
 
-
     fun pauseAudio() {
         mediaController.pause()
 
@@ -86,5 +120,13 @@ class MediaRepository @Inject constructor(
     private fun startAudioService() {
         val intent = Intent(context, AudioPlayerService::class.java)
         ContextCompat.startForegroundService(context, intent)
+    }
+
+    fun startUpdatingProgress() {
+        handler.post(updateProgressAction)
+    }
+
+    fun stopUpdatingProgress() {
+        handler.removeCallbacks(updateProgressAction)
     }
 }

@@ -37,7 +37,7 @@ fun TrackControlComposable(
     modifier: Modifier = Modifier
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
-    val currentPosition by viewModel.currentPosition.observeAsState(0f)
+    val currentPosition by viewModel.currentPosition.observeAsState(0L)
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
 
     val book by viewModel.book.observeAsState()
@@ -52,7 +52,7 @@ fun TrackControlComposable(
     ) {
 
         Slider(
-            value = currentPosition,
+            value = currentPosition.toFloat(),
             onValueChange = { newPosition -> viewModel.seekTo(newPosition) },
             valueRange = 0f..(duration),
             modifier = Modifier

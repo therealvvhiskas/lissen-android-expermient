@@ -27,8 +27,7 @@ class PlayerViewModel @Inject constructor(
 
     val isPlaying = mediaRepository._isPlaying
 
-    private val _currentPosition = MutableLiveData(0f)
-    val currentPosition: LiveData<Float> = _currentPosition
+    val currentPosition = mediaRepository._currentPosition
 
     private val _currentTrackIndex = MutableLiveData(0)
     val currentTrackIndex: LiveData<Int> = _currentTrackIndex
@@ -63,7 +62,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun seekTo(position: Float) {
-        _currentPosition.value = position
+        //_currentPosition.value = position
     }
 
     fun setChapter(index: Int) {
