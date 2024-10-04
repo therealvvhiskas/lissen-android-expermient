@@ -27,6 +27,7 @@ class AudioPlayerService : MediaSessionService() {
         private const val CHANNEL_ID = "audio_player_channel"
         private const val NOTIFICATION_ID = 1
         const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
+        const val ACTION_STOP_FOREGROUND = "org.grakovne.lissen.player.service.STOP_FOREGROUND"
     }
 
     override fun onCreate() {
@@ -37,11 +38,23 @@ class AudioPlayerService : MediaSessionService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        if (intent?.action == ACTION_START_FOREGROUND) {
-            startForeground(NOTIFICATION_ID, createMediaNotification())
-        }
+        return when (intent?.action) {
+            ACTION_START_FOREGROUND -> {
+                startForeground(NOTIFICATION_ID, createMediaNotification())
+                START_STICKY
+            }
 
-        return START_STICKY
+            ACTION_STOP_FOREGROUND -> {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopSelf()
+
+                START_NOT_STICKY
+            }
+
+            else -> {
+                START_NOT_STICKY
+            }
+        }
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {

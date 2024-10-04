@@ -22,7 +22,8 @@ class MediaRepository @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    private val sessionToken = SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
+    private val sessionToken =
+        SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
     private lateinit var mediaController: MediaController
 
     val _isPlaying = MutableLiveData(false)
@@ -73,11 +74,13 @@ class MediaRepository @Inject constructor(
 
 
     fun pauseAudio() {
-        //mediaController.pause()
-    }
+        mediaController.pause()
 
-    fun stopAudio() {
-        // mediaController.stop()
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_STOP_FOREGROUND
+        }
+
+        ContextCompat.startForegroundService(context, intent)
     }
 
     private fun startAudioService() {

@@ -56,11 +56,10 @@ class PlayerViewModel @Inject constructor(
 
     fun play() {
         mediaRepository.playAudio("https://audiobook.grakovne.org/api/items/82c176ce-4387-4df6-976e-42669ed0502b/file/-113301814924710012?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
-        mediaRepository._isPlaying.postValue(true)
     }
 
     fun pause() {
-        mediaRepository._isPlaying.postValue(false)
+        mediaRepository.pauseAudio()
     }
 
     fun seekTo(position: Float) {
