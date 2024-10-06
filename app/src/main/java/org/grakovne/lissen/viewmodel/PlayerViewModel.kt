@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.player.service.MediaRepository
+import org.grakovne.lissen.player.MediaRepository
 import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
