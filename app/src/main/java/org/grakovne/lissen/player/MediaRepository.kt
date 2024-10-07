@@ -64,8 +64,7 @@ class MediaRepository
 
                     controller.addListener(object : Player.Listener {
                         override fun onPlaybackStateChanged(playbackState: Int) {
-                            _isPlaying.postValue(playbackState == Player.STATE_READY && controller.isPlaying)
-                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
+                            _isPlaying.postValue(controller.isPlaying)
 
                             when (controller.isPlaying) {
                                 true -> startUpdatingProgress()
@@ -81,25 +80,6 @@ class MediaRepository
                                 false -> stopUpdatingProgress()
                             }
                         }
-
-                        override fun onPositionDiscontinuity(
-                            oldPosition: Player.PositionInfo,
-                            newPosition: Player.PositionInfo,
-                            reason: Int
-                        ) {
-                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
-                            _currentPosition.postValue(mediaController.currentPosition)
-                        }
-
-
-                        override fun onTimelineChanged(
-                            timeline: Timeline,
-                            reason: Int
-                        ) {
-                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
-                            _currentPosition.postValue(mediaController.currentPosition)
-                        }
-
                     })
                 }
 
