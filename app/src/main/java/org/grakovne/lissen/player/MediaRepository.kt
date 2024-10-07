@@ -13,17 +13,13 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DataSource
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.player.datasource.StreamingDataSource
 import org.grakovne.lissen.player.service.AudioPlayerService
 import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Inject
@@ -36,7 +32,8 @@ class MediaRepository
     private val serverMediaRepository: ServerMediaRepository
 ) {
 
-    private val sessionToken = SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
+    private val sessionToken =
+        SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
     private lateinit var mediaController: MediaController
 
     val _isPlaying = MutableLiveData(false)
@@ -66,34 +63,34 @@ class MediaRepository
                         override fun onPlaybackStateChanged(playbackState: Int) {
                             _isPlaying.postValue(playbackState == Player.STATE_READY && controller.isPlaying)
 
-                                when (controller.isPlaying) {
-                                    true -> startUpdatingProgress()
-                                    else -> stopUpdatingProgress()
-                                }
+                            when (controller.isPlaying) {
+                                true -> startUpdatingProgress()
+                                else -> stopUpdatingProgress()
                             }
+                        }
 
-                            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                                _isPlaying.postValue(isPlaying)
+                        override fun onIsPlayingChanged(isPlaying: Boolean) {
+                            _isPlaying.postValue(isPlaying)
 
-                                when (isPlaying) {
-                                    true -> startUpdatingProgress()
-                                    false -> stopUpdatingProgress()
-                                }
+                            when (isPlaying) {
+                                true -> startUpdatingProgress()
+                                false -> stopUpdatingProgress()
                             }
+                        }
 
-                            override fun onPositionDiscontinuity(
-                                oldPosition: Player.PositionInfo,
-                                newPosition: Player.PositionInfo,
-                                reason: Int
-                            ) = _currentPosition.postValue(mediaController.currentPosition)
+                        override fun onPositionDiscontinuity(
+                            oldPosition: Player.PositionInfo,
+                            newPosition: Player.PositionInfo,
+                            reason: Int
+                        ) = _currentPosition.postValue(mediaController.currentPosition)
 
 
-                            override fun onTimelineChanged(
-                                timeline: Timeline,
-                                reason: Int
-                            ) = _currentPosition.postValue(mediaController.currentPosition)
+                        override fun onTimelineChanged(
+                            timeline: Timeline,
+                            reason: Int
+                        ) = _currentPosition.postValue(mediaController.currentPosition)
 
-                        })
+                    })
                 }
 
                 override fun onFailure(t: Throwable) {
