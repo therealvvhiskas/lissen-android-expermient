@@ -19,9 +19,6 @@ class AudioPlayerService : MediaSessionService() {
     companion object {
         const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
         const val ACTION_STOP_FOREGROUND = "org.grakovne.lissen.player.service.STOP_FOREGROUND"
-
-        const val EXTRA_BOOK_TITLE = "EXTRA_BOOK_TITLE"
-        const val EXTRA_BOOK_AUTHOR = "EXTRA_BOOK_AUTHOR"
     }
 
     override fun onStartCommand(
