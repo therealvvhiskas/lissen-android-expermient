@@ -21,7 +21,6 @@ class StreamingDataSource(
     private lateinit var dataSpec: DataSpec
 
 
-
     override fun open(dataSpec: DataSpec): Long {
         this.dataSpec = dataSpec
 
@@ -38,8 +37,8 @@ class StreamingDataSource(
             }
 
             is ApiResult.Success -> {
-                inputStream = ByteArrayInputStream(response.data)
-                contentLength = response.data.size.toLong()
+                inputStream = response.data
+                contentLength = -1
             }
         }
 

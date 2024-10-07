@@ -6,6 +6,7 @@ import org.grakovne.lissen.client.audiobookshelf.BinaryApiClient
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
 import java.io.IOException
+import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,25 +18,25 @@ class ServerMediaRepository @Inject constructor(
     @Volatile
     private var secureClient: AudiobookshelfMediaClient? = null
 
-    suspend fun fetchBookCover(itemId: String): ApiResult<ByteArray> =
+    suspend fun fetchBookCover(itemId: String): ApiResult<InputStream> =
         safeApiCall { getClientInstance().getItemCover(itemId) }
 
     suspend fun fetchChapterContent(
         libraryItemId: String,
         chapterId: String
-    ): ApiResult<ByteArray> =
+    ): ApiResult<InputStream> =
         safeApiCall { getClientInstance().getChapterContent(libraryItemId, chapterId) }
 
     private suspend fun safeApiCall(
         apiCall: suspend () -> Response<ResponseBody>
-    ): ApiResult<ByteArray> {
+    ): ApiResult<InputStream> {
         return try {
             val response = apiCall.invoke()
 
             return when (response.code()) {
                 200 -> when (val body = response.body()) {
                     null -> ApiResult.Error(FetchTokenApiError.InternalError)
-                    else -> ApiResult.Success(body.bytes())
+                    else -> ApiResult.Success(body.byteStream())
                 }
 
                 400 -> ApiResult.Error(FetchTokenApiError.InternalError)

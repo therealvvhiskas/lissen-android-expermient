@@ -15,7 +15,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okio.Buffer
 import okio.buffer
 import okio.source
 import org.grakovne.lissen.repository.ApiResult
@@ -32,9 +31,8 @@ class BookCoverFetcher(
         when (val response = repository.fetchBookCover(uri.toString())) {
             is ApiResult.Error -> null
             is ApiResult.Success -> {
-                val bytes = response.data
-                val buffer = Buffer().write(bytes)
-                val source = buffer.inputStream().source().buffer()
+                val stream = response.data
+                val source = stream.source().buffer()
                 val imageSource = ImageSource(source, context)
 
                 SourceResult(
