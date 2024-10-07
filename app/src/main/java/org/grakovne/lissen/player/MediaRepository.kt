@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.player.service.AudioPlayerService
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -93,10 +94,9 @@ class MediaRepository @Inject constructor(
         )
     }
 
-    fun playAudio(url: String) {
-        startAudioService()
+    fun playAudio(book: DetailedBook) {
+        val mediaItem = MediaItem.fromUri("https://audiobook.grakovne.org/api/items/49fcdfab-2276-47b7-86c9-0b66098d4c5b/file/140182086?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
 
-        val mediaItem = MediaItem.fromUri(url)
         mediaController.setMediaItem(mediaItem)
         mediaController.prepare()
         mediaController.play()
@@ -115,11 +115,6 @@ class MediaRepository @Inject constructor(
             action = AudioPlayerService.ACTION_STOP_FOREGROUND
         }
 
-        ContextCompat.startForegroundService(context, intent)
-    }
-
-    private fun startAudioService() {
-        val intent = Intent(context, AudioPlayerService::class.java)
         ContextCompat.startForegroundService(context, intent)
     }
 

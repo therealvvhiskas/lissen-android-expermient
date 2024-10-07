@@ -15,7 +15,6 @@ class LibraryItemIdResponseConverter @Inject constructor() {
             id = response.id,
             title = response.media.metadata.title,
             author = response.media.metadata.authors.joinToString(", ", transform = Author::name),
-            progress = null,
             chapters = response
                 .media
                 .audioFiles

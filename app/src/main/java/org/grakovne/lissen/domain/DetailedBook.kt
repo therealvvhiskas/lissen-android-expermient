@@ -4,8 +4,7 @@ data class DetailedBook(
     val id: String,
     val title: String,
     val author: String,
-    val chapters: List<BookChapter>,
-    val progress: Progress?
+    val chapters: List<BookChapter>
 )
 
 data class BookChapter(
