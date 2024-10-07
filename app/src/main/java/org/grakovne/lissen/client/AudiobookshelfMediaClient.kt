@@ -14,10 +14,9 @@ interface AudiobookshelfMediaClient {
         @Path("itemId") itemId: String,
     ): Response<ResponseBody>
 
-    @GET("/api/items/{itemId}/file")
+    @GET("/api/items/49fcdfab-2276-47b7-86c9-0b66098d4c5b/file/140182086?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
     @Streaming
     suspend fun getChapterContent(
-        @Path("itemId") itemId: String,
     ): Response<ResponseBody>
 
 }

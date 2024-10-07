@@ -1,13 +1,20 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
+import androidx.annotation.OptIn
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.player.service.datasource.StreamingDatasourceFactory
 import org.grakovne.lissen.repository.ApiResult
 import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Inject
@@ -38,6 +45,7 @@ class AudioPlayerService : MediaSessionService() {
 
         return when (intent?.action) {
             ACTION_START_FOREGROUND -> {
+                intent.getSerializableExtra("BOOK")?.let { playBook(it as DetailedBook) }
                 START_STICKY
             }
 
@@ -52,6 +60,34 @@ class AudioPlayerService : MediaSessionService() {
                 START_NOT_STICKY
             }
         }
+    }
+
+    @OptIn(UnstableApi::class)
+    private fun playBook(detailedBook: DetailedBook) {
+        val dataSourceFactory = StreamingDatasourceFactory(mediaRepository)
+
+        exoPlayer.clearMediaItems()
+
+        detailedBook.chapters.forEach { chapter ->
+            val mediaItem = MediaItem.Builder()
+                .setMediaId(chapter.id)
+                .setUri(chapter.id)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(chapter.name)
+                        .build()
+                )
+                .build()
+
+            val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(mediaItem)
+
+            exoPlayer.addMediaSource(mediaSource)
+        }
+
+        exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
+
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
