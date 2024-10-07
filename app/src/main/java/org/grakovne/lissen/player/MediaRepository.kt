@@ -8,6 +8,8 @@ import android.os.Looper
 import androidx.annotation.OptIn
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.common.Timeline
 import androidx.media3.common.util.UnstableApi
@@ -17,13 +19,13 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.grakovne.lissen.client.AudiobookshelfChapterUriProvider
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.player.service.AudioPlayerService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-@OptIn(UnstableApi::class)
 class MediaRepository
 @Inject constructor(
     @ApplicationContext private val context: Context
@@ -116,6 +118,9 @@ class MediaRepository
         }
 
         ContextCompat.startForegroundService(context, intent)
+
+        mediaController.prepare()
+        mediaController.playWhenReady = true
     }
 
     fun pauseAudio() {
