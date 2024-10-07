@@ -10,7 +10,6 @@ import org.grakovne.lissen.repository.ApiResult
 import org.grakovne.lissen.repository.ServerMediaRepository
 import java.io.InputStream
 
-
 @UnstableApi
 class StreamingDataSource(
     private val serverMediaRepository: ServerMediaRepository

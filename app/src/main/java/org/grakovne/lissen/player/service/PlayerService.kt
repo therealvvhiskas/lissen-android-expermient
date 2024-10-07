@@ -1,7 +1,6 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -16,6 +15,7 @@ import org.grakovne.lissen.player.service.datasource.StreamingDatasourceFactory
 import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Inject
 
+@UnstableApi
 @AndroidEntryPoint
 class AudioPlayerService : MediaSessionService() {
 
@@ -27,6 +27,9 @@ class AudioPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var mediaRepository: ServerMediaRepository
+
+    @Inject
+    lateinit var streamingDatasourceFactory: StreamingDatasourceFactory
 
     companion object {
         const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
@@ -60,38 +63,38 @@ class AudioPlayerService : MediaSessionService() {
     }
 
     @OptIn(UnstableApi::class)
-    private fun playAudiobookStream(detailedBook: DetailedBook) {
-        val dataSourceFactory = StreamingDatasourceFactory(mediaRepository)
+    private fun playAudiobookStream(book: DetailedBook) {
         exoPlayer.clearMediaItems()
 
-        detailedBook
+        val chapterSources = book
             .chapters
-            .forEach { chapter ->
+            .mapIndexed { index, chapter ->
                 val mediaItem = MediaItem.Builder()
                     .setMediaId(chapter.id)
-                    .setUri("action_play?bookId=${detailedBook.id}&chapterId=${chapter.id}")
+                    .setUri("action_play?bookId=${book.id}&chapterId=${chapter.id}")
                     .setMediaMetadata(
                         MediaMetadata
                             .Builder()
                             .setTitle(chapter.name)
+                            .setArtist(book.title)
+                            .setTrackNumber(index)
                             .build()
                     )
                     .build()
 
-                val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
+                ProgressiveMediaSource
+                    .Factory(streamingDatasourceFactory)
                     .createMediaSource(mediaItem)
-
-                exoPlayer.addMediaSource(mediaSource)
             }
+
+        exoPlayer.addMediaSources(chapterSources)
 
         exoPlayer.prepare()
         exoPlayer.playWhenReady = true
 
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession {
-        return mediaSession
-    }
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onDestroy() {
         mediaSession.release()
