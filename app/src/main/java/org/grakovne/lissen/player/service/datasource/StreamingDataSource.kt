@@ -8,7 +8,6 @@ import androidx.media3.datasource.TransferListener
 import kotlinx.coroutines.runBlocking
 import org.grakovne.lissen.repository.ApiResult
 import org.grakovne.lissen.repository.ServerMediaRepository
-import java.io.ByteArrayInputStream
 import java.io.InputStream
 
 
@@ -18,15 +17,15 @@ class StreamingDataSource(
 ) : DataSource {
     private var inputStream: InputStream? = null
     private var contentLength: Long = 0
+
     private lateinit var dataSpec: DataSpec
 
 
     override fun open(dataSpec: DataSpec): Long {
         this.dataSpec = dataSpec
 
-        val uri = dataSpec.uri
-        val bookId = uri.getQueryParameter("bookId") ?: return 0
-        val chapterId = uri.getQueryParameter("chapterId") ?: return 0
+        val bookId = dataSpec.uri.getQueryParameter("bookId") ?: return 0
+        val chapterId = dataSpec.uri.getQueryParameter("chapterId") ?: return 0
 
         val response = runBlocking { serverMediaRepository.fetchChapterContent(bookId, chapterId) }
 
