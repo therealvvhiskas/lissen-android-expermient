@@ -14,4 +14,10 @@ interface AudiobookshelfMediaClient {
         @Path("itemId") itemId: String,
     ): Response<ResponseBody>
 
+    @GET("/api/items/{itemId}/file")
+    @Streaming
+    suspend fun getChapterContent(
+        @Path("itemId") itemId: String,
+    ): Response<ResponseBody>
+
 }

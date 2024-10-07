@@ -21,7 +21,7 @@ class ServerMediaRepository @Inject constructor(
         safeApiCall { getClientInstance().getItemCover(itemId) }
 
     suspend fun fetchChapterContent(inoId: String): ApiResult<ByteArray> =
-        safeApiCall { getClientInstance().getItemCover(inoId) }
+        safeApiCall { getClientInstance().getChapterContent(inoId) }
 
     private suspend fun safeApiCall(
         apiCall: suspend () -> Response<ResponseBody>
