@@ -17,6 +17,7 @@ import javax.inject.Inject
 
 @UnstableApi
 @AndroidEntryPoint
+@Suppress("DEPRECATION")
 class AudioPlayerService : MediaSessionService() {
 
     @Inject
