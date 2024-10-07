@@ -20,15 +20,20 @@ class StreamingDataSource(
     private var contentLength: Long = 0
     private lateinit var dataSpec: DataSpec
 
+
+
     override fun open(dataSpec: DataSpec): Long {
         this.dataSpec = dataSpec
-        val mediaId = dataSpec.uri.lastPathSegment ?: return 0
 
-        val response = runBlocking { serverMediaRepository.fetchChapterContent(mediaId) }
+        val uri = dataSpec.uri
+        val bookId = uri.getQueryParameter("bookId") ?: return 0
+        val chapterId = uri.getQueryParameter("chapterId") ?: return 0
+
+        val response = runBlocking { serverMediaRepository.fetchChapterContent(bookId, chapterId) }
 
         when (response) {
             is ApiResult.Error -> {
-                println("Error loading data for mediaId: $mediaId")
+                println("Error loading data for mediaId: $bookId")
                 contentLength = 0
             }
 

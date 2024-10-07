@@ -1,6 +1,7 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -68,9 +69,10 @@ class AudioPlayerService : MediaSessionService() {
             .forEach { chapter ->
                 val mediaItem = MediaItem.Builder()
                     .setMediaId(chapter.id)
-                    .setUri(chapter.id)
+                    .setUri("action_play?bookId=${detailedBook.id}&chapterId=${chapter.id}")
                     .setMediaMetadata(
-                        MediaMetadata.Builder()
+                        MediaMetadata
+                            .Builder()
                             .setTitle(chapter.name)
                             .build()
                     )

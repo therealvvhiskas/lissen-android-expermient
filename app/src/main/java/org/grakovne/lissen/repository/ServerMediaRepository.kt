@@ -20,8 +20,11 @@ class ServerMediaRepository @Inject constructor(
     suspend fun fetchBookCover(itemId: String): ApiResult<ByteArray> =
         safeApiCall { getClientInstance().getItemCover(itemId) }
 
-    suspend fun fetchChapterContent(inoId: String): ApiResult<ByteArray> =
-        safeApiCall { getClientInstance().getChapterContent() }
+    suspend fun fetchChapterContent(
+        libraryItemId: String,
+        chapterId: String
+    ): ApiResult<ByteArray> =
+        safeApiCall { getClientInstance().getChapterContent(libraryItemId, chapterId) }
 
     private suspend fun safeApiCall(
         apiCall: suspend () -> Response<ResponseBody>
