@@ -23,8 +23,13 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -43,7 +48,15 @@ fun TrackControlComposable(
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
 
+    var sliderPosition by remember { mutableStateOf(0f) }
+    var isDragging by remember { mutableStateOf(false) }
     val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
+
+    val draggableTrackProgress by remember {
+        derivedStateOf {
+            if (!isDragging) currentPosition.toFloat() else sliderPosition
+        }
+    }
 
     Column(
         modifier = modifier
@@ -52,8 +65,15 @@ fun TrackControlComposable(
     ) {
 
         Slider(
-            value = currentPosition.toFloat(),
-            onValueChange = { newPosition -> viewModel.seekTo(newPosition) },
+            value = draggableTrackProgress,
+            onValueChange = { newPosition ->
+                sliderPosition = newPosition
+                isDragging = true
+            },
+            onValueChangeFinished = {
+                viewModel.seekTo(sliderPosition)
+                isDragging = false
+            },
             valueRange = 0f..(duration),
             modifier = Modifier
                 .height(36.dp)
