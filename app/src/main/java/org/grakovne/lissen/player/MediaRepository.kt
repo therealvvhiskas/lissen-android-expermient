@@ -103,25 +103,9 @@ class MediaRepository
 
     @OptIn(UnstableApi::class)
     fun playAudio(book: DetailedBook) {
-        val mediaItems = book.chapters.map { chapter ->
-            MediaItem.Builder()
-                .setMediaId(chapter.id)
-                .setUri("https://audiobook.grakovne.org/api/items/49fcdfab-2276-47b7-86c9-0b66098d4c5b/file/140182086?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjM2QzMjQ1Mi1lZDFjLTRlZjktYWJkMC00ZTg0MTcwNGVmMTUiLCJ1c2VybmFtZSI6ImdyYWtvdm5lIiwiaWF0IjoxNzIzNTkxMzU2fQ.3G-Kes9PqAycvpMqdo2BKLsZmf-R1ihRBGD568uS0s4")
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle(book.title)
-                        .setArtist(chapter.name)
-                        .build()
-                )
-                .build()
-        }
-
-        mediaController.setMediaItems(mediaItems)
-        mediaController.prepare()
-        mediaController.play()
-
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_START_FOREGROUND
+            putExtra("BOOK", book)
         }
 
         ContextCompat.startForegroundService(context, intent)

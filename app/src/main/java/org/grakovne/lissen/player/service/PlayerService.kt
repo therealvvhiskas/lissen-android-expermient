@@ -1,8 +1,6 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -29,18 +27,6 @@ class AudioPlayerService : MediaSessionService() {
     companion object {
         const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
         const val ACTION_STOP_FOREGROUND = "org.grakovne.lissen.player.service.STOP_FOREGROUND"
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                mediaItem?.let {
-                    println("hehhee")
-                }
-            }
-        })
     }
 
     override fun onStartCommand(
