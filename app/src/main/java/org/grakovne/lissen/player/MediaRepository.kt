@@ -65,6 +65,7 @@ class MediaRepository
                     controller.addListener(object : Player.Listener {
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.postValue(isPlaying)
+                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
 
                             when (isPlaying) {
                                 true -> startUpdatingProgress()
