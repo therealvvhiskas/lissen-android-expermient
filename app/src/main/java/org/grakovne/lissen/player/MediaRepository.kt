@@ -41,6 +41,8 @@ class MediaRepository
     private val _currentMediaItemIndex = MutableLiveData<Int>()
     val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
 
+    private val _playingBook: MutableLiveData<DetailedBook> = MutableLiveData<DetailedBook>()
+
     private val handler = Handler(Looper.getMainLooper())
 
     private val updateProgressAction = object : Runnable {
@@ -60,6 +62,7 @@ class MediaRepository
             object : FutureCallback<MediaController> {
                 override fun onSuccess(controller: MediaController) {
                     mediaController = controller
+                    restorePlaybackState()
 
                     controller.addListener(object : Player.Listener {
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -85,14 +88,32 @@ class MediaRepository
         )
     }
 
-    fun playAudio(book: DetailedBook) {
+    private fun restorePlaybackState() {
+        val currentMediaItem = mediaController.currentMediaItem
+        if (currentMediaItem != null) {
+
+            val book = currentMediaItem.localConfiguration?.tag as? DetailedBook
+            book?.let { _playingBook.postValue(it) }
+        }
+        _isPlaying.postValue(mediaController.isPlaying)
+    }
+
+    fun play(book: DetailedBook) {
+        when (book == _playingBook.value) {
+            true -> mediaController.playWhenReady = true
+            false -> startPlayingBook(book)
+        }
+    }
+
+    private fun startPlayingBook(book: DetailedBook) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_START_FOREGROUND
             putExtra("BOOK", book)
+
+            _playingBook.postValue(book)
         }
 
         ContextCompat.startForegroundService(context, intent)
-
         mediaController.prepare()
         mediaController.playWhenReady = true
     }

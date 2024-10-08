@@ -67,15 +67,15 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun togglePlayPause() {
-        if (isPlaying.value == true) {
-            pause()
-        } else {
-            play()
+        when (isPlaying.value) {
+            true -> pause()
+            else -> play()
+
         }
     }
 
     private fun play() {
-        book.value?.let { mediaRepository.playAudio(it) }
+        book.value?.let { mediaRepository.play(it) }
     }
 
     private fun pause() {

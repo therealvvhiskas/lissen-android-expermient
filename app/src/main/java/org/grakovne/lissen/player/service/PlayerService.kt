@@ -75,6 +75,7 @@ class AudioPlayerService : MediaSessionService() {
                 MediaItem.Builder()
                     .setMediaId(chapter.id)
                     .setUri(uriProvider.provideUri(book.id, chapter.id))
+                    .setTag(book)
                     .setMediaMetadata(
                         MediaMetadata.Builder()
                             .setTitle(chapter.name)
