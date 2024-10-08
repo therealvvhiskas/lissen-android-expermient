@@ -91,7 +91,6 @@ class MediaRepository
     private fun restorePlaybackState() {
         val currentMediaItem = mediaController.currentMediaItem
         if (currentMediaItem != null) {
-
             val book = currentMediaItem.localConfiguration?.tag as? DetailedBook
             book?.let { _playingBook.postValue(it) }
         }
