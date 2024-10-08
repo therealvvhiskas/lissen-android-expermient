@@ -19,8 +19,7 @@ class PlayerViewModel @Inject constructor(
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
 
-    private val _book = MutableLiveData<DetailedBook>()
-    val book: LiveData<DetailedBook> = _book
+    val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
@@ -40,7 +39,7 @@ class PlayerViewModel @Inject constructor(
                     .getLibraryItem(bookId)
                     .fold(
                         onSuccess = {
-                            _book.value = libraryItemIdResponseConverter.apply(it)
+                            mediaRepository.setPlayingBook(libraryItemIdResponseConverter.apply(it))
                         },
                         onFailure = {
                             // ahaha, loshara

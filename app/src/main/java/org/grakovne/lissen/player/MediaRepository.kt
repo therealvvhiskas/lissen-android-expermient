@@ -40,7 +40,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _currentMediaItemIndex = MutableLiveData<Int>()
     val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
 
+    private val _playbackStarted: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
     private val _playingBook: MutableLiveData<DetailedBook> = MutableLiveData<DetailedBook>()
+    val playingBook: LiveData<DetailedBook> = _playingBook
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -51,6 +53,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             handler.postDelayed(this, 500L)
         }
     }
+
+    fun setPlayingBook(book: DetailedBook) = _playingBook.postValue(book)
 
     init {
         val controllerBuilder = MediaController.Builder(context, token)
@@ -87,9 +91,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun play(book: DetailedBook) {
-        when (book == _playingBook.value) {
+        when (_playbackStarted.value) {
             true -> mediaController.playWhenReady = true
-            false -> startPlayingBook(book)
+            else -> startPlayingBook(book)
         }
     }
 
@@ -98,6 +102,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             action = AudioPlayerService.ACTION_START_FOREGROUND
             putExtra("BOOK", book)
 
+            _playbackStarted.postValue(true)
             _playingBook.postValue(book)
         }
 
