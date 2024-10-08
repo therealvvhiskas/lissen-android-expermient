@@ -22,8 +22,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MediaRepository
-@Inject constructor(@ApplicationContext private val context: Context) {
+class MediaRepository @Inject constructor(@ApplicationContext private val context: Context) {
 
     private lateinit var mediaController: MediaController
 
@@ -62,7 +61,6 @@ class MediaRepository
             object : FutureCallback<MediaController> {
                 override fun onSuccess(controller: MediaController) {
                     mediaController = controller
-                    restorePlaybackState()
 
                     controller.addListener(object : Player.Listener {
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -86,15 +84,6 @@ class MediaRepository
             },
             MoreExecutors.directExecutor()
         )
-    }
-
-    private fun restorePlaybackState() {
-        val currentMediaItem = mediaController.currentMediaItem
-        if (currentMediaItem != null) {
-            val book = currentMediaItem.localConfiguration?.tag as? DetailedBook
-            book?.let { _playingBook.postValue(it) }
-        }
-        _isPlaying.postValue(mediaController.isPlaying)
     }
 
     fun play(book: DetailedBook) {
