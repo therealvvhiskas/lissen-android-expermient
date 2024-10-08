@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
@@ -21,9 +22,7 @@ import javax.inject.Singleton
 
 @Singleton
 class MediaRepository
-@Inject constructor(
-    @ApplicationContext private val context: Context
-) {
+@Inject constructor(@ApplicationContext private val context: Context) {
 
     private lateinit var mediaController: MediaController
 
@@ -32,9 +31,14 @@ class MediaRepository
         ComponentName(context, AudioPlayerService::class.java)
     )
 
-    val _isPlaying = MutableLiveData(false)
-    val _currentPosition = MutableLiveData<Long>()
-    val _currentMediaItemIndex = MutableLiveData<Int>()
+    private val _isPlaying = MutableLiveData(false)
+    val isPlaying: LiveData<Boolean> = _isPlaying
+
+    private val _currentPosition = MutableLiveData<Long>()
+    val currentPosition: LiveData<Long> = _currentPosition
+
+    private val _currentMediaItemIndex = MutableLiveData<Int>()
+    val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
 
     private val handler = Handler(Looper.getMainLooper())
 

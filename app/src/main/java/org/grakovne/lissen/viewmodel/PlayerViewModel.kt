@@ -25,11 +25,9 @@ class PlayerViewModel @Inject constructor(
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
 
-    val isPlaying = mediaRepository._isPlaying
-    val currentPosition = mediaRepository._currentPosition
-
-    private val _currentTrackIndex = mediaRepository._currentMediaItemIndex
-    val currentTrackIndex: LiveData<Int> = _currentTrackIndex
+    val isPlaying = mediaRepository.isPlaying
+    val currentPosition = mediaRepository.currentPosition
+    val currentTrackIndex: LiveData<Int> = mediaRepository.currentMediaItemIndex
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
@@ -50,14 +48,6 @@ class PlayerViewModel @Inject constructor(
                     )
             }
 
-    }
-
-    fun play() {
-        book.value?.let { mediaRepository.playAudio(it) }
-    }
-
-    fun pause() {
-        mediaRepository.pauseAudio()
     }
 
     fun seekTo(position: Float) {
@@ -82,5 +72,13 @@ class PlayerViewModel @Inject constructor(
         } else {
             play()
         }
+    }
+
+    private fun play() {
+        book.value?.let { mediaRepository.playAudio(it) }
+    }
+
+    private fun pause() {
+        mediaRepository.pauseAudio()
     }
 }
