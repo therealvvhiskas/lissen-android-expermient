@@ -55,12 +55,15 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun setPlayingBook(book: DetailedBook) {
+        _playingBook.postValue(book)
+
         if (::mediaController.isInitialized && _playingBook.value != book) {
+            _playbackStarted.postValue(false)
+
             pauseAudio()
             seekTo(0.0f)
             setTrack(0)
         }
-        _playingBook.postValue(book)
     }
 
     init {
