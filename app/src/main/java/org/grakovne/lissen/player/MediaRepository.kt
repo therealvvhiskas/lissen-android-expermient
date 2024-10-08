@@ -8,6 +8,7 @@ import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -61,6 +62,10 @@ class MediaRepository
                     mediaController = controller
 
                     controller.addListener(object : Player.Listener {
+                        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
+                        }
+
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.postValue(isPlaying)
                             _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
@@ -79,7 +84,6 @@ class MediaRepository
             MoreExecutors.directExecutor()
         )
     }
-
 
     fun playAudio(book: DetailedBook) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
