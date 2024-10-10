@@ -31,6 +31,8 @@ class AudioPlayerService : MediaSessionService() {
         const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
         const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
         const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
+        
+        const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
     }
 
     @Suppress("DEPRECATION")
@@ -58,7 +60,7 @@ class AudioPlayerService : MediaSessionService() {
 
             ACTION_SET_PLAYBACK -> {
                 intent
-                    .getSerializableExtra("BOOK")
+                    .getSerializableExtra(BOOK_EXTRA)
                     ?.let { setPlaybackQueue(it as DetailedBook) }
 
                 START_NOT_STICKY
