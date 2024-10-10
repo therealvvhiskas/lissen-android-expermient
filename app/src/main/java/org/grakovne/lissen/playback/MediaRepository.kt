@@ -1,13 +1,16 @@
 package org.grakovne.lissen.playback
 
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
@@ -19,6 +22,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.service.AudioPlayerService
 import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.BOOK_EXTRA
+import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.PLAYBACK_READY
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,6 +38,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
+
+    private val _isPlaybackReady = MutableLiveData(false)
+    val isPlaybackReady: LiveData<Boolean> = _isPlaybackReady
 
     private val _currentPosition = MutableLiveData<Long>()
     val currentPosition: LiveData<Long> = _currentPosition
@@ -52,6 +59,24 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             _currentPosition.postValue(currentPosition / 1000)
             handler.postDelayed(this, 500L)
         }
+    }
+
+    private val bookDetailsReadyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == PLAYBACK_READY) {
+                _isPlaybackReady.postValue(true)
+            }
+        }
+    }
+
+    init {
+        LocalBroadcastManager
+            .getInstance(context)
+            .registerReceiver(bookDetailsReadyReceiver, IntentFilter(PLAYBACK_READY))
+    }
+
+    fun mediaPreparing() {
+        _isPlaybackReady.postValue(false)
     }
 
     fun preparePlayingBook(book: DetailedBook) {

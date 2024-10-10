@@ -51,7 +51,7 @@ fun PlayerScreen(
 
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-    val isBookDetailsReady by viewModel.isBookDetailsReady.observeAsState(false)
+    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
 
     LaunchedEffect(Unit) {
         bookId?.let { viewModel.fetchBookDetails(it) }
@@ -109,7 +109,7 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        if (!isBookDetailsReady) {
+                        if (!isPlaybackReady) {
                             TrackDetailsPlaceholderComposable()
                         } else {
                             TrackDetailsComposable(
@@ -127,7 +127,7 @@ fun PlayerScreen(
                     }
                 }
 
-                if (!isBookDetailsReady) {
+                if (!isPlaybackReady) {
                     PlayingQueuePlaceholderComposable(
                         modifier = Modifier.fillMaxWidth()
                     )

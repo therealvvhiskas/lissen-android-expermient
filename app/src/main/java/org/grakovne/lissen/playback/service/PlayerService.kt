@@ -1,6 +1,7 @@
 package org.grakovne.lissen.playback.service
 
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
@@ -109,6 +110,10 @@ class AudioPlayerService : MediaSessionService() {
 
                 exoPlayer.setMediaItems(chapterSources)
                 setPlaybackProgress(book.chapters, book.progress)
+
+                LocalBroadcastManager
+                    .getInstance(baseContext)
+                    .sendBroadcast(Intent(PLAYBACK_READY))
             }
     }
 
@@ -135,5 +140,6 @@ class AudioPlayerService : MediaSessionService() {
         const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
 
         const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
+        const val PLAYBACK_READY = "org.grakovne.lissen.player.service.PLAYBACK_READY"
     }
 }
