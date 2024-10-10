@@ -57,6 +57,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     fun preparePlayingBook(book: DetailedBook) {
         if (::mediaController.isInitialized && _playingBook.value != book) {
             preparePlay(book)
+            startUpdatingProgress()
         }
 
         _playingBook.postValue(book)
@@ -80,8 +81,6 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.postValue(isPlaying)
                             _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
-
-                            startUpdatingProgress()
                         }
 
                     })
