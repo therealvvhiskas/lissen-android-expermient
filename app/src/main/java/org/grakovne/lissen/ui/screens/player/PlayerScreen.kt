@@ -52,6 +52,7 @@ fun PlayerScreen(
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
+    val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     LaunchedEffect(Unit) {
         bookId?.let { viewModel.fetchBookDetails(it) }
@@ -89,7 +90,6 @@ fun PlayerScreen(
             .systemBarsPadding()
             .fillMaxHeight(),
         content = { innerPadding ->
-            val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
             Column(
                 modifier = Modifier
