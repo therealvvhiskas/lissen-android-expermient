@@ -58,11 +58,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         _playingBook.postValue(book)
 
         if (::mediaController.isInitialized && _playingBook.value != book) {
-            _playbackStarted.postValue(false)
-
-            pauseAudio()
-            seekTo(0.0f)
-            setTrack(0)
+            preparePlay(book)
         }
     }
 
@@ -100,14 +96,11 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         )
     }
 
-    fun play(book: DetailedBook) {
-        when (_playbackStarted.value) {
-            true -> mediaController.playWhenReady = true
-            else -> startPlayingBook(book)
-        }
+    fun play() {
+        mediaController.playWhenReady = true
     }
 
-    private fun startPlayingBook(book: DetailedBook) {
+    private fun preparePlay(book: DetailedBook) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_START_FOREGROUND
             putExtra("BOOK", book)
@@ -117,9 +110,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         }
 
         ContextCompat.startForegroundService(context, intent)
-        mediaController.prepare()
-        mediaController.playWhenReady = true
     }
+
 
     fun pauseAudio() {
         mediaController.pause()

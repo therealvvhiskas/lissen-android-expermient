@@ -74,7 +74,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     private fun play() {
-        book.value?.let { mediaRepository.play(it) }
+        mediaRepository.play()
     }
 
     private fun pause() {

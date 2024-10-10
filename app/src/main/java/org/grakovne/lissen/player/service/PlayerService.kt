@@ -85,6 +85,10 @@ class AudioPlayerService : MediaSessionService() {
                     )
                     .build()
             }
+
+        exoPlayer.playWhenReady = false
         exoPlayer.setMediaItems(chapterSources)
+        exoPlayer.prepare()
+        exoPlayer.seekTo(0,0)
     }
 }
