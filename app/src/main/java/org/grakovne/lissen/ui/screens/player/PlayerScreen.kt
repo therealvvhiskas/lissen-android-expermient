@@ -1,7 +1,6 @@
 package org.grakovne.lissen.ui.screens.player
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -39,7 +38,6 @@ import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.PlayingQueuePlaceholderComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetailsPlaceholderComposable
-import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
@@ -53,7 +51,7 @@ fun PlayerScreen(
 
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-    val book by viewModel.book.observeAsState()
+    val isBookDetailsReady by viewModel.isBookDetailsReady.observeAsState(false)
 
     LaunchedEffect(Unit) {
         bookId?.let { viewModel.fetchBookDetails(it) }
@@ -111,7 +109,7 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        if (null == book) {
+                        if (!isBookDetailsReady) {
                             TrackDetailsPlaceholderComposable(
                             )
                         } else {
@@ -130,7 +128,7 @@ fun PlayerScreen(
                     }
                 }
 
-                if (null == book) {
+                if (!isBookDetailsReady) {
                     PlayingQueuePlaceholderComposable(
                         modifier = Modifier.fillMaxWidth()
                     )

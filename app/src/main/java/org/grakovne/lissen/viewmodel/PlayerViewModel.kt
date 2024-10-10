@@ -24,6 +24,9 @@ class PlayerViewModel @Inject constructor(
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded = _playingQueueExpanded
 
+    private val _isBookDetailsReady = MutableLiveData(false)
+    val isBookDetailsReady: LiveData<Boolean> = _isBookDetailsReady
+
     val isPlaying = mediaRepository.isPlaying
     val currentPosition = mediaRepository.currentPosition
     val currentTrackIndex: LiveData<Int> = mediaRepository.currentMediaItemIndex
@@ -33,6 +36,8 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun fetchBookDetails(bookId: String) {
+        _isBookDetailsReady.postValue(false)
+
         viewModelScope
             .launch {
                 serverRepository
@@ -40,9 +45,10 @@ class PlayerViewModel @Inject constructor(
                     .fold(
                         onSuccess = {
                             mediaRepository.preparePlayingBook(libraryItemIdResponseConverter.apply(it))
+                            _isBookDetailsReady.postValue(true)
                         },
                         onFailure = {
-                            // ahaha, loshara
+                            _isBookDetailsReady.postValue(true)
                         }
                     )
             }
