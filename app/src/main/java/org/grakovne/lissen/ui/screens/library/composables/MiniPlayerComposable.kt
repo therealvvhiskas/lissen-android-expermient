@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Column
@@ -21,36 +20,36 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.request.ImageRequest
 import org.grakovne.lissen.R
-import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun MiniPlayerComposable(
     navController: NavController,
     modifier: Modifier = Modifier,
-    currentBook: Book = Book(
-        title = "What Does Fox Says?",
-        author = "John Show",
-        downloaded = true,
-        duration = 42,
-        id = "1"
-    )
+    currentBook: DetailedBook,
+    imageLoader: ImageLoader,
+    playerViewModel: PlayerViewModel
 ) {
-    var isPlaying: Boolean by remember { mutableStateOf(false) }
+    val isPlaying: Boolean by playerViewModel.isPlaying.observeAsState(false)
 
     Surface(
         color = Color.Transparent,
@@ -66,22 +65,33 @@ fun MiniPlayerComposable(
                         detectVerticalDragGestures(
                             onVerticalDrag = { _, dragAmount ->
                                 if (dragAmount < 0) {
-                                    navController.navigate("player_screen")
+                                    navController.navigate("player_screen/${currentBook.id}")
                                 }
                             }
                         )
                     }
-                    .clickable { navController.navigate("player_screen") }
+                    .clickable { navController.navigate("player_screen/${currentBook.id}") }
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.fallback_cover),
-                    contentDescription = "Current Book Cover",
+                val context = LocalContext.current
+                val imageRequest = remember(currentBook.id) {
+                    ImageRequest
+                        .Builder(context)
+                        .data(currentBook.id)
+                        .crossfade(300)
+                        .build()
+                }
+
+                AsyncShimmeringImage(
+                    imageRequest = imageRequest,
+                    imageLoader = imageLoader,
+                    contentDescription = "${currentBook.title} cover",
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .size(48.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
+                    error = painterResource(R.drawable.fallback_cover)
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -106,7 +116,7 @@ fun MiniPlayerComposable(
                 }
 
                 IconButton(
-                    onClick = { isPlaying = !isPlaying }
+                    onClick = { playerViewModel.togglePlayPause() }
                 ) {
                     Icon(
                         imageVector = if (isPlaying) Icons.Outlined.PauseCircle else Icons.Outlined.PlayCircle,

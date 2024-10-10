@@ -57,17 +57,20 @@ import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
+import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
+import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    viewModel: LibraryViewModel = hiltViewModel()
+    viewModel: LibraryViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -83,6 +86,7 @@ fun LibraryScreen(
     val books by viewModel.books.observeAsState(emptyList())
     val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
+    val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
     val imageLoader = remember {
@@ -198,7 +202,14 @@ fun LibraryScreen(
             )
         },
         bottomBar = {
-            //MiniPlayerComposable(navController)
+            playingBook?.let {
+                MiniPlayerComposable(
+                    navController = navController,
+                    currentBook = it,
+                    imageLoader = imageLoader,
+                    playerViewModel = playerViewModel
+                )
+            }
         },
         modifier = Modifier
             .systemBarsPadding()
