@@ -45,6 +45,7 @@ class AudioPlayerService : MediaSessionService() {
 
         return when (intent?.action) {
             ACTION_PLAY -> {
+                exoPlayer.prepare()
                 exoPlayer.playWhenReady = true
 
                 START_STICKY
@@ -52,6 +53,7 @@ class AudioPlayerService : MediaSessionService() {
 
             ACTION_PAUSE -> {
                 exoPlayer.playWhenReady = false
+
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
 
@@ -98,9 +100,8 @@ class AudioPlayerService : MediaSessionService() {
                     .build()
             }
 
-        exoPlayer.playWhenReady = false
         exoPlayer.setMediaItems(chapterSources)
-        exoPlayer.prepare()
+        exoPlayer.playWhenReady = false
         exoPlayer.seekTo(0,0)
     }
 }
