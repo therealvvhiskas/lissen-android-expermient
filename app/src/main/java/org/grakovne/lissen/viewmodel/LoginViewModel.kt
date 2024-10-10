@@ -12,13 +12,13 @@ import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.repository.FetchTokenApiError
-import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
-import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
-import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsHost
-import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsPassword
-import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsUsername
-import org.grakovne.lissen.repository.FetchTokenApiError.Unauthorized
+import org.grakovne.lissen.channel.common.FetchTokenApiError
+import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError
+import org.grakovne.lissen.channel.common.FetchTokenApiError.InvalidCredentialsHost
+import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsHost
+import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsPassword
+import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsUsername
+import org.grakovne.lissen.channel.common.FetchTokenApiError.Unauthorized
 import javax.inject.Inject
 
 @HiltViewModel

@@ -30,7 +30,7 @@
         </activity>
 
         <service
-            android:name=".player.service.AudioPlayerService"
+            android:name=".playback.service.AudioPlayerService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>

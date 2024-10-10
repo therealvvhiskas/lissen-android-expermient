@@ -4,8 +4,8 @@ import okhttp3.ResponseBody
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfMediaClient
 import org.grakovne.lissen.channel.common.BinaryApiClient
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.FetchTokenApiError
+import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.FetchTokenApiError
 import retrofit2.Response
 import java.io.IOException
 import java.io.InputStream

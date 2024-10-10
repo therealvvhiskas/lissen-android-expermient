@@ -18,7 +18,7 @@ import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
-import org.grakovne.lissen.repository.ApiResult
+import org.grakovne.lissen.channel.common.ApiResult
 import javax.inject.Singleton
 
 class BookCoverFetcher(

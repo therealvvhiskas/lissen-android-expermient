@@ -1,4 +1,4 @@
-package org.grakovne.lissen.player.service
+package org.grakovne.lissen.playback.service
 
 import android.content.Intent
 import androidx.media3.common.MediaItem
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.repository.ApiResult
+import org.grakovne.lissen.channel.common.ApiResult
 import javax.inject.Inject
 
 @AndroidEntryPoint

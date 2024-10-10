@@ -1,4 +1,4 @@
-package org.grakovne.lissen.player
+package org.grakovne.lissen.playback
 
 import android.app.PendingIntent
 import android.content.Context

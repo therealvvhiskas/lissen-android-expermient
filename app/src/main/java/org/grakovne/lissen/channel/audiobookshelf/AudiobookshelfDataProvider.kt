@@ -13,7 +13,7 @@ import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.repository.ApiResult
+import org.grakovne.lissen.channel.common.ApiResult
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton

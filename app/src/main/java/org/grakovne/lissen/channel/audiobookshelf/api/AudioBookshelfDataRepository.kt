@@ -12,8 +12,8 @@ import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.channel.common.ApiClient
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.FetchTokenApiError
+import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.FetchTokenApiError
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package org.grakovne.lissen.player
+package org.grakovne.lissen.playback
 
 import android.content.ComponentName
 import android.content.Context
@@ -17,8 +17,8 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.player.service.AudioPlayerService
-import org.grakovne.lissen.player.service.AudioPlayerService.Companion.BOOK_EXTRA
+import org.grakovne.lissen.playback.service.AudioPlayerService
+import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.BOOK_EXTRA
 import javax.inject.Inject
 import javax.inject.Singleton
 

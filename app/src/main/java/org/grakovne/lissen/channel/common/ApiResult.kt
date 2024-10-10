@@ -1,4 +1,4 @@
-package org.grakovne.lissen.repository
+package org.grakovne.lissen.channel.common
 
 sealed class ApiResult<T> {
     data class Success<T>(val data: T) : ApiResult<T>()
