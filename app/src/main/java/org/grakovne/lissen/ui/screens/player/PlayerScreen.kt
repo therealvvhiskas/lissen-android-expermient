@@ -1,9 +1,15 @@
 package org.grakovne.lissen.ui.screens.player
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,7 +47,7 @@ import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetails
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun PlayerScreen(
     navController: NavController,
@@ -127,18 +133,18 @@ fun PlayerScreen(
                     }
                 }
 
-                if (!isPlaybackReady) {
-                    PlayingQueuePlaceholderComposable(
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-                    PlayingQueueComposable(
-                        viewModel = viewModel,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                Crossfade(targetState = isPlaybackReady) { playbackReady ->
+                    if (playbackReady) {
+                        PlayingQueueComposable(
+                            viewModel = viewModel,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    } else {
+                        PlayingQueuePlaceholderComposable(
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                 }
-
-
             }
         }
     )
