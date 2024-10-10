@@ -30,4 +30,11 @@ sealed class ApiResult<T> {
             is Error -> Error(this.code, this.message)
         }
     }
+
+    suspend fun <R> flatMap(transform: suspend (T) -> ApiResult<R>): ApiResult<R> {
+        return when (this) {
+            is Success -> transform(this.data)
+            is Error -> Error(this.code, this.message)
+        }
+    }
 }
