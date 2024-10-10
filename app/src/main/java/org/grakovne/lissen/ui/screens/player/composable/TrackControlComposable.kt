@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -59,7 +61,9 @@ fun TrackControlComposable(
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
+    var isSliderReady by remember { mutableStateOf(false) }
     val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
+
 
     val draggableTrackProgress by remember {
         derivedStateOf {
@@ -67,35 +71,45 @@ fun TrackControlComposable(
         }
     }
 
+    LaunchedEffect(isPlaybackReady) {
+        if (isPlaybackReady) {
+            sliderPosition = currentPosition.toFloat()
+
+            isSliderReady = true
+        }
+    }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        if (!isPlaybackReady) {
-            PlaceholderSlider()
-        } else {
-            Slider(
-                value = draggableTrackProgress,
-                onValueChange = { newPosition ->
-                    sliderPosition = newPosition
-                    isDragging = true
-                },
-                onValueChangeFinished = {
-                    viewModel.seekTo(sliderPosition)
-                    isDragging = false
-                },
-                valueRange = 0f..(duration),
-                modifier = Modifier
-                    .height(36.dp)
-                    .fillMaxWidth(),
-                colors = SliderDefaults
-                    .colors(
-                        thumbColor = colorScheme.primary,
-                        activeTrackColor = colorScheme.primary
-                    )
-            )
+
+        Crossfade(targetState = isSliderReady) { sliderReady ->
+            if (sliderReady) {
+                Slider(
+                    value = draggableTrackProgress,
+                    onValueChange = { newPosition ->
+                        sliderPosition = newPosition
+                        isDragging = true
+                    },
+                    onValueChangeFinished = {
+                        viewModel.seekTo(sliderPosition)
+                        isDragging = false
+                    },
+                    valueRange = 0f..(duration),
+                    modifier = Modifier
+                        .height(36.dp)
+                        .fillMaxWidth(),
+                    colors = SliderDefaults
+                        .colors(
+                            thumbColor = colorScheme.primary,
+                            activeTrackColor = colorScheme.primary
+                        )
+                )
+            } else {
+                PlaceholderSlider()
+            }
         }
 
         Row(
