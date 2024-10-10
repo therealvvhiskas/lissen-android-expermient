@@ -61,7 +61,6 @@ fun TrackControlComposable(
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
-    var isSliderReady by remember { mutableStateOf(false) }
     val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
 
 
@@ -71,46 +70,33 @@ fun TrackControlComposable(
         }
     }
 
-    LaunchedEffect(isPlaybackReady) {
-        if (isPlaybackReady) {
-            sliderPosition = currentPosition.toFloat()
-
-            isSliderReady = true
-        }
-    }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
 
-        Crossfade(targetState = isSliderReady) { sliderReady ->
-            if (sliderReady) {
-                Slider(
-                    value = draggableTrackProgress,
-                    onValueChange = { newPosition ->
-                        sliderPosition = newPosition
-                        isDragging = true
-                    },
-                    onValueChangeFinished = {
-                        viewModel.seekTo(sliderPosition)
-                        isDragging = false
-                    },
-                    valueRange = 0f..(duration),
-                    modifier = Modifier
-                        .height(36.dp)
-                        .fillMaxWidth(),
-                    colors = SliderDefaults
-                        .colors(
-                            thumbColor = colorScheme.primary,
-                            activeTrackColor = colorScheme.primary
-                        )
+        Slider(
+            value = draggableTrackProgress,
+            onValueChange = { newPosition ->
+                sliderPosition = newPosition
+                isDragging = true
+            },
+            onValueChangeFinished = {
+                viewModel.seekTo(sliderPosition)
+                isDragging = false
+            },
+            valueRange = 0f..(duration),
+            modifier = Modifier
+                .height(36.dp)
+                .fillMaxWidth(),
+            colors = SliderDefaults
+                .colors(
+                    thumbColor = colorScheme.primary,
+                    activeTrackColor = colorScheme.primary
                 )
-            } else {
-                PlaceholderSlider()
-            }
-        }
+        )
+
 
         Row(
             modifier = Modifier
