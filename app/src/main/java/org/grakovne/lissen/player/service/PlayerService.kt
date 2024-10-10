@@ -1,6 +1,8 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
+import android.os.Binder
+import android.os.IBinder
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
@@ -26,14 +28,6 @@ class AudioPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var uriProvider: AudiobookshelfChapterUriProvider
-
-    companion object {
-        const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
-        const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
-        const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
-        
-        const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
-    }
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(
@@ -105,5 +99,13 @@ class AudioPlayerService : MediaSessionService() {
 
         exoPlayer.setMediaItems(chapterSources)
         exoPlayer.seekTo(0,0)
+    }
+
+    companion object {
+        const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
+        const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
+        const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
+
+        const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
     }
 }

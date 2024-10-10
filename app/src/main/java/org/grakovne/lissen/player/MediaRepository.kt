@@ -32,6 +32,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         ComponentName(context, AudioPlayerService::class.java)
     )
 
+    private val _isPlayerReady = MutableLiveData(false)
+    val isPlayerReady: LiveData<Boolean> = _isPlayerReady
+
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
 
@@ -83,12 +86,21 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
                             startUpdatingProgress()
                         }
+
+                        override fun onIsLoadingChanged(isLoading: Boolean) {
+                            if (!isLoading && !controller.isPlaying) {
+                                // Буферизация завершена, и воспроизведение еще не началось
+                                _isPlayerReady.postValue(true) // Сигнал, что плеер готов к воспроизведению
+                            }
+                        }
+
                     })
                 }
 
                 override fun onFailure(t: Throwable) {
                 }
             },
+
             MoreExecutors.directExecutor()
         )
     }
