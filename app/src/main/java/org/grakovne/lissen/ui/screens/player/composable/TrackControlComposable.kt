@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.ui.extensions.hhmmss
 import org.grakovne.lissen.viewmodel.PlayerViewModel
@@ -116,7 +117,8 @@ fun TrackControlComposable(
                     viewModel.previousTrack()
                 }
             },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,

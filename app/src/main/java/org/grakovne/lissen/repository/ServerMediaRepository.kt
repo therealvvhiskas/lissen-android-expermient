@@ -61,8 +61,4 @@ class ServerMediaRepository @Inject constructor(
             apiClient.retrofit.create(AudiobookshelfMediaClient::class.java)
         }
     }
-
-    companion object {
-        val urlPattern = Regex("^(http|https)://.*\$")
-    }
 }

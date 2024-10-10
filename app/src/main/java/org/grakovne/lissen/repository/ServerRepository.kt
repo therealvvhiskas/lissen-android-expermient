@@ -2,6 +2,7 @@ package org.grakovne.lissen.repository
 
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
+import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemIdResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
@@ -36,8 +37,11 @@ class ServerRepository @Inject constructor(
     suspend fun getRecentItems(): ApiResult<RecentListeningResponse> =
         safeApiCall { getClientInstance().getRecentItems() }
 
-    suspend fun getLibraryItem(itemId: String) =
-        safeApiCall { getClientInstance().getLibraryItem(itemId) }
+    suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> {
+        val bookDetails = safeApiCall { getClientInstance().getLibraryItem(itemId) }
+
+        return safeApiCall { getClientInstance().getLibraryItem(itemId) }
+    }
 
     fun logout() {
         secureClient = null

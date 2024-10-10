@@ -151,7 +151,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     fun previousTrack() {
         val previousIndex = mediaController.currentMediaItemIndex - 1
 
-        if (previousIndex > 0) {
+        if (previousIndex >= 0) {
             mediaController.seekTo(previousIndex, 0)
         }
     }

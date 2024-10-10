@@ -110,8 +110,7 @@ fun PlayerScreen(
                     ) {
 
                         if (!isBookDetailsReady) {
-                            TrackDetailsPlaceholderComposable(
-                            )
+                            TrackDetailsPlaceholderComposable()
                         } else {
                             TrackDetailsComposable(
                                 viewModel = viewModel,
