@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import org.grakovne.lissen.ui.screens.AppScreen
+import org.grakovne.lissen.ui.navigation.AppNavHost
 import org.grakovne.lissen.ui.theme.LissenTheme
 
 @AndroidEntryPoint
@@ -18,7 +19,7 @@ class AppActivity : ComponentActivity() {
             enableEdgeToEdge()
             setContent {
                 LissenTheme {
-                    AppScreen()
+                    AppNavHost(navController = rememberNavController())
                 }
             }
         }
