@@ -42,7 +42,9 @@ class AudioBookshelfDataRepository @Inject constructor(
 
 
     suspend fun getItemIdProgress(itemId: String): ApiResult<MediaProgressResponse> =
-        safeApiCall { getClientInstance().getLibraryItemProgress(itemId) }
+        safeApiCall {
+            getClientInstance().getLibraryItemProgress(itemId)
+        }
 
     suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
         safeApiCall { getClientInstance().getLibraryItem(itemId) }

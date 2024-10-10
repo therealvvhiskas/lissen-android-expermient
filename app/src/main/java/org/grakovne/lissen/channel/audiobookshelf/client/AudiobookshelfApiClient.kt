@@ -21,7 +21,7 @@ interface AudiobookshelfApiClient {
     @GET("/api/me/listening-stats")
     suspend fun getRecentItems(): Response<RecentListeningResponse>
 
-    @GET("/api/me/progress/{itemId")
+    @GET("/api/me/progress/{itemId}")
     suspend fun getLibraryItemProgress(
         @Path("itemId") itemId: String
     ): Response<MediaProgressResponse>

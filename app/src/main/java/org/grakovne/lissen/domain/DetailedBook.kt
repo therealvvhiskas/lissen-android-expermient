@@ -20,4 +20,4 @@ data class MediaProgress(
     val currentTime: Double,
     val isFinished: Boolean,
     val lastUpdate: Long
-)
+) : Serializable

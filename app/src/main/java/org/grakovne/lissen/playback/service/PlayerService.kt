@@ -14,6 +14,8 @@ import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.domain.BookChapter
+import org.grakovne.lissen.domain.MediaProgress
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -106,8 +108,25 @@ class AudioPlayerService : MediaSessionService() {
                 }
 
                 exoPlayer.setMediaItems(chapterSources)
-                exoPlayer.seekTo(0, 0)
+                setPlaybackProgress(book.chapters, book.progress)
             }
+    }
+
+    private fun setPlaybackProgress(
+        chapters: List<BookChapter>,
+        progress: MediaProgress?
+    ) {
+        when (progress) {
+            null -> exoPlayer.seekTo(0, 0)
+            else -> {
+                val totalDuration =
+                    chapters.runningFold(0.0) { acc, chapter -> acc + chapter.duration }
+                val targetChapter = totalDuration.indexOfFirst { it > progress.currentTime }
+                val chapterProgress = progress.currentTime - totalDuration[targetChapter - 1]
+
+                exoPlayer.seekTo(targetChapter - 1, (chapterProgress * 1000).toLong())
+            }
+        }
     }
 
     companion object {
