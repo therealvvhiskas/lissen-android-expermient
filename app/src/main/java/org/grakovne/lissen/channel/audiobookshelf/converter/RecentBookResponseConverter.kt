@@ -1,7 +1,7 @@
-package org.grakovne.lissen.converter
+package org.grakovne.lissen.channel.audiobookshelf.converter
 
-import org.grakovne.lissen.client.audiobookshelf.model.Author
-import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.Author
+import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.domain.RecentBook
 import javax.inject.Inject
 import javax.inject.Singleton

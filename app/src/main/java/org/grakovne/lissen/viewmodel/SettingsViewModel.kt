@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.converter.LibraryResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.ApiResult
 import javax.inject.Inject
 

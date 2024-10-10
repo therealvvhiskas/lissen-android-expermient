@@ -260,7 +260,7 @@ fun LibraryScreen(
 
                     item(key = "library_list") {
                         if (books.isEmpty()) {
-                            LibraryPlaceholderComposable(modifier = Modifier)
+                            LibraryPlaceholderComposable()
                         } else {
                             LibraryComposable(
                                 books = books,

@@ -1,7 +1,7 @@
-package org.grakovne.lissen.converter
+package org.grakovne.lissen.channel.audiobookshelf.converter
 
-import org.grakovne.lissen.client.audiobookshelf.model.Author
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemIdResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.Author
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedBook
 import javax.inject.Inject

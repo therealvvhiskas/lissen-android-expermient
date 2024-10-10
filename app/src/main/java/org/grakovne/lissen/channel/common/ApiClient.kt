@@ -1,4 +1,4 @@
-package org.grakovne.lissen.client.audiobookshelf
+package org.grakovne.lissen.channel.common
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

@@ -1,12 +1,12 @@
-package org.grakovne.lissen.client
+package org.grakovne.lissen.channel.audiobookshelf.client
 
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemIdResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LoginRequest
-import org.grakovne.lissen.client.audiobookshelf.model.LoginResponse
-import org.grakovne.lissen.client.audiobookshelf.model.MediaProgressResponse
-import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
+import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

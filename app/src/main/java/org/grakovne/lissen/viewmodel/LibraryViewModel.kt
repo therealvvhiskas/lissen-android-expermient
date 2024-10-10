@@ -10,12 +10,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.converter.LibraryItemResponseConverter
-import org.grakovne.lissen.converter.RecentBookResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import javax.inject.Inject
 

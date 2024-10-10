@@ -1,15 +1,15 @@
-package org.grakovne.lissen.provider.audiobookshelf
+package org.grakovne.lissen.channel.audiobookshelf
 
 import android.net.Uri
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemIdResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryItemsResponse
-import org.grakovne.lissen.client.audiobookshelf.model.LibraryResponse
-import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.audiobookshelf.AudioBookshelfDataRepository
-import org.grakovne.lissen.repository.audiobookshelf.AudioBookshelfMediaRepository
+import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
+import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton

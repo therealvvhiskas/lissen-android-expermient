@@ -17,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
-import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.ApiResult
 import javax.inject.Singleton
 

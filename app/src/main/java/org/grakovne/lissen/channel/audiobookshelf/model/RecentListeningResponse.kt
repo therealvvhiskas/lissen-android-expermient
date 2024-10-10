@@ -1,4 +1,4 @@
-package org.grakovne.lissen.client.audiobookshelf.model
+package org.grakovne.lissen.channel.audiobookshelf.model
 
 data class RecentListeningResponse(
     val items: Map<String, Item>

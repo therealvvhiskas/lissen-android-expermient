@@ -21,8 +21,7 @@ import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun LibraryPlaceholderComposable(
-    itemCount: Int = 15,
-    modifier: Modifier
+    itemCount: Int = 15
 ) {
     repeat(itemCount) { LibraryItemPlaceholderComposable() }
 }
