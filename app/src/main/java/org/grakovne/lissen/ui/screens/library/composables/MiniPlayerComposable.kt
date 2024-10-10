@@ -1,7 +1,6 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,16 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cloud
-import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Pause
-import androidx.compose.material.icons.outlined.PauseCircle
-import androidx.compose.material.icons.outlined.PlayCircle
-import androidx.compose.material.icons.outlined.SkipNext
-import androidx.compose.material.icons.rounded.Pause
-import androidx.compose.material.icons.rounded.PlayCircle
-import androidx.compose.material.icons.rounded.SkipNext
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,10 +26,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,7 +38,6 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.ui.extensions.hhmm
 import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -89,7 +76,7 @@ fun MiniPlayerComposable(
                 contentDescription = "${book.title} cover",
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(48.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(4.dp)),
                 error = painterResource(R.drawable.fallback_cover)
@@ -124,11 +111,18 @@ fun MiniPlayerComposable(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayCircle,
-                    contentDescription = "play",
-                    modifier = Modifier.size(32.dp)
-                )
+                Row {
+
+                    IconButton(
+                        onClick = { playerViewModel.togglePlayPause() }
+                    ) {
+                        Icon(
+                            imageVector = if (isPlaying) Icons.Outlined.Pause else Icons.Filled.PlayArrow,
+                            contentDescription = if (isPlaying) "Pause" else "Play",
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+                }
             }
         }
     }
