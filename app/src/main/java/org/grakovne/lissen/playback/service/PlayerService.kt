@@ -83,38 +83,29 @@ class AudioPlayerService : MediaSessionService() {
     private fun setPlaybackQueue(book: DetailedBook) {
         exoPlayer.playWhenReady = false
 
-        CoroutineScope(Dispatchers.Main)
-            .launch {
-                val cover = withContext(Dispatchers.IO) {
-                    when (val response = dataProvider.fetchBookCover(book.id)) {
-                        is ApiResult.Error -> null
-                        is ApiResult.Success -> response.data.use { it.readBytes() }
-                    }
-                }
-
-                val chapterSources = book.chapters.mapIndexed { index, chapter ->
-                    MediaItem.Builder()
-                        .setMediaId(chapter.id)
-                        .setUri(dataProvider.provideUri(book.id, chapter.id))
-                        .setTag(book)
-                        .setMediaMetadata(
-                            MediaMetadata.Builder()
-                                .setTitle(chapter.name)
-                                .setArtist(book.title)
-                                .setTrackNumber(index)
-                                .setArtworkData(cover, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
-                                .build()
-                        )
+        val chapterSources = book.chapters.mapIndexed { index, chapter ->
+            MediaItem.Builder()
+                .setMediaId(chapter.id)
+                .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                .setTag(book)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(chapter.name)
+                        .setArtist(book.title)
+                        .setTrackNumber(index)
+                        .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
                         .build()
-                }
+                )
+                .build()
+        }
 
-                exoPlayer.setMediaItems(chapterSources)
-                setPlaybackProgress(book.chapters, book.progress)
+        exoPlayer.setMediaItems(chapterSources)
+        setPlaybackProgress(book.chapters, book.progress)
 
-                LocalBroadcastManager
-                    .getInstance(baseContext)
-                    .sendBroadcast(Intent(PLAYBACK_READY))
-            }
+        LocalBroadcastManager
+            .getInstance(baseContext)
+            .sendBroadcast(Intent(PLAYBACK_READY))
+
     }
 
     private fun setPlaybackProgress(

@@ -30,7 +30,7 @@ class AudiobookshelfDataProvider @Inject constructor(
 
     private val preferences = LissenSharedPreferences.getInstance()
 
-    fun provideUri(
+    fun provideChapterUri(
         libraryItemId: String,
         chapterId: String
     ): Uri = Uri.parse(preferences.getHost())
@@ -40,6 +40,17 @@ class AudiobookshelfDataProvider @Inject constructor(
         .appendPath(libraryItemId)
         .appendPath("file")
         .appendPath(chapterId)
+        .appendQueryParameter("token", preferences.getToken())
+        .build()
+
+    fun provideChapterCoverUri(
+        libraryItemId: String
+    ): Uri = Uri.parse(preferences.getHost())
+        .buildUpon()
+        .appendPath("api")
+        .appendPath("items")
+        .appendPath(libraryItemId)
+        .appendPath("cover")
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
