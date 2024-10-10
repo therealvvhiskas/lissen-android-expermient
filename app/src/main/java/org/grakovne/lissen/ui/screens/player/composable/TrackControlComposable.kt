@@ -1,6 +1,10 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Forward30
 import androidx.compose.material.icons.rounded.PauseCircleFilled
@@ -32,7 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.valentinilk.shimmer.shimmer
 import org.grakovne.lissen.ui.extensions.hhmmss
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -45,6 +53,7 @@ fun TrackControlComposable(
     val currentPosition by viewModel.currentPosition.observeAsState(0L)
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
 
+    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
 
@@ -58,32 +67,36 @@ fun TrackControlComposable(
         }
     }
 
+
     Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-
-        Slider(
-            value = draggableTrackProgress,
-            onValueChange = { newPosition ->
-                sliderPosition = newPosition
-                isDragging = true
-            },
-            onValueChangeFinished = {
-                viewModel.seekTo(sliderPosition)
-                isDragging = false
-            },
-            valueRange = 0f..(duration),
-            modifier = Modifier
-                .height(36.dp)
-                .fillMaxWidth(),
-            colors = SliderDefaults
-                .colors(
-                    thumbColor = colorScheme.primary,
-                    activeTrackColor = colorScheme.primary
-                )
-        )
+        if (!isPlaybackReady) {
+            PlaceholderSlider()
+        } else {
+            Slider(
+                value = draggableTrackProgress,
+                onValueChange = { newPosition ->
+                    sliderPosition = newPosition
+                    isDragging = true
+                },
+                onValueChangeFinished = {
+                    viewModel.seekTo(sliderPosition)
+                    isDragging = false
+                },
+                valueRange = 0f..(duration),
+                modifier = Modifier
+                    .height(36.dp)
+                    .fillMaxWidth(),
+                colors = SliderDefaults
+                    .colors(
+                        thumbColor = colorScheme.primary,
+                        activeTrackColor = colorScheme.primary
+                    )
+            )
+        }
 
         Row(
             modifier = Modifier
@@ -184,4 +197,17 @@ fun TrackControlComposable(
             )
         }
     }
+}
+
+
+@Composable
+fun PlaceholderSlider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(36.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .shimmer()
+            .background(Color.Gray)
+    )
 }
