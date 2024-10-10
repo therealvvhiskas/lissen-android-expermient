@@ -1,16 +1,21 @@
 package org.grakovne.lissen.player.service
 
 import android.content.Intent
-import android.os.Binder
-import android.os.IBinder
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.grakovne.lissen.client.AudiobookshelfChapterUriProvider
 import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.repository.ApiResult
 import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Inject
 
@@ -80,25 +85,34 @@ class AudioPlayerService : MediaSessionService() {
     private fun setPlaybackQueue(book: DetailedBook) {
         exoPlayer.playWhenReady = false
 
-        val chapterSources = book
-            .chapters
-            .mapIndexed { index, chapter ->
-                MediaItem.Builder()
-                    .setMediaId(chapter.id)
-                    .setUri(uriProvider.provideUri(book.id, chapter.id))
-                    .setTag(book)
-                    .setMediaMetadata(
-                        MediaMetadata.Builder()
-                            .setTitle(chapter.name)
-                            .setArtist(book.title)
-                            .setTrackNumber(index)
-                            .build()
-                    )
-                    .build()
-            }
+        CoroutineScope(Dispatchers.Main)
+            .launch {
+                val cover = withContext(Dispatchers.IO) {
+                    when (val response = mediaRepository.fetchBookCover(book.id)) {
+                        is ApiResult.Error -> null
+                        is ApiResult.Success -> response.data.use { it.readBytes() }
+                    }
+                }
 
-        exoPlayer.setMediaItems(chapterSources)
-        exoPlayer.seekTo(0,0)
+                val chapterSources = book.chapters.mapIndexed { index, chapter ->
+                    MediaItem.Builder()
+                        .setMediaId(chapter.id)
+                        .setUri(uriProvider.provideUri(book.id, chapter.id))
+                        .setTag(book)
+                        .setMediaMetadata(
+                            MediaMetadata.Builder()
+                                .setTitle(chapter.name)
+                                .setArtist(book.title)
+                                .setTrackNumber(index)
+                                .setArtworkData(cover, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                                .build()
+                        )
+                        .build()
+                }
+
+                exoPlayer.setMediaItems(chapterSources)
+                exoPlayer.seekTo(0, 0)
+            }
     }
 
     companion object {
