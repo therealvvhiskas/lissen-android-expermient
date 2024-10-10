@@ -79,6 +79,7 @@ class AudioPlayerService : MediaSessionService() {
         mediaSession.release()
         exoPlayer.release()
         exoPlayer.clearMediaItems()
+
         super.onDestroy()
     }
 
