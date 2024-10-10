@@ -205,7 +205,7 @@ fun LibraryScreen(
             playingBook?.let {
                 MiniPlayerComposable(
                     navController = navController,
-                    currentBook = it,
+                    book = it,
                     imageLoader = imageLoader,
                     playerViewModel = playerViewModel
                 )

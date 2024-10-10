@@ -2,15 +2,20 @@ package org.grakovne.lissen.ui.screens.library.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PauseCircle
 import androidx.compose.material.icons.outlined.PlayCircle
@@ -45,6 +50,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.ui.extensions.hhmm
 import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -52,87 +58,77 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun MiniPlayerComposable(
     navController: NavController,
     modifier: Modifier = Modifier,
-    currentBook: DetailedBook,
+    book: DetailedBook,
     imageLoader: ImageLoader,
     playerViewModel: PlayerViewModel
 ) {
     val isPlaying: Boolean by playerViewModel.isPlaying.observeAsState(false)
 
     Surface(
-        color = Color.Transparent,
+        shape = RoundedCornerShape(8.dp),
+        shadowElevation = 4.dp,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clickable { navController.navigate("player_screen/${book.id}") }
     ) {
-        Column {
-            Row(
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val context = LocalContext.current
+            val imageRequest = remember(book.id) {
+                ImageRequest.Builder(context)
+                    .data(book.id)
+                    .build()
+            }
+
+            AsyncShimmeringImage(
+                imageRequest = imageRequest,
+                imageLoader = imageLoader,
+                contentDescription = "${book.title} cover",
+                contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onVerticalDrag = { _, dragAmount ->
-                                if (dragAmount < 0) {
-                                    navController.navigate("player_screen/${currentBook.id}")
-                                }
-                            }
-                        )
-                    }
-                    .clickable { navController.navigate("player_screen/${currentBook.id}") }
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .size(64.dp)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(4.dp)),
+                error = painterResource(R.drawable.fallback_cover)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                val context = LocalContext.current
-                val imageRequest = remember(currentBook.id) {
-                    ImageRequest
-                        .Builder(context)
-                        .data(currentBook.id)
-                        .crossfade(300)
-                        .build()
-                }
-
-                AsyncShimmeringImage(
-                    imageRequest = imageRequest,
-                    imageLoader = imageLoader,
-                    contentDescription = "${currentBook.title} cover",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    error = painterResource(R.drawable.fallback_cover)
+                Text(
+                    text = book.title,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    ),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = book.author,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(
-                        text = currentBook.title,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = currentBook.author,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                IconButton(
-                    onClick = { playerViewModel.togglePlayPause() }
-                ) {
-                    Icon(
-                        imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayCircle,
-                        contentDescription = if (isPlaying) "Pause" else "Play",
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Icons.Rounded.Pause else Icons.Rounded.PlayCircle,
+                    contentDescription = "play",
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
     }
