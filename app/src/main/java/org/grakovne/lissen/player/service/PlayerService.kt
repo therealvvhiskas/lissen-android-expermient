@@ -28,10 +28,12 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var uriProvider: AudiobookshelfChapterUriProvider
 
     companion object {
-        const val ACTION_START_FOREGROUND = "org.grakovne.lissen.player.service.START_FOREGROUND"
-        const val ACTION_STOP_FOREGROUND = "org.grakovne.lissen.player.service.STOP_FOREGROUND"
+        const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
+        const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
+        const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
     }
 
+    @Suppress("DEPRECATION")
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
@@ -40,16 +42,24 @@ class AudioPlayerService : MediaSessionService() {
         super.onStartCommand(intent, flags, startId)
 
         return when (intent?.action) {
-            ACTION_START_FOREGROUND -> {
-                intent
-                    .getSerializableExtra("BOOK")
-                    ?.let { setPlaybackQueue(it as DetailedBook) }
+            ACTION_PLAY -> {
+                exoPlayer.playWhenReady = true
+
                 START_STICKY
             }
 
-            ACTION_STOP_FOREGROUND -> {
+            ACTION_PAUSE -> {
+                exoPlayer.playWhenReady = false
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
+
+                START_NOT_STICKY
+            }
+
+            ACTION_SET_PLAYBACK -> {
+                intent
+                    .getSerializableExtra("BOOK")
+                    ?.let { setPlaybackQueue(it as DetailedBook) }
 
                 START_NOT_STICKY
             }

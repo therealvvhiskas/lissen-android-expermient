@@ -39,7 +39,7 @@ class PlayerViewModel @Inject constructor(
                     .getLibraryItem(bookId)
                     .fold(
                         onSuccess = {
-                            mediaRepository.setPlayingBook(libraryItemIdResponseConverter.apply(it))
+                            mediaRepository.preparePlayingBook(libraryItemIdResponseConverter.apply(it))
                         },
                         onFailure = {
                             // ahaha, loshara

@@ -40,7 +40,6 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _currentMediaItemIndex = MutableLiveData<Int>()
     val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
 
-    private val _playbackStarted: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
     private val _playingBook: MutableLiveData<DetailedBook> = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
 
@@ -54,7 +53,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    fun setPlayingBook(book: DetailedBook) {
+    fun preparePlayingBook(book: DetailedBook) {
         _playingBook.postValue(book)
 
         if (::mediaController.isInitialized && _playingBook.value != book) {
@@ -97,30 +96,30 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun play() {
-        mediaController.playWhenReady = true
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_PLAY
+        }
+
+        ContextCompat.startForegroundService(context, intent)
     }
 
     private fun preparePlay(book: DetailedBook) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_START_FOREGROUND
+            action = AudioPlayerService.ACTION_SET_PLAYBACK
             putExtra("BOOK", book)
-
-            _playbackStarted.postValue(true)
-            _playingBook.postValue(book)
         }
 
-        ContextCompat.startForegroundService(context, intent)
+        _playingBook.postValue(book)
+        context.startService(intent)
     }
 
 
     fun pauseAudio() {
-        mediaController.pause()
-
         val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_STOP_FOREGROUND
+            action = AudioPlayerService.ACTION_PAUSE
         }
 
-        ContextCompat.startForegroundService(context, intent)
+        context.startService(intent)
     }
 
     fun nextTrack() {
