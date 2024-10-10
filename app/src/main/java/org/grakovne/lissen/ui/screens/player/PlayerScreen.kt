@@ -2,7 +2,6 @@ package org.grakovne.lissen.ui.screens.player
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -43,7 +42,7 @@ import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetails
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
     navController: NavController,
