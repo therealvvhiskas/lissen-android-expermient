@@ -84,6 +84,8 @@ class AudioPlayerService : MediaSessionService() {
     }
 
     private fun setPlaybackQueue(book: DetailedBook) {
+        exoPlayer.playWhenReady = false
+
         val chapterSources = book
             .chapters
             .mapIndexed { index, chapter ->
@@ -102,7 +104,6 @@ class AudioPlayerService : MediaSessionService() {
             }
 
         exoPlayer.setMediaItems(chapterSources)
-        exoPlayer.playWhenReady = false
         exoPlayer.seekTo(0,0)
     }
 }
