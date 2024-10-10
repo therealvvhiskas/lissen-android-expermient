@@ -1,15 +1,19 @@
 package org.grakovne.lissen.channel.audiobookshelf
 
 import android.net.Uri
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
+import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemIdResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
+import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
-import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,7 +21,11 @@ import javax.inject.Singleton
 @Singleton
 class AudiobookshelfDataProvider @Inject constructor(
     private val dataRepository: AudioBookshelfDataRepository,
-    private val mediaRepository: AudioBookshelfMediaRepository
+    private val mediaRepository: AudioBookshelfMediaRepository,
+    private val recentBookResponseConverter: RecentBookResponseConverter,
+    private val libraryItemResponseConverter: LibraryItemResponseConverter,
+    private val libraryResponseConverter: LibraryResponseConverter,
+    private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
 ) {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -41,15 +49,23 @@ class AudiobookshelfDataProvider @Inject constructor(
 
     suspend fun fetchLibraryItems(
         libraryId: String
-    ): ApiResult<LibraryItemsResponse> = dataRepository.fetchLibraryItems(libraryId)
+    ): ApiResult<List<Book>> = dataRepository
+        .fetchLibraryItems(libraryId)
+        .map { libraryItemResponseConverter.apply(it) }
 
-    suspend fun fetchLibraries(): ApiResult<LibraryResponse> = dataRepository.fetchLibraries()
+    suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
+        .fetchLibraries()
+        .map { libraryResponseConverter.apply(it) }
 
-    suspend fun getRecentItems(): ApiResult<RecentListeningResponse> =
-        dataRepository.getRecentItems()
+    suspend fun getRecentItems(): ApiResult<List<RecentBook>> =
+        dataRepository
+            .getRecentItems()
+            .map { recentBookResponseConverter.apply(it) }
 
-    suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
-        dataRepository.getLibraryItem(itemId)
+    suspend fun getLibraryItem(itemId: String): ApiResult<DetailedBook> =
+        dataRepository
+            .getLibraryItem(itemId)
+            .map { libraryItemIdResponseConverter.apply(it) }
 
     suspend fun authorize(
         host: String,

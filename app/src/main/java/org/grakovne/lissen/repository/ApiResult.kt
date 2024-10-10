@@ -23,4 +23,11 @@ sealed class ApiResult<T> {
             is Error -> onFailure(this)
         }
     }
+
+    suspend fun <R> map(transform: suspend (T) -> R): ApiResult<R> {
+        return when (this) {
+            is Success -> Success(transform(this.data))
+            is Error -> Error(this.code, this.message)
+        }
+    }
 }

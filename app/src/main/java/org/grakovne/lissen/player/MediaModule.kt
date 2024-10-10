@@ -8,9 +8,7 @@ import androidx.media3.session.MediaSession
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ServiceScoped
 import dagger.hilt.components.SingletonComponent
 import org.grakovne.lissen.ui.activity.AppActivity
 import javax.inject.Singleton

@@ -11,8 +11,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.repository.ApiResult
 import javax.inject.Inject
 

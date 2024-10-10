@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.FetchTokenApiError
 import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
 import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
@@ -117,10 +117,9 @@ class LoginViewModel @Inject constructor(
             .fold(
                 onSuccess = {
                     it
-                        .libraries
                         .find { item -> item.id == account.preferredLibraryId }
                         ?.let { library ->
-                            preferences.savePreferredLibrary(Library(library.id, library.name))
+                            preferences.savePreferredLibrary(Library(library.id, library.title))
                         }
                 },
                 onFailure = {

@@ -7,10 +7,10 @@ data class DetailedBook(
     val title: String,
     val author: String,
     val chapters: List<BookChapter>
-): Serializable
+) : Serializable
 
 data class BookChapter(
     val id: String,
     val name: String,
     val duration: Double,
-): Serializable
+) : Serializable

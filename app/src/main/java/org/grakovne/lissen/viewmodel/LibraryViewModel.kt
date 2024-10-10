@@ -10,20 +10,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
-import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider,
-    private val recentBookResponseConverter: RecentBookResponseConverter,
-    private val libraryItemResponseConverter: LibraryItemResponseConverter
+    private val dataProvider: AudiobookshelfDataProvider
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -65,7 +61,7 @@ class LibraryViewModel @Inject constructor(
                 .getRecentItems()
 
             response.fold(
-                onSuccess = { _recentBooks.value = recentBookResponseConverter.apply(it) },
+                onSuccess = { _recentBooks.value = it },
                 onFailure = {}
             )
         }
@@ -79,7 +75,7 @@ class LibraryViewModel @Inject constructor(
                 )
 
         response.fold(
-            onSuccess = { _books.value = libraryItemResponseConverter.apply(it) },
+            onSuccess = { _books.value = it },
             onFailure = {
                 // fetch local cached books
             }

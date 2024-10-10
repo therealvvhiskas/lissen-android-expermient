@@ -1,14 +1,14 @@
 package org.grakovne.lissen.channel.audiobookshelf.api
 
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfApiClient
-import org.grakovne.lissen.channel.common.ApiClient
+import org.grakovne.lissen.channel.audiobookshelf.converter.LoginResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
-import org.grakovne.lissen.channel.audiobookshelf.converter.LoginResponseConverter
+import org.grakovne.lissen.channel.common.ApiClient
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.repository.ApiResult

@@ -19,14 +19,14 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                 .media
                 .audioFiles
                 .map {
-                BookChapter(
-                    id = it.ino,
-                    name = it.metaTags
-                        ?.tagTitle
-                        ?: (it.metadata.filename.removeSuffix(it.metadata.ext)),
-                    duration = it.duration
-                )
-            }
+                    BookChapter(
+                        id = it.ino,
+                        name = it.metaTags
+                            ?.tagTitle
+                            ?: (it.metadata.filename.removeSuffix(it.metadata.ext)),
+                        duration = it.duration
+                    )
+                }
         )
     }
 }

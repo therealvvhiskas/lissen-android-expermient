@@ -2,7 +2,6 @@ package org.grakovne.lissen.ui.screens.player.composable
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,10 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.domain.BookChapter
-import org.grakovne.lissen.ui.extensions.hhmm
-import org.grakovne.lissen.ui.extensions.hhmmss
 import org.grakovne.lissen.ui.extensions.mmssOver60
-import org.grakovne.lissen.ui.screens.player.Track
 
 @Composable
 fun PlaylistItemComposable(
