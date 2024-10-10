@@ -54,7 +54,7 @@ class AudioPlayerService : MediaSessionService() {
             ACTION_PAUSE -> {
                 exoPlayer.playWhenReady = false
 
-                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopForeground(true)
                 stopSelf()
 
                 START_NOT_STICKY
@@ -79,6 +79,7 @@ class AudioPlayerService : MediaSessionService() {
     override fun onDestroy() {
         mediaSession.release()
         exoPlayer.release()
+        exoPlayer.clearMediaItems()
         super.onDestroy()
     }
 
