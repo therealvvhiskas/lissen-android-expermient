@@ -1,9 +1,11 @@
 package org.grakovne.lissen.playback.service
 
 import android.content.Intent
+import androidx.annotation.OptIn
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -80,6 +82,7 @@ class AudioPlayerService : MediaSessionService() {
         super.onDestroy()
     }
 
+    @OptIn(UnstableApi::class)
     private fun setPlaybackQueue(book: DetailedBook) {
         exoPlayer.playWhenReady = false
 
@@ -93,6 +96,7 @@ class AudioPlayerService : MediaSessionService() {
                         .setTitle(chapter.name)
                         .setArtist(book.title)
                         .setTrackNumber(index)
+                        .setDurationMs(chapter.duration.toLong() * 1000)
                         .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
                         .build()
                 )
