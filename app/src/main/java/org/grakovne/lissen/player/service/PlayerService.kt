@@ -9,14 +9,11 @@ import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.client.AudiobookshelfChapterUriProvider
 import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,10 +26,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var mediaSession: MediaSession
 
     @Inject
-    lateinit var mediaRepository: ServerMediaRepository
-
-    @Inject
-    lateinit var uriProvider: AudiobookshelfChapterUriProvider
+    lateinit var dataProvider: AudiobookshelfDataProvider
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(
@@ -89,7 +83,7 @@ class AudioPlayerService : MediaSessionService() {
         CoroutineScope(Dispatchers.Main)
             .launch {
                 val cover = withContext(Dispatchers.IO) {
-                    when (val response = mediaRepository.fetchBookCover(book.id)) {
+                    when (val response = dataProvider.fetchBookCover(book.id)) {
                         is ApiResult.Error -> null
                         is ApiResult.Success -> response.data.use { it.readBytes() }
                     }
@@ -98,7 +92,7 @@ class AudioPlayerService : MediaSessionService() {
                 val chapterSources = book.chapters.mapIndexed { index, chapter ->
                     MediaItem.Builder()
                         .setMediaId(chapter.id)
-                        .setUri(uriProvider.provideUri(book.id, chapter.id))
+                        .setUri(dataProvider.provideUri(book.id, chapter.id))
                         .setTag(book)
                         .setMediaMetadata(
                             MediaMetadata.Builder()

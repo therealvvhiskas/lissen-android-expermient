@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.FetchTokenApiError
 import org.grakovne.lissen.repository.FetchTokenApiError.InternalError
 import org.grakovne.lissen.repository.FetchTokenApiError.InvalidCredentialsHost
@@ -18,12 +19,11 @@ import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsHost
 import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsPassword
 import org.grakovne.lissen.repository.FetchTokenApiError.MissingCredentialsUsername
 import org.grakovne.lissen.repository.FetchTokenApiError.Unauthorized
-import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repository: ServerRepository
+    private val dataProvider: AudiobookshelfDataProvider,
 ) : ViewModel() {
 
     private val preferences = LissenSharedPreferences.getInstance()
@@ -78,7 +78,7 @@ class LoginViewModel @Inject constructor(
                 return@launch
             }
 
-            val response = repository.authorize(host, username, password)
+            val response = dataProvider.authorize(host, username, password)
 
             val result = response
                 .foldAsync(
@@ -112,7 +112,7 @@ class LoginViewModel @Inject constructor(
             token = account.token
         )
 
-        repository
+        dataProvider
             .fetchLibraries()
             .fold(
                 onSuccess = {

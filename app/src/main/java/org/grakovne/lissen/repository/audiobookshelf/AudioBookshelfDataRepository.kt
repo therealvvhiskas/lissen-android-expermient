@@ -1,4 +1,4 @@
-package org.grakovne.lissen.repository
+package org.grakovne.lissen.repository.audiobookshelf
 
 import org.grakovne.lissen.client.AudiobookshelfApiClient
 import org.grakovne.lissen.client.audiobookshelf.ApiClient
@@ -11,13 +11,15 @@ import org.grakovne.lissen.client.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.converter.LoginResponseConverter
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
+import org.grakovne.lissen.repository.ApiResult
+import org.grakovne.lissen.repository.FetchTokenApiError
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ServerRepository @Inject constructor(
+class AudioBookshelfDataRepository @Inject constructor(
     private val loginResponseConverter: LoginResponseConverter
 ) {
     private val preferences = LissenSharedPreferences.getInstance()
@@ -37,21 +39,15 @@ class ServerRepository @Inject constructor(
     suspend fun getRecentItems(): ApiResult<RecentListeningResponse> =
         safeApiCall { getClientInstance().getRecentItems() }
 
-    suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> {
-        val bookDetails = safeApiCall { getClientInstance().getLibraryItem(itemId) }
-
-        return safeApiCall { getClientInstance().getLibraryItem(itemId) }
-    }
-
-    fun logout() {
-        secureClient = null
-    }
+    suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
+        safeApiCall { getClientInstance().getLibraryItem(itemId) }
 
     suspend fun authorize(
         host: String,
         username: String,
         password: String
     ): ApiResult<UserAccount> {
+        secureClient = null
 
         if (host.isBlank() || !urlPattern.matches(host)) {
             return ApiResult.Error(FetchTokenApiError.InvalidCredentialsHost)

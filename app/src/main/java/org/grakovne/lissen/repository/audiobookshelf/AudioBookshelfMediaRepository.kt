@@ -1,9 +1,11 @@
-package org.grakovne.lissen.repository
+package org.grakovne.lissen.repository.audiobookshelf
 
 import okhttp3.ResponseBody
 import org.grakovne.lissen.client.AudiobookshelfMediaClient
 import org.grakovne.lissen.client.audiobookshelf.BinaryApiClient
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
+import org.grakovne.lissen.repository.ApiResult
+import org.grakovne.lissen.repository.FetchTokenApiError
 import retrofit2.Response
 import java.io.IOException
 import java.io.InputStream
@@ -11,7 +13,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ServerMediaRepository @Inject constructor(
+class AudioBookshelfMediaRepository @Inject constructor(
 ) {
     private val preferences = LissenSharedPreferences.getInstance()
 

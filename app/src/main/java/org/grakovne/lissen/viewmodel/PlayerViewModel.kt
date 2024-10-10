@@ -9,12 +9,12 @@ import kotlinx.coroutines.launch
 import org.grakovne.lissen.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.player.MediaRepository
-import org.grakovne.lissen.repository.ServerRepository
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val serverRepository: ServerRepository,
+    private val dataProvider: AudiobookshelfDataProvider,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
@@ -40,7 +40,7 @@ class PlayerViewModel @Inject constructor(
 
         viewModelScope
             .launch {
-                serverRepository
+                dataProvider
                     .getLibraryItem(bookId)
                     .fold(
                         onSuccess = {

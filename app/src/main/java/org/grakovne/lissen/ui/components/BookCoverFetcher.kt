@@ -17,18 +17,18 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.ServerMediaRepository
 import javax.inject.Singleton
 
 class BookCoverFetcher(
-    private val repository: ServerMediaRepository,
+    private val dataProvider: AudiobookshelfDataProvider,
     private val uri: Uri,
     private val context: Context
 ) : Fetcher {
 
     override suspend fun fetch(): FetchResult? =
-        when (val response = repository.fetchBookCover(uri.toString())) {
+        when (val response = dataProvider.fetchBookCover(uri.toString())) {
             is ApiResult.Error -> null
             is ApiResult.Success -> {
                 val stream = response.data
@@ -45,12 +45,12 @@ class BookCoverFetcher(
 }
 
 class BookCoverFetcherFactory(
-    private val repository: ServerMediaRepository,
+    private val dataProvider: AudiobookshelfDataProvider,
     private val context: Context
 ) : Fetcher.Factory<Uri> {
 
     override fun create(data: Uri, options: Options, imageLoader: ImageLoader) =
-        BookCoverFetcher(repository, data, context)
+        BookCoverFetcher(dataProvider, data, context)
 }
 
 @Module
@@ -61,12 +61,12 @@ object ImageLoaderModule {
     @Provides
     fun provideCustomImageLoader(
         @ApplicationContext context: Context,
-        repository: ServerMediaRepository
+        dataProvider: AudiobookshelfDataProvider,
     ): ImageLoader {
         return ImageLoader
             .Builder(context)
             .components {
-                add(BookCoverFetcherFactory(repository, context))
+                add(BookCoverFetcherFactory(dataProvider, context))
             }
             .memoryCache {
                 MemoryCache.Builder(context).build()

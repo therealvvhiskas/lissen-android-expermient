@@ -9,13 +9,13 @@ import kotlinx.coroutines.launch
 import org.grakovne.lissen.converter.LibraryResponseConverter
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.repository.ApiResult
-import org.grakovne.lissen.repository.ServerRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val serverRepository: ServerRepository,
+    private val dataProvider: AudiobookshelfDataProvider,
     private val libraryResponseConverter: LibraryResponseConverter
 ) : ViewModel() {
 
@@ -42,7 +42,6 @@ class SettingsViewModel @Inject constructor(
 
     fun logout() {
         preferences.clearCredentials()
-        serverRepository.logout()
 
         _host.value = preferences.getHost()
         _username.value = preferences.getUsername()
@@ -50,7 +49,7 @@ class SettingsViewModel @Inject constructor(
 
     fun fetchLibraries() {
         viewModelScope.launch {
-            when (val response = serverRepository.fetchLibraries()) {
+            when (val response = dataProvider.fetchLibraries()) {
                 is ApiResult.Success -> {
                     val libraries = libraryResponseConverter.apply(response.data)
                     _libraries.value = libraries

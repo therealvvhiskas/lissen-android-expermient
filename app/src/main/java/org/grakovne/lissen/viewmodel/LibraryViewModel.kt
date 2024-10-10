@@ -15,13 +15,13 @@ import org.grakovne.lissen.converter.RecentBookResponseConverter
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
-import org.grakovne.lissen.repository.ServerRepository
+import org.grakovne.lissen.provider.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val repository: ServerRepository,
+    private val dataProvider: AudiobookshelfDataProvider,
     private val recentBookResponseConverter: RecentBookResponseConverter,
     private val libraryItemResponseConverter: LibraryItemResponseConverter
 ) : ViewModel() {
@@ -61,7 +61,8 @@ class LibraryViewModel @Inject constructor(
 
     private fun fetchRecentListening() {
         viewModelScope.launch {
-            val response = repository.getRecentItems()
+            val response = dataProvider
+                .getRecentItems()
 
             response.fold(
                 onSuccess = { _recentBooks.value = recentBookResponseConverter.apply(it) },
@@ -72,7 +73,7 @@ class LibraryViewModel @Inject constructor(
 
     private fun fetchLibrary(): Job = viewModelScope.launch {
         val response =
-            repository
+            dataProvider
                 .fetchLibraryItems(
                     preferences.getPreferredLibrary()?.id ?: return@launch
                 )
