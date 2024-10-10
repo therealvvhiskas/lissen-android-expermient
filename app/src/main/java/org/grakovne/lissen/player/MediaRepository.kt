@@ -81,10 +81,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                             _isPlaying.postValue(isPlaying)
                             _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
 
-                            when (isPlaying) {
-                                true -> startUpdatingProgress()
-                                false -> stopUpdatingProgress()
-                            }
+                            startUpdatingProgress()
                         }
                     })
                 }
@@ -141,15 +138,12 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun seekTo(position: Float) {
-        stopUpdatingProgress()
-
         val duration = mediaController.duration
+
         if (duration > 0) {
             val newPosition = (1000 * position).toLong()
             mediaController.seekTo(newPosition)
         }
-
-        startUpdatingProgress()
     }
 
     fun previousTrack() {
@@ -162,9 +156,5 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
     private fun startUpdatingProgress() {
         handler.post(updateProgressAction)
-    }
-
-    private fun stopUpdatingProgress() {
-        handler.removeCallbacks(updateProgressAction)
     }
 }
