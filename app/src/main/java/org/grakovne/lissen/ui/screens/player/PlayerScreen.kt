@@ -1,15 +1,11 @@
 package org.grakovne.lissen.ui.screens.player
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -57,11 +53,15 @@ fun PlayerScreen(
 
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+
+    val playingBook by viewModel.book.observeAsState()
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        bookId?.let { viewModel.fetchBookDetails(it) }
+        bookId
+            ?.takeIf { it != playingBook?.id }
+            ?.let { viewModel.fetchBookDetails(it) }
     }
 
     Scaffold(
