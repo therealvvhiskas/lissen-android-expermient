@@ -97,7 +97,6 @@ fun MiniPlayerComposable(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = book.author,
                     style = MaterialTheme.typography.bodyMedium.copy(
