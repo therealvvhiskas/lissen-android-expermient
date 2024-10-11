@@ -14,10 +14,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider
+    private val dataProvider: AudiobookshelfDataProvider,
+    private val preferences: LissenSharedPreferences
 ) : ViewModel() {
-
-    private val preferences = LissenSharedPreferences.getInstance()
 
     private val _host = MutableLiveData(preferences.getHost())
     val host = _host

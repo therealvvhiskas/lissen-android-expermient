@@ -81,16 +81,6 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     }
 
     companion object {
-        @Volatile
-        private var instance: LissenSharedPreferences? = null
-
-        fun getInstance(): LissenSharedPreferences {
-            return instance ?: synchronized(this) {
-                instance ?: LissenSharedPreferences(LissenApplication.appContext).also {
-                    instance = it
-                }
-            }
-        }
 
         private const val KEY_ALIAS = "secure_key_alias"
         private const val KEY_HOST = "host"

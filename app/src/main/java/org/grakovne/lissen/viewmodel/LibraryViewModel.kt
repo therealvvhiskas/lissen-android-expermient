@@ -19,10 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider
+    private val dataProvider: AudiobookshelfDataProvider,
+    private val preferences: LissenSharedPreferences
 ) : ViewModel() {
-
-    private val preferences = LissenSharedPreferences.getInstance()
 
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks

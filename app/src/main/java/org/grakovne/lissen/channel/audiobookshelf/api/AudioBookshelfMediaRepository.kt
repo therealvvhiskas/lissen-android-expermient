@@ -17,8 +17,8 @@ import javax.inject.Singleton
 @Singleton
 class AudioBookshelfMediaRepository @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val preferences: LissenSharedPreferences
 ) {
-    private val preferences = LissenSharedPreferences.getInstance()
 
     @Volatile
     private var secureClient: AudiobookshelfMediaClient? = null

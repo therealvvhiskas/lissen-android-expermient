@@ -16,10 +16,13 @@ import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(
+    navController: NavHostController,
+    preferences: LissenSharedPreferences
+) {
     val hasCredentials by remember {
         mutableStateOf(
-            LissenSharedPreferences.getInstance().hasCredentials()
+            preferences.hasCredentials()
         )
     }
     val startDestination = when {

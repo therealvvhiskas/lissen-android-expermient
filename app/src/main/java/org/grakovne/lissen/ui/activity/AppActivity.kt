@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.navigation.AppNavHost
 import org.grakovne.lissen.ui.theme.LissenTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AppActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var preferences: LissenSharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,7 +23,7 @@ class AppActivity : ComponentActivity() {
         setContent {
             LissenTheme {
                 val navController = rememberNavController()
-                AppNavHost(navController = navController)
+                AppNavHost(navController = navController, preferences = preferences)
             }
         }
     }

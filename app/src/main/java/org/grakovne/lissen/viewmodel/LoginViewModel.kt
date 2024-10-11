@@ -24,9 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val dataProvider: AudiobookshelfDataProvider,
+    private val preferences: LissenSharedPreferences
 ) : ViewModel() {
-
-    private val preferences = LissenSharedPreferences.getInstance()
 
     private val _loginError: MutableLiveData<String> = MutableLiveData()
     val loginError = _loginError

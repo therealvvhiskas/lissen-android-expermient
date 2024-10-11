@@ -26,9 +26,8 @@ class AudiobookshelfDataProvider @Inject constructor(
     private val libraryItemResponseConverter: LibraryItemResponseConverter,
     private val libraryResponseConverter: LibraryResponseConverter,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
+    private val preferences: LissenSharedPreferences
 ) {
-
-    private val preferences = LissenSharedPreferences.getInstance()
 
     fun provideChapterUri(
         libraryItemId: String,
