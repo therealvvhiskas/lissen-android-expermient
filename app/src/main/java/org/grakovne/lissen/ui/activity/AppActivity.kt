@@ -16,11 +16,9 @@ class AppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            enableEdgeToEdge()
-            setContent {
-                LissenTheme {
-                    AppNavHost(navController = rememberNavController())
-                }
+            LissenTheme {
+                val navController = rememberNavController()
+                AppNavHost(navController = navController)
             }
         }
     }
