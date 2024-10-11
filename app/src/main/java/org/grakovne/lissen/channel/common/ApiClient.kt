@@ -17,42 +17,30 @@ class ApiClient(
 ) {
     private val cacheSize: Long = 10 * 1024 * 1024
 
-    private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
-    }
-
     private val httpClient = OkHttpClient.Builder()
         .cache(Cache(cacheDir, cacheSize))
-        .addInterceptor(loggingInterceptor)
-        .build()
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BASIC
+        })
+        .addInterceptor { chain: Interceptor.Chain ->
+            val original: Request = chain.request()
+            val requestBuilder: Request.Builder = original.newBuilder()
 
+            if (token != null) {
+                requestBuilder.header("Authorization", "Bearer $token")
+            }
+
+            val request: Request = requestBuilder.build()
+            chain.proceed(request)
+        }
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build()
 
     val retrofit: Retrofit =
         Retrofit.Builder()
             .baseUrl(host)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(secureClient(token))
             .build()
-
-    companion object {
-        fun secureClient(token: String?): OkHttpClient {
-            return OkHttpClient.Builder()
-                .addInterceptor { chain: Interceptor.Chain ->
-                    val original: Request = chain.request()
-                    val requestBuilder: Request.Builder = original.newBuilder()
-
-                    if (null != token) {
-                        requestBuilder
-                            .header("Authorization", "Bearer $token")
-                    }
-
-                    val request: Request = requestBuilder.build()
-                    chain.proceed(request)
-                }
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .build()
-        }
-    }
 }
