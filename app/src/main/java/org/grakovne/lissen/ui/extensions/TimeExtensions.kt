@@ -1,7 +1,10 @@
 package org.grakovne.lissen.ui.extensions
 
+import android.annotation.SuppressLint
 
-fun Int.hhmmss(): String {
+
+@SuppressLint("DefaultLocale")
+fun Int.formatFully(): String {
     val hours = this / 3600
     val minutes = (this % 3600) / 60
     val remainingSeconds = this % 60
@@ -12,15 +15,16 @@ fun Int.hhmmss(): String {
     }
 }
 
-fun Int.hhmm(): String {
+@SuppressLint("DefaultLocale")
+fun Int.formatShortly(): String {
     val hours = this / 3600
     val minutes = (this % 3600) / 60
 
     return String.format("%02dh %02dm", hours, minutes)
 }
 
-
-fun Int.mmssOver60(): String {
+@SuppressLint("DefaultLocale")
+fun Int.formatLeadingMinutes(): String {
     val minutes = this / 60
     val remainingSeconds = this % 60
 

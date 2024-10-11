@@ -34,7 +34,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.ui.extensions.hhmm
+import org.grakovne.lissen.ui.extensions.formatShortly
 import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
 
 @Composable
@@ -120,7 +120,7 @@ fun LibraryItemComposable(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = book.duration.hhmm(),
+                text = book.duration.formatShortly(),
                 style = MaterialTheme.typography.bodySmall
             )
         }

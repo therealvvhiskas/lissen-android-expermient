@@ -1,8 +1,5 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +26,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -43,7 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
-import org.grakovne.lissen.ui.extensions.hhmmss
+import org.grakovne.lissen.ui.extensions.formatFully
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
@@ -103,12 +99,12 @@ fun TrackControlComposable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = currentPosition.toInt().hhmmss(),
+                text = currentPosition.toInt().formatFully(),
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${maxOf(0f, duration - currentPosition).toInt().hhmmss()}",
+                text = "-${maxOf(0f, duration - currentPosition).toInt().formatFully()}",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
