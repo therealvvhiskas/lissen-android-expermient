@@ -31,10 +31,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
     private lateinit var mediaController: MediaController
 
-    private val token = SessionToken(
-        context,
-        ComponentName(context, AudioPlayerService::class.java)
-    )
+    private val token =
+        SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
 
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
@@ -48,44 +46,17 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _currentMediaItemIndex = MutableLiveData<Int>()
     val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
 
-    private val _playingBook: MutableLiveData<DetailedBook> = MutableLiveData<DetailedBook>()
+    private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private val updateProgressAction = object : Runnable {
-        override fun run() {
-            val currentPosition = mediaController.currentPosition
-            _currentPosition.postValue(currentPosition / 1000)
-            handler.postDelayed(this, 500L)
-        }
-    }
-
     private val bookDetailsReadyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == PLAYBACK_READY) {
-                _isPlaybackReady.postValue(true)
+                _isPlaybackReady.value = true
             }
         }
-    }
-
-    init {
-        LocalBroadcastManager
-            .getInstance(context)
-            .registerReceiver(bookDetailsReadyReceiver, IntentFilter(PLAYBACK_READY))
-    }
-
-    fun mediaPreparing() {
-        _isPlaybackReady.postValue(false)
-    }
-
-    fun preparePlayingBook(book: DetailedBook) {
-        if (::mediaController.isInitialized && _playingBook.value != book) {
-            preparePlay(book)
-            startUpdatingProgress()
-        }
-
-        _playingBook.postValue(book)
     }
 
     init {
@@ -98,93 +69,103 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 override fun onSuccess(controller: MediaController) {
                     mediaController = controller
 
-                    controller.addListener(object : Player.Listener {
+                    LocalBroadcastManager
+                        .getInstance(context)
+                        .registerReceiver(bookDetailsReadyReceiver, IntentFilter(PLAYBACK_READY))
+
+                    mediaController.addListener(object : Player.Listener {
                         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
+                            _currentMediaItemIndex.value = mediaController.currentMediaItemIndex
                         }
 
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
-                            _isPlaying.postValue(isPlaying)
-                            _currentMediaItemIndex.postValue(mediaController.currentMediaItemIndex)
+                            _isPlaying.value = isPlaying
+                            _currentMediaItemIndex.value = mediaController.currentMediaItemIndex
                         }
-
                     })
+                    startUpdatingProgress()
                 }
 
                 override fun onFailure(t: Throwable) {
+                    t.printStackTrace()
                 }
             },
-
             MoreExecutors.directExecutor()
         )
     }
 
-    fun play() {
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_PLAY
-        }
+    fun mediaPreparing() {
+        _isPlaybackReady.value = false
+    }
 
-        ContextCompat.startForegroundService(context, intent)
+    fun preparePlayingBook(book: DetailedBook) {
+        if (::mediaController.isInitialized && _playingBook.value != book) {
+            preparePlay(book)
+        }
+        _playingBook.value = book
     }
 
     private fun preparePlay(book: DetailedBook) {
-        _currentPosition.postValue(0)
-        _currentMediaItemIndex.postValue(0)
-        _isPlaying.postValue(false)
+        _currentPosition.value = 0
+        _currentMediaItemIndex.value = 0
+        _isPlaying.value = false
 
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_SET_PLAYBACK
             putExtra(BOOK_EXTRA, book)
         }
 
-        _playingBook.postValue(book)
         context.startService(intent)
     }
 
+    fun play() {
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_PLAY
+        }
+        ContextCompat.startForegroundService(context, intent)
+    }
 
     fun pauseAudio() {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_PAUSE
         }
-
         context.startService(intent)
     }
 
     fun nextTrack() {
-        val nextIndex = mediaController.currentMediaItemIndex + 1
-        val timeline = mediaController.currentTimeline
+        mediaController.run {
+            if (currentMediaItemIndex + 1 < currentTimeline.windowCount) {
+                seekTo(currentMediaItemIndex + 1, 0)
+            }
+        }
+    }
 
-        if (nextIndex < timeline.windowCount) {
-            mediaController.seekTo(nextIndex, 0)
+    fun previousTrack() {
+        mediaController.run {
+            if (currentMediaItemIndex > 0) {
+                seekTo(currentMediaItemIndex - 1, 0)
+            }
         }
     }
 
     fun setTrack(index: Int) {
-        val timeline = mediaController.currentTimeline
-
-        if (index < timeline.windowCount && index >= 0) {
+        if (index in 0 until mediaController.currentTimeline.windowCount) {
             mediaController.seekTo(index, 0)
         }
     }
 
     fun seekTo(position: Float) {
-        val duration = mediaController.duration
-
-        if (duration > 0) {
-            val newPosition = (1000 * position).toLong()
-            mediaController.seekTo(newPosition)
-        }
-    }
-
-    fun previousTrack() {
-        val previousIndex = mediaController.currentMediaItemIndex - 1
-
-        if (previousIndex >= 0) {
-            mediaController.seekTo(previousIndex, 0)
+        if (mediaController.duration > 0) {
+            mediaController.seekTo((position * 1000).toLong())
         }
     }
 
     private fun startUpdatingProgress() {
-        handler.post(updateProgressAction)
+        handler.postDelayed(object : Runnable {
+            override fun run() {
+                _currentPosition.value = mediaController.currentPosition / 1000
+                handler.postDelayed(this, 500)
+            }
+        }, 500)
     }
 }
