@@ -30,11 +30,12 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     }
 
     fun clearCredentials() {
-        sharedPreferences.edit().putString(KEY_HOST, null).apply()
-        sharedPreferences.edit().putString(KEY_USERNAME, null).apply()
-        sharedPreferences.edit().putString(KEY_TOKEN, null).apply()
+        sharedPreferences.edit().apply {
+            putString(KEY_HOST, null)
+            putString(KEY_USERNAME, null)
+            putString(KEY_TOKEN, null)
+        }.apply()
     }
-
     fun saveHost(host: String) = sharedPreferences.edit().putString(KEY_HOST, host).apply()
     fun getHost(): String? = sharedPreferences.getString(KEY_HOST, null)
 
