@@ -20,32 +20,26 @@ class PlayerViewModel @Inject constructor(
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
     private val _playingQueueExpanded = MutableLiveData(false)
-    val playingQueueExpanded = _playingQueueExpanded
+    val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
 
-    val isPlaying = mediaRepository.isPlaying
-    val currentPosition = mediaRepository.currentPosition
+    val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
+    val currentPosition: LiveData<Long> = mediaRepository.currentPosition
     val currentTrackIndex: LiveData<Int> = mediaRepository.currentMediaItemIndex
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }
 
-    fun fetchBookDetails(bookId: String) {
+    fun preparePlayback(bookId: String) {
         mediaRepository.mediaPreparing()
 
-        viewModelScope
-            .launch {
-                dataProvider
-                    .getLibraryItem(bookId)
-                    .fold(
-                        onSuccess = {
-                            mediaRepository.preparePlayingBook(it)
-                        },
-                        onFailure = {
-                        }
-                    )
-            }
+        viewModelScope.launch {
+            dataProvider.getLibraryItem(bookId).fold(
+                onSuccess = { mediaRepository.preparePlayingBook(it) },
+                onFailure = {}
+            )
+        }
     }
 
     fun seekTo(position: Float) {
