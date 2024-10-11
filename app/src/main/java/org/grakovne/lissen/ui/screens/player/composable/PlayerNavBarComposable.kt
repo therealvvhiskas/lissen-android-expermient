@@ -36,78 +36,72 @@ fun PlayerNavBarComposable(
         contentColor = colorScheme.onBackground,
         modifier = modifier
     ) {
-        NavigationBar(
-            containerColor = Color.Transparent,
-            contentColor = colorScheme.onBackground,
-            modifier = modifier
-        ) {
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        Icons.Outlined.Headset,
-                        contentDescription = "Library"
-                    )
-                },
-                label = { Text("Library") },
-                selected = false,
-                onClick = { navController.navigate("library_screen") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Outlined.Headset,
+                    contentDescription = "Library"
                 )
+            },
+            label = { Text("Library") },
+            selected = false,
+            onClick = { navController.navigate("library_screen") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colorScheme.primary,
             )
+        )
 
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        Icons.Outlined.Timer,
-                        contentDescription = "Timer"
-                    )
-                },
-                label = { Text("Timer") },
-                selected = false,
-                onClick = {
-                    Toast.makeText(
-                        context,
-                        "Timer Feature Under Construction Yet",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-                enabled = true,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
-                    unselectedIconColor = colorScheme.onSurface.copy(alpha = 0.4f),
-                    unselectedTextColor = colorScheme.onSurface.copy(alpha = 0.4f)
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Outlined.Timer,
+                    contentDescription = "Timer"
                 )
+            },
+            label = { Text("Timer") },
+            selected = false,
+            onClick = {
+                Toast.makeText(
+                    context,
+                    "Timer Feature Under Construction Yet",
+                    Toast.LENGTH_SHORT
+                ).show()
+            },
+            enabled = true,
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colorScheme.primary,
+                unselectedIconColor = colorScheme.onSurface.copy(alpha = 0.4f),
+                unselectedTextColor = colorScheme.onSurface.copy(alpha = 0.4f)
             )
+        )
 
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        Icons.Outlined.Book,
-                        contentDescription = "Chapters list"
-                    )
-                },
-                label = { Text("Chapters") },
-                selected = playingQueueExpanded,
-                onClick = { onChaptersClick() },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Outlined.Book,
+                    contentDescription = "Chapters list"
                 )
+            },
+            label = { Text("Chapters") },
+            selected = playingQueueExpanded,
+            onClick = { onChaptersClick() },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colorScheme.primary,
             )
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        Icons.Outlined.Settings,
-                        contentDescription = "Preferences"
-                    )
-                },
-                label = { Text("Preferences") },
-                selected = false,
-                onClick = { navController.navigate("settings_screen") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    Icons.Outlined.Settings,
+                    contentDescription = "Preferences"
                 )
+            },
+            label = { Text("Preferences") },
+            selected = false,
+            onClick = { navController.navigate("settings_screen") },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = colorScheme.primary,
             )
-        }
+        )
     }
 }
