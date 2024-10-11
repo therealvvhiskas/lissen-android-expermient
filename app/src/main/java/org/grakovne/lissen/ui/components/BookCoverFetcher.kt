@@ -2,6 +2,7 @@ package org.grakovne.lissen.ui.components
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import coil.ImageLoader
 import coil.decode.ImageSource
 import coil.disk.DiskCache
@@ -10,6 +11,7 @@ import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.memory.MemoryCache
 import coil.request.Options
+import coil.util.DebugLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -82,7 +84,9 @@ object ImageLoaderModule {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("сover_cache"))
                     .build()
+
             }
+            .logger(DebugLogger(Log.VERBOSE))
             .build()
     }
 }

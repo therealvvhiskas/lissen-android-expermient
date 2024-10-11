@@ -67,6 +67,7 @@ fun MiniPlayerComposable(
             val imageRequest = remember(book.id) {
                 ImageRequest.Builder(context)
                     .data(book.id)
+                    .size(coil.size.Size.ORIGINAL)
                     .build()
             }
 
