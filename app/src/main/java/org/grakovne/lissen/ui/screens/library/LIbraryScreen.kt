@@ -64,7 +64,6 @@ import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBook
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun LibraryScreen(

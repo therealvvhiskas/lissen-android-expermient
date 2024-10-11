@@ -59,14 +59,21 @@ object ImageLoaderModule {
 
     @Singleton
     @Provides
+    fun provideBookCoverFetcherFactory(
+        dataProvider: AudiobookshelfDataProvider,
+        @ApplicationContext context: Context
+    ): BookCoverFetcherFactory = BookCoverFetcherFactory(dataProvider, context)
+
+    @Singleton
+    @Provides
     fun provideCustomImageLoader(
         @ApplicationContext context: Context,
-        dataProvider: AudiobookshelfDataProvider,
+        bookCoverFetcherFactory: BookCoverFetcherFactory
     ): ImageLoader {
         return ImageLoader
             .Builder(context)
             .components {
-                add(BookCoverFetcherFactory(dataProvider, context))
+                add(bookCoverFetcherFactory)
             }
             .memoryCache {
                 MemoryCache.Builder(context).build()
