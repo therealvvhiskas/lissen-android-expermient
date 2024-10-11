@@ -55,7 +55,6 @@ fun TrackControlComposable(
     val currentPosition by viewModel.currentPosition.observeAsState(0L)
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
 
-    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
 
