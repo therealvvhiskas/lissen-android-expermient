@@ -66,12 +66,13 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material3)
 
-    implementation (libs.androidx.material)
+    implementation(libs.androidx.material)
     implementation(libs.compose.shimmer.android)
 
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation (libs.logging.interceptor)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
