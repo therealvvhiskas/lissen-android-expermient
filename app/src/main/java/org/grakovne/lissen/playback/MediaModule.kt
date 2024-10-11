@@ -3,6 +3,10 @@ package org.grakovne.lissen.playback
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.OptIn
+import androidx.media3.common.C
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import dagger.Module
@@ -17,10 +21,21 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object MediaModule {
 
+    @OptIn(UnstableApi::class)
     @Provides
     @Singleton
     fun provideExoPlayer(@ApplicationContext context: Context): ExoPlayer {
-        return ExoPlayer.Builder(context).build()
+        return ExoPlayer.Builder(context)
+            .setSeekBackIncrementMs(30_000)
+            .setSeekForwardIncrementMs(30_000)
+            .setLoadControl(
+                DefaultLoadControl
+                    .Builder()
+                    .setTargetBufferBytes(C.LENGTH_UNSET)
+                    .setPrioritizeTimeOverSizeThresholds(true)
+                    .build()
+            )
+            .build()
     }
 
     @Provides
