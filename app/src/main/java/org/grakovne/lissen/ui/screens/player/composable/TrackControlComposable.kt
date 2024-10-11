@@ -96,7 +96,6 @@ fun TrackControlComposable(
                 )
         )
 
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -109,7 +108,7 @@ fun TrackControlComposable(
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${(duration - currentPosition).toInt().hhmmss()}",
+                text = "-${maxOf(0f, duration - currentPosition).toInt().hhmmss()}",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
