@@ -11,7 +11,6 @@ interface AudiobookshelfMediaClient {
 
     @GET("/api/items/{itemId}/cover")
     @Streaming
-    @Headers("Cache-Control: public, max-age=3600")
     suspend fun getItemCover(
         @Path("itemId") itemId: String,
     ): Response<ResponseBody>
