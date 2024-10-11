@@ -15,15 +15,17 @@ class ApiClient(
     token: String? = null,
     cacheDir: File
 ) {
+    private val cacheSize: Long = 10 * 1024 * 1024
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
     private val httpClient = OkHttpClient.Builder()
-        .cache(Cache(cacheDir, 10 * 1024 * 1024))
+        .cache(Cache(cacheDir, cacheSize))
         .addInterceptor(loggingInterceptor)
         .build()
+
 
     val retrofit: Retrofit =
         Retrofit.Builder()

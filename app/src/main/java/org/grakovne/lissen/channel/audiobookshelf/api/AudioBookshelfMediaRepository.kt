@@ -1,5 +1,7 @@
 package org.grakovne.lissen.channel.audiobookshelf.api
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.ResponseBody
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfMediaClient
 import org.grakovne.lissen.channel.common.BinaryApiClient
@@ -14,6 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AudioBookshelfMediaRepository @Inject constructor(
+    @ApplicationContext private val context: Context,
 ) {
     private val preferences = LissenSharedPreferences.getInstance()
 
@@ -59,7 +62,7 @@ class AudioBookshelfMediaRepository @Inject constructor(
         }
 
         return secureClient ?: run {
-            val apiClient = BinaryApiClient(host, token)
+            val apiClient = BinaryApiClient(host, token, context.cacheDir)
             apiClient.retrofit.create(AudiobookshelfMediaClient::class.java)
         }
     }
