@@ -45,19 +45,12 @@ fun PlayingQueueComposable(
         animationSpec = tween(durationMillis = 300)
     )
 
-    LaunchedEffect(isPlaybackReady) {
+    LaunchedEffect(isPlaybackReady, currentTrackIndex) {
         if (isPlaybackReady) {
             when {
                 currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
                 else -> listState.scrollToItem(currentTrackIndex)
             }
-        }
-    }
-
-    LaunchedEffect(currentTrackIndex) {
-        when {
-            currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
-            else -> listState.scrollToItem(currentTrackIndex)
         }
     }
 
