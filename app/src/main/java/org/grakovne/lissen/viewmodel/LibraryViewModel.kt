@@ -42,14 +42,11 @@ class LibraryViewModel @Inject constructor(
 
         viewModelScope.launch {
             withMinimumTime(700) {
-                coroutineScope {
-                    val fetchRecentJob = async { fetchRecentListening() }
-                    val fetchLibraryJob = async { fetchLibrary() }
-
-                    awaitAll(fetchRecentJob, fetchLibraryJob)
-                }
+                listOf(
+                    async { fetchRecentListening() },
+                    async { fetchLibrary() }
+                ).awaitAll()
             }
-
             _refreshing.value = false
         }
     }
