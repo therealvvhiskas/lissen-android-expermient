@@ -61,7 +61,7 @@ fun PlayerScreen(
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(bookId) {
         bookId
             ?.takeIf { it != playingBook?.id }
             ?.let { viewModel.fetchBookDetails(it) }
@@ -95,26 +95,20 @@ fun PlayerScreen(
                 onChaptersClick = { viewModel.togglePlayingQueue() }
             )
         },
-        modifier = Modifier
-            .systemBarsPadding()
-            .fillMaxHeight(),
+        modifier = Modifier.systemBarsPadding(),
         content = { innerPadding ->
 
             Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 AnimatedVisibility(
                     visible = !playingQueueExpanded,
-                    enter = expandVertically(animationSpec = tween(500)),
-                    exit = shrinkVertically(animationSpec = tween(500))
+                    enter = expandVertically(animationSpec = tween(300)),
+                    exit = shrinkVertically(animationSpec = tween(300))
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
@@ -131,7 +125,7 @@ fun PlayerScreen(
 
                         TrackControlComposable(
                             viewModel = viewModel,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
                         )
                     }
                 }
@@ -140,11 +134,11 @@ fun PlayerScreen(
                     if (playbackReady) {
                         PlayingQueueComposable(
                             viewModel = viewModel,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
                         )
                     } else {
                         PlayingQueuePlaceholderComposable(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
                         )
                     }
                 }
