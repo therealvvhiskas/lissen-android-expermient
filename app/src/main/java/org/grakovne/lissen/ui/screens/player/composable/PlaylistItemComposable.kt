@@ -43,19 +43,18 @@ fun PlaylistItemComposable(
                 interactionSource = remember { MutableInteractionSource() }
             )
     ) {
-        Box(
-            modifier = Modifier.size(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Outlined.Audiotrack,
-                    contentDescription = "Now Playing",
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+        if (isSelected) {
+            Icon(
+                imageVector = Icons.Outlined.Audiotrack,
+                contentDescription = "Now Playing",
+                modifier = Modifier.size(16.dp)
+            )
+        } else {
+            Spacer(modifier = Modifier.size(16.dp))
         }
+
         Spacer(modifier = Modifier.width(8.dp))
+
         Text(
             text = track.name,
             style = MaterialTheme.typography.titleMedium,
