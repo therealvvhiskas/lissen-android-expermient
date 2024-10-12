@@ -95,7 +95,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun mediaPreparing() {
-        _isPlaybackReady.value = false
+        _isPlaybackReady.postValue( false)
     }
 
     fun preparePlayingBook(book: DetailedBook) {

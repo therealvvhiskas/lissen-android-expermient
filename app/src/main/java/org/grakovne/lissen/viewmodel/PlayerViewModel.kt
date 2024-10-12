@@ -34,10 +34,9 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun preparePlayback(bookId: String) {
-        mediaRepository.mediaPreparing()
-
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
+                mediaRepository.mediaPreparing()
                 dataProvider.getLibraryItem(bookId)
             }
 
