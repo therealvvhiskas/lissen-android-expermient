@@ -74,7 +74,6 @@ fun PlayingQueueComposable(
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
                 .nestedScroll(object : NestedScrollConnection {
                     override fun onPreScroll(
                         available: Offset,
