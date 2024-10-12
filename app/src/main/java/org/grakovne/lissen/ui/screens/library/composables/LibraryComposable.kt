@@ -35,7 +35,7 @@ import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.extensions.formatShortly
-import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 
 @Composable
 fun LibraryComposable(

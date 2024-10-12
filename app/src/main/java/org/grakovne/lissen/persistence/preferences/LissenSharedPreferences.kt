@@ -25,8 +25,9 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     fun hasCredentials(): Boolean {
         val host = getHost()
         val username = getUsername()
+        val token = getToken()
 
-        return host != null && username != null
+        return host != null && username != null && token != null
     }
 
     fun clearCredentials() {
@@ -36,6 +37,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
             putString(KEY_TOKEN, null)
         }.apply()
     }
+
     fun saveHost(host: String) = sharedPreferences.edit().putString(KEY_HOST, host).apply()
     fun getHost(): String? = sharedPreferences.getString(KEY_HOST, null)
 

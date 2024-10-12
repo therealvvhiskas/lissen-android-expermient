@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui.screens
+package org.grakovne.lissen.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,7 +17,6 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.shimmer
-
 
 @Composable
 fun AsyncShimmeringImage(
@@ -50,6 +49,7 @@ fun AsyncShimmeringImage(
             contentScale = contentScale,
             modifier = Modifier.fillMaxSize(),
             onSuccess = { isLoading = false },
+            onError = {isLoading = false},
             error = error
         )
     }

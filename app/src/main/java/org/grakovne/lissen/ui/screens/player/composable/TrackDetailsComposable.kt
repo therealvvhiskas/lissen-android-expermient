@@ -27,7 +27,7 @@ import coil.request.ImageRequest
 import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
-import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable

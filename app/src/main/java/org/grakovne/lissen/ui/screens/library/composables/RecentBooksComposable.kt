@@ -32,7 +32,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
-import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 
 @Composable
 fun RecentBooksComposable(

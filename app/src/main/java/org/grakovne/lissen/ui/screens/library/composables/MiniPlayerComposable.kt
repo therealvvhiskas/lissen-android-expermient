@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -38,7 +37,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.ui.screens.AsyncShimmeringImage
+import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
