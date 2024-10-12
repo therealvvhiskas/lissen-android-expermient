@@ -102,7 +102,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         if (::mediaController.isInitialized && _playingBook.value != book) {
             preparePlay(book)
         }
-        _playingBook.value = book
+        _playingBook.postValue(book)
     }
 
     private fun preparePlay(book: DetailedBook) {

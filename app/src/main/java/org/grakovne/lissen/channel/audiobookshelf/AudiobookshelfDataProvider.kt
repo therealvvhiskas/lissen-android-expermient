@@ -72,18 +72,16 @@ class AudiobookshelfDataProvider @Inject constructor(
             .getRecentItems()
             .map { recentBookResponseConverter.apply(it) }
 
-    suspend fun getLibraryItem(itemId: String): ApiResult<DetailedBook> {
-        return dataRepository
-            .getLibraryItem(itemId)
-            .map { item ->
-                dataRepository
-                    .getItemIdProgress(item.id)
-                    .fold(
-                        onSuccess = { libraryItemIdResponseConverter.apply(item, it) },
-                        onFailure = { libraryItemIdResponseConverter.apply(item, null) }
-                    )
-            }
-    }
+    suspend fun getLibraryItem(itemId: String) = dataRepository
+        .getLibraryItem(itemId)
+        .map { item ->
+            dataRepository
+                .getItemIdProgress(item.id)
+                .fold(
+                    onSuccess = { libraryItemIdResponseConverter.apply(item, it) },
+                    onFailure = { libraryItemIdResponseConverter.apply(item, null) }
+                )
+        }
 
     suspend fun authorize(
         host: String,

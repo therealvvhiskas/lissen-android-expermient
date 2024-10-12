@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.MediaRepository
@@ -35,9 +37,14 @@ class PlayerViewModel @Inject constructor(
         mediaRepository.mediaPreparing()
 
         viewModelScope.launch {
-            dataProvider.getLibraryItem(bookId).fold(
+            val result = withContext(Dispatchers.IO) {
+                dataProvider.getLibraryItem(bookId)
+            }
+
+            result.fold(
                 onSuccess = { mediaRepository.preparePlayingBook(it) },
-                onFailure = {}
+                onFailure = {
+                }
             )
         }
     }
