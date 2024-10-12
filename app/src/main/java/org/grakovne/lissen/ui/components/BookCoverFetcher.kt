@@ -86,7 +86,6 @@ object ImageLoaderModule {
                     .build()
 
             }
-            .logger(DebugLogger(Log.VERBOSE))
             .build()
     }
 }

@@ -22,8 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material.Slider
+import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -58,7 +58,6 @@ fun TrackControlComposable(
     var isDragging by remember { mutableStateOf(false) }
     val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
 
-
     val draggableTrackProgress by remember {
         derivedStateOf {
             if (!isDragging) currentPosition.toFloat() else sliderPosition
@@ -66,9 +65,7 @@ fun TrackControlComposable(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+        modifier = modifier.padding(horizontal = 16.dp)
     ) {
 
         Slider(
@@ -82,9 +79,6 @@ fun TrackControlComposable(
                 isDragging = false
             },
             valueRange = 0f..(duration),
-            modifier = Modifier
-                .height(36.dp)
-                .fillMaxWidth(),
             colors = SliderDefaults
                 .colors(
                     thumbColor = colorScheme.primary,

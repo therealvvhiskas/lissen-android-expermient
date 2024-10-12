@@ -41,8 +41,12 @@ class PlayerViewModel @Inject constructor(
                 dataProvider.getLibraryItem(bookId)
             }
 
-            result.fold(
-                onSuccess = { mediaRepository.preparePlayingBook(it) },
+            result.foldAsync(
+                onSuccess = {
+                    withContext(Dispatchers.IO) {
+                        mediaRepository.preparePlayingBook(it)
+                    }
+                },
                 onFailure = {
                 }
             )

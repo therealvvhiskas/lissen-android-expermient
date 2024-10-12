@@ -20,7 +20,7 @@ class ApiClient(
     private val httpClient = OkHttpClient.Builder()
         .cache(Cache(cacheDir, cacheSize))
         .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = HttpLoggingInterceptor.Level.NONE
         })
         .addInterceptor { chain: Interceptor.Chain ->
             val original: Request = chain.request()

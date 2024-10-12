@@ -13,8 +13,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -67,6 +69,10 @@ fun PlayingQueueComposable(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
+        val rememberedIndex = remember(currentTrackIndex) {
+            derivedStateOf { currentTrackIndex }
+        }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -85,7 +91,7 @@ fun PlayingQueueComposable(
                 PlaylistItemComposable(
                     track = track,
                     onClick = { viewModel.setChapter(index) },
-                    isSelected = index == currentTrackIndex
+                    isSelected = index == rememberedIndex.value
                 )
 
                 if (index < chapters.size - 1) {
@@ -94,7 +100,6 @@ fun PlayingQueueComposable(
                         modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 }
-
             }
 
         }

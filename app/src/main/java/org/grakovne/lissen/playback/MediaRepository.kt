@@ -106,9 +106,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     private fun preparePlay(book: DetailedBook) {
-        _currentPosition.value = 0
-        _currentMediaItemIndex.value = 0
-        _isPlaying.value = false
+        _currentPosition.postValue(0)
+        _currentMediaItemIndex.postValue(0)
+        _isPlaying.postValue(false)
 
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = AudioPlayerService.ACTION_SET_PLAYBACK
