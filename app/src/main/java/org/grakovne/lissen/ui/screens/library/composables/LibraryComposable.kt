@@ -61,7 +61,12 @@ fun LibraryItemComposable(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { navController.navigate("player_screen/${book.id}") }
+            .clickable {
+                navController
+                    .navigate("player_screen/${book.id}") {
+                        launchSingleTop = true
+                    }
+            }
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

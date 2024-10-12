@@ -63,6 +63,7 @@ fun LoginScreen(
             is LoginState.Success -> {
                 navController
                     .navigate("library_screen") {
+                        launchSingleTop = true
                         popUpTo("library_screen") { inclusive = true }
                     }
             }

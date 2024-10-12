@@ -54,7 +54,11 @@ fun MiniPlayerComposable(
         shape = RoundedCornerShape(8.dp),
         shadowElevation = 4.dp,
         modifier = modifier
-            .clickable { navController.navigate("player_screen/${book.id}") }
+            .clickable { navController
+                .navigate("player_screen/${book.id}") {
+                    launchSingleTop = true
+                }
+            }
     ) {
         Row(
             modifier = Modifier

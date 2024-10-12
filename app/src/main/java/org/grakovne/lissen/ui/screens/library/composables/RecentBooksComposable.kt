@@ -78,7 +78,12 @@ fun RecentBookItemComposable(
     Column(
         modifier = Modifier
             .width(width)
-            .clickable { navController.navigate("player_screen/${book.id}") }
+            .clickable {
+                navController
+                    .navigate("player_screen/${book.id}") {
+                        launchSingleTop = true
+                    }
+            }
     ) {
         val context = LocalContext.current
 
