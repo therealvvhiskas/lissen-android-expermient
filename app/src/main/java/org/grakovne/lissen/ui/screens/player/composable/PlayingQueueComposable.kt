@@ -33,7 +33,6 @@ fun PlayingQueueComposable(
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
 ) {
-    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
@@ -44,15 +43,15 @@ fun PlayingQueueComposable(
 
     val fontSize by animateFloatAsState(
         targetValue = if (playingQueueExpanded) 24f else 20f,
-        animationSpec = tween(durationMillis = 300)
+        animationSpec = tween(durationMillis = 300),
+        label = "playing_queue_font_size"
     )
 
-    LaunchedEffect(isPlaybackReady, currentTrackIndex) {
-        if (isPlaybackReady) {
-            when {
-                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-                else -> listState.scrollToItem(currentTrackIndex)
-            }
+    LaunchedEffect(currentTrackIndex) {
+        when {
+            currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+            else -> listState.scrollToItem(currentTrackIndex)
+
         }
     }
 
