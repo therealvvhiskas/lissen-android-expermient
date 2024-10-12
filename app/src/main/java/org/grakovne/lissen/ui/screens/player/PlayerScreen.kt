@@ -98,8 +98,8 @@ fun PlayerScreen(
             ) {
                 AnimatedVisibility(
                     visible = !playingQueueExpanded,
-                    enter = expandVertically(animationSpec = tween(300)),
-                    exit = shrinkVertically(animationSpec = tween(300))
+                    enter = expandVertically(animationSpec = tween(500)),
+                    exit = shrinkVertically(animationSpec = tween(500))
                 ) {
                     Column(
                         modifier = Modifier.weight(1f),
@@ -110,8 +110,7 @@ fun PlayerScreen(
                             TrackDetailsPlaceholderComposable()
                         } else {
                             TrackDetailsComposable(
-                                viewModel = viewModel,
-                                modifier = Modifier.fillMaxWidth()
+                                viewModel = viewModel
                             )
                         }
 
@@ -124,7 +123,10 @@ fun PlayerScreen(
                     }
                 }
 
-                Crossfade(targetState = isPlaybackReady) { playbackReady ->
+                Crossfade(
+                    targetState = isPlaybackReady,
+                    label = "isPlaybackReady"
+                ) { playbackReady ->
                     if (playbackReady) {
                         PlayingQueueComposable(
                             viewModel = viewModel,
