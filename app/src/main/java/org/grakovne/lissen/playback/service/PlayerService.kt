@@ -10,21 +10,19 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
-import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.BookChapter
+import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class AudioPlayerService : MediaSessionService(), CoroutineScope {
+class AudioPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var exoPlayer: ExoPlayer
@@ -35,12 +33,8 @@ class AudioPlayerService : MediaSessionService(), CoroutineScope {
     @Inject
     lateinit var dataProvider: AudiobookshelfDataProvider
 
-    private val job = Job()
+    private val playerServiceScope = MainScope()
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    @Suppress("DEPRECATION")
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
@@ -48,33 +42,39 @@ class AudioPlayerService : MediaSessionService(), CoroutineScope {
     ): Int {
         super.onStartCommand(intent, flags, startId)
 
-        return when (intent?.action) {
+        when (intent?.action) {
             ACTION_PLAY -> {
-                exoPlayer.prepare()
-                exoPlayer.playWhenReady = true
-
-                START_STICKY
+                playerServiceScope
+                    .launch {
+                        exoPlayer.prepare()
+                        exoPlayer.playWhenReady = true
+                    }
+                return START_STICKY
             }
 
             ACTION_PAUSE -> {
-                exoPlayer.playWhenReady = false
-
-                stopForeground(true)
-                stopSelf()
-
-                START_NOT_STICKY
+                playerServiceScope
+                    .launch {
+                        exoPlayer.playWhenReady = false
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        stopSelf()
+                    }
+                return START_NOT_STICKY
             }
 
             ACTION_SET_PLAYBACK -> {
-                intent
-                    .getSerializableExtra(BOOK_EXTRA)
-                    ?.let { setPlaybackQueue(it as DetailedBook) }
-
-                START_NOT_STICKY
+                val book = intent.getSerializableExtra(BOOK_EXTRA) as? DetailedBook
+                book?.let {
+                    playerServiceScope
+                        .launch {
+                            setPlaybackQueue(it)
+                        }
+                }
+                return START_NOT_STICKY
             }
 
             else -> {
-                START_NOT_STICKY
+                return START_NOT_STICKY
             }
         }
     }
@@ -82,45 +82,42 @@ class AudioPlayerService : MediaSessionService(), CoroutineScope {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = mediaSession
 
     override fun onDestroy() {
+        playerServiceScope.cancel()
         mediaSession.release()
         exoPlayer.release()
         exoPlayer.clearMediaItems()
-
         super.onDestroy()
     }
 
     @OptIn(UnstableApi::class)
-    private fun setPlaybackQueue(book: DetailedBook) {
-        launch {
-            val chapterSources = withContext(Dispatchers.IO) {
-                book.chapters.mapIndexed { index, chapter ->
-                    MediaItem.Builder()
-                        .setMediaId(chapter.id)
-                        .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
-                        .setTag(book)
-                        .setMediaMetadata(
-                            MediaMetadata.Builder()
-                                .setTitle(chapter.name)
-                                .setArtist(book.title)
-                                .setTrackNumber(index)
-                                .setDurationMs(chapter.duration.toLong() * 1000)
-                                .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
-                                .build()
-                        )
-                        .build()
-                }
+    private suspend fun setPlaybackQueue(book: DetailedBook) {
+        val chapterSources = withContext(Dispatchers.IO) {
+            book.chapters.mapIndexed { index, chapter ->
+                MediaItem.Builder()
+                    .setMediaId(chapter.id)
+                    .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                    .setTag(book)
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setTitle(chapter.name)
+                            .setArtist(book.title)
+                            .setTrackNumber(index)
+                            .setDurationMs(chapter.duration.toLong() * 1000)
+                            .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
+                            .build()
+                    )
+                    .build()
             }
-
-            exoPlayer.playWhenReady = false
-            exoPlayer.setMediaItems(chapterSources)
-            setPlaybackProgress(book.chapters, book.progress)
-
-            LocalBroadcastManager
-                .getInstance(baseContext)
-                .sendBroadcast(Intent(PLAYBACK_READY))
         }
-    }
 
+        exoPlayer.playWhenReady = false
+        exoPlayer.setMediaItems(chapterSources)
+        setPlaybackProgress(book.chapters, book.progress)
+
+        LocalBroadcastManager
+            .getInstance(baseContext)
+            .sendBroadcast(Intent(PLAYBACK_READY))
+    }
 
     private fun setPlaybackProgress(
         chapters: List<BookChapter>,
