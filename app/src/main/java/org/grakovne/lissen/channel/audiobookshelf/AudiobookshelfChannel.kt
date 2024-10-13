@@ -3,6 +3,7 @@ package org.grakovne.lissen.channel.audiobookshelf
 import android.net.Uri
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
+import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
@@ -14,6 +15,7 @@ import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import java.io.InputStream
 import javax.inject.Inject
@@ -28,7 +30,8 @@ class AudiobookshelfChannel @Inject constructor(
     private val libraryResponseConverter: LibraryResponseConverter,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
     private val sessionResponseConverter: PlaybackSessionResponseConverter,
-    private val preferences: LissenSharedPreferences
+    private val preferences: LissenSharedPreferences,
+    private val syncService: AudioBookshelfSyncService
 ) {
 
     fun provideChapterUri(
@@ -54,6 +57,11 @@ class AudiobookshelfChannel @Inject constructor(
         .appendPath("cover")
         .appendQueryParameter("token", preferences.getToken())
         .build()
+
+    suspend fun syncProgress(
+        itemId: String,
+        progress: PlaybackProgress
+    ): ApiResult<Unit> = syncService.syncProgress(itemId, progress)
 
     suspend fun fetchBookCover(
         itemId: String
