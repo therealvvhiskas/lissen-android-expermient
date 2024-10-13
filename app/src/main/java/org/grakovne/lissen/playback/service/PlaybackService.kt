@@ -13,15 +13,12 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
-import org.grakovne.lissen.domain.PlaybackProgress
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -99,8 +96,7 @@ class AudioPlayerService : MediaSessionService() {
     @OptIn(UnstableApi::class)
     private suspend fun preparePlayback(book: DetailedBook) {
         exoPlayer.playWhenReady = false
-        playbackSynchronizationService.stopPlaybackSynchronization() // остановка предыдущей синхронизации
-
+        playbackSynchronizationService.stopPlaybackSynchronization()
 
         val chapterSources = withContext(Dispatchers.IO) {
             dataProvider
