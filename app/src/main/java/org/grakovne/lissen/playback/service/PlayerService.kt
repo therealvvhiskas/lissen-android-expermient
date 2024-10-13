@@ -12,6 +12,7 @@ import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
@@ -20,9 +21,10 @@ import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.MediaProgress
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @AndroidEntryPoint
-class AudioPlayerService : MediaSessionService() {
+class AudioPlayerService : MediaSessionService(), CoroutineScope {
 
     @Inject
     lateinit var exoPlayer: ExoPlayer
@@ -32,6 +34,11 @@ class AudioPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var dataProvider: AudiobookshelfDataProvider
+
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(
@@ -84,33 +91,36 @@ class AudioPlayerService : MediaSessionService() {
 
     @OptIn(UnstableApi::class)
     private fun setPlaybackQueue(book: DetailedBook) {
-        exoPlayer.playWhenReady = false
-
-        val chapterSources = book.chapters.mapIndexed { index, chapter ->
-            MediaItem.Builder()
-                .setMediaId(chapter.id)
-                .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
-                .setTag(book)
-                .setMediaMetadata(
-                    MediaMetadata.Builder()
-                        .setTitle(chapter.name)
-                        .setArtist(book.title)
-                        .setTrackNumber(index)
-                        .setDurationMs(chapter.duration.toLong() * 1000)
-                        .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
+        launch {
+            val chapterSources = withContext(Dispatchers.IO) {
+                book.chapters.mapIndexed { index, chapter ->
+                    MediaItem.Builder()
+                        .setMediaId(chapter.id)
+                        .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                        .setTag(book)
+                        .setMediaMetadata(
+                            MediaMetadata.Builder()
+                                .setTitle(chapter.name)
+                                .setArtist(book.title)
+                                .setTrackNumber(index)
+                                .setDurationMs(chapter.duration.toLong() * 1000)
+                                .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
+                                .build()
+                        )
                         .build()
-                )
-                .build()
+                }
+            }
+
+            exoPlayer.playWhenReady = false
+            exoPlayer.setMediaItems(chapterSources)
+            setPlaybackProgress(book.chapters, book.progress)
+
+            LocalBroadcastManager
+                .getInstance(baseContext)
+                .sendBroadcast(Intent(PLAYBACK_READY))
         }
-
-        exoPlayer.setMediaItems(chapterSources)
-        setPlaybackProgress(book.chapters, book.progress)
-
-        LocalBroadcastManager
-            .getInstance(baseContext)
-            .sendBroadcast(Intent(PLAYBACK_READY))
-
     }
+
 
     private fun setPlaybackProgress(
         chapters: List<BookChapter>,

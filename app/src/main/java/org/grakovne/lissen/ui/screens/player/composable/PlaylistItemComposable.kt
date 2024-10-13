@@ -30,9 +30,6 @@ fun PlaylistItemComposable(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-
-    println("Rendering item: ${track.name}")
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier

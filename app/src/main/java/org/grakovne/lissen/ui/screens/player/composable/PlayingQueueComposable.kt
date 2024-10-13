@@ -68,10 +68,6 @@ fun PlayingQueueComposable(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        val rememberedIndex = remember(currentTrackIndex) {
-            derivedStateOf { currentTrackIndex }
-        }
-
         LazyColumn(
             modifier = Modifier
                 .nestedScroll(object : NestedScrollConnection {
@@ -89,7 +85,7 @@ fun PlayingQueueComposable(
                 PlaylistItemComposable(
                     track = track,
                     onClick = { viewModel.setChapter(index) },
-                    isSelected = index == rememberedIndex.value
+                    isSelected = index == currentTrackIndex
                 )
 
                 if (index < chapters.size - 1) {
