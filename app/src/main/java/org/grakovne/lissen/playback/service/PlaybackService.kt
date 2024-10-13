@@ -16,7 +16,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
-import org.grakovne.lissen.domain.BookChapter
+import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
 import javax.inject.Inject
@@ -104,7 +104,7 @@ class AudioPlayerService : MediaSessionService() {
                 .fold(
                     onSuccess = { session ->
                         book
-                            .chapters
+                            .files
                             .mapIndexed { index, chapter ->
                                 MediaItem.Builder()
                                     .setMediaId(chapter.id)
@@ -134,7 +134,7 @@ class AudioPlayerService : MediaSessionService() {
 
         chapterSources?.let {
             exoPlayer.setMediaItems(it)
-            setPlaybackProgress(book.chapters, book.progress)
+            setPlaybackProgress(book.files, book.progress)
         }
 
         LocalBroadcastManager
@@ -143,7 +143,7 @@ class AudioPlayerService : MediaSessionService() {
     }
 
     private fun setPlaybackProgress(
-        chapters: List<BookChapter>,
+        chapters: List<BookFile>,
         progress: MediaProgress?
     ) {
         when (progress) {

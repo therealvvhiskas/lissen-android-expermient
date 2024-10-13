@@ -52,13 +52,13 @@ fun TrackControlComposable(
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
 
     val book by viewModel.book.observeAsState()
-    val chapters = book?.chapters ?: emptyList()
+    val chapters = book?.files ?: emptyList()
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
     val duration by remember {
         derivedStateOf {
-            book?.chapters?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
+            book?.files?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
         }
     }
 

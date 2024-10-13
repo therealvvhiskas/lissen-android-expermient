@@ -85,7 +85,7 @@ fun TrackDetailsComposable(
     Spacer(Modifier.padding(vertical = 4.dp))
 
     Text(
-        text = "Chapter ${currentTrackIndex + 1} of ${book?.chapters?.size ?: "?"}",
+        text = "Chapter ${currentTrackIndex + 1} of ${book?.files?.size ?: "?"}",
         style = typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)
     )

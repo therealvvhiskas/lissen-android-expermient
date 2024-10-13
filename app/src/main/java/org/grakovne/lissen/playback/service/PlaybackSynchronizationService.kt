@@ -79,11 +79,11 @@ class PlaybackSynchronizationService @Inject constructor(
 
         val currentIndex = exoPlayer.currentMediaItemIndex
 
-        val previousDuration = currentBook.chapters
+        val previousDuration = currentBook.files
             .take(currentIndex)
             .sumOf { it.duration * 1000 }
 
-        val totalDuration = currentBook.chapters.sumOf { it.duration * 1000 }
+        val totalDuration = currentBook.files.sumOf { it.duration * 1000 }
 
         val totalElapsedMs = previousDuration + currentElapsedMs
         return PlaybackProgress(

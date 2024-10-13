@@ -13,10 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -35,7 +33,7 @@ fun PlayingQueueComposable(
 ) {
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
-    val chapters = book?.chapters ?: emptyList()
+    val chapters = book?.files ?: emptyList()
 
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 

@@ -8,5 +8,13 @@ data class LibraryItemIdResponse(
 
 data class LibraryIdMedia(
     val metadata: MediaMetadataResponse,
-    val audioFiles: List<AudioFileResponse>
+    val audioFiles: List<AudioFileResponse>,
+    val chapters: List<PlaybackChapterResponse>
+)
+
+data class PlaybackChapterResponse(
+    val start: Double,
+    val end: Double,
+    val title: String,
+    val id: String
 )
