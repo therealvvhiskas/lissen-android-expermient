@@ -19,6 +19,7 @@ import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
+import org.grakovne.lissen.domain.PlaybackSession
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,6 +35,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var dataProvider: AudiobookshelfChannel
 
     private val playerServiceScope = MainScope()
+    private var playbackSession: PlaybackSession? = null
 
     override fun onStartCommand(
         intent: Intent?,
@@ -89,28 +91,43 @@ class AudioPlayerService : MediaSessionService() {
 
     @OptIn(UnstableApi::class)
     private suspend fun preparePlayback(book: DetailedBook) {
+        exoPlayer.playWhenReady = false
+
         val chapterSources = withContext(Dispatchers.IO) {
-            book.chapters.mapIndexed { index, chapter ->
-                MediaItem.Builder()
-                    .setMediaId(chapter.id)
-                    .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
-                    .setTag(book)
-                    .setMediaMetadata(
-                        MediaMetadata.Builder()
-                            .setTitle(chapter.name)
-                            .setArtist(book.title)
-                            .setTrackNumber(index)
-                            .setDurationMs(chapter.duration.toLong() * 1000)
-                            .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
-                            .build()
-                    )
-                    .build()
-            }
+            dataProvider
+                .startPlayback(book.id)
+                .fold(
+                    onSuccess = {
+                        playbackSession = it
+
+                        book.chapters.mapIndexed { index, chapter ->
+                            MediaItem.Builder()
+                                .setMediaId(chapter.id)
+                                .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                                .setTag(book)
+                                .setMediaMetadata(
+                                    MediaMetadata.Builder()
+                                        .setTitle(chapter.name)
+                                        .setArtist(book.title)
+                                        .setTrackNumber(index)
+                                        .setDurationMs(chapter.duration.toLong() * 1000)
+                                        .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
+                                        .build()
+                                )
+                                .build()
+                        }
+                    },
+                    onFailure = {
+                        // show error later
+                        null
+                    }
+                )
         }
 
-        exoPlayer.playWhenReady = false
-        exoPlayer.setMediaItems(chapterSources)
-        setPlaybackProgress(book.chapters, book.progress)
+        chapterSources?.let {
+            exoPlayer.setMediaItems(it)
+            setPlaybackProgress(book.chapters, book.progress)
+        }
 
         LocalBroadcastManager
             .getInstance(baseContext)
