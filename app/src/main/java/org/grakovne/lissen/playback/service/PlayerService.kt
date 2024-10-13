@@ -88,7 +88,6 @@ class AudioPlayerService : MediaSessionService() {
 
     override fun onDestroy() {
         playerServiceScope.cancel()
-        playbackSynchronizationService.stopPlaybackSynchronization()
 
         mediaSession.release()
         exoPlayer.release()
@@ -105,9 +104,7 @@ class AudioPlayerService : MediaSessionService() {
             dataProvider
                 .startPlayback(book.id)
                 .fold(
-                    onSuccess = {
-                        playbackSynchronizationService.startPlaybackSynchronization(it)
-
+                    onSuccess = { session ->
                         book.chapters.mapIndexed { index, chapter ->
                             MediaItem.Builder()
                                 .setMediaId(chapter.id)
@@ -123,6 +120,12 @@ class AudioPlayerService : MediaSessionService() {
                                         .build()
                                 )
                                 .build()
+                                .also {
+                                    playbackSynchronizationService
+                                        .startPlaybackSynchronization(session)
+                                }
+
+
                         }
                     },
                     onFailure = {

@@ -3,10 +3,8 @@ package org.grakovne.lissen.playback.service
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.DetailedBook
@@ -20,20 +18,19 @@ class PlaybackSynchronizationService @Inject constructor(
     private val exoPlayer: ExoPlayer,
     private val channel: AudiobookshelfChannel
 ) {
-    private var syncJob: Job? = null
-
     private var playbackSession: PlaybackSession? = null
+
     private val serviceScope = MainScope()
 
     init {
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                when (isPlaying) {
-                    true -> playbackSession?.let(::startPlaybackSynchronization)
-                    false -> {
-                        executeSynchronization()
-                        stopPlaybackSynchronization()
+                if (isPlaying) {
+                    playbackSession?.let {
+                        startSynchronization()
                     }
+                } else {
+                    executeSynchronization()
                 }
             }
         })
@@ -41,21 +38,15 @@ class PlaybackSynchronizationService @Inject constructor(
 
     fun startPlaybackSynchronization(session: PlaybackSession) {
         playbackSession = session
-        syncJob?.cancel()
-
-        syncJob = serviceScope.launch {
-            while (isActive) {
-                executeSynchronization()
-                delay(synchronizationInterval)
-            }
-        }
     }
 
-    fun stopPlaybackSynchronization() {
-        syncJob?.cancel()
-
-        playbackSession = null
-        syncJob = null
+    private fun startSynchronization() {
+        serviceScope.launch {
+            while (exoPlayer.isPlaying) {
+                executeSynchronization()
+                delay(SYNC_INTERVAL)
+            }
+        }
     }
 
     private fun executeSynchronization() {
@@ -63,18 +54,20 @@ class PlaybackSynchronizationService @Inject constructor(
         val overallProgress = getProgress(elapsedMs)
 
         serviceScope.launch(Dispatchers.IO) {
-            playbackSession
-                ?.let {
-                    channel.syncProgress(
-                        itemId = it.sessionId,
-                        progress = overallProgress
-                    )
-                }
+            playbackSession?.let {
+                channel.syncProgress(
+                    itemId = it.sessionId,
+                    progress = overallProgress
+                )
+            }
         }
     }
 
     private fun getProgress(currentElapsedMs: Long): PlaybackProgress {
-        val currentBook = exoPlayer.currentMediaItem?.localConfiguration?.tag as? DetailedBook
+        val currentBook = exoPlayer
+            .currentMediaItem
+            ?.localConfiguration
+            ?.tag as? DetailedBook
             ?: return PlaybackProgress(0.0, 0.0)
 
         val currentIndex = exoPlayer.currentMediaItemIndex
@@ -93,7 +86,6 @@ class PlaybackSynchronizationService @Inject constructor(
     }
 
     companion object {
-        private val synchronizationInterval = 30000L
+        private const val SYNC_INTERVAL = 30_000L
     }
-
 }
