@@ -112,7 +112,7 @@ class AudioPlayerService : MediaSessionService() {
                                     .setTag(book)
                                     .setMediaMetadata(
                                         MediaMetadata.Builder()
-                                            .setTitle(file.name)
+                                            .setTitle(book.author)
                                             .setArtist(book.title)
                                             .setTrackNumber(index)
                                             .setDurationMs(file.duration.toLong() * 1000)
