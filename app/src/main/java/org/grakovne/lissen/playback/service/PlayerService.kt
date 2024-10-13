@@ -37,6 +37,7 @@ class AudioPlayerService : MediaSessionService() {
     private val playerServiceScope = MainScope()
     private var playbackSession: PlaybackSession? = null
 
+    @Suppress("DEPRECATION")
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
