@@ -13,13 +13,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
-import org.grakovne.lissen.domain.PlaybackSession
+import org.grakovne.lissen.domain.PlaybackProgress
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,8 +36,10 @@ class AudioPlayerService : MediaSessionService() {
     @Inject
     lateinit var dataProvider: AudiobookshelfChannel
 
+    @Inject
+    lateinit var playbackSynchronizationService: PlaybackSynchronizationService
+
     private val playerServiceScope = MainScope()
-    private var playbackSession: PlaybackSession? = null
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(
@@ -84,9 +88,12 @@ class AudioPlayerService : MediaSessionService() {
 
     override fun onDestroy() {
         playerServiceScope.cancel()
+        playbackSynchronizationService.stopPlaybackSynchronization()
+
         mediaSession.release()
         exoPlayer.release()
         exoPlayer.clearMediaItems()
+
         super.onDestroy()
     }
 
@@ -99,7 +106,7 @@ class AudioPlayerService : MediaSessionService() {
                 .startPlayback(book.id)
                 .fold(
                     onSuccess = {
-                        playbackSession = it
+                        playbackSynchronizationService.startPlaybackSynchronization(it)
 
                         book.chapters.mapIndexed { index, chapter ->
                             MediaItem.Builder()
@@ -151,6 +158,7 @@ class AudioPlayerService : MediaSessionService() {
             }
         }
     }
+
 
     companion object {
         const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
