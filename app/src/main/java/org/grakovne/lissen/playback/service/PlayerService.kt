@@ -66,9 +66,7 @@ class AudioPlayerService : MediaSessionService() {
                 val book = intent.getSerializableExtra(BOOK_EXTRA) as? DetailedBook
                 book?.let {
                     playerServiceScope
-                        .launch {
-                            preparePlayback(it)
-                        }
+                        .launch { preparePlayback(it) }
                 }
                 return START_NOT_STICKY
             }
