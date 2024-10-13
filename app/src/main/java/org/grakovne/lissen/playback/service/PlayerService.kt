@@ -67,7 +67,7 @@ class AudioPlayerService : MediaSessionService() {
                 book?.let {
                     playerServiceScope
                         .launch {
-                            setPlaybackQueue(it)
+                            preparePlayback(it)
                         }
                 }
                 return START_NOT_STICKY
@@ -90,7 +90,7 @@ class AudioPlayerService : MediaSessionService() {
     }
 
     @OptIn(UnstableApi::class)
-    private suspend fun setPlaybackQueue(book: DetailedBook) {
+    private suspend fun preparePlayback(book: DetailedBook) {
         val chapterSources = withContext(Dispatchers.IO) {
             book.chapters.mapIndexed { index, chapter ->
                 MediaItem.Builder()
