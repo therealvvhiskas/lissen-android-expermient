@@ -6,6 +6,7 @@ import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaReposit
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.Library
@@ -13,6 +14,7 @@ import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.domain.PlaybackSession
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -25,6 +27,7 @@ class AudiobookshelfChannel @Inject constructor(
     private val libraryItemResponseConverter: LibraryItemResponseConverter,
     private val libraryResponseConverter: LibraryResponseConverter,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
+    private val sessionResponseConverter: PlaybackSessionResponseConverter,
     private val preferences: LissenSharedPreferences
 ) {
 
@@ -65,6 +68,10 @@ class AudiobookshelfChannel @Inject constructor(
     suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
         .fetchLibraries()
         .map { libraryResponseConverter.apply(it) }
+
+    suspend fun startPlayback(itemId: String) = dataRepository
+        .startPlayback(itemId)
+        .map { sessionResponseConverter.apply(it) }
 
     suspend fun getRecentItems(): ApiResult<List<RecentBook>> =
         dataRepository
