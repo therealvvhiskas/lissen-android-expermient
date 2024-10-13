@@ -15,7 +15,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
@@ -31,7 +31,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var mediaSession: MediaSession
 
     @Inject
-    lateinit var dataProvider: AudiobookshelfDataProvider
+    lateinit var dataProvider: AudiobookshelfChannel
 
     private val playerServiceScope = MainScope()
 

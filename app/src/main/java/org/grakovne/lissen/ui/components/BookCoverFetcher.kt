@@ -2,7 +2,6 @@ package org.grakovne.lissen.ui.components
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import coil.ImageLoader
 import coil.decode.ImageSource
 import coil.disk.DiskCache
@@ -11,7 +10,6 @@ import coil.fetch.Fetcher
 import coil.fetch.SourceResult
 import coil.memory.MemoryCache
 import coil.request.Options
-import coil.util.DebugLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,12 +17,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.channel.common.ApiResult
 import javax.inject.Singleton
 
 class BookCoverFetcher(
-    private val dataProvider: AudiobookshelfDataProvider,
+    private val dataProvider: AudiobookshelfChannel,
     private val uri: Uri,
     private val context: Context
 ) : Fetcher {
@@ -47,7 +45,7 @@ class BookCoverFetcher(
 }
 
 class BookCoverFetcherFactory(
-    private val dataProvider: AudiobookshelfDataProvider,
+    private val dataProvider: AudiobookshelfChannel,
     private val context: Context
 ) : Fetcher.Factory<Uri> {
 
@@ -62,7 +60,7 @@ object ImageLoaderModule {
     @Singleton
     @Provides
     fun provideBookCoverFetcherFactory(
-        dataProvider: AudiobookshelfDataProvider,
+        dataProvider: AudiobookshelfChannel,
         @ApplicationContext context: Context
     ): BookCoverFetcherFactory = BookCoverFetcherFactory(dataProvider, context)
 

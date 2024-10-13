@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider,
+    private val dataProvider: AudiobookshelfChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 

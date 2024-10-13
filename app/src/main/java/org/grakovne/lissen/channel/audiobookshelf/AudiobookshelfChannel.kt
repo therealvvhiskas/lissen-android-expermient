@@ -8,7 +8,6 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseC
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
 import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
@@ -19,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AudiobookshelfDataProvider @Inject constructor(
+class AudiobookshelfChannel @Inject constructor(
     private val dataRepository: AudioBookshelfDataRepository,
     private val mediaRepository: AudioBookshelfMediaRepository,
     private val recentBookResponseConverter: RecentBookResponseConverter,

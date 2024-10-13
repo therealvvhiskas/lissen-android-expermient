@@ -8,14 +8,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.MediaRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider,
+    private val dataProvider: AudiobookshelfChannel,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
 

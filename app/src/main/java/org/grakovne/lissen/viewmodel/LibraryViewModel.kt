@@ -8,9 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfDataProvider
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -19,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfDataProvider,
+    private val dataProvider: AudiobookshelfChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
