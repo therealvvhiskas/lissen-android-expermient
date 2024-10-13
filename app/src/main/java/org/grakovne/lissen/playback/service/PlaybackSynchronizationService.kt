@@ -4,6 +4,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
@@ -19,7 +20,7 @@ class PlaybackSynchronizationService @Inject constructor(
     private val channel: AudiobookshelfChannel
 ) {
     private var playbackSession: PlaybackSession? = null
-
+    private var currentBook: DetailedBook? = null
     private val serviceScope = MainScope()
 
     init {
@@ -37,7 +38,13 @@ class PlaybackSynchronizationService @Inject constructor(
     }
 
     fun startPlaybackSynchronization(session: PlaybackSession) {
+        serviceScope.coroutineContext.cancelChildren()
         playbackSession = session
+    }
+
+    fun stopPlaybackSynchronization() {
+        serviceScope.coroutineContext.cancelChildren()
+        playbackSession = null
     }
 
     private fun startSynchronization() {

@@ -99,34 +99,35 @@ class AudioPlayerService : MediaSessionService() {
     @OptIn(UnstableApi::class)
     private suspend fun preparePlayback(book: DetailedBook) {
         exoPlayer.playWhenReady = false
+        playbackSynchronizationService.stopPlaybackSynchronization() // остановка предыдущей синхронизации
+
 
         val chapterSources = withContext(Dispatchers.IO) {
             dataProvider
                 .startPlayback(book.id)
                 .fold(
                     onSuccess = { session ->
-                        book.chapters.mapIndexed { index, chapter ->
-                            MediaItem.Builder()
-                                .setMediaId(chapter.id)
-                                .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
-                                .setTag(book)
-                                .setMediaMetadata(
-                                    MediaMetadata.Builder()
-                                        .setTitle(chapter.name)
-                                        .setArtist(book.title)
-                                        .setTrackNumber(index)
-                                        .setDurationMs(chapter.duration.toLong() * 1000)
-                                        .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
-                                        .build()
-                                )
-                                .build()
-                                .also {
-                                    playbackSynchronizationService
-                                        .startPlaybackSynchronization(session)
-                                }
-
-
-                        }
+                        book
+                            .chapters
+                            .mapIndexed { index, chapter ->
+                                MediaItem.Builder()
+                                    .setMediaId(chapter.id)
+                                    .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                                    .setTag(book)
+                                    .setMediaMetadata(
+                                        MediaMetadata.Builder()
+                                            .setTitle(chapter.name)
+                                            .setArtist(book.title)
+                                            .setTrackNumber(index)
+                                            .setDurationMs(chapter.duration.toLong() * 1000)
+                                            .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
+                                            .build()
+                                    )
+                                    .build()
+                            }
+                            .also {
+                                playbackSynchronizationService.startPlaybackSynchronization(session)
+                            }
                     },
                     onFailure = {
                         // show error later

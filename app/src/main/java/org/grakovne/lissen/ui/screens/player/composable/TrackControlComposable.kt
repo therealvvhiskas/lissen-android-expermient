@@ -56,7 +56,11 @@ fun TrackControlComposable(
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
-    val duration = book?.chapters?.get(currentTrackIndex)?.duration?.toFloat() ?: 0f
+    val duration by remember {
+        derivedStateOf {
+            book?.chapters?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
+        }
+    }
 
     val draggableTrackProgress by remember {
         derivedStateOf {
