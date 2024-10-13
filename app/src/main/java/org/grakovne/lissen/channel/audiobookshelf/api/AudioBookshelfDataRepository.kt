@@ -10,6 +10,7 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.channel.common.ApiClient
 import org.grakovne.lissen.domain.UserAccount
@@ -36,6 +37,9 @@ class AudioBookshelfDataRepository @Inject constructor(
     ): ApiResult<LibraryItemsResponse> {
         return safeApiCall { getClientInstance().getLibraryItems(libraryId) }
     }
+
+    suspend fun startPlayback(itemId: String): ApiResult<PlaybackSessionResponse> =
+        safeApiCall { getClientInstance().startPlayback(itemId) }
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
         safeApiCall { getClientInstance().getLibraries() }
