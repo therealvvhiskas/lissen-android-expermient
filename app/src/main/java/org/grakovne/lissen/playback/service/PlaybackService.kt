@@ -105,17 +105,17 @@ class AudioPlayerService : MediaSessionService() {
                     onSuccess = { session ->
                         book
                             .files
-                            .mapIndexed { index, chapter ->
+                            .mapIndexed { index, file ->
                                 MediaItem.Builder()
-                                    .setMediaId(chapter.id)
-                                    .setUri(dataProvider.provideChapterUri(book.id, chapter.id))
+                                    .setMediaId(file.id)
+                                    .setUri(dataProvider.provideFileUri(book.id, file.id))
                                     .setTag(book)
                                     .setMediaMetadata(
                                         MediaMetadata.Builder()
-                                            .setTitle(chapter.name)
+                                            .setTitle(file.name)
                                             .setArtist(book.title)
                                             .setTrackNumber(index)
-                                            .setDurationMs(chapter.duration.toLong() * 1000)
+                                            .setDurationMs(file.duration.toLong() * 1000)
                                             .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
                                             .build()
                                     )

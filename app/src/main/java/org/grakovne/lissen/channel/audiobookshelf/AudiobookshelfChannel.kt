@@ -33,7 +33,7 @@ class AudiobookshelfChannel @Inject constructor(
     private val syncService: AudioBookshelfSyncService
 ) {
 
-    fun provideChapterUri(
+    fun provideFileUri(
         libraryItemId: String,
         chapterId: String
     ): Uri = Uri.parse(preferences.getHost())
