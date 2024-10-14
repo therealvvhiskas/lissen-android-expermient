@@ -130,7 +130,11 @@ class AudioPlayerService : MediaSessionService() {
 
             val prepareSession = async {
                 dataProvider
-                    .startPlayback(book.id)
+                    .startPlayback(
+                        itemId = book.id,
+                        deviceId = "lissen",
+                        supportedMimeTypes = SUPPORTED_MIME_TYPES
+                    )
                     .fold(
                         onSuccess = {
                             playbackSynchronizationService.startPlaybackSynchronization(it)
@@ -165,7 +169,6 @@ class AudioPlayerService : MediaSessionService() {
         }
     }
 
-
     companion object {
         const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
         const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
@@ -173,5 +176,17 @@ class AudioPlayerService : MediaSessionService() {
 
         const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
         const val PLAYBACK_READY = "org.grakovne.lissen.player.service.PLAYBACK_READY"
+
+        val SUPPORTED_MIME_TYPES = listOf(
+            "audio/flac",
+            "audio/mp4",
+            "audio/aac",
+            "audio/mpeg",
+            "audio/mp3",
+            "audio/webm",
+            "audio/ac3",
+            "audio/opus",
+            "audio/vorbis",
+        )
     }
 }

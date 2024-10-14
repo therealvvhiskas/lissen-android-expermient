@@ -30,7 +30,8 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                         name = it.metaTags
                             ?.tagTitle
                             ?: (it.metadata.filename.removeSuffix(it.metadata.ext)),
-                        duration = it.duration
+                        duration = it.duration,
+                        mimeType = it.mimeType
                     )
                 },
             chapters = item

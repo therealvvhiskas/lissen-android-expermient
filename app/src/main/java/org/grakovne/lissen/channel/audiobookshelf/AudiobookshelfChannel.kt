@@ -9,10 +9,13 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseC
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo
+import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.PlaybackProgress
+import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -76,9 +79,29 @@ class AudiobookshelfChannel @Inject constructor(
         .fetchLibraries()
         .map { libraryResponseConverter.apply(it) }
 
-    suspend fun startPlayback(itemId: String) = dataRepository
-        .startPlayback(itemId)
-        .map { sessionResponseConverter.apply(it) }
+    suspend fun startPlayback(
+        itemId: String,
+        supportedMimeTypes: List<String>,
+        deviceId: String
+    ): ApiResult<PlaybackSession> {
+        val request = StartPlaybackRequest(
+            supportedMimeTypes = supportedMimeTypes,
+            deviceInfo = DeviceInfo(
+                clientName = "Lissen Android",
+                deviceId = deviceId
+            ),
+            forceTranscode = false,
+            forceDirectPlay = false,
+            mediaPlayer = "exo3"
+        )
+
+        return dataRepository
+            .startPlayback(
+                itemId = itemId,
+                request = request
+            )
+            .map { sessionResponseConverter.apply(it) }
+    }
 
     suspend fun stopPlayback(sessionId: String) = dataRepository
         .stopPlayback(sessionId)

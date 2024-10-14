@@ -9,9 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
-import org.grakovne.lissen.domain.Library
-import org.grakovne.lissen.domain.UserAccount
-import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InvalidCredentialsHost
@@ -19,6 +16,9 @@ import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsH
 import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsPassword
 import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsUsername
 import org.grakovne.lissen.channel.common.FetchTokenApiError.Unauthorized
+import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.UserAccount
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
 @HiltViewModel

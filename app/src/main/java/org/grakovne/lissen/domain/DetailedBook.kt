@@ -15,6 +15,7 @@ data class BookFile(
     val id: String,
     val name: String,
     val duration: Double,
+    val mimeType: String
 ) : Serializable
 
 data class MediaProgress(

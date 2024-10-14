@@ -5,7 +5,8 @@ data class AudioFileResponse(
     val ino: String,
     val duration: Double,
     val metadata: AudioFileMetadata,
-    val metaTags: AudioFileTag?
+    val metaTags: AudioFileTag?,
+    val mimeType: String
 )
 
 data class AudioFileMetadata(

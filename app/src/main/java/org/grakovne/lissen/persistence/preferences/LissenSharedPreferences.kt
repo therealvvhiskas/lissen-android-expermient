@@ -6,7 +6,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.grakovne.lissen.LissenApplication
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
 import javax.crypto.Cipher

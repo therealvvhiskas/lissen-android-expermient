@@ -12,12 +12,13 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import org.grakovne.lissen.channel.common.ApiClient
-import org.grakovne.lissen.domain.UserAccount
-import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.FetchTokenApiError
+import org.grakovne.lissen.domain.UserAccount
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
@@ -39,8 +40,11 @@ class AudioBookshelfDataRepository @Inject constructor(
         return safeApiCall { getClientInstance().getLibraryItems(libraryId) }
     }
 
-    suspend fun startPlayback(itemId: String): ApiResult<PlaybackSessionResponse> =
-        safeApiCall { getClientInstance().startPlayback(itemId) }
+    suspend fun startPlayback(
+        itemId: String,
+        request: StartPlaybackRequest
+    ): ApiResult<PlaybackSessionResponse> =
+        safeApiCall { getClientInstance().startPlayback(itemId, request) }
 
     suspend fun stopPlayback(sessionId: String): ApiResult<Unit> =
         safeApiCall { getClientInstance().stopPlayback(sessionId) }

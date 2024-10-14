@@ -8,6 +8,7 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -23,7 +24,8 @@ interface AudiobookshelfApiClient {
 
     @POST("/api/items/{itemId}/play")
     suspend fun startPlayback(
-        @Path("itemId") itemId: String
+        @Path("itemId") itemId: String,
+        @Body syncProgressRequest: StartPlaybackRequest
     ): Response<PlaybackSessionResponse>
 
     @POST("/api/session/{sessionId}/close")
