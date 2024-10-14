@@ -26,6 +26,12 @@ interface AudiobookshelfApiClient {
         @Path("itemId") itemId: String
     ): Response<PlaybackSessionResponse>
 
+    @POST("/api/session/{sessionId}/close")
+    suspend fun stopPlayback(
+        @Path("sessionId") sessionId: String
+    ): Response<Unit>
+
+
     @GET("/api/me/listening-stats")
     suspend fun getRecentItems(): Response<RecentListeningResponse>
 

@@ -80,6 +80,9 @@ class AudiobookshelfChannel @Inject constructor(
         .startPlayback(itemId)
         .map { sessionResponseConverter.apply(it) }
 
+    suspend fun stopPlayback(sessionId: String) = dataRepository
+        .stopPlayback(sessionId)
+
     suspend fun getRecentItems(): ApiResult<List<RecentBook>> =
         dataRepository
             .getRecentItems()

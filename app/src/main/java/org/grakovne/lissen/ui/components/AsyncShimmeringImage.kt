@@ -49,7 +49,7 @@ fun AsyncShimmeringImage(
             contentScale = contentScale,
             modifier = Modifier.fillMaxSize(),
             onSuccess = { isLoading = false },
-            onError = {isLoading = false},
+            onError = { isLoading = false },
             error = error
         )
     }

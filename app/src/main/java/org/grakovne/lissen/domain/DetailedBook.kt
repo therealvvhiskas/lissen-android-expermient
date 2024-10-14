@@ -28,4 +28,4 @@ data class BookChapter(
     val end: Double,
     val title: String,
     val id: String
-): Serializable
+) : Serializable

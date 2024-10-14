@@ -20,7 +20,6 @@ class PlaybackSynchronizationService @Inject constructor(
     private val channel: AudiobookshelfChannel
 ) {
     private var playbackSession: PlaybackSession? = null
-    private var currentBook: DetailedBook? = null
     private val serviceScope = MainScope()
 
     init {
@@ -43,8 +42,16 @@ class PlaybackSynchronizationService @Inject constructor(
     }
 
     fun stopPlaybackSynchronization() {
-        serviceScope.coroutineContext.cancelChildren()
-        playbackSession = null
+        serviceScope.launch(Dispatchers.IO) {
+            playbackSession?.let {
+                channel.stopPlayback(
+                    sessionId = it.sessionId
+                )
+
+                serviceScope.coroutineContext.cancelChildren()
+                playbackSession = null
+            }
+        }
     }
 
     private fun startSynchronization() {

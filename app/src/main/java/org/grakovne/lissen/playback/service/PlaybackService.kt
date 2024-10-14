@@ -98,9 +98,10 @@ class AudioPlayerService : MediaSessionService() {
     @OptIn(UnstableApi::class)
     private suspend fun preparePlayback(book: DetailedBook) {
         exoPlayer.playWhenReady = false
-        playbackSynchronizationService.stopPlaybackSynchronization()
+
 
         withContext(Dispatchers.IO) {
+            async { playbackSynchronizationService.stopPlaybackSynchronization() }.await()
             val prepareQueue = async {
                 val playingQueue = book
                     .files
