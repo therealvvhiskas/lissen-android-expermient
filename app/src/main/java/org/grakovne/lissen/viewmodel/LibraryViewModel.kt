@@ -53,7 +53,7 @@ class LibraryViewModel @Inject constructor(
     private fun fetchRecentListening() {
         viewModelScope.launch {
             val response = dataProvider
-                .getRecentItems()
+                .getRecentItems(preferences.getPreferredLibrary()?.id ?: return@launch)
 
             response.fold(
                 onSuccess = { _recentBooks.value = it },

@@ -1,16 +1,13 @@
 package org.grakovne.lissen.viewmodel
 
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError

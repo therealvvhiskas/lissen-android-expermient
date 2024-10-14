@@ -6,8 +6,8 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.RecentListeningResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import retrofit2.Response
@@ -34,8 +34,10 @@ interface AudiobookshelfApiClient {
     ): Response<Unit>
 
 
-    @GET("/api/me/listening-stats")
-    suspend fun getRecentItems(): Response<RecentListeningResponse>
+    @GET("/api/libraries/{libraryId}/personalized?include=rssfeed,numEpisodesIncomplete,share")
+    suspend fun getRecentItems(
+        @Path("libraryId") libraryId: String
+    ): Response<List<PersonalizedFeedResponse>>
 
     @POST("/api/session/{itemId}/sync")
     suspend fun syncProgress(
