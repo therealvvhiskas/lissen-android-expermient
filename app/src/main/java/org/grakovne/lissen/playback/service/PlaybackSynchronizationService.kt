@@ -29,7 +29,7 @@ class PlaybackSynchronizationService @Inject constructor(
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
-                    playbackSession?.let { scheduleSyncronization() }
+                    scheduleSynchronization()
                 } else {
                     executeSynchronization()
                 }
@@ -37,37 +37,22 @@ class PlaybackSynchronizationService @Inject constructor(
         })
     }
 
-    fun startPlaybackSynchronization(
-        session: PlaybackSession,
-        book: DetailedBook
-    ) {
+    fun startPlaybackSynchronization(book: DetailedBook) {
         serviceScope.coroutineContext.cancelChildren()
 
         currentBook = book
-        playbackSession = session
+        playbackSession = null
     }
 
-    fun stopPlaybackSynchronization() {
-        serviceScope.launch(Dispatchers.IO) {
-            playbackSession?.let {
-                channel.stopPlayback(
-                    sessionId = it.sessionId
-                )
-
-                serviceScope.coroutineContext.cancelChildren()
-                playbackSession = null
-                currentBook = null
+    private fun scheduleSynchronization() {
+        serviceScope
+            .launch {
+                if (exoPlayer.isPlaying) {
+                    executeSynchronization()
+                    delay(SYNC_INTERVAL)
+                    scheduleSynchronization()
+                }
             }
-        }
-    }
-
-    private fun scheduleSyncronization() {
-        serviceScope.launch {
-            while (exoPlayer.isPlaying) {
-                executeSynchronization()
-                delay(SYNC_INTERVAL)
-            }
-        }
     }
 
     private fun executeSynchronization() {

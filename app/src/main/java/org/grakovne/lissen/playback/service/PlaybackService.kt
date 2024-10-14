@@ -110,7 +110,8 @@ class AudioPlayerService : MediaSessionService() {
         exoPlayer.playWhenReady = false
 
         withContext(Dispatchers.IO) {
-            async { playbackSynchronizationService.stopPlaybackSynchronization() }.await()
+            //playbackSynchronizationService.stopPlaybackSynchronization()
+
             val prepareQueue = async {
                 val playingQueue = book
                     .files
@@ -138,18 +139,7 @@ class AudioPlayerService : MediaSessionService() {
             }
 
             val prepareSession = async {
-                dataProvider
-                    .startPlayback(
-                        itemId = book.id,
-                        deviceId = sharedPreferences.getDeviceId(),
-                        supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes()
-                    )
-                    .fold(
-                        onSuccess = {
-                            playbackSynchronizationService.startPlaybackSynchronization(it, book)
-                        },
-                        onFailure = {}
-                    )
+                playbackSynchronizationService.startPlaybackSynchronization(book)
             }
 
             awaitAll(prepareSession, prepareQueue)
