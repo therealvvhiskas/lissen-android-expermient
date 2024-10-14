@@ -33,6 +33,7 @@ fun PlayingQueueComposable(
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
 ) {
+    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
     val chapters = book?.files ?: emptyList()
@@ -47,9 +48,18 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
+    LaunchedEffect(isPlaybackReady) {
+        if (isPlaybackReady) {
+            when {
+                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+                else -> listState.scrollToItem(currentTrackIndex)
+            }
+        }
+    }
+
     LaunchedEffect(currentTrackIndex) {
         when {
-            currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+            currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
             else -> listState.scrollToItem(currentTrackIndex)
 
         }
