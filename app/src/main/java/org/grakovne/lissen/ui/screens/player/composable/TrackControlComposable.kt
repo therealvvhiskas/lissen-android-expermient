@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -49,15 +50,26 @@ fun TrackControlComposable(
 
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
+
     val duration by remember {
         derivedStateOf {
             book?.files?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
         }
     }
 
-    val draggableTrackProgress by remember {
-        derivedStateOf {
-            if (!isDragging) currentPosition.toFloat() else sliderPosition
+    LaunchedEffect(currentPosition) {
+        when (isDragging) {
+            true -> {}
+            false -> {
+                sliderPosition = currentPosition.toFloat()
+            }
+        }
+    }
+
+    LaunchedEffect(isDragging) {
+        when (isDragging) {
+            true -> {}
+            false -> viewModel.seekTo(sliderPosition)
         }
     }
 
@@ -66,13 +78,12 @@ fun TrackControlComposable(
     ) {
 
         Slider(
-            value = draggableTrackProgress,
+            value = sliderPosition,
             onValueChange = { newPosition ->
-                sliderPosition = newPosition
                 isDragging = true
+                sliderPosition = newPosition
             },
             onValueChangeFinished = {
-                viewModel.seekTo(sliderPosition)
                 isDragging = false
             },
             valueRange = 0f..(duration),
