@@ -142,11 +142,11 @@ class AudioPlayerService : MediaSessionService() {
                     .startPlayback(
                         itemId = book.id,
                         deviceId = sharedPreferences.getDeviceId(),
-                        supportedMimeTypes = SUPPORTED_MIME_TYPES
+                        supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes()
                     )
                     .fold(
                         onSuccess = {
-                            playbackSynchronizationService.startPlaybackSynchronization(it)
+                            playbackSynchronizationService.startPlaybackSynchronization(it, book)
                         },
                         onFailure = {}
                     )
@@ -186,17 +186,5 @@ class AudioPlayerService : MediaSessionService() {
         const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
         const val PLAYBACK_READY = "org.grakovne.lissen.player.service.PLAYBACK_READY"
         const val POSITION = "org.grakovne.lissen.player.service.POSITION"
-
-        val SUPPORTED_MIME_TYPES = listOf(
-            "audio/flac",
-            "audio/mp4",
-            "audio/aac",
-            "audio/mpeg",
-            "audio/mp3",
-            "audio/webm",
-            "audio/ac3",
-            "audio/opus",
-            "audio/vorbis",
-        )
     }
 }

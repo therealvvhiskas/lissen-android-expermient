@@ -11,14 +11,17 @@ import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class PlaybackSynchronizationService @Inject constructor(
     private val exoPlayer: ExoPlayer,
-    private val channel: AudiobookshelfChannel
+    private val channel: AudiobookshelfChannel,
+    private val sharedPreferences: LissenSharedPreferences
 ) {
+    private var currentBook: DetailedBook? = null
     private var playbackSession: PlaybackSession? = null
     private val serviceScope = MainScope()
 
@@ -26,9 +29,7 @@ class PlaybackSynchronizationService @Inject constructor(
         exoPlayer.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) {
-                    playbackSession?.let {
-                        startSynchronization()
-                    }
+                    playbackSession?.let { scheduleSyncronization() }
                 } else {
                     executeSynchronization()
                 }
@@ -36,8 +37,13 @@ class PlaybackSynchronizationService @Inject constructor(
         })
     }
 
-    fun startPlaybackSynchronization(session: PlaybackSession) {
+    fun startPlaybackSynchronization(
+        session: PlaybackSession,
+        book: DetailedBook
+    ) {
         serviceScope.coroutineContext.cancelChildren()
+
+        currentBook = book
         playbackSession = session
     }
 
@@ -50,11 +56,12 @@ class PlaybackSynchronizationService @Inject constructor(
 
                 serviceScope.coroutineContext.cancelChildren()
                 playbackSession = null
+                currentBook = null
             }
         }
     }
 
-    private fun startSynchronization() {
+    private fun scheduleSyncronization() {
         serviceScope.launch {
             while (exoPlayer.isPlaying) {
                 executeSynchronization()
@@ -68,14 +75,39 @@ class PlaybackSynchronizationService @Inject constructor(
         val overallProgress = getProgress(elapsedMs)
 
         serviceScope.launch(Dispatchers.IO) {
-            playbackSession?.let {
-                channel.syncProgress(
-                    itemId = it.sessionId,
-                    progress = overallProgress
-                )
-            }
+            playbackSession
+                ?.let { synchronizeProgress(it, overallProgress) }
+                ?: openPlaybackSession()
         }
     }
+
+    private suspend fun synchronizeProgress(
+        it: PlaybackSession,
+        overallProgress: PlaybackProgress
+    ) = channel
+        .syncProgress(
+            itemId = it.sessionId,
+            progress = overallProgress
+        )
+        .foldAsync(
+            onSuccess = {},
+            onFailure = { openPlaybackSession() }
+        )
+
+    private suspend fun openPlaybackSession() =
+        currentBook
+            ?.let { book ->
+                channel
+                    .startPlayback(
+                        itemId = book.id,
+                        deviceId = sharedPreferences.getDeviceId(),
+                        supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes()
+                    )
+                    .fold(
+                        onSuccess = { playbackSession = it },
+                        onFailure = {}
+                    )
+            }
 
     private fun getProgress(currentElapsedMs: Long): PlaybackProgress {
         val currentBook = exoPlayer
