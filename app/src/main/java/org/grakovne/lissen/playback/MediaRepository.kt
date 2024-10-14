@@ -21,8 +21,10 @@ import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.service.AudioPlayerService
+import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.ACTION_SEEK_TO
 import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.BOOK_EXTRA
 import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.PLAYBACK_READY
+import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.POSITION
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -155,9 +157,12 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     fun seekTo(position: Float) {
-        if (mediaController.duration > 0) {
-            mediaController.seekTo((position * 1000).toLong())
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = ACTION_SEEK_TO
+            putExtra(POSITION, position)
         }
+
+        context.startService(intent)
     }
 
     private fun startUpdatingProgress() {

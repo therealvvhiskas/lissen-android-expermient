@@ -81,6 +81,12 @@ class AudioPlayerService : MediaSessionService() {
                 return START_NOT_STICKY
             }
 
+            ACTION_SEEK_TO -> {
+                val position = intent.getFloatExtra(POSITION, 0f)
+                exoPlayer.seekTo((position * 1000).toLong())
+                return START_NOT_STICKY
+            }
+
             else -> {
                 return START_NOT_STICKY
             }
@@ -175,9 +181,11 @@ class AudioPlayerService : MediaSessionService() {
         const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"
         const val ACTION_PAUSE = "org.grakovne.lissen.player.service.PAUSE"
         const val ACTION_SET_PLAYBACK = "org.grakovne.lissen.player.service.SET_PLAYBACK"
+        const val ACTION_SEEK_TO = "org.grakovne.lissen.player.service.ACTION_SEEK_TO"
 
         const val BOOK_EXTRA = "org.grakovne.lissen.player.service.BOOK"
         const val PLAYBACK_READY = "org.grakovne.lissen.player.service.PLAYBACK_READY"
+        const val POSITION = "org.grakovne.lissen.player.service.POSITION"
 
         val SUPPORTED_MIME_TYPES = listOf(
             "audio/flac",
