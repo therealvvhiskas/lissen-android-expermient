@@ -12,6 +12,8 @@ import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,48 +100,51 @@ class AudioPlayerService : MediaSessionService() {
         exoPlayer.playWhenReady = false
         playbackSynchronizationService.stopPlaybackSynchronization()
 
-        val chapterSources = withContext(Dispatchers.IO) {
-            dataProvider
-                .startPlayback(book.id)
-                .fold(
-                    onSuccess = { session ->
-                        book
-                            .files
-                            .mapIndexed { index, file ->
-                                MediaItem.Builder()
-                                    .setMediaId(file.id)
-                                    .setUri(dataProvider.provideFileUri(book.id, file.id))
-                                    .setTag(book)
-                                    .setMediaMetadata(
-                                        MediaMetadata.Builder()
-                                            .setTitle(book.author)
-                                            .setArtist(book.title)
-                                            .setTrackNumber(index)
-                                            .setDurationMs(file.duration.toLong() * 1000)
-                                            .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
-                                            .build()
-                                    )
+        withContext(Dispatchers.IO) {
+            val prepareQueue = async {
+                val playingQueue = book
+                    .files
+                    .mapIndexed { index, file ->
+                        MediaItem.Builder()
+                            .setMediaId(file.id)
+                            .setUri(dataProvider.provideFileUri(book.id, file.id))
+                            .setTag(book)
+                            .setMediaMetadata(
+                                MediaMetadata.Builder()
+                                    .setTitle(book.author)
+                                    .setArtist(book.title)
+                                    .setTrackNumber(index)
+                                    .setDurationMs(file.duration.toLong() * 1000)
+                                    .setArtworkUri(dataProvider.provideChapterCoverUri(book.id))
                                     .build()
-                            }
-                            .also {
-                                playbackSynchronizationService.startPlaybackSynchronization(session)
-                            }
-                    },
-                    onFailure = {
-                        // show error later
-                        null
+                            )
+                            .build()
                     }
-                )
+
+                withContext(Dispatchers.Main) {
+                    exoPlayer.setMediaItems(playingQueue)
+                    setPlaybackProgress(book.files, book.progress)
+                }
+            }
+
+            val prepareSession = async {
+                dataProvider
+                    .startPlayback(book.id)
+                    .fold(
+                        onSuccess = {
+                            playbackSynchronizationService.startPlaybackSynchronization(it)
+                        },
+                        onFailure = {}
+                    )
+            }
+
+            awaitAll(prepareSession, prepareQueue)
+
+            LocalBroadcastManager
+                .getInstance(baseContext)
+                .sendBroadcast(Intent(PLAYBACK_READY))
         }
 
-        chapterSources?.let {
-            exoPlayer.setMediaItems(it)
-            setPlaybackProgress(book.files, book.progress)
-        }
-
-        LocalBroadcastManager
-            .getInstance(baseContext)
-            .sendBroadcast(Intent(PLAYBACK_READY))
     }
 
     private fun setPlaybackProgress(
