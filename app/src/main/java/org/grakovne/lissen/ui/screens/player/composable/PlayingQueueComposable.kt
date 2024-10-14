@@ -60,7 +60,7 @@ fun PlayingQueueComposable(
     LaunchedEffect(currentTrackIndex) {
         when {
             currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
-            else -> listState.scrollToItem(currentTrackIndex)
+            else -> listState.animateScrollToItem(currentTrackIndex)
 
         }
     }
