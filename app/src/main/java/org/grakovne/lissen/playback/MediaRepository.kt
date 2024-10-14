@@ -85,6 +85,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                             _currentMediaItemIndex.value = mediaController.currentMediaItemIndex
                         }
                     })
+
                     startUpdatingProgress()
                 }
 
