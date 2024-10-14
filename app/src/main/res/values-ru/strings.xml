@@ -26,5 +26,6 @@
     <string name="login_error_username_is_missing">Имя пользователя не может быть пустым</string>
     <string name="login_error_password_is_missing">Пароль не может быть пустым</string>
     <string name="login_error_credentials_are_invalid">Данные для входа неверные</string>
-    <string name="login_error_host_url_shall_be_https_or_http">URL сервера должен начинаться с http:// или https://</string>
+    <string name="login_error_host_url_shall_be_https_or_http">URL должен начинаться с http:// или https://</string>
+    <string name="login_error_connection_error">Ошибка подключения. Наши полномочия всё</string>
 </resources>
