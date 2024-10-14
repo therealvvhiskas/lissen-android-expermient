@@ -103,7 +103,6 @@ class AudioPlayerService : MediaSessionService() {
     private suspend fun preparePlayback(book: DetailedBook) {
         exoPlayer.playWhenReady = false
 
-
         withContext(Dispatchers.IO) {
             async { playbackSynchronizationService.stopPlaybackSynchronization() }.await()
             val prepareQueue = async {
@@ -163,10 +162,9 @@ class AudioPlayerService : MediaSessionService() {
         when (progress) {
             null -> exoPlayer.seekTo(0, 0)
             else -> {
-                val totalDuration =
-                    chapters.runningFold(0.0) { acc, chapter -> acc + chapter.duration }
-                val targetChapter = totalDuration.indexOfFirst { it > progress.currentTime }
-                val chapterProgress = progress.currentTime - totalDuration[targetChapter - 1]
+                val duration = chapters.runningFold(0.0) { acc, chapter -> acc + chapter.duration }
+                val targetChapter = duration.indexOfFirst { it > progress.currentTime }
+                val chapterProgress = progress.currentTime - duration[targetChapter - 1]
 
                 exoPlayer.seekTo(targetChapter - 1, (chapterProgress * 1000).toLong())
             }
