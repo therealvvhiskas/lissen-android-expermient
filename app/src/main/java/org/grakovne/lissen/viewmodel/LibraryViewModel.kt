@@ -37,7 +37,7 @@ class LibraryViewModel @Inject constructor(
         _refreshing.value = true
 
         viewModelScope.launch {
-            withMinimumTime(700) {
+            withMinimumTime(500) {
                 listOf(
                     async { fetchRecentListening() },
                     async { fetchLibrary() }
@@ -46,6 +46,7 @@ class LibraryViewModel @Inject constructor(
             _refreshing.value = false
         }
     }
+
 
     fun refreshContent() {
         viewModelScope.launch {
