@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="library_screen_library_title">Библиотека</string>
+    <string name="library_screen_continue_listening_title">Продожить слушать</string>
+    <string name="library_screen_downloads_menu_item">Загрузки</string>
+    <string name="library_screen_preferences_menu_item">Настройки</string>
+    <string name="library_screen_report_issue_menu_item">Отчет об ошибке</string>
+    <string name="login_screen_title">Подключиться к серверу</string>
+    <string name="login_screen_server_url_input">URL сервера</string>
+    <string name="login_screen_login_input">Имя пользователя</string>
+    <string name="login_screen_show_password_hint">Показывать пароль</string>
+    <string name="login_screen_password_input">Пароль</string>
+    <string name="login_screen_connect_button_text">Подключиться</string>
+    <string name="player_screen_library_navigation">Библиотека</string>
+    <string name="player_screen_timer_navigation">Таймер</string>
+    <string name="player_screen_chapter_list_navigation">Эпизоды</string>
+    <string name="player_screen_preferences_navigation">Настройки</string>
+    <string name="player_screen_now_playing_title">"Сейчас играет "</string>
+    <string name="player_screen_now_playing_title_chapter_of">Эпизод %1$s из %2$s</string>
+    <string name="settings_screen_title">Настройки</string>
+    <string name="settings_screen_preferred_library_title">Выбранная библиотека</string>
+    <string name="settings_screen_connected_as_title">Подключен как %1$s</string>
+    <string name="settings_screen_server_connection">Настройки сервера</string>
+</resources>

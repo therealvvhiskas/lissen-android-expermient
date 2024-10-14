@@ -253,10 +253,10 @@ fun LibraryScreen(
                                 )
                             }, label = "library_header_fade"
                         ) {
-                            if (it != "Library") {
+                            if (it != stringResource(R.string.library_screen_library_title)) {
                                 Text(
                                     style = titleTextStyle,
-                                    text = "Library",
+                                    text = stringResource(R.string.library_screen_library_title),
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             } else {

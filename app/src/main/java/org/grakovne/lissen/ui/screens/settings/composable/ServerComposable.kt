@@ -37,7 +37,7 @@ fun ServerComposable(
 
     Column {
         Text(
-            text = "Server Connection",
+            text = stringResource(R.string.settings_screen_server_connection),
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(start = 16.dp, bottom = 12.dp)
         )
