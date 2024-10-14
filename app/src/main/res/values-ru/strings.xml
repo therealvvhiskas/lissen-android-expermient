@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="library_screen_library_title">Библиотека</string>
-    <string name="library_screen_continue_listening_title">Продожить слушать</string>
+    <string name="library_screen_continue_listening_title">Продолжить слушать</string>
     <string name="library_screen_downloads_menu_item">Загрузки</string>
     <string name="library_screen_preferences_menu_item">Настройки</string>
     <string name="library_screen_report_issue_menu_item">Отчет об ошибке</string>
