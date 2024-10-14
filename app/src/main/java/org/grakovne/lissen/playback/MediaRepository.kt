@@ -139,6 +139,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         mediaController.run {
             if (currentMediaItemIndex + 1 < currentTimeline.windowCount) {
                 seekTo(currentMediaItemIndex + 1, 0)
+                _currentPosition.value = 0
             }
         }
     }
@@ -147,6 +148,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         mediaController.run {
             if (currentMediaItemIndex > 0) {
                 seekTo(currentMediaItemIndex - 1, 0)
+                _currentPosition.value = 0
             }
         }
     }
