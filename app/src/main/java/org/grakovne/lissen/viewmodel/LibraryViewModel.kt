@@ -5,10 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
@@ -31,11 +33,6 @@ class LibraryViewModel @Inject constructor(
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
 
-    init {
-        fetchRecentListening()
-        fetchLibrary()
-    }
-
     fun onPullRefreshed() {
         _refreshing.value = true
 
@@ -47,6 +44,15 @@ class LibraryViewModel @Inject constructor(
                 ).awaitAll()
             }
             _refreshing.value = false
+        }
+    }
+
+    fun refreshContent() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                launch(Dispatchers.IO) { fetchRecentListening() }
+                launch(Dispatchers.IO) { fetchLibrary() }
+            }
         }
     }
 

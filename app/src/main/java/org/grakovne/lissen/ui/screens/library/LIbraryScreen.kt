@@ -38,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -89,6 +90,10 @@ fun LibraryScreen(
 
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshContent()
+    }
 
     val imageLoader = remember {
         EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
