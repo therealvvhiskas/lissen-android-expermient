@@ -21,6 +21,7 @@ import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,6 +38,9 @@ class AudioPlayerService : MediaSessionService() {
 
     @Inject
     lateinit var playbackSynchronizationService: PlaybackSynchronizationService
+
+    @Inject
+    lateinit var sharedPreferences: LissenSharedPreferences
 
     private val playerServiceScope = MainScope()
 
@@ -132,7 +136,7 @@ class AudioPlayerService : MediaSessionService() {
                 dataProvider
                     .startPlayback(
                         itemId = book.id,
-                        deviceId = "lissen",
+                        deviceId = sharedPreferences.getDeviceId(),
                         supportedMimeTypes = SUPPORTED_MIME_TYPES
                     )
                     .fold(

@@ -8,6 +8,7 @@ import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
+import java.util.UUID
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -40,6 +41,18 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     fun saveHost(host: String) = sharedPreferences.edit().putString(KEY_HOST, host).apply()
     fun getHost(): String? = sharedPreferences.getString(KEY_HOST, null)
 
+    fun getDeviceId(): String {
+        val existingDeviceId = sharedPreferences.getString(KEY_DEVICE_ID, null)
+
+        if (existingDeviceId != null) {
+            return existingDeviceId
+        }
+
+        return UUID
+            .randomUUID()
+            .toString()
+            .also { sharedPreferences.edit().putString(KEY_DEVICE_ID, it).apply() }
+    }
 
     fun getPreferredLibrary(): Library? {
         val id = getPreferredLibraryId() ?: return null
@@ -87,6 +100,8 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         private const val KEY_HOST = "host"
         private const val KEY_USERNAME = "username"
         private const val KEY_TOKEN = "token"
+
+        private const val KEY_DEVICE_ID = "device_id"
 
         private const val KEY_PREFERRED_LIBRARY_ID = "preferred_library_id"
         private const val KEY_PREFERRED_LIBRARY_NAME = "preferred_library_name"

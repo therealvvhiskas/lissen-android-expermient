@@ -87,7 +87,7 @@ class AudiobookshelfChannel @Inject constructor(
         val request = StartPlaybackRequest(
             supportedMimeTypes = supportedMimeTypes,
             deviceInfo = DeviceInfo(
-                clientName = "Lissen Android",
+                clientName = getClientName(),
                 deviceId = deviceId
             ),
             forceTranscode = false,
@@ -129,4 +129,5 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
 
+    fun getClientName() = "Lissen App Android"
 }
