@@ -10,6 +10,7 @@ class PlaybackSessionResponseConverter @Inject constructor() {
 
     fun apply(response: PlaybackSessionResponse): PlaybackSession =
         PlaybackSession(
-            sessionId = response.id
+            sessionId = response.id,
+            itemId = response.libraryItemId
         )
 }

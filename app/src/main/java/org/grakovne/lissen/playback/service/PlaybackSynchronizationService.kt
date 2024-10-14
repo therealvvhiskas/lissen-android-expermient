@@ -39,9 +39,7 @@ class PlaybackSynchronizationService @Inject constructor(
 
     fun startPlaybackSynchronization(book: DetailedBook) {
         serviceScope.coroutineContext.cancelChildren()
-
         currentBook = book
-        playbackSession = null
     }
 
     private fun scheduleSynchronization() {
@@ -59,11 +57,13 @@ class PlaybackSynchronizationService @Inject constructor(
         val elapsedMs = exoPlayer.currentPosition
         val overallProgress = getProgress(elapsedMs)
 
-        serviceScope.launch(Dispatchers.IO) {
-            playbackSession
-                ?.let { synchronizeProgress(it, overallProgress) }
-                ?: openPlaybackSession()
-        }
+        serviceScope
+            .launch(Dispatchers.IO) {
+                playbackSession
+                    ?.takeIf { it.itemId == currentBook?.id }
+                    ?.let { synchronizeProgress(it, overallProgress) }
+                    ?: openPlaybackSession()
+            }
     }
 
     private suspend fun synchronizeProgress(
