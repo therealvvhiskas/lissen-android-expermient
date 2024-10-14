@@ -92,7 +92,7 @@ class AudiobookshelfChannel @Inject constructor(
             ),
             forceTranscode = false,
             forceDirectPlay = false,
-            mediaPlayer = "exo3"
+            mediaPlayer = getClientName()
         )
 
         return dataRepository
