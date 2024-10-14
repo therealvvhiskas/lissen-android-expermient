@@ -190,16 +190,3 @@ fun TrackControlComposable(
         }
     }
 }
-
-
-@Composable
-fun PlaceholderSlider() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(36.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .shimmer()
-            .background(Color.Gray)
-    )
-}
