@@ -66,13 +66,6 @@ fun TrackControlComposable(
         }
     }
 
-    LaunchedEffect(isDragging) {
-        when (isDragging) {
-            true -> {}
-            false -> viewModel.seekTo(sliderPosition)
-        }
-    }
-
     Column(
         modifier = modifier.padding(horizontal = 16.dp)
     ) {
@@ -85,6 +78,7 @@ fun TrackControlComposable(
             },
             onValueChangeFinished = {
                 isDragging = false
+                viewModel.seekTo(sliderPosition)
             },
             valueRange = 0f..(duration),
             colors = SliderDefaults
