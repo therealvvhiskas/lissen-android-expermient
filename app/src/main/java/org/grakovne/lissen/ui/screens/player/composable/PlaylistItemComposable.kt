@@ -27,7 +27,7 @@ import org.grakovne.lissen.ui.extensions.formatLeadingMinutes
 
 @Composable
 fun PlaylistItemComposable(
-    track: BookChapter,
+    track: BookFile,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -55,7 +55,7 @@ fun PlaylistItemComposable(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = track.title,
+            text = track.name,
             style = MaterialTheme.typography.titleMedium,
             color = colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
@@ -64,7 +64,7 @@ fun PlaylistItemComposable(
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = (track.end - track.start).toInt().formatLeadingMinutes(),
+            text = track.duration.toInt().formatLeadingMinutes(),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 8.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
