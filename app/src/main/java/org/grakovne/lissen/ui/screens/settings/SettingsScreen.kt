@@ -21,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
 import org.grakovne.lissen.ui.screens.settings.composable.PreferredLibraryComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerComposable
@@ -48,7 +50,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Preferences",
+                        text = stringResource(R.string.settings_screen_title),
                         style = titleTextStyle,
                         color = colorScheme.onSurface
                     )

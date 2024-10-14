@@ -18,11 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
@@ -63,7 +65,10 @@ fun ServerComposable(
                         }
                         Text(
                             modifier = Modifier.padding(start = 10.dp, top = 4.dp),
-                            text = "Connected as $username",
+                            text = stringResource(
+                                R.string.settings_screen_connected_as_title,
+                                username ?: ""
+                            ),
                             style = TextStyle(fontFamily = FontFamily.Monospace)
                         )
                     }

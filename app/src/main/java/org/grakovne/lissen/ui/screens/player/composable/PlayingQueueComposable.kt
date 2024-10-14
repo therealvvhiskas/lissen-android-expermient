@@ -20,9 +20,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 
@@ -59,7 +61,7 @@ fun PlayingQueueComposable(
             .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "Now Playing",
+            text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = fontSize.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,

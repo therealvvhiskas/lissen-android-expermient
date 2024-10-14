@@ -26,10 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
@@ -65,7 +67,7 @@ fun PlayerScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Library",
+                        text = stringResource(R.string.player_screen_library_navigation),
                         style = titleTextStyle,
                         color = colorScheme.onSurface
                     )

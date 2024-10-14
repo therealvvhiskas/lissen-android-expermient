@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.ui.extensions.formatLeadingMinutes
 
@@ -44,7 +46,7 @@ fun PlaylistItemComposable(
         if (isSelected) {
             Icon(
                 imageVector = Icons.Outlined.Audiotrack,
-                contentDescription = "Now Playing",
+                contentDescription = stringResource(R.string.player_screen_now_playing_title),
                 modifier = Modifier.size(16.dp)
             )
         } else {

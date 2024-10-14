@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">Lissen</string>
+    <string name="app_name" translatable="false">Lissen</string>
+    <string name="library_screen_library_title">Library</string>
+    <string name="library_screen_continue_listening_title">Continue Listening</string>
+    <string name="library_screen_downloads_menu_item">Downloads</string>
+    <string name="library_screen_preferences_menu_item">Preferences</string>
+    <string name="library_screen_report_issue_menu_item">Report Issue</string>
+    <string name="login_screen_title">Connect to Server</string>
+    <string name="login_screen_server_url_input">Server URL</string>
+    <string name="login_screen_login_input">Login</string>
+    <string name="login_screen_show_password_hint">Show Password</string>
+    <string name="login_screen_password_input">Password</string>
+    <string name="login_screen_connect_button_text">Connect</string>
+    <string name="player_screen_library_navigation">Library</string>
+    <string name="player_screen_timer_navigation">Timer</string>
+    <string name="player_screen_chapter_list_navigation">Chapters list</string>
+    <string name="player_screen_preferences_navigation">Preferences</string>
+    <string name="player_screen_now_playing_title">Now Playing</string>
+    <string name="player_screen_now_playing_title_chapter_of">Chapter %1$s of %2$s</string>
+    <string name="settings_screen_title">Preferences</string>
+    <string name="settings_screen_preferred_library_title">Preferred Library</string>
+    <string name="settings_screen_connected_as_title">Connected as %1$s</string>
 </resources>

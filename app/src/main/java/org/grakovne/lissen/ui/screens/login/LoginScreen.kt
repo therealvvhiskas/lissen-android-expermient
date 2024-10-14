@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.LoginViewModel
 import org.grakovne.lissen.viewmodel.LoginViewModel.LoginState
 
@@ -96,7 +98,7 @@ fun LoginScreen(
             ) {
 
                 Text(
-                    text = "Connect to Server",
+                    text = stringResource(R.string.login_screen_title),
                     style = TextStyle(
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
@@ -112,7 +114,7 @@ fun LoginScreen(
                     onValueChange = {
                         viewModel.setHost(it)
                     },
-                    label = { Text("Server URL") },
+                    label = { Text(stringResource(R.string.login_screen_server_url_input)) },
                     shape = RoundedCornerShape(16.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -125,7 +127,7 @@ fun LoginScreen(
                     onValueChange = {
                         viewModel.setUsername(it)
                     },
-                    label = { Text("Login") },
+                    label = { Text(stringResource(R.string.login_screen_login_input)) },
                     shape = RoundedCornerShape(16.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -145,11 +147,11 @@ fun LoginScreen(
                         ) {
                             Icon(
                                 imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                contentDescription = "Show Password"
+                                contentDescription = stringResource(R.string.login_screen_show_password_hint)
                             )
                         }
                     },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(R.string.login_screen_password_input)) },
                     shape = RoundedCornerShape(16.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -165,7 +167,7 @@ fun LoginScreen(
                         .fillMaxWidth(0.8f)
                         .padding(vertical = 32.dp)
                 ) {
-                    Text(text = "Connect")
+                    Text(text = stringResource(R.string.login_screen_connect_button_text))
                 }
             }
         }

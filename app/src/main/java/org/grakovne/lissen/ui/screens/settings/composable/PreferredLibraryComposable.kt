@@ -23,8 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
@@ -38,7 +40,7 @@ fun PreferredLibraryComposable(viewModel: SettingsViewModel) {
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
-            text = "Preferred Library",
+            text = stringResource(R.string.settings_screen_preferred_library_title),
             style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 12.dp)
         )

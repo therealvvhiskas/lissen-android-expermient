@@ -49,11 +49,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dagger.hilt.android.EntryPointAccessors
+import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
@@ -96,10 +98,10 @@ fun LibraryScreen(
     val navBarTitle by remember {
         derivedStateOf {
             val firstVisibleItemIndex = listState.firstVisibleItemIndex
-            if (firstVisibleItemIndex >= 1) {
-                "Library"
-            } else {
-                "Continue Listening"
+            when {
+                firstVisibleItemIndex >= 1 -> context.getString(R.string.library_screen_library_title)
+                else -> context.getString(R.string.library_screen_continue_listening_title)
+
             }
         }
     }
@@ -131,7 +133,7 @@ fun LibraryScreen(
                             },
                             text = {
                                 Text(
-                                    "Downloads",
+                                    stringResource(R.string.library_screen_downloads_menu_item),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier
                                         .padding(start = 8.dp)
@@ -152,7 +154,7 @@ fun LibraryScreen(
                             },
                             text = {
                                 Text(
-                                    "Preferences",
+                                    stringResource(R.string.library_screen_preferences_menu_item),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
@@ -175,7 +177,7 @@ fun LibraryScreen(
                             },
                             text = {
                                 Text(
-                                    "Report Issue",
+                                    stringResource(R.string.library_screen_report_issue_menu_item),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier
                                         .padding(start = 8.dp)

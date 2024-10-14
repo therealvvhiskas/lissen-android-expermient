@@ -18,7 +18,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
@@ -40,10 +42,10 @@ fun PlayerNavBarComposable(
             icon = {
                 Icon(
                     Icons.Outlined.Headset,
-                    contentDescription = "Library"
+                    contentDescription = stringResource(R.string.player_screen_library_navigation),
                 )
             },
-            label = { Text("Library") },
+            label = { Text(stringResource(R.string.player_screen_library_navigation)) },
             selected = false,
             onClick = { navController.navigate("library_screen") },
             colors = NavigationBarItemDefaults.colors(
@@ -55,10 +57,10 @@ fun PlayerNavBarComposable(
             icon = {
                 Icon(
                     Icons.Outlined.Timer,
-                    contentDescription = "Timer"
+                    contentDescription = stringResource(R.string.player_screen_timer_navigation)
                 )
             },
-            label = { Text("Timer") },
+            label = { Text(stringResource(R.string.player_screen_timer_navigation)) },
             selected = false,
             onClick = {
                 Toast.makeText(
@@ -79,10 +81,10 @@ fun PlayerNavBarComposable(
             icon = {
                 Icon(
                     Icons.Outlined.Book,
-                    contentDescription = "Chapters list"
+                    contentDescription = stringResource(R.string.player_screen_chapter_list_navigation)
                 )
             },
-            label = { Text("Chapters") },
+            label = { Text(stringResource(R.string.player_screen_chapter_list_navigation)) },
             selected = playingQueueExpanded,
             onClick = { onChaptersClick() },
             colors = NavigationBarItemDefaults.colors(
@@ -93,10 +95,10 @@ fun PlayerNavBarComposable(
             icon = {
                 Icon(
                     Icons.Outlined.Settings,
-                    contentDescription = "Preferences"
+                    contentDescription = stringResource(R.string.player_screen_preferences_navigation)
                 )
             },
-            label = { Text("Preferences") },
+            label = { Text(stringResource(R.string.player_screen_preferences_navigation)) },
             selected = false,
             onClick = { navController.navigate("settings_screen") },
             colors = NavigationBarItemDefaults.colors(

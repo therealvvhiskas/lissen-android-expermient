@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -85,7 +86,11 @@ fun TrackDetailsComposable(
     Spacer(Modifier.padding(vertical = 4.dp))
 
     Text(
-        text = "Chapter ${currentTrackIndex + 1} of ${book?.files?.size ?: "?"}",
+        text = stringResource(
+            R.string.player_screen_now_playing_title_chapter_of,
+            currentTrackIndex + 1,
+            book?.files?.size ?: "?"
+        ),
         style = typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)
     )
