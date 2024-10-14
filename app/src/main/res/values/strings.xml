@@ -21,4 +21,11 @@
     <string name="settings_screen_preferred_library_title">Preferred Library</string>
     <string name="settings_screen_connected_as_title">Connected as %1$s</string>
     <string name="settings_screen_server_connection">Server Connection</string>
+    <string name="login_error_host_is_down">Host is down</string>
+    <string name="login_error_host_url_is_missing">Host URL is missing</string>
+    <string name="login_error_username_is_missing">Username is missing</string>
+    <string name="login_error_password_is_missing">Password is missing</string>
+    <string name="login_error_credentials_are_invalid">Credentials are invalid</string>
+    <string name="login_error_host_url_shall_be_https_or_http">Host URL shall be https:// or http://</string>
+    <string name="login_error_connection_error">Connection Error</string>
 </resources>

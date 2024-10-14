@@ -1,13 +1,16 @@
 package org.grakovne.lissen.viewmodel
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError
@@ -18,6 +21,7 @@ import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsU
 import org.grakovne.lissen.channel.common.FetchTokenApiError.Unauthorized
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
+import org.grakovne.lissen.domain.error.LoginError
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
@@ -27,7 +31,7 @@ class LoginViewModel @Inject constructor(
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
-    private val _loginError: MutableLiveData<String> = MutableLiveData()
+    private val _loginError: MutableLiveData<LoginError> = MutableLiveData()
     val loginError = _loginError
 
     private val _host = MutableLiveData(preferences.getHost() ?: "")
@@ -136,13 +140,13 @@ class LoginViewModel @Inject constructor(
 
     private fun onLoginFailure(error: FetchTokenApiError): LoginState.Error {
         _loginError.value = when (error) {
-            InternalError -> "Host is down"
-            MissingCredentialsHost -> "Host URL is missing"
-            MissingCredentialsPassword -> "Username is missing"
-            MissingCredentialsUsername -> "Password is missing"
-            Unauthorized -> "Credentials are invalid"
-            InvalidCredentialsHost -> "Host URL shall be https:// or http://"
-            FetchTokenApiError.NetworkError -> "Connection Error"
+            InternalError -> LoginError.InternalError
+            MissingCredentialsHost -> LoginError.MissingCredentialsHost
+            MissingCredentialsPassword -> LoginError.MissingCredentialsPassword
+            MissingCredentialsUsername -> LoginError.MissingCredentialsUsername
+            Unauthorized -> LoginError.Unauthorized
+            InvalidCredentialsHost -> LoginError.InvalidCredentialsHost
+            FetchTokenApiError.NetworkError -> LoginError.NetworkError
         }
 
         return LoginState.Error(error)

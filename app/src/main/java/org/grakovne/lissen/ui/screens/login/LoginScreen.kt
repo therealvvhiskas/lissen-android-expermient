@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.login
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.error.LoginError
+import org.grakovne.lissen.domain.error.LoginError.InternalError
+import org.grakovne.lissen.domain.error.LoginError.InvalidCredentialsHost
+import org.grakovne.lissen.domain.error.LoginError.MissingCredentialsHost
+import org.grakovne.lissen.domain.error.LoginError.MissingCredentialsPassword
+import org.grakovne.lissen.domain.error.LoginError.MissingCredentialsUsername
+import org.grakovne.lissen.domain.error.LoginError.NetworkError
+import org.grakovne.lissen.domain.error.LoginError.Unauthorized
 import org.grakovne.lissen.viewmodel.LoginViewModel
 import org.grakovne.lissen.viewmodel.LoginViewModel.LoginState
 
@@ -72,9 +81,7 @@ fun LoginScreen(
 
             is LoginState.Error -> loginError
                 ?.let {
-                    if (it.isNotBlank()) {
-                        Toast.makeText(context, loginError, Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(context, it.makeText(context), Toast.LENGTH_SHORT).show()
                 }
 
             is LoginState.Idle -> {}
@@ -172,6 +179,14 @@ fun LoginScreen(
             }
         }
     )
+}
 
-
+private fun LoginError.makeText(context: Context) = when (this) {
+    InternalError -> context.getString(R.string.login_error_host_is_down)
+    MissingCredentialsHost -> context.getString(R.string.login_error_host_url_is_missing)
+    MissingCredentialsPassword -> context.getString(R.string.login_error_username_is_missing)
+    MissingCredentialsUsername -> context.getString(R.string.login_error_password_is_missing)
+    Unauthorized -> context.getString(R.string.login_error_credentials_are_invalid)
+    InvalidCredentialsHost -> context.getString(R.string.login_error_host_url_shall_be_https_or_http)
+    NetworkError -> context.getString(R.string.login_error_connection_error)
 }
