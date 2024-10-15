@@ -42,11 +42,11 @@ class PlayerViewModel @Inject constructor(
     }
     val currentChapterPosition: LiveData<Long> = _currentChapterPosition
 
-    private val _currentChapterDuration = MediatorLiveData<Float>().apply {
+    private val _currentChapterDuration = MediatorLiveData<Long>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-    val currentChapterDuration: LiveData<Float> = _currentChapterDuration
+    val currentChapterDuration: LiveData<Long> = _currentChapterDuration
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
@@ -65,8 +65,8 @@ class PlayerViewModel @Inject constructor(
             .chapters
             .getOrNull(trackIndex)
             ?.let { it.end - it.start }
-            ?.toFloat()
-            ?: 0f
+            ?.toLong()
+            ?: 0L
     }
 
     fun preparePlayback(bookId: String) {
@@ -88,7 +88,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun seekTo(chapterPosition: Float) {
+    fun seekTo(chapterPosition: Long) {
         val absolutePosition = currentChapterIndex.value
             ?.let { chapterIndex ->
                 book
