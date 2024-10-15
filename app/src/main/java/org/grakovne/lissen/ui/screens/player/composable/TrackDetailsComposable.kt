@@ -37,7 +37,7 @@ fun TrackDetailsComposable(
     modifier: Modifier = Modifier
 ) {
 
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
+    val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
 
     val context = LocalContext.current

@@ -42,9 +42,9 @@ fun TrackControlComposable(
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
 
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
-    val currentTrackPosition by viewModel.currentTrackPosition.observeAsState(0L)
-    val currentTrackDuration by viewModel.currentTrackDuration.observeAsState(0f)
+    val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
+    val currentTrackPosition by viewModel.currentChapterPosition.observeAsState(0L)
+    val currentTrackDuration by viewModel.currentChapterDuration.observeAsState(0f)
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()

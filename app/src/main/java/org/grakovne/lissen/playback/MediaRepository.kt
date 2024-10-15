@@ -151,6 +151,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     fun seekTo(position: Float) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = ACTION_SEEK_TO
+
+            putExtra(BOOK_EXTRA, playingBook.value)
             putExtra(POSITION, position)
         }
 

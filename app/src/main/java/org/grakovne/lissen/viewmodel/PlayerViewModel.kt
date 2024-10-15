@@ -30,24 +30,23 @@ class PlayerViewModel @Inject constructor(
 
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
 
-    private val _currentTrackIndex = MediatorLiveData<Int>().apply {
+    private val _currentChapterIndex = MediatorLiveData<Int>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-    val currentTrackIndex: LiveData<Int> = _currentTrackIndex
+    val currentChapterIndex: LiveData<Int> = _currentChapterIndex
 
-    private val _currentTrackPosition = MediatorLiveData<Long>().apply {
+    private val _currentChapterPosition = MediatorLiveData<Long>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-    val currentTrackPosition: LiveData<Long> = _currentTrackPosition
+    val currentChapterPosition: LiveData<Long> = _currentChapterPosition
 
-    private val _currentTrackDuration = MediatorLiveData<Float>().apply {
+    private val _currentChapterDuration = MediatorLiveData<Float>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-
-    val currentTrackDuration: LiveData<Float> = _currentTrackDuration
+    val currentChapterDuration: LiveData<Float> = _currentChapterDuration
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
@@ -57,47 +56,17 @@ class PlayerViewModel @Inject constructor(
         val book = book.value ?: return
         val position = mediaItemPosition.value ?: return
 
-        val trackIndex = calculateTrackIndex(position)
-        _currentTrackIndex.value = trackIndex
-        _currentTrackPosition.value = calculateTrackPosition(position)
-        _currentTrackDuration.value = book
+        val trackIndex = calculateChapterIndex(position)
+        val trackPosition = calculateChapterPosition(position)
+
+        _currentChapterIndex.value = trackIndex
+        _currentChapterPosition.value = trackPosition
+        _currentChapterDuration.value = book
             .chapters
             .getOrNull(trackIndex)
             ?.let { it.end - it.start }
-            ?.toFloat() ?: 0f
-    }
-
-    fun calculateTrackIndex(position: Long): Int {
-        val currentBook = book.value ?: return 0
-
-        return currentBook
-            .chapters
-            .foldIndexed(0) { index, accumulatedDuration, file ->
-                val newAccumulatedDuration = accumulatedDuration + (file.end - file.start)
-
-                if (position < newAccumulatedDuration) {
-                    return index
-                }
-
-                newAccumulatedDuration.toInt()
-            }
-    }
-
-    fun calculateTrackPosition(overallPosition: Long): Long {
-        val currentBook = book.value ?: return 0L
-
-        var accumulatedDuration = 0.0
-        currentBook
-            .chapters
-            .forEach { file ->
-                val fileDuration = (file.end - file.start)
-                if (overallPosition < accumulatedDuration + fileDuration) {
-                    return (overallPosition - accumulatedDuration).toLong()
-                }
-                accumulatedDuration += fileDuration
-            }
-
-        return (overallPosition - accumulatedDuration).toLong()
+            ?.toFloat()
+            ?: 0f
     }
 
     fun preparePlayback(bookId: String) {
@@ -119,20 +88,41 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun seekTo(position: Float) {
-        mediaRepository.seekTo(position)
+    fun seekTo(chapterPosition: Float) {
+        val absolutePosition = currentChapterIndex.value
+            ?.let { chapterIndex ->
+                book
+                    .value
+                    ?.chapters
+                    ?.get(chapterIndex)
+                    ?.start
+                    ?.toFloat()
+            }
+            ?.let { it + chapterPosition } ?: return
+
+        mediaRepository.seekTo(absolutePosition)
     }
 
     fun setChapter(index: Int) {
-        mediaRepository.setTrack(index)
+        val chapterStartsAt = book
+            .value
+            ?.chapters
+            ?.get(index)
+            ?.start
+            ?.toFloat()
+            ?: 0f
+
+        mediaRepository.seekTo(chapterStartsAt)
     }
 
     fun nextTrack() {
-        mediaRepository.nextTrack()
+        val nextChapterIndex = currentChapterIndex.value?.let { it + 1 } ?: return
+        setChapter(nextChapterIndex)
     }
 
     fun previousTrack() {
-        mediaRepository.previousTrack()
+        val previousChapterIndex = currentChapterIndex.value?.let { it - 1 } ?: return
+        setChapter(previousChapterIndex)
     }
 
     fun togglePlayPause() {
@@ -149,5 +139,39 @@ class PlayerViewModel @Inject constructor(
 
     private fun pause() {
         mediaRepository.pauseAudio()
+    }
+
+
+    private fun calculateChapterIndex(position: Long): Int {
+        val currentBook = book.value ?: return 0
+
+        return currentBook
+            .chapters
+            .foldIndexed(0) { index, accumulatedDuration, file ->
+                val newAccumulatedDuration = accumulatedDuration + (file.end - file.start)
+
+                if (position < newAccumulatedDuration) {
+                    return index
+                }
+
+                newAccumulatedDuration.toInt()
+            }
+    }
+
+    private fun calculateChapterPosition(overallPosition: Long): Long {
+        val currentBook = book.value ?: return 0L
+
+        var accumulatedDuration = 0.0
+        currentBook
+            .chapters
+            .forEach { file ->
+                val fileDuration = (file.end - file.start)
+                if (overallPosition < accumulatedDuration + fileDuration) {
+                    return (overallPosition - accumulatedDuration).toLong()
+                }
+                accumulatedDuration += fileDuration
+            }
+
+        return (overallPosition - accumulatedDuration).toLong()
     }
 }
