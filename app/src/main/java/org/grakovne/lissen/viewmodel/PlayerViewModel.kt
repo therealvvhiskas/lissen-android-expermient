@@ -64,7 +64,7 @@ class PlayerViewModel @Inject constructor(
         _currentChapterDuration.value = book
             .chapters
             .getOrNull(trackIndex)
-            ?.let { it.end - it.start }
+            ?.duration
             ?.toLong()
             ?: 0L
     }
@@ -96,7 +96,7 @@ class PlayerViewModel @Inject constructor(
                     ?.chapters
                     ?.get(chapterIndex)
                     ?.start
-                    ?.toFloat()
+                    ?.toLong()
             }
             ?.let { it + chapterPosition } ?: return
 
@@ -109,8 +109,8 @@ class PlayerViewModel @Inject constructor(
             ?.chapters
             ?.get(index)
             ?.start
-            ?.toFloat()
-            ?: 0f
+            ?.toLong()
+            ?: 0L
 
         mediaRepository.seekTo(chapterStartsAt)
     }
@@ -144,35 +144,30 @@ class PlayerViewModel @Inject constructor(
 
     private fun calculateChapterIndex(position: Long): Int {
         val currentBook = book.value ?: return 0
+        var accumulatedDuration = 0L
 
-        return currentBook
-            .chapters
-            .foldIndexed(0) { index, acc, file ->
-                val newAccumulated = acc + (file.end - file.start)
-
-                if (position < newAccumulated.toLong()) {
-                    return index
-                }
-
-                newAccumulated.toInt()
+        for ((index, chapter) in currentBook.chapters.withIndex()) {
+            accumulatedDuration += chapter.duration.toLong()
+            if (position < accumulatedDuration) {
+                return index
             }
+        }
+
+        return currentBook.chapters.size - 1
     }
 
     private fun calculateChapterPosition(overallPosition: Long): Long {
         val currentBook = book.value ?: return 0L
+        var accumulatedDuration = 0L
 
-        val accumulatedDuration = currentBook.chapters
-            .fold(0L) { acc, chapter ->
-                val chapterDuration = chapter.end - chapter.start
-                val newAccumulated = acc + chapterDuration.toLong()
-
-                if (overallPosition < newAccumulated) {
-                    return overallPosition - acc
-                }
-
-                newAccumulated
+        for (chapter in currentBook.chapters) {
+            val chapterEnd = accumulatedDuration + chapter.duration.toLong()
+            if (overallPosition < chapterEnd) {
+                return overallPosition - accumulatedDuration
             }
+            accumulatedDuration = chapterEnd
+        }
 
-        return overallPosition - accumulatedDuration
+        return 0L
     }
 }

@@ -42,7 +42,8 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                         start = it.start,
                         end = it.end,
                         title = it.title,
-                        id = it.id
+                        id = it.id,
+                        duration = it.end - it.start
                     )
                 },
             progress = progressResponse

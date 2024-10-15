@@ -83,7 +83,7 @@ class AudioPlayerService : MediaSessionService() {
 
             ACTION_SEEK_TO -> {
                 val book = intent.getSerializableExtra(BOOK_EXTRA) as? DetailedBook
-                val position = intent.getFloatExtra(POSITION, 0f)
+                val position = intent.getLongExtra(POSITION, 0L)
                 book?.let { seek(it.files, position) }
                 return START_NOT_STICKY
             }
@@ -152,7 +152,7 @@ class AudioPlayerService : MediaSessionService() {
 
     private fun seek(
         chapters: List<BookFile>,
-        position: Float?
+        position: Long?
     ) {
         when (position) {
             null -> exoPlayer.seekTo(0, 0)
@@ -169,7 +169,7 @@ class AudioPlayerService : MediaSessionService() {
     private fun setPlaybackProgress(
         chapters: List<BookFile>,
         progress: MediaProgress?
-    ) = seek(chapters, progress?.currentTime?.toFloat())
+    ) = seek(chapters, progress?.currentTime?.toLong())
 
     companion object {
         const val ACTION_PLAY = "org.grakovne.lissen.player.service.PLAY"

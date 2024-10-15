@@ -66,7 +66,7 @@ fun PlaylistItemComposable(
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = (track.end - track.start).toInt().formatLeadingMinutes(),
+            text = track.duration.toInt().formatLeadingMinutes(),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 8.dp),
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
