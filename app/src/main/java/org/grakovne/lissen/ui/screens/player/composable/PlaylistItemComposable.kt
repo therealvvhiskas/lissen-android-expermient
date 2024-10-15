@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.BookChapter
-import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.ui.extensions.formatLeadingMinutes
 
 @Composable

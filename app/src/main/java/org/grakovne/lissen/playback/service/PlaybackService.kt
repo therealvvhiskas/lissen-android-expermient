@@ -151,13 +151,13 @@ class AudioPlayerService : MediaSessionService() {
     }
 
     private fun seek(
-        chapters: List<BookFile>,
+        items: List<BookFile>,
         position: Double?
     ) {
         when (position) {
             null -> exoPlayer.seekTo(0, 0)
             else -> {
-                val duration = chapters.runningFold(0.0) { acc, chapter -> acc + chapter.duration }
+                val duration = items.runningFold(0.0) { acc, chapter -> acc + chapter.duration }
                 val targetChapter = duration.indexOfFirst { it > position }
                 val chapterProgress = position - duration[targetChapter - 1]
 

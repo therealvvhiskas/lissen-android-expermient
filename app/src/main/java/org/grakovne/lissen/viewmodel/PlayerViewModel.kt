@@ -89,13 +89,7 @@ class PlayerViewModel @Inject constructor(
 
     fun seekTo(chapterPosition: Double) {
         val absolutePosition = currentChapterIndex.value
-            ?.let { chapterIndex ->
-                book
-                    .value
-                    ?.chapters
-                    ?.get(chapterIndex)
-                    ?.start
-            }
+            ?.let { chapterIndex -> book.value?.chapters?.get(chapterIndex)?.start }
             ?.let { it + chapterPosition } ?: return
 
         mediaRepository.seekTo(absolutePosition)
@@ -145,7 +139,7 @@ class PlayerViewModel @Inject constructor(
 
         for ((index, chapter) in currentBook.chapters.withIndex()) {
             accumulatedDuration += chapter.duration
-            if (position < accumulatedDuration) {
+            if (position < accumulatedDuration - 0.1) {
                 return index
             }
         }
@@ -159,7 +153,7 @@ class PlayerViewModel @Inject constructor(
 
         for (chapter in currentBook.chapters) {
             val chapterEnd = accumulatedDuration + chapter.duration
-            if (overallPosition < chapterEnd) {
+            if (overallPosition < chapterEnd - 0.1) {
                 return (overallPosition - accumulatedDuration)
             }
             accumulatedDuration = chapterEnd
