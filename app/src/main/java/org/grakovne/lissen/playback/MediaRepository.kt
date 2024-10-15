@@ -124,30 +124,6 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         context.startService(intent)
     }
 
-    fun nextTrack() {
-        mediaController.run {
-            if (currentMediaItemIndex + 1 < currentTimeline.windowCount) {
-                seekTo(currentMediaItemIndex + 1, 0)
-                _mediaItemPosition.value = 0
-            }
-        }
-    }
-
-    fun previousTrack() {
-        mediaController.run {
-            if (currentMediaItemIndex > 0) {
-                seekTo(currentMediaItemIndex - 1, 0)
-                _mediaItemPosition.value = 0
-            }
-        }
-    }
-
-    fun setTrack(index: Int) {
-        if (index in 0 until mediaController.currentTimeline.windowCount) {
-            mediaController.seekTo(index, 0)
-        }
-    }
-
     fun seekTo(position: Float) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = ACTION_SEEK_TO
