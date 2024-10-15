@@ -1,6 +1,7 @@
 package org.grakovne.lissen.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,15 +22,45 @@ class PlayerViewModel @Inject constructor(
 
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
+    private val mediaItemPosition: LiveData<Long> = mediaRepository.currentPosition
     private val _playingQueueExpanded = MutableLiveData(false)
+
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
 
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
-    val currentPosition: LiveData<Long> = mediaRepository.currentPosition
+
+    private val _currentTrackIndex = MediatorLiveData<Int>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+    val currentTrackIndex: LiveData<Int> = _currentTrackIndex
+
+    private val _currentTrackPosition = MediatorLiveData<Long>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+    val currentTrackPosition: LiveData<Long> = _currentTrackPosition
+
+    private val _currentTrackDuration = MediatorLiveData<Float>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+
+    val currentTrackDuration: LiveData<Float> = _currentTrackDuration
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
+    }
+
+    private fun updateCurrentTrackData() {
+        val book = book.value ?: return
+        val position = mediaItemPosition.value ?: return
+
+        val trackIndex = calculateTrackIndex(position)
+        _currentTrackIndex.value = trackIndex
+        _currentTrackPosition.value = calculateTrackPosition(position)
+        _currentTrackDuration.value = book.files.getOrNull(trackIndex)?.duration?.toFloat() ?: 0f
     }
 
     fun calculateTrackIndex(position: Long): Int {

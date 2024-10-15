@@ -23,11 +23,9 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,10 +41,10 @@ fun TrackControlComposable(
     modifier: Modifier = Modifier
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
-    val totalPosition by viewModel.currentPosition.observeAsState(0L)
 
-    var currentTrackIndex by remember { mutableIntStateOf(0) }
-    var currentTrackPosition by remember { mutableStateOf(0f) }
+    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
+    val currentTrackPosition by viewModel.currentTrackPosition.observeAsState(0L)
+    val currentTrackDuration by viewModel.currentTrackDuration.observeAsState(0f)
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.files ?: emptyList()
@@ -54,20 +52,12 @@ fun TrackControlComposable(
     var sliderPosition by remember { mutableFloatStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
 
-    val duration by remember {
-        derivedStateOf {
-            book?.files?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
-        }
-    }
 
-    LaunchedEffect(totalPosition) {
-        currentTrackIndex = viewModel.calculateTrackIndex(totalPosition)
-        currentTrackPosition = viewModel.calculateTrackPosition(totalPosition).toFloat()
-
+    LaunchedEffect(currentTrackPosition) {
         when (isDragging) {
             true -> {}
             false -> {
-                sliderPosition = currentTrackPosition
+                sliderPosition = currentTrackPosition.toFloat()
             }
         }
     }
@@ -86,7 +76,7 @@ fun TrackControlComposable(
                 isDragging = false
                 viewModel.seekTo(sliderPosition)
             },
-            valueRange = 0f..(duration),
+            valueRange = 0f..(currentTrackDuration),
             colors = SliderDefaults
                 .colors(
                     thumbColor = colorScheme.primary,
@@ -106,7 +96,9 @@ fun TrackControlComposable(
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${maxOf(0f, duration - currentTrackPosition).toInt().formatFully()}",
+                text = "-${
+                    maxOf(0f, currentTrackDuration - currentTrackPosition).toInt().formatFully()
+                }",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
@@ -137,7 +129,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(maxOf(0f, totalPosition - 10f))
+                //viewModel.seekTo(maxOf(0f, totalPosition - 10f)) // change me!
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -165,7 +157,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(minOf(duration, totalPosition + 30f))
+                //viewModel.seekTo(minOf(duration, totalPosition + 30f)) change me!
             },
             modifier = Modifier.weight(1f)
         ) {

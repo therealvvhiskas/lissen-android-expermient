@@ -10,13 +10,9 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,14 +37,8 @@ fun TrackDetailsComposable(
     modifier: Modifier = Modifier
 ) {
 
-    val totalPosition by viewModel.currentPosition.observeAsState(0L)
-
-    var currentTrackIndex by remember { mutableStateOf(0) }
+    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
-
-    LaunchedEffect(totalPosition) {
-        currentTrackIndex = viewModel.calculateTrackIndex(totalPosition)
-    }
 
     val context = LocalContext.current
     val imageRequest = remember(book?.id) {

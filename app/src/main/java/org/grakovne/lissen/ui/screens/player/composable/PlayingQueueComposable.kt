@@ -15,9 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -37,11 +34,11 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier,
 ) {
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
+
     val book by viewModel.book.observeAsState()
     val chapters = book?.files ?: emptyList()
 
-    var currentTrackIndex by remember { mutableStateOf(0) }
-    val currentPosition by viewModel.currentPosition.observeAsState(0)
+    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val listState = rememberLazyListState()
@@ -59,10 +56,6 @@ fun PlayingQueueComposable(
                 else -> listState.scrollToItem(currentTrackIndex)
             }
         }
-    }
-
-    LaunchedEffect(currentPosition) {
-        currentTrackIndex = viewModel.calculateTrackIndex(currentPosition)
     }
 
     LaunchedEffect(currentTrackIndex) {
