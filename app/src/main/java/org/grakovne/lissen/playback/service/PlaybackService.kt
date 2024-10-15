@@ -111,8 +111,6 @@ class AudioPlayerService : MediaSessionService() {
         exoPlayer.playWhenReady = false
 
         withContext(Dispatchers.IO) {
-            //playbackSynchronizationService.stopPlaybackSynchronization()
-
             val prepareQueue = async {
                 val playingQueue = book
                     .files

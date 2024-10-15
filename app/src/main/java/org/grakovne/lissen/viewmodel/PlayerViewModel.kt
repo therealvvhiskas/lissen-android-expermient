@@ -31,17 +31,20 @@ class PlayerViewModel @Inject constructor(
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
 
     private val _currentChapterIndex = MediatorLiveData<Int>().apply {
-        addSource(mediaItemPosition) { updateChapterProgress() }
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterIndex: LiveData<Int> = _currentChapterIndex
 
     private val _currentChapterPosition = MediatorLiveData<Long>().apply {
-        addSource(mediaItemPosition) { updateChapterProgress() }
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterPosition: LiveData<Long> = _currentChapterPosition
 
     private val _currentChapterDuration = MediatorLiveData<Float>().apply {
-        addSource(mediaItemPosition) { updateChapterProgress() }
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterDuration: LiveData<Float> = _currentChapterDuration
 
@@ -49,7 +52,7 @@ class PlayerViewModel @Inject constructor(
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }
 
-    private fun updateChapterProgress() {
+    private fun updateCurrentTrackData() {
         val book = book.value ?: return
         val position = mediaItemPosition.value ?: return
 
