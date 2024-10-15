@@ -124,7 +124,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         context.startService(intent)
     }
 
-    fun seekTo(position: Long) {
+    fun seekTo(position: Double) {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
             action = ACTION_SEEK_TO
 

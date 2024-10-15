@@ -96,7 +96,6 @@ class PlayerViewModel @Inject constructor(
                     ?.chapters
                     ?.get(chapterIndex)
                     ?.start
-                    ?.toLong()
             }
             ?.let { it + chapterPosition } ?: return
 
@@ -109,8 +108,7 @@ class PlayerViewModel @Inject constructor(
             ?.chapters
             ?.get(index)
             ?.start
-            ?.toLong()
-            ?: 0L
+            ?: 0.0
 
         mediaRepository.seekTo(chapterStartsAt)
     }
