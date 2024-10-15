@@ -54,7 +54,7 @@ class PlayerViewModel @Inject constructor(
 
     private fun updateCurrentTrackData() {
         val book = book.value ?: return
-        val position = mediaItemPosition.value ?: return
+        val position = mediaRepository.mediaItemPosition.value ?: return
 
         val trackIndex = calculateChapterIndex(position)
         val trackPosition = calculateChapterPosition(position)

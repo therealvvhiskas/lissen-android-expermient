@@ -136,6 +136,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     private fun startUpdatingProgress(detailedBook: DetailedBook) {
+        handler.removeCallbacksAndMessages(null)
+
         handler.postDelayed(object : Runnable {
             override fun run() {
                 val currentIndex = mediaController.currentMediaItemIndex
