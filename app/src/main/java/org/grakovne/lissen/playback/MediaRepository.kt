@@ -52,7 +52,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val bookDetailsReadyReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == PLAYBACK_READY) {
-                _isPlaybackReady.value = true
+                _isPlaybackReady.postValue(true)
             }
         }
     }
