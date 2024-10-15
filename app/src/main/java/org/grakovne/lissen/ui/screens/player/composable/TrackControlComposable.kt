@@ -129,7 +129,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                //viewModel.seekTo(maxOf(0f, totalPosition - 10f)) // change me!
+                viewModel.seekTo(maxOf(0f, currentTrackPosition - 10f))
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -157,7 +157,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                //viewModel.seekTo(minOf(duration, totalPosition + 30f)) change me!
+                viewModel.seekTo(minOf(currentTrackDuration, currentTrackPosition + 30f))
             },
             modifier = Modifier.weight(1f)
         ) {

@@ -37,7 +37,6 @@ fun PlayingQueueComposable(
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.files ?: emptyList()
-
     val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
