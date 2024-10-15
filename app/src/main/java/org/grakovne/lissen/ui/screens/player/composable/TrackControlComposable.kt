@@ -23,9 +23,9 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,26 +42,22 @@ fun TrackControlComposable(
     modifier: Modifier = Modifier
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
-    val currentPosition by viewModel.currentPosition.observeAsState(0L)
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
+
+    val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
+    val currentTrackPosition by viewModel.currentChapterPosition.observeAsState(0.0)
+    val currentTrackDuration by viewModel.currentChapterDuration.observeAsState(0.0)
 
     val book by viewModel.book.observeAsState()
-    val chapters = book?.files ?: emptyList()
+    val chapters = book?.chapters ?: emptyList()
 
-    var sliderPosition by remember { mutableFloatStateOf(0f) }
+    var sliderPosition by remember { mutableDoubleStateOf(0.0) }
     var isDragging by remember { mutableStateOf(false) }
 
-    val duration by remember {
-        derivedStateOf {
-            book?.files?.getOrNull(currentTrackIndex)?.duration?.toFloat() ?: 0f
-        }
-    }
-
-    LaunchedEffect(currentPosition) {
+    LaunchedEffect(currentTrackPosition, currentTrackIndex, currentTrackDuration) {
         when (isDragging) {
             true -> {}
             false -> {
-                sliderPosition = currentPosition.toFloat()
+                sliderPosition = currentTrackPosition
             }
         }
     }
@@ -71,16 +67,16 @@ fun TrackControlComposable(
     ) {
 
         Slider(
-            value = sliderPosition,
+            value = sliderPosition.toFloat(),
             onValueChange = { newPosition ->
                 isDragging = true
-                sliderPosition = newPosition
+                sliderPosition = newPosition.toDouble()
             },
             onValueChangeFinished = {
                 isDragging = false
                 viewModel.seekTo(sliderPosition)
             },
-            valueRange = 0f..(duration),
+            valueRange = 0f..currentTrackDuration.toFloat(),
             colors = SliderDefaults
                 .colors(
                     thumbColor = colorScheme.primary,
@@ -95,12 +91,14 @@ fun TrackControlComposable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = currentPosition.toInt().formatFully(),
+                text = currentTrackPosition.toInt().formatFully(),
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${maxOf(0f, duration - currentPosition).toInt().formatFully()}",
+                text = "-${
+                    maxOf(0.0, currentTrackDuration - currentTrackPosition).toInt().formatFully()
+                }",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
@@ -131,7 +129,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(maxOf(0f, currentPosition - 10f))
+                viewModel.seekTo(maxOf(0.0, currentTrackPosition - 10L))
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -159,7 +157,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(minOf(duration, currentPosition + 30f))
+                viewModel.seekTo(minOf(currentTrackDuration, currentTrackPosition + 30.0))
             },
             modifier = Modifier.weight(1f)
         ) {

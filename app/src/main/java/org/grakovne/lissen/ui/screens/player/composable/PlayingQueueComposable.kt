@@ -34,10 +34,10 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier,
 ) {
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
-    val book by viewModel.book.observeAsState()
-    val chapters = book?.files ?: emptyList()
 
+    val book by viewModel.book.observeAsState()
+    val chapters = book?.chapters ?: emptyList()
+    val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val listState = rememberLazyListState()
@@ -61,7 +61,6 @@ fun PlayingQueueComposable(
         when {
             currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
             else -> listState.animateScrollToItem(currentTrackIndex)
-
         }
     }
 

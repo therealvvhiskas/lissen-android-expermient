@@ -1,6 +1,7 @@
 package org.grakovne.lissen.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,16 +22,50 @@ class PlayerViewModel @Inject constructor(
 
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
+    private val mediaItemPosition: LiveData<Double> = mediaRepository.mediaItemPosition
     private val _playingQueueExpanded = MutableLiveData(false)
+
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
 
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
-    val currentPosition: LiveData<Long> = mediaRepository.currentPosition
-    val currentTrackIndex: LiveData<Int> = mediaRepository.currentMediaItemIndex
+
+    private val _currentChapterIndex = MediatorLiveData<Int>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+    val currentChapterIndex: LiveData<Int> = _currentChapterIndex
+
+    private val _currentChapterPosition = MediatorLiveData<Double>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+    val currentChapterPosition: LiveData<Double> = _currentChapterPosition
+
+    private val _currentChapterDuration = MediatorLiveData<Double>().apply {
+        addSource(mediaItemPosition) { updateCurrentTrackData() }
+        addSource(book) { updateCurrentTrackData() }
+    }
+    val currentChapterDuration: LiveData<Double> = _currentChapterDuration
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
+    }
+
+    private fun updateCurrentTrackData() {
+        val book = book.value ?: return
+        val position = mediaRepository.mediaItemPosition.value ?: return
+
+        val trackIndex = calculateChapterIndex(position)
+        val trackPosition = calculateChapterPosition(position)
+
+        _currentChapterIndex.value = trackIndex
+        _currentChapterPosition.value = trackPosition
+        _currentChapterDuration.value = book
+            .chapters
+            .getOrNull(trackIndex)
+            ?.duration
+            ?: 0.0
     }
 
     fun preparePlayback(bookId: String) {
@@ -52,20 +87,39 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun seekTo(position: Float) {
-        mediaRepository.seekTo(position)
+    fun seekTo(chapterPosition: Double) {
+        val absolutePosition = currentChapterIndex.value
+            ?.let { chapterIndex ->
+                book
+                    .value
+                    ?.chapters
+                    ?.get(chapterIndex)
+                    ?.start
+            }
+            ?.let { it + chapterPosition } ?: return
+
+        mediaRepository.seekTo(absolutePosition)
     }
 
     fun setChapter(index: Int) {
-        mediaRepository.setTrack(index)
+        val chapterStartsAt = book
+            .value
+            ?.chapters
+            ?.get(index)
+            ?.start
+            ?: 0.0
+
+        mediaRepository.seekTo(chapterStartsAt)
     }
 
     fun nextTrack() {
-        mediaRepository.nextTrack()
+        val nextChapterIndex = currentChapterIndex.value?.let { it + 1 } ?: return
+        setChapter(nextChapterIndex)
     }
 
     fun previousTrack() {
-        mediaRepository.previousTrack()
+        val previousChapterIndex = currentChapterIndex.value?.let { it - 1 } ?: return
+        setChapter(previousChapterIndex)
     }
 
     fun togglePlayPause() {
@@ -82,5 +136,35 @@ class PlayerViewModel @Inject constructor(
 
     private fun pause() {
         mediaRepository.pauseAudio()
+    }
+
+
+    private fun calculateChapterIndex(position: Double): Int {
+        val currentBook = book.value ?: return 0
+        var accumulatedDuration = 0.0
+
+        for ((index, chapter) in currentBook.chapters.withIndex()) {
+            accumulatedDuration += chapter.duration
+            if (position < accumulatedDuration) {
+                return index
+            }
+        }
+
+        return currentBook.chapters.size - 1
+    }
+
+    private fun calculateChapterPosition(overallPosition: Double): Double {
+        val currentBook = book.value ?: return 0.0
+        var accumulatedDuration = 0.0
+
+        for (chapter in currentBook.chapters) {
+            val chapterEnd = accumulatedDuration + chapter.duration
+            if (overallPosition < chapterEnd) {
+                return (overallPosition - accumulatedDuration)
+            }
+            accumulatedDuration = chapterEnd
+        }
+
+        return 0.0
     }
 }

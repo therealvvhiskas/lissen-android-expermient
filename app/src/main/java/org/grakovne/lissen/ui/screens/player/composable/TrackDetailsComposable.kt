@@ -36,7 +36,8 @@ fun TrackDetailsComposable(
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier
 ) {
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
+
+    val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
 
     val context = LocalContext.current
@@ -89,7 +90,7 @@ fun TrackDetailsComposable(
         text = stringResource(
             R.string.player_screen_now_playing_title_chapter_of,
             currentTrackIndex + 1,
-            book?.files?.size ?: "?"
+            book?.chapters?.size ?: "?"
         ),
         style = typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)

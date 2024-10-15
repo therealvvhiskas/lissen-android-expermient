@@ -23,12 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.ui.extensions.formatLeadingMinutes
 
 @Composable
 fun PlaylistItemComposable(
-    track: BookFile,
+    track: BookChapter,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -56,7 +57,7 @@ fun PlaylistItemComposable(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = track.name,
+            text = track.title,
             style = MaterialTheme.typography.titleMedium,
             color = colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
