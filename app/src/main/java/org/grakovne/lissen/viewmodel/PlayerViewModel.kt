@@ -150,7 +150,7 @@ class PlayerViewModel @Inject constructor(
             .foldIndexed(0) { index, acc, file ->
                 val newAccumulated = acc + (file.end - file.start)
 
-                if (position < newAccumulated) {
+                if (position < newAccumulated.toLong()) {
                     return index
                 }
 
