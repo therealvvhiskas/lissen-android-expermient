@@ -48,20 +48,19 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
-    LaunchedEffect(isPlaybackReady) {
-        if (isPlaybackReady) {
-            when {
+    LaunchedEffect(currentTrackIndex) {
+        when (isPlaybackReady) {
+            true -> when {
                 currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
                 else -> listState.scrollToItem(currentTrackIndex)
             }
-        }
-    }
 
-    LaunchedEffect(currentTrackIndex) {
-        when {
-            currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
-            else -> listState.animateScrollToItem(currentTrackIndex)
+            false -> when {
+                currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
+                else -> listState.animateScrollToItem(currentTrackIndex)
+            }
         }
+
     }
 
     Column(
