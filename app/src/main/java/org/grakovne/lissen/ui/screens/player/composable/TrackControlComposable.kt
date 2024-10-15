@@ -27,6 +27,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,8 +43,10 @@ fun TrackControlComposable(
     modifier: Modifier = Modifier
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
-    val currentPosition by viewModel.currentPosition.observeAsState(0L)
-    val currentTrackIndex by viewModel.currentTrackIndex.observeAsState(0)
+    val totalPosition by viewModel.currentPosition.observeAsState(0L)
+
+    var currentTrackIndex by remember { mutableIntStateOf(0) }
+    var currentTrackPosition by remember { mutableStateOf(0f) }
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.files ?: emptyList()
@@ -57,11 +60,14 @@ fun TrackControlComposable(
         }
     }
 
-    LaunchedEffect(currentPosition) {
+    LaunchedEffect(totalPosition) {
+        currentTrackIndex = viewModel.calculateTrackIndex(totalPosition)
+        currentTrackPosition = viewModel.calculateTrackPosition(totalPosition).toFloat()
+
         when (isDragging) {
             true -> {}
             false -> {
-                sliderPosition = currentPosition.toFloat()
+                sliderPosition = currentTrackPosition
             }
         }
     }
@@ -95,12 +101,12 @@ fun TrackControlComposable(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = currentPosition.toInt().formatFully(),
+                text = currentTrackPosition.toInt().formatFully(),
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${maxOf(0f, duration - currentPosition).toInt().formatFully()}",
+                text = "-${maxOf(0f, duration - currentTrackPosition).toInt().formatFully()}",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
@@ -131,7 +137,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(maxOf(0f, currentPosition - 10f))
+                viewModel.seekTo(maxOf(0f, totalPosition - 10f))
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -159,7 +165,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(minOf(duration, currentPosition + 30f))
+                viewModel.seekTo(minOf(duration, totalPosition + 30f))
             },
             modifier = Modifier.weight(1f)
         ) {

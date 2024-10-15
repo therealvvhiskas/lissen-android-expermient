@@ -27,10 +27,40 @@ class PlayerViewModel @Inject constructor(
 
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
     val currentPosition: LiveData<Long> = mediaRepository.currentPosition
-    val currentTrackIndex: LiveData<Int> = mediaRepository.currentMediaItemIndex
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
+    }
+
+    fun calculateTrackIndex(position: Long): Int {
+        val currentBook = book.value ?: return 0
+
+        return currentBook
+            .files
+            .foldIndexed(0) { index, accumulatedDuration, file ->
+                val newAccumulatedDuration = accumulatedDuration + file.duration
+
+                if (position < newAccumulatedDuration) {
+                    return index
+                }
+
+                newAccumulatedDuration.toInt()
+            }
+    }
+
+    fun calculateTrackPosition(overallPosition: Long): Long {
+        val currentBook = book.value ?: return 0L
+
+        var accumulatedDuration = 0.0
+        currentBook.files.forEach { file ->
+            val fileDuration = file.duration
+            if (overallPosition < accumulatedDuration + fileDuration) {
+                return (overallPosition - accumulatedDuration).toLong()
+            }
+            accumulatedDuration += fileDuration
+        }
+
+        return (overallPosition - accumulatedDuration).toLong()
     }
 
     fun preparePlayback(bookId: String) {

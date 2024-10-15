@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -45,9 +44,6 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _currentPosition = MutableLiveData<Long>()
     val currentPosition: LiveData<Long> = _currentPosition
 
-    private val _currentMediaItemIndex = MutableLiveData<Int>()
-    val currentMediaItemIndex: LiveData<Int> = _currentMediaItemIndex
-
     private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
 
@@ -76,17 +72,10 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                         .registerReceiver(bookDetailsReadyReceiver, IntentFilter(PLAYBACK_READY))
 
                     mediaController.addListener(object : Player.Listener {
-                        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                            _currentMediaItemIndex.value = mediaController.currentMediaItemIndex
-                        }
-
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.value = isPlaying
-                            _currentMediaItemIndex.value = mediaController.currentMediaItemIndex
                         }
                     })
-
-                    startUpdatingProgress()
                 }
 
                 override fun onFailure(t: Throwable) {
@@ -106,11 +95,11 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             preparePlay(book)
         }
         _playingBook.postValue(book)
+        startUpdatingProgress(book)
     }
 
     private fun preparePlay(book: DetailedBook) {
         _currentPosition.postValue(0)
-        _currentMediaItemIndex.postValue(0)
         _isPlaying.postValue(false)
 
         val intent = Intent(context, AudioPlayerService::class.java).apply {
@@ -168,10 +157,17 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         context.startService(intent)
     }
 
-    private fun startUpdatingProgress() {
+    private fun startUpdatingProgress(detailedBook: DetailedBook) {
         handler.postDelayed(object : Runnable {
             override fun run() {
-                _currentPosition.value = mediaController.currentPosition / 1000
+                val currentIndex = mediaController.currentMediaItemIndex
+                val previousFilesDuration =
+                    detailedBook.files.take(currentIndex).sumOf { it.duration }
+                val currentFilePosition =
+                    mediaController.currentPosition / 1000.0
+
+                _currentPosition.value = (previousFilesDuration + currentFilePosition).toLong()
+
                 handler.postDelayed(this, 500)
             }
         }, 500)
