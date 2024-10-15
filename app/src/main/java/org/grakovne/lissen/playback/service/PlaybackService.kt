@@ -114,7 +114,7 @@ class AudioPlayerService : MediaSessionService() {
             val prepareQueue = async {
                 val playingQueue = book
                     .files
-                    .mapIndexed { index, file ->
+                    .map { file ->
                         MediaItem.Builder()
                             .setMediaId(file.id)
                             .setUri(dataProvider.provideFileUri(book.id, file.id))
