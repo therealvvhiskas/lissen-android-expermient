@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +50,7 @@ fun TrackControlComposable(
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
 
-    var sliderPosition by remember { mutableStateOf(0.0) }
+    var sliderPosition by remember { mutableDoubleStateOf(0.0) }
     var isDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(currentTrackPosition, currentTrackIndex, currentTrackDuration) {
