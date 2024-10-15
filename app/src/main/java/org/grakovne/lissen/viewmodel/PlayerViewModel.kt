@@ -147,31 +147,32 @@ class PlayerViewModel @Inject constructor(
 
         return currentBook
             .chapters
-            .foldIndexed(0) { index, accumulatedDuration, file ->
-                val newAccumulatedDuration = accumulatedDuration + (file.end - file.start)
+            .foldIndexed(0) { index, acc, file ->
+                val newAccumulated = acc + (file.end - file.start)
 
-                if (position < newAccumulatedDuration) {
+                if (position < newAccumulated) {
                     return index
                 }
 
-                newAccumulatedDuration.toInt()
+                newAccumulated.toInt()
             }
     }
 
     private fun calculateChapterPosition(overallPosition: Long): Long {
         val currentBook = book.value ?: return 0L
 
-        var accumulatedDuration = 0.0
-        currentBook
-            .chapters
-            .forEach { file ->
-                val fileDuration = (file.end - file.start)
-                if (overallPosition < accumulatedDuration + fileDuration) {
-                    return (overallPosition - accumulatedDuration).toLong()
+        val accumulatedDuration = currentBook.chapters
+            .fold(0L) { acc, chapter ->
+                val chapterDuration = chapter.end - chapter.start
+                val newAccumulated = acc + chapterDuration.toLong()
+
+                if (overallPosition < newAccumulated) {
+                    return overallPosition - acc
                 }
-                accumulatedDuration += fileDuration
+
+                newAccumulated
             }
 
-        return (overallPosition - accumulatedDuration).toLong()
+        return overallPosition - accumulatedDuration
     }
 }
