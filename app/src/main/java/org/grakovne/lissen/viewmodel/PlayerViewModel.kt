@@ -32,19 +32,16 @@ class PlayerViewModel @Inject constructor(
 
     private val _currentChapterIndex = MediatorLiveData<Int>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
-        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterIndex: LiveData<Int> = _currentChapterIndex
 
     private val _currentChapterPosition = MediatorLiveData<Long>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
-        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterPosition: LiveData<Long> = _currentChapterPosition
 
     private val _currentChapterDuration = MediatorLiveData<Float>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
-        addSource(book) { updateCurrentTrackData() }
     }
     val currentChapterDuration: LiveData<Float> = _currentChapterDuration
 
