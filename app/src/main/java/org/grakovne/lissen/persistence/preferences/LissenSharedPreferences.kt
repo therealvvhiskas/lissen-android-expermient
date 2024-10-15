@@ -27,7 +27,12 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         val username = getUsername()
         val token = getToken()
 
-        return host != null && username != null && token != null
+        return try {
+            host != null && username != null && token != null
+        } catch (ex: Exception) {
+            false
+        }
+
     }
 
     fun clearCredentials() {
