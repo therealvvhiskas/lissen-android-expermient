@@ -144,10 +144,10 @@ class PlayerViewModel @Inject constructor(
 
     private fun calculateChapterIndex(position: Long): Int {
         val currentBook = book.value ?: return 0
-        var accumulatedDuration = 0L
+        var accumulatedDuration = 0.0
 
         for ((index, chapter) in currentBook.chapters.withIndex()) {
-            accumulatedDuration += chapter.duration.toLong()
+            accumulatedDuration += chapter.duration
             if (position < accumulatedDuration) {
                 return index
             }
@@ -158,12 +158,12 @@ class PlayerViewModel @Inject constructor(
 
     private fun calculateChapterPosition(overallPosition: Long): Long {
         val currentBook = book.value ?: return 0L
-        var accumulatedDuration = 0L
+        var accumulatedDuration = 0.0
 
         for (chapter in currentBook.chapters) {
-            val chapterEnd = accumulatedDuration + chapter.duration.toLong()
+            val chapterEnd = accumulatedDuration + chapter.duration
             if (overallPosition < chapterEnd) {
-                return overallPosition - accumulatedDuration
+                return (overallPosition - accumulatedDuration).toLong()
             }
             accumulatedDuration = chapterEnd
         }
