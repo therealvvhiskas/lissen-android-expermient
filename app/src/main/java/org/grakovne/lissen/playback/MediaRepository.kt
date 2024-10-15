@@ -41,8 +41,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _isPlaybackReady = MutableLiveData(false)
     val isPlaybackReady: LiveData<Boolean> = _isPlaybackReady
 
-    private val _currentPosition = MutableLiveData<Long>()
-    val currentPosition: LiveData<Long> = _currentPosition
+    private val _mediaItemPosition = MutableLiveData<Long>()
+    val mediaItemPosition: LiveData<Long> = _mediaItemPosition
 
     private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
@@ -99,7 +99,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     private fun preparePlay(book: DetailedBook) {
-        _currentPosition.postValue(0)
+        _mediaItemPosition.postValue(0)
         _isPlaying.postValue(false)
 
         val intent = Intent(context, AudioPlayerService::class.java).apply {
@@ -128,7 +128,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         mediaController.run {
             if (currentMediaItemIndex + 1 < currentTimeline.windowCount) {
                 seekTo(currentMediaItemIndex + 1, 0)
-                _currentPosition.value = 0
+                _mediaItemPosition.value = 0
             }
         }
     }
@@ -137,7 +137,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         mediaController.run {
             if (currentMediaItemIndex > 0) {
                 seekTo(currentMediaItemIndex - 1, 0)
-                _currentPosition.value = 0
+                _mediaItemPosition.value = 0
             }
         }
     }
@@ -166,7 +166,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 val currentFilePosition =
                     mediaController.currentPosition / 1000.0
 
-                _currentPosition.value = (previousFilesDuration + currentFilePosition).toLong()
+                _mediaItemPosition.value = (previousFilesDuration + currentFilePosition).toLong()
 
                 handler.postDelayed(this, 500)
             }

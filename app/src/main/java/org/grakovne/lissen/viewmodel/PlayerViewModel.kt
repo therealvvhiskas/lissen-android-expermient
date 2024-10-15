@@ -22,7 +22,7 @@ class PlayerViewModel @Inject constructor(
 
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
-    private val mediaItemPosition: LiveData<Long> = mediaRepository.currentPosition
+    private val mediaItemPosition: LiveData<Long> = mediaRepository.mediaItemPosition
     private val _playingQueueExpanded = MutableLiveData(false)
 
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
@@ -60,16 +60,20 @@ class PlayerViewModel @Inject constructor(
         val trackIndex = calculateTrackIndex(position)
         _currentTrackIndex.value = trackIndex
         _currentTrackPosition.value = calculateTrackPosition(position)
-        _currentTrackDuration.value = book.files.getOrNull(trackIndex)?.duration?.toFloat() ?: 0f
+        _currentTrackDuration.value = book
+            .chapters
+            .getOrNull(trackIndex)
+            ?.let { it.end - it.start }
+            ?.toFloat() ?: 0f
     }
 
     fun calculateTrackIndex(position: Long): Int {
         val currentBook = book.value ?: return 0
 
         return currentBook
-            .files
+            .chapters
             .foldIndexed(0) { index, accumulatedDuration, file ->
-                val newAccumulatedDuration = accumulatedDuration + file.duration
+                val newAccumulatedDuration = accumulatedDuration + (file.end - file.start)
 
                 if (position < newAccumulatedDuration) {
                     return index
@@ -83,13 +87,15 @@ class PlayerViewModel @Inject constructor(
         val currentBook = book.value ?: return 0L
 
         var accumulatedDuration = 0.0
-        currentBook.files.forEach { file ->
-            val fileDuration = file.duration
-            if (overallPosition < accumulatedDuration + fileDuration) {
-                return (overallPosition - accumulatedDuration).toLong()
+        currentBook
+            .chapters
+            .forEach { file ->
+                val fileDuration = (file.end - file.start)
+                if (overallPosition < accumulatedDuration + fileDuration) {
+                    return (overallPosition - accumulatedDuration).toLong()
+                }
+                accumulatedDuration += fileDuration
             }
-            accumulatedDuration += fileDuration
-        }
 
         return (overallPosition - accumulatedDuration).toLong()
     }

@@ -90,7 +90,7 @@ fun TrackDetailsComposable(
         text = stringResource(
             R.string.player_screen_now_playing_title_chapter_of,
             currentTrackIndex + 1,
-            book?.files?.size ?: "?"
+            book?.chapters?.size ?: "?"
         ),
         style = typography.bodyMedium,
         color = colorScheme.onBackground.copy(alpha = 0.6f)
