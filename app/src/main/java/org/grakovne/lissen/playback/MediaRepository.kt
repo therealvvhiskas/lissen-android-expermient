@@ -163,14 +163,11 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         handler.postDelayed(object : Runnable {
             override fun run() {
                 val currentIndex = mediaController.currentMediaItemIndex
-                val previousFilesDuration =
-                    detailedBook.files.take(currentIndex).sumOf { it.duration }
-                val currentFilePosition =
-                    mediaController.currentPosition / 1000.0
+                val accumulated = detailedBook.files.take(currentIndex).sumOf { it.duration }
+                val currentFilePosition = mediaController.currentPosition / 1000.0
 
-                _mediaItemPosition.value = (previousFilesDuration + currentFilePosition).toLong()
-
-                handler.postDelayed(this, 500)
+                _mediaItemPosition.value = (accumulated + currentFilePosition).toLong()
+                handler.postDelayed(this, 1000)
             }
         }, 500)
     }
