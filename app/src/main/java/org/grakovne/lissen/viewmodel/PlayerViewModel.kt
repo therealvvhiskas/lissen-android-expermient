@@ -22,7 +22,7 @@ class PlayerViewModel @Inject constructor(
 
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
-    private val mediaItemPosition: LiveData<Long> = mediaRepository.mediaItemPosition
+    private val mediaItemPosition: LiveData<Double> = mediaRepository.mediaItemPosition
     private val _playingQueueExpanded = MutableLiveData(false)
 
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
@@ -36,17 +36,17 @@ class PlayerViewModel @Inject constructor(
     }
     val currentChapterIndex: LiveData<Int> = _currentChapterIndex
 
-    private val _currentChapterPosition = MediatorLiveData<Long>().apply {
+    private val _currentChapterPosition = MediatorLiveData<Double>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-    val currentChapterPosition: LiveData<Long> = _currentChapterPosition
+    val currentChapterPosition: LiveData<Double> = _currentChapterPosition
 
-    private val _currentChapterDuration = MediatorLiveData<Long>().apply {
+    private val _currentChapterDuration = MediatorLiveData<Double>().apply {
         addSource(mediaItemPosition) { updateCurrentTrackData() }
         addSource(book) { updateCurrentTrackData() }
     }
-    val currentChapterDuration: LiveData<Long> = _currentChapterDuration
+    val currentChapterDuration: LiveData<Double> = _currentChapterDuration
 
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
@@ -65,8 +65,7 @@ class PlayerViewModel @Inject constructor(
             .chapters
             .getOrNull(trackIndex)
             ?.duration
-            ?.toLong()
-            ?: 0L
+            ?: 0.0
     }
 
     fun preparePlayback(bookId: String) {
@@ -88,7 +87,7 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun seekTo(chapterPosition: Long) {
+    fun seekTo(chapterPosition: Double) {
         val absolutePosition = currentChapterIndex.value
             ?.let { chapterIndex ->
                 book
@@ -140,7 +139,7 @@ class PlayerViewModel @Inject constructor(
     }
 
 
-    private fun calculateChapterIndex(position: Long): Int {
+    private fun calculateChapterIndex(position: Double): Int {
         val currentBook = book.value ?: return 0
         var accumulatedDuration = 0.0
 
@@ -154,18 +153,18 @@ class PlayerViewModel @Inject constructor(
         return currentBook.chapters.size - 1
     }
 
-    private fun calculateChapterPosition(overallPosition: Long): Long {
-        val currentBook = book.value ?: return 0L
+    private fun calculateChapterPosition(overallPosition: Double): Double {
+        val currentBook = book.value ?: return 0.0
         var accumulatedDuration = 0.0
 
         for (chapter in currentBook.chapters) {
             val chapterEnd = accumulatedDuration + chapter.duration
             if (overallPosition < chapterEnd) {
-                return (overallPosition - accumulatedDuration).toLong()
+                return (overallPosition - accumulatedDuration)
             }
             accumulatedDuration = chapterEnd
         }
 
-        return 0L
+        return 0.0
     }
 }

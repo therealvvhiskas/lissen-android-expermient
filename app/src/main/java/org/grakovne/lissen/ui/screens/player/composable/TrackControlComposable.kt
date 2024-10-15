@@ -43,13 +43,13 @@ fun TrackControlComposable(
     val isPlaying by viewModel.isPlaying.observeAsState(false)
 
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
-    val currentTrackPosition by viewModel.currentChapterPosition.observeAsState(0L)
-    val currentTrackDuration by viewModel.currentChapterDuration.observeAsState(0L)
+    val currentTrackPosition by viewModel.currentChapterPosition.observeAsState(0.0)
+    val currentTrackDuration by viewModel.currentChapterDuration.observeAsState(0.0)
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
 
-    var sliderPosition by remember { mutableStateOf(0L) }
+    var sliderPosition by remember { mutableStateOf(0.0) }
     var isDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(currentTrackPosition, currentTrackIndex, currentTrackDuration) {
@@ -69,7 +69,7 @@ fun TrackControlComposable(
             value = sliderPosition.toFloat(),
             onValueChange = { newPosition ->
                 isDragging = true
-                sliderPosition = newPosition.toLong()
+                sliderPosition = newPosition.toDouble()
             },
             onValueChangeFinished = {
                 isDragging = false
@@ -96,7 +96,7 @@ fun TrackControlComposable(
             )
             Text(
                 text = "-${
-                    maxOf(0L, currentTrackDuration - currentTrackPosition).toInt().formatFully()
+                    maxOf(0.0, currentTrackDuration - currentTrackPosition).toInt().formatFully()
                 }",
                 style = MaterialTheme.typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
@@ -128,7 +128,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(maxOf(0L, currentTrackPosition - 10L))
+                viewModel.seekTo(maxOf(0.0, currentTrackPosition - 10L))
             },
             modifier = Modifier.weight(1f)
         ) {
@@ -156,7 +156,7 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = {
-                viewModel.seekTo(minOf(currentTrackDuration, currentTrackPosition + 30L))
+                viewModel.seekTo(minOf(currentTrackDuration, currentTrackPosition + 30.0))
             },
             modifier = Modifier.weight(1f)
         ) {

@@ -41,8 +41,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _isPlaybackReady = MutableLiveData(false)
     val isPlaybackReady: LiveData<Boolean> = _isPlaybackReady
 
-    private val _mediaItemPosition = MutableLiveData<Long>()
-    val mediaItemPosition: LiveData<Long> = _mediaItemPosition
+    private val _mediaItemPosition = MutableLiveData<Double>()
+    val mediaItemPosition: LiveData<Double> = _mediaItemPosition
 
     private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
@@ -99,7 +99,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     }
 
     private fun preparePlay(book: DetailedBook) {
-        _mediaItemPosition.postValue(0)
+        _mediaItemPosition.postValue(0.0)
         _isPlaying.postValue(false)
 
         val intent = Intent(context, AudioPlayerService::class.java).apply {
@@ -142,7 +142,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 val accumulated = detailedBook.files.take(currentIndex).sumOf { it.duration }
                 val currentFilePosition = mediaController.currentPosition / 1000.0
 
-                _mediaItemPosition.value = (accumulated + currentFilePosition).toLong()
+                _mediaItemPosition.value = (accumulated + currentFilePosition)
                 handler.postDelayed(this, 1000)
             }
         }, 500)
