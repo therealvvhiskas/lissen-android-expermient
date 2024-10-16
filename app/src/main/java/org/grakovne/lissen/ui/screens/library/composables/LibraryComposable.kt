@@ -63,7 +63,7 @@ fun LibraryItemComposable(
             .fillMaxWidth()
             .clickable {
                 navController
-                    .navigate("player_screen/${book.id}") {
+                    .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
                         launchSingleTop = true
                     }
             }

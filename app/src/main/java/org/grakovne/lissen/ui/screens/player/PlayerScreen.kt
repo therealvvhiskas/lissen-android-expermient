@@ -46,7 +46,8 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun PlayerScreen(
     navController: NavController,
     onBack: () -> Unit,
-    bookId: String?
+    bookId: String?,
+    bookTitle: String?
 ) {
 
     val viewModel: PlayerViewModel = hiltViewModel()
@@ -108,7 +109,7 @@ fun PlayerScreen(
                     ) {
 
                         if (!isPlaybackReady) {
-                            TrackDetailsPlaceholderComposable()
+                            TrackDetailsPlaceholderComposable(bookTitle ?: "")
                         } else {
                             TrackDetailsComposable(
                                 viewModel = viewModel

@@ -80,8 +80,12 @@ fun RecentBookItemComposable(
             .width(width)
             .clickable {
                 navController
-                    .navigate("player_screen/${book.id}") {
+                    .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
                         launchSingleTop = true
+                        navController.currentBackStackEntry?.arguments?.putString(
+                            "bookTitle",
+                            book.title
+                        )
                     }
             }
     ) {

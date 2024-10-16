@@ -40,17 +40,22 @@ fun AppNavHost(
         }
 
         composable(
-            "player_screen/{bookId}",
-            arguments = listOf(navArgument("bookId") { type = NavType.StringType })
+            "player_screen/{bookId}?bookTitle={bookTitle}",
+            arguments = listOf(
+                navArgument("bookId") { type = NavType.StringType },
+                navArgument("bookTitle") { type = NavType.StringType; nullable = true },
+            )
         ) { navigationStack ->
             val bookId = navigationStack.arguments?.getString("bookId")
+            val bookTitle = navigationStack.arguments?.getString("bookTitle")
 
             PlayerScreen(
                 navController = navController,
                 onBack = {
                     navController.popBackStack()
                 },
-                bookId = bookId
+                bookId = bookId,
+                bookTitle = bookTitle
             )
         }
 

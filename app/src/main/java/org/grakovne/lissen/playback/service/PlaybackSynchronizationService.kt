@@ -1,7 +1,6 @@
 package org.grakovne.lissen.playback.service
 
 import androidx.annotation.OptIn
-import androidx.media3.common.Metadata
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
