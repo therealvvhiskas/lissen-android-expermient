@@ -83,7 +83,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 }
 
                 override fun onFailure(t: Throwable) {
-                    t.printStackTrace()
+                   throw RuntimeException("Unable to add callback to player")
                 }
             },
             MoreExecutors.directExecutor()
