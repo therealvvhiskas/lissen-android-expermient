@@ -18,6 +18,10 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.MoreExecutors
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.service.AudioPlayerService
 import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.ACTION_SEEK_TO
@@ -95,6 +99,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             preparePlay(book)
         }
         _playingBook.postValue(book)
+        updateProgress(book)
+
         startUpdatingProgress(book)
     }
 
@@ -140,13 +146,19 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
         handler.postDelayed(object : Runnable {
             override fun run() {
-                val currentIndex = mediaController.currentMediaItemIndex
-                val accumulated = detailedBook.files.take(currentIndex).sumOf { it.duration }
-                val currentFilePosition = mediaController.currentPosition / 1000.0
-
-                _mediaItemPosition.value = (accumulated + currentFilePosition)
+                updateProgress(detailedBook)
                 handler.postDelayed(this, 1000)
             }
-        }, 500)
+        }, 10)
+    }
+
+    private fun updateProgress(detailedBook: DetailedBook) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val currentIndex = mediaController.currentMediaItemIndex
+            val accumulated = detailedBook.files.take(currentIndex).sumOf { it.duration }
+            val currentFilePosition = mediaController.currentPosition / 1000.0
+
+            _mediaItemPosition.value = (accumulated + currentFilePosition)
+        }
     }
 }
