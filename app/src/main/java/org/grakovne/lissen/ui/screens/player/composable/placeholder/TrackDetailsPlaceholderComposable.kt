@@ -47,7 +47,6 @@ fun TrackDetailsPlaceholderComposable(
 
     Box(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
