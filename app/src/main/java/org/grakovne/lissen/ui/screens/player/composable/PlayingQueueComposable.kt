@@ -51,10 +51,10 @@ fun PlayingQueueComposable(
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val expandFlingThreshold =
-        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 2 }
+        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 3 }
 
     val collapseFlingThreshold =
-        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 5 }
+        remember { ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat() * 0.3 }
 
     val listState = rememberLazyListState()
 
@@ -70,13 +70,13 @@ fun PlayingQueueComposable(
         }
         when (isPlaybackReady) {
             true -> when {
-                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-                else -> listState.scrollToItem(currentTrackIndex)
+                currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
+                else -> listState.animateScrollToItem(currentTrackIndex)
             }
 
             false -> when {
-                currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
-                else -> listState.animateScrollToItem(currentTrackIndex)
+                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+                else -> listState.scrollToItem(currentTrackIndex)
             }
         }
 
