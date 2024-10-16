@@ -18,22 +18,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -44,11 +47,15 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
 
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+
+    val playingQueueHeight = remember { mutableIntStateOf(0) }
     val isFlinging = remember { mutableStateOf(false) }
 
     val expandFlingThreshold =
@@ -65,21 +72,9 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
-    val visibleItems by remember {
-        derivedStateOf {
-            listState.layoutInfo.visibleItemsInfo.map { it.index }
-        }
-    }
-
-    LaunchedEffect(visibleItems) {
-        if (!playingQueueExpanded && currentTrackIndex !in visibleItems) {
-            scrollPlayingQueue(currentTrackIndex, listState)
-        }
-    }
-
     LaunchedEffect(currentTrackIndex) {
         if (!playingQueueExpanded) {
-            scrollPlayingQueue(currentTrackIndex, listState)
+            scrollPlayingQueue(currentTrackIndex, listState, true)
         }
     }
 
@@ -103,6 +98,18 @@ fun PlayingQueueComposable(
                     orientation = Orientation.Vertical,
                     enabled = playingQueueExpanded
                 )
+                .onSizeChanged { intSize ->
+                    if (intSize.height != playingQueueHeight.intValue) {
+                        playingQueueHeight.intValue = intSize.height
+
+                        coroutineScope.launch {
+                            if (!playingQueueExpanded) {
+                                scrollPlayingQueue(currentTrackIndex, listState, false)
+                            }
+                        }
+                    }
+
+                }
                 .nestedScroll(object : NestedScrollConnection {
                     override fun onPreScroll(
                         available: Offset,
@@ -151,10 +158,16 @@ fun PlayingQueueComposable(
 
 private suspend fun scrollPlayingQueue(
     currentTrackIndex: Int,
-    listState: LazyListState
+    listState: LazyListState,
+    animate: Boolean
 ) {
-    when {
-        currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-        else -> listState.scrollToItem(currentTrackIndex)
+    val targetIndex = when (currentTrackIndex > 0) {
+        true -> currentTrackIndex - 1
+        false -> 0
+    }
+
+    when (animate) {
+        true -> listState.animateScrollToItem(targetIndex)
+        false -> listState.scrollToItem(targetIndex)
     }
 }
