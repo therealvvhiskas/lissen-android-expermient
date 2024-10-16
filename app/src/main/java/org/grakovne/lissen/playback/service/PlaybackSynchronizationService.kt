@@ -1,6 +1,9 @@
 package org.grakovne.lissen.playback.service
 
+import androidx.annotation.OptIn
+import androidx.media3.common.Metadata
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -16,7 +19,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PlaybackSynchronizationService @Inject constructor(
+class PlaybackSynchronizationService @OptIn(UnstableApi::class)
+@Inject constructor(
     private val exoPlayer: ExoPlayer,
     private val channel: AudiobookshelfChannel,
     private val sharedPreferences: LissenSharedPreferences
