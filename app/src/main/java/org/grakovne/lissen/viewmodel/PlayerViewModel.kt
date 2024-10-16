@@ -48,6 +48,14 @@ class PlayerViewModel @Inject constructor(
     }
     val currentChapterDuration: LiveData<Double> = _currentChapterDuration
 
+    fun expandPlayingQueue() {
+        _playingQueueExpanded.value = true
+    }
+
+    fun collapsePlayingQueue() {
+        _playingQueueExpanded.value = false
+    }
+
     fun togglePlayingQueue() {
         _playingQueueExpanded.value = !(_playingQueueExpanded.value ?: false)
     }

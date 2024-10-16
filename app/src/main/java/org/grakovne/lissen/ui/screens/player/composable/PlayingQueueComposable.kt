@@ -1,13 +1,17 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import android.view.ViewConfiguration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,13 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.grakovne.lissen.R
@@ -33,12 +41,20 @@ fun PlayingQueueComposable(
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
 
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+
+    val expandFlingThreshold =
+        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 2 }
+
+    val collapseFlingThreshold =
+        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 5 }
 
     val listState = rememberLazyListState()
 
@@ -48,7 +64,10 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
-    LaunchedEffect(currentTrackIndex) {
+    LaunchedEffect(currentTrackIndex, playingQueueExpanded) {
+        if (playingQueueExpanded) {
+            return@LaunchedEffect
+        }
         when (isPlaybackReady) {
             true -> when {
                 currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
@@ -76,14 +95,37 @@ fun PlayingQueueComposable(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
+        val isFlinging = remember { mutableStateOf(false) }
+
         LazyColumn(
             modifier = Modifier
+                .scrollable(
+                    state = rememberScrollState(),
+                    orientation = Orientation.Vertical,
+                    enabled = playingQueueExpanded
+                )
                 .nestedScroll(object : NestedScrollConnection {
                     override fun onPreScroll(
                         available: Offset,
                         source: NestedScrollSource
                     ): Offset {
                         return if (playingQueueExpanded) Offset.Zero else available
+                    }
+
+                    override suspend fun onPreFling(available: Velocity): Velocity {
+                        if (available.y < -expandFlingThreshold && !playingQueueExpanded) {
+                            isFlinging.value = true
+                            viewModel.expandPlayingQueue()
+                            return available
+                        }
+
+                        if (available.y > collapseFlingThreshold && playingQueueExpanded) {
+                            isFlinging.value = true
+                            viewModel.collapsePlayingQueue()
+                            return available
+                        }
+                        isFlinging.value = false
+                        return available
                     }
                 }),
             state = listState,
