@@ -17,10 +17,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -32,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -64,14 +67,21 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
-    LaunchedEffect(currentTrackIndex, playingQueueExpanded) {
+    val visibleItems by remember {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.map { it.index }
+        }
+    }
+
+    LaunchedEffect(currentTrackIndex, visibleItems) {
         if (playingQueueExpanded) {
             return@LaunchedEffect
         }
+
         when (isPlaybackReady) {
             true -> when {
-                currentTrackIndex > 0 -> listState.animateScrollToItem(currentTrackIndex - 1)
-                else -> listState.animateScrollToItem(currentTrackIndex)
+                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+                else -> listState.scrollToItem(currentTrackIndex)
             }
 
             false -> when {
