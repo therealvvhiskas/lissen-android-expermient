@@ -21,7 +21,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.service.AudioPlayerService
 import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.ACTION_SEEK_TO
@@ -83,7 +82,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 }
 
                 override fun onFailure(t: Throwable) {
-                   throw RuntimeException("Unable to add callback to player")
+                    throw RuntimeException("Unable to add callback to player")
                 }
             },
             MoreExecutors.directExecutor()
