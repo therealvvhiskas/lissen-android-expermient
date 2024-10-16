@@ -1,23 +1,18 @@
 package org.grakovne.lissen.channel.common
 
-import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 class BinaryApiClient(
     host: String,
-    token: String,
-    cacheDir: File
+    token: String
 ) {
 
-    private val cacheSize: Long = 128 * 1024 * 1024
 
     private val httpClient = OkHttpClient.Builder()
-        .cache(Cache(cacheDir, cacheSize))
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.NONE
         })

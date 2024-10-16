@@ -1,24 +1,19 @@
 package org.grakovne.lissen.channel.common
 
-import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.File
 import java.util.concurrent.TimeUnit
 
 class ApiClient(
     host: String,
-    token: String? = null,
-    cacheDir: File
+    token: String? = null
 ) {
-    private val cacheSize: Long = 10 * 1024 * 1024
 
     private val httpClient = OkHttpClient.Builder()
-        .cache(Cache(cacheDir, cacheSize))
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.NONE
         })

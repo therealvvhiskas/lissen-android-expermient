@@ -1,7 +1,5 @@
 package org.grakovne.lissen.channel.audiobookshelf.api
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfApiClient
 import org.grakovne.lissen.channel.audiobookshelf.converter.LoginResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
@@ -26,7 +24,6 @@ import javax.inject.Singleton
 
 @Singleton
 class AudioBookshelfDataRepository @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val loginResponseConverter: LoginResponseConverter,
     private val preferences: LissenSharedPreferences
 ) {
@@ -84,7 +81,7 @@ class AudioBookshelfDataRepository @Inject constructor(
         lateinit var apiService: AudiobookshelfApiClient
 
         try {
-            val apiClient = ApiClient(host = host, cacheDir = context.cacheDir)
+            val apiClient = ApiClient(host = host)
             apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
         } catch (e: Exception) {
             return ApiResult.Error(FetchTokenApiError.InternalError)
@@ -138,7 +135,7 @@ class AudioBookshelfDataRepository @Inject constructor(
         }
 
         return secureClient ?: run {
-            val apiClient = ApiClient(host = host, token = token, cacheDir = context.cacheDir)
+            val apiClient = ApiClient(host = host, token = token)
             apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
         }
     }
