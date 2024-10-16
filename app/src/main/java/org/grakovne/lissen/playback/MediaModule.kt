@@ -31,7 +31,6 @@ object MediaModule {
             .setLoadControl(
                 DefaultLoadControl
                     .Builder()
-                    .setTargetBufferBytes(C.LENGTH_UNSET)
                     .setPrioritizeTimeOverSizeThresholds(true)
                     .build()
             )
