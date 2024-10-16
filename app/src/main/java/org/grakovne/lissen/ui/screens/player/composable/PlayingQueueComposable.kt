@@ -53,6 +53,7 @@ fun PlayingQueueComposable(
     val chapters = book?.chapters ?: emptyList()
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
 
+    val playbackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     val playingQueueHeight = remember { mutableIntStateOf(0) }
@@ -74,7 +75,12 @@ fun PlayingQueueComposable(
 
     LaunchedEffect(currentTrackIndex) {
         if (!playingQueueExpanded) {
-            scrollPlayingQueue(currentTrackIndex, listState, true)
+            scrollPlayingQueue(
+                currentTrackIndex = currentTrackIndex,
+                listState = listState,
+                playbackReady = playbackReady,
+                animate = true
+            )
         }
     }
 
@@ -104,7 +110,12 @@ fun PlayingQueueComposable(
 
                         coroutineScope.launch {
                             if (!playingQueueExpanded) {
-                                scrollPlayingQueue(currentTrackIndex, listState, false)
+                                scrollPlayingQueue(
+                                    currentTrackIndex = currentTrackIndex,
+                                    listState = listState,
+                                    playbackReady = playbackReady,
+                                    animate = false
+                                )
                             }
                         }
                     }
@@ -159,6 +170,7 @@ fun PlayingQueueComposable(
 private suspend fun scrollPlayingQueue(
     currentTrackIndex: Int,
     listState: LazyListState,
+    playbackReady: Boolean,
     animate: Boolean
 ) {
     val targetIndex = when (currentTrackIndex > 0) {
@@ -166,7 +178,7 @@ private suspend fun scrollPlayingQueue(
         false -> 0
     }
 
-    when (animate) {
+    when (animate && playbackReady) {
         true -> listState.animateScrollToItem(targetIndex)
         false -> listState.scrollToItem(targetIndex)
     }
