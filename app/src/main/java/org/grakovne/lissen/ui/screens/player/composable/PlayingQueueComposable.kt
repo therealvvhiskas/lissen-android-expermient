@@ -78,18 +78,10 @@ fun PlayingQueueComposable(
             return@LaunchedEffect
         }
 
-        when (isPlaybackReady) {
-            true -> when {
-                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-                else -> listState.scrollToItem(currentTrackIndex)
-            }
-
-            false -> when {
-                currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-                else -> listState.scrollToItem(currentTrackIndex)
-            }
+        when {
+            currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+            else -> listState.scrollToItem(currentTrackIndex)
         }
-
     }
 
     Column(
