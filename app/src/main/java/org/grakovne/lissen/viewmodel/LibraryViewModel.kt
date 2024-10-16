@@ -78,9 +78,7 @@ class LibraryViewModel @Inject constructor(
 
         response.fold(
             onSuccess = { _books.value = it },
-            onFailure = {
-                // fetch local cached books
-            }
+            onFailure = {}
         )
     }
 }
