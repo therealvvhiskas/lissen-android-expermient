@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -34,7 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -45,13 +43,12 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-
-    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
-
     val book by viewModel.book.observeAsState()
     val chapters = book?.chapters ?: emptyList()
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
+
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+    val isFlinging = remember { mutableStateOf(false) }
 
     val expandFlingThreshold =
         remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 3 }
@@ -96,8 +93,6 @@ fun PlayingQueueComposable(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 8.dp)
         )
-
-        val isFlinging = remember { mutableStateOf(false) }
 
         LazyColumn(
             modifier = Modifier
