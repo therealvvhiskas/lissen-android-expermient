@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
@@ -53,7 +54,13 @@ fun PlayerNavBarComposable(
                         contentDescription = stringResource(R.string.player_screen_library_navigation),
                     )
                 },
-                label = { Text(stringResource(R.string.player_screen_library_navigation)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.player_screen_library_navigation),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 selected = false,
                 onClick = { navController.navigate("library_screen") },
                 colors = NavigationBarItemDefaults.colors(
@@ -68,7 +75,13 @@ fun PlayerNavBarComposable(
                         contentDescription = stringResource(R.string.player_screen_timer_navigation)
                     )
                 },
-                label = { Text(stringResource(R.string.player_screen_timer_navigation)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.player_screen_timer_navigation),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 selected = false,
                 onClick = {
                     Toast.makeText(
@@ -92,7 +105,13 @@ fun PlayerNavBarComposable(
                         contentDescription = stringResource(R.string.player_screen_chapter_list_navigation)
                     )
                 },
-                label = { Text(stringResource(R.string.player_screen_chapter_list_navigation)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.player_screen_chapter_list_navigation),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 selected = playingQueueExpanded,
                 onClick = { onChaptersClick() },
                 colors = NavigationBarItemDefaults.colors(
@@ -106,7 +125,13 @@ fun PlayerNavBarComposable(
                         contentDescription = stringResource(R.string.player_screen_preferences_navigation)
                     )
                 },
-                label = { Text(stringResource(R.string.player_screen_preferences_navigation)) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.player_screen_preferences_navigation),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 selected = false,
                 onClick = { navController.navigate("settings_screen") },
                 colors = NavigationBarItemDefaults.colors(
