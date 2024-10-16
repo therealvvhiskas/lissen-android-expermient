@@ -149,7 +149,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
                 updateProgress(detailedBook)
                 handler.postDelayed(this, 1000)
             }
-        }, 10)
+        }, 500)
     }
 
     private fun updateProgress(detailedBook: DetailedBook) {
