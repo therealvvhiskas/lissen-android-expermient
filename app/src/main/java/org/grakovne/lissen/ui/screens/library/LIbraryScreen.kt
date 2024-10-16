@@ -125,7 +125,7 @@ fun LibraryScreen(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .background(colorScheme.surface)
+                            .background(colorScheme.background)
                             .padding(8.dp)
                     ) {
                         DropdownMenuItem(
