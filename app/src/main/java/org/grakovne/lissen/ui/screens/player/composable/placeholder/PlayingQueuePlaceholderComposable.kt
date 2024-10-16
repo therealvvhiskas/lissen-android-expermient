@@ -16,10 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.valentinilk.shimmer.shimmer
+import org.grakovne.lissen.R
 
 @Composable
 fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
@@ -29,7 +31,7 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
             .padding(horizontal = 16.dp)
     ) {
         Text(
-            text = "Now Playing",
+            text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
