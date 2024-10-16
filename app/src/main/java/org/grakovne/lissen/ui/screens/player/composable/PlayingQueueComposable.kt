@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -70,14 +71,15 @@ fun PlayingQueueComposable(
         }
     }
 
-    LaunchedEffect(currentTrackIndex, visibleItems) {
-        if (playingQueueExpanded) {
-            return@LaunchedEffect
+    LaunchedEffect(visibleItems) {
+        if (!playingQueueExpanded && currentTrackIndex !in visibleItems) {
+            scrollPlayingQueue(currentTrackIndex, listState)
         }
+    }
 
-        when {
-            currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
-            else -> listState.scrollToItem(currentTrackIndex)
+    LaunchedEffect(currentTrackIndex) {
+        if (!playingQueueExpanded) {
+            scrollPlayingQueue(currentTrackIndex, listState)
         }
     }
 
@@ -144,5 +146,15 @@ fun PlayingQueueComposable(
             }
 
         }
+    }
+}
+
+private suspend fun scrollPlayingQueue(
+    currentTrackIndex: Int,
+    listState: LazyListState
+) {
+    when {
+        currentTrackIndex > 0 -> listState.scrollToItem(currentTrackIndex - 1)
+        else -> listState.scrollToItem(currentTrackIndex)
     }
 }
