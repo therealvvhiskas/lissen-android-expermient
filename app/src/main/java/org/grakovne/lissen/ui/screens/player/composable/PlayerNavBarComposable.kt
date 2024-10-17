@@ -36,7 +36,6 @@ fun PlayerNavBarComposable(
 
     val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
-    val context = LocalContext.current
 
     Surface(
         shape = RoundedCornerShape(8.dp),

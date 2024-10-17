@@ -50,7 +50,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
 
-    private val _playbackSpeed = MutableLiveData<Float>()
+    private val _playbackSpeed = MutableLiveData<Float>(1f)
     val playbackSpeed: LiveData<Float> = _playbackSpeed
 
     private val handler = Handler(Looper.getMainLooper())
@@ -140,8 +140,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
             else -> 1f
         }
 
-        _playbackSpeed.postValue(speed)
         mediaController.setPlaybackSpeed(speed)
+        _playbackSpeed.postValue(speed)
     }
 
     private fun startUpdatingProgress(detailedBook: DetailedBook) {
