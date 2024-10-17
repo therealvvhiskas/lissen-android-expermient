@@ -15,6 +15,7 @@ import org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ApiResult.Success
+import org.grakovne.lissen.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
@@ -39,9 +40,9 @@ class AudiobookshelfChannel @Inject constructor(
     private val sessionResponseConverter: PlaybackSessionResponseConverter,
     private val preferences: LissenSharedPreferences,
     private val syncService: AudioBookshelfSyncService
-) {
+) : MediaChannel {
 
-    fun provideFileUri(
+    override fun provideFileUri(
         libraryItemId: String,
         chapterId: String
     ): Uri = Uri.parse(preferences.getHost())
@@ -54,7 +55,7 @@ class AudiobookshelfChannel @Inject constructor(
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
-    fun provideBookCover(
+    override fun provideBookCover(
         libraryItemId: String
     ): Uri = Uri.parse(preferences.getHost())
         .buildUpon()
@@ -65,16 +66,16 @@ class AudiobookshelfChannel @Inject constructor(
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
-    suspend fun syncProgress(
+    override suspend fun syncProgress(
         itemId: String,
         progress: PlaybackProgress
     ): ApiResult<Unit> = syncService.syncProgress(itemId, progress)
 
-    suspend fun fetchBookCover(
+    override suspend fun fetchBookCover(
         itemId: String
     ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
 
-    suspend fun fetchBooks(
+    override suspend fun fetchBooks(
         libraryId: String,
         pageSize: Int,
         pageNumber: Int
@@ -86,11 +87,11 @@ class AudiobookshelfChannel @Inject constructor(
         )
         .map { libraryItemResponseConverter.apply(it) }
 
-    suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
+    override suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
         .fetchLibraries()
         .map { libraryResponseConverter.apply(it) }
 
-    suspend fun startPlayback(
+    override suspend fun startPlayback(
         itemId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
@@ -114,12 +115,12 @@ class AudiobookshelfChannel @Inject constructor(
             .map { sessionResponseConverter.apply(it) }
     }
 
-    suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>> =
+    override suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>> =
         dataRepository
             .fetchPersonalizedFeed(libraryId)
             .map { recentBookResponseConverter.apply(it) }
 
-    suspend fun fetchBook(itemId: String): ApiResult<DetailedBook> = coroutineScope {
+    override suspend fun fetchBook(itemId: String): ApiResult<DetailedBook> = coroutineScope {
         val libraryItem = async { dataRepository.fetchLibraryItem(itemId) }
         val itemProgress = async { dataRepository.fetchLibraryItemProgress(itemId) }
 
@@ -136,12 +137,12 @@ class AudiobookshelfChannel @Inject constructor(
         )
     }
 
-    suspend fun authorize(
+    override suspend fun authorize(
         host: String,
         username: String,
         password: String
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
 
-    private fun getClientName() = "Lissen App Android"
+    override fun getClientName() = "Lissen App Android"
 }
