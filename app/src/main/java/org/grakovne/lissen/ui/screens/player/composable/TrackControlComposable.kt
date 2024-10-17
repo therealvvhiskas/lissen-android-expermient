@@ -44,6 +44,7 @@ fun TrackControlComposable(
 ) {
     val isPlaying by viewModel.isPlaying.observeAsState(false)
 
+    val playbackReady by viewModel.isPlaybackReady.observeAsState(false)
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val currentTrackPosition by viewModel.currentChapterPosition.observeAsState(0.0)
     val currentTrackDuration by viewModel.currentChapterDuration.observeAsState(0.0)
@@ -55,6 +56,10 @@ fun TrackControlComposable(
     var isDragging by remember { mutableStateOf(false) }
 
     LaunchedEffect(currentTrackPosition, currentTrackIndex, currentTrackDuration) {
+        if (!playbackReady) {
+            return@LaunchedEffect
+        }
+
         when (isDragging) {
             true -> {}
             false -> {
