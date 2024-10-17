@@ -14,8 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
@@ -35,8 +33,7 @@ class LibraryViewModel @Inject constructor(
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
-
-    val booksPager: Flow<PagingData<Book>> by lazy {
+    val libraryPager: Flow<PagingData<Book>> by lazy {
         val libraryId = preferences.getPreferredLibrary()?.id ?: ""
         Pager(
             config = PagingConfig(
