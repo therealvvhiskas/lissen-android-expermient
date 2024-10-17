@@ -6,11 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
@@ -18,6 +23,7 @@ import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.extensions.withMinimumTime
+import org.grakovne.lissen.ui.screens.library.paging.LibraryPagingSource
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,6 +31,20 @@ class LibraryViewModel @Inject constructor(
     private val dataProvider: AudiobookshelfChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
+
+    fun getBooksPager(): Flow<PagingData<Book>> {
+        val libraryId = preferences.getPreferredLibrary()?.id ?: ""
+
+        return Pager(
+            config = PagingConfig(
+                pageSize = 1,
+                enablePlaceholders = true
+            ),
+            pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
+        )
+            .flow
+            .cachedIn(viewModelScope)
+    }
 
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
@@ -48,32 +68,6 @@ class LibraryViewModel @Inject constructor(
                 ).awaitAll()
             }
             _refreshing.postValue(false)
-        }
-    }
-
-    fun fetchNextLibraryPage() {
-        viewModelScope.launch {
-
-            dataProvider
-                .fetchBooks(
-                    libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
-                    pageNumber = _currentPage.value?.plus(1) ?: 0,
-                    pageSize = PAGE_SIZE
-                )
-                .fold(
-                    onFailure = {
-
-                    },
-                    onSuccess = {
-
-                        if (it.isNotEmpty()) {
-                            val items = (_books.value ?: emptyList()) + it
-                            _books.postValue(items.distinct())
-
-                            _currentPage.postValue((_currentPage.value ?: 0) + 1)
-                        }
-                    }
-                )
         }
     }
 

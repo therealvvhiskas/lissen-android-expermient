@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,13 +57,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
-import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
 import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
@@ -72,6 +72,7 @@ import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPla
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
+import androidx.paging.compose.items
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -80,6 +81,8 @@ fun LibraryScreen(
     viewModel: LibraryViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
+
+    val lazyPagingItems: LazyPagingItems<Book> = viewModel.getBooksPager().collectAsLazyPagingItems()
 
     var expanded by remember { mutableStateOf(false) }
     val refreshing by viewModel.refreshing.observeAsState(false)
@@ -99,25 +102,6 @@ fun LibraryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.refreshContent()
-    }
-
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo }
-            .map { layoutInfo ->
-                if (books.isEmpty()) {
-                    false
-                } else {
-                    val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-                    val totalItemsCount = layoutInfo.totalItemsCount
-
-                    totalItemsCount - lastVisibleIndex <= 5
-                }
-            }
-            .collect { nearEnd ->
-                if (nearEnd) {
-                    viewModel.fetchNextLibraryPage()
-                }
-            }
     }
 
     val imageLoader = remember {
@@ -310,15 +294,10 @@ fun LibraryScreen(
                             LibraryPlaceholderComposable()
                         }
                     } else {
-                        items(books) { book ->
+                        items(lazyPagingItems) { book ->
                             LibraryItemComposable(
-                                book = book,
-                                imageLoader = EntryPointAccessors
-                                    .fromApplication(
-                                        LocalContext.current,
-                                        ImageLoaderEntryPoint::class.java
-                                    )
-                                    .getImageLoader(),
+                                book = book ?: return@items,
+                                imageLoader = imageLoader,
                                 navController = navController,
                             )
                         }
