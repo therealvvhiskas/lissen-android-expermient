@@ -104,12 +104,19 @@ fun LibraryScreen(
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo }
             .map { layoutInfo ->
-                val libraryItem = layoutInfo.visibleItemsInfo.find { it.key == "library_list" }
+                if (books.isEmpty()) {
+                    false
+                } else {
+                    val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                    val totalItemsCount = layoutInfo.totalItemsCount
 
+                    totalItemsCount - lastVisibleIndex <= 5
+                }
             }
-            .collect {
-                // Выполняем действие при достижении конца списка
-                println("hehey!")
+            .collect { nearEnd ->
+                if (nearEnd) {
+                    viewModel.fetchNextLibraryPage()
+                }
             }
     }
 

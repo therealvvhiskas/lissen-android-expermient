@@ -1,5 +1,7 @@
 package org.grakovne.lissen.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -49,6 +51,31 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun fetchNextLibraryPage() {
+        viewModelScope.launch {
+
+            dataProvider
+                .fetchBooks(
+                    libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
+                    pageNumber = _currentPage.value?.plus(1) ?: 0,
+                    pageSize = PAGE_SIZE
+                )
+                .fold(
+                    onFailure = {
+
+                    },
+                    onSuccess = {
+
+                        if (it.isNotEmpty()) {
+                            val items = (_books.value ?: emptyList()) + it
+                            _books.postValue(items.distinct())
+
+                            _currentPage.postValue((_currentPage.value ?: 0) + 1)
+                        }
+                    }
+                )
+        }
+    }
 
     fun refreshContent() {
         viewModelScope.launch {
@@ -80,10 +107,11 @@ class LibraryViewModel @Inject constructor(
                     pageSize = PAGE_SIZE
                 )
 
-        response.fold(
-            onSuccess = { _books.postValue(it) },
-            onFailure = {}
-        )
+        response
+            .fold(
+                onSuccess = { _books.postValue(it) },
+                onFailure = {}
+            )
     }
 
     companion object {
