@@ -36,8 +36,7 @@ interface AudiobookshelfApiClient {
         @Path("libraryId") libraryId: String
     ): Response<LibraryItemsResponse>
 
-    // merge with previous?
-    @GET("/api/items/{itemId}?expanded=1&include=progress")
+    @GET("/api/items/{itemId}")
     suspend fun fetchLibraryItem(
         @Path("itemId") itemId: String
     ): Response<LibraryItemIdResponse>

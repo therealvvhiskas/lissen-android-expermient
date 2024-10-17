@@ -1,6 +1,8 @@
 package org.grakovne.lissen.channel.audiobookshelf
 
 import android.net.Uri
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
@@ -12,7 +14,9 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseCo
 import org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.ApiResult.Success
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
@@ -108,16 +112,22 @@ class AudiobookshelfChannel @Inject constructor(
             .fetchPersonalizedFeed(libraryId)
             .map { recentBookResponseConverter.apply(it) }
 
-    suspend fun fetchBook(itemId: String) = dataRepository
-        .fetchLibraryItem(itemId)
-        .map { item ->
-            dataRepository
-                .fetchLibraryItemProgress(item.id)
-                .fold(
-                    onSuccess = { libraryItemIdResponseConverter.apply(item, it) },
-                    onFailure = { libraryItemIdResponseConverter.apply(item, null) }
-                )
-        }
+    suspend fun fetchBook(itemId: String): ApiResult<DetailedBook> = coroutineScope {
+        val libraryItem = async { dataRepository.fetchLibraryItem(itemId) }
+        val itemProgress = async { dataRepository.fetchLibraryItemProgress(itemId) }
+
+        libraryItem.await().foldAsync(
+            onSuccess = { item ->
+                itemProgress
+                    .await()
+                    .fold(
+                        onSuccess = { Success(libraryItemIdResponseConverter.apply(item, it)) },
+                        onFailure = { Success(libraryItemIdResponseConverter.apply(item, null)) }
+                    )
+            },
+            onFailure = { ApiResult.Error(it.code) }
+        )
+    }
 
     suspend fun authorize(
         host: String,
@@ -126,5 +136,5 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
 
-    fun getClientName() = "Lissen App Android"
+    private fun getClientName() = "Lissen App Android"
 }
