@@ -8,11 +8,14 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.compose.LazyPagingItems
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
@@ -32,11 +35,13 @@ class LibraryViewModel @Inject constructor(
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
+
     val booksPager: Flow<PagingData<Book>> by lazy {
         val libraryId = preferences.getPreferredLibrary()?.id ?: ""
         Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
+                initialLoadSize = PAGE_SIZE,
                 prefetchDistance = PAGE_SIZE
             ),
             pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
@@ -46,12 +51,13 @@ class LibraryViewModel @Inject constructor(
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
 
-    fun onPullRefreshed() {
+    fun onPullRefreshed(lazyPagingItems: LazyPagingItems<Book>) {
         _refreshing.postValue(true)
 
         viewModelScope.launch {
             withMinimumTime(500) {
                 listOf(
+                    async { lazyPagingItems.refresh() },
                     async { fetchRecentListening() },
                 ).awaitAll()
             }

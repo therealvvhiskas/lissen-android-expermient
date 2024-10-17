@@ -83,7 +83,7 @@ fun LibraryScreen(
     var navigationItemSelected by remember { mutableStateOf(false) }
     val refreshing by viewModel.refreshing.observeAsState(false)
 
-    val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.onPullRefreshed() })
+    val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.onPullRefreshed(lazyPagingItems) })
 
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
