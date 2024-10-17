@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -28,6 +26,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,7 +45,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -57,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.EntryPointAccessors
@@ -81,9 +80,10 @@ fun LibraryScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
-    val lazyPagingItems: LazyPagingItems<Book> = viewModel.getBooksPager().collectAsLazyPagingItems()
+    val lazyPagingItems: LazyPagingItems<Book> =
+        viewModel.getBooksPager().collectAsLazyPagingItems()
 
-    var expanded by remember { mutableStateOf(false) }
+    var navigationItemSelected by remember { mutableStateOf(false) }
     val refreshing by viewModel.refreshing.observeAsState(false)
 
     val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.onPullRefreshed() })
@@ -123,15 +123,15 @@ fun LibraryScreen(
         topBar = {
             TopAppBar(
                 actions = {
-                    IconButton(onClick = { expanded = true }) {
+                    IconButton(onClick = { navigationItemSelected = true }) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
                             contentDescription = "Menu"
                         )
                     }
                     DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = navigationItemSelected,
+                        onDismissRequest = { navigationItemSelected = false },
                         modifier = Modifier
                             .background(colorScheme.background)
                             .padding(8.dp)
@@ -153,7 +153,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { expanded = false },
+                            onClick = { navigationItemSelected = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -173,7 +173,7 @@ fun LibraryScreen(
                                 )
                             },
                             onClick = {
-                                expanded = false
+                                navigationItemSelected = false
                                 navController.navigate("settings_screen")
                             },
                             modifier = Modifier
@@ -197,7 +197,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { expanded = false },
+                            onClick = { navigationItemSelected = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
