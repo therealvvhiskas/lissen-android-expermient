@@ -1,6 +1,6 @@
 package org.grakovne.lissen.channel.sources.audiobookshelf.converter
 
-import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.PersonalizedFeedResponse
 import org.grakovne.lissen.domain.RecentBook
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,8 +1,8 @@
 package org.grakovne.lissen.channel.sources.audiobookshelf.converter
 
-import org.grakovne.lissen.channel.audiobookshelf.model.Author
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.Author
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LibraryItemIdResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook

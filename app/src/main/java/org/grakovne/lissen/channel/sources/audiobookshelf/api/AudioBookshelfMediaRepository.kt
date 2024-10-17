@@ -1,7 +1,7 @@
 package org.grakovne.lissen.channel.sources.audiobookshelf.api
 
 import okhttp3.ResponseBody
-import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfMediaClient
+import org.grakovne.lissen.channel.sources.audiobookshelf.client.AudiobookshelfMediaClient
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.BinaryApiClient
 import org.grakovne.lissen.channel.common.FetchTokenApiError

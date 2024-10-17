@@ -1,15 +1,15 @@
 package org.grakovne.lissen.channel.sources.audiobookshelf.client
 
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
-import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
-import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LibraryItemIdResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LibraryItemsResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LibraryResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LoginRequest
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.MediaProgressResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.PersonalizedFeedResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.PlaybackSessionResponse
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.StartPlaybackRequest
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.SyncProgressRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -1,6 +1,6 @@
 package org.grakovne.lissen.channel.sources.audiobookshelf.api
 
-import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
+import org.grakovne.lissen.channel.sources.audiobookshelf.model.SyncProgressRequest
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.PlaybackProgress
 import javax.inject.Inject
