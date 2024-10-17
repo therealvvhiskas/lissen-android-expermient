@@ -30,7 +30,7 @@ android {
         debug {
             matchingFallbacks.add("release")
             isMinifyEnabled = false
-            isDebuggable = false
+            isDebuggable = true
         }
     }
 

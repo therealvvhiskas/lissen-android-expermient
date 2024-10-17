@@ -31,7 +31,7 @@ interface AudiobookshelfApiClient {
         @Path("itemId") itemId: String
     ): Response<MediaProgressResponse>
 
-    @GET("api/libraries/{libraryId}/items")
+    @GET("api/libraries/{libraryId}/items?sort=media.metadata.title&limit=12&page=0&minified=1")
     suspend fun fetchLibraryItems(
         @Path("libraryId") libraryId: String
     ): Response<LibraryItemsResponse>
