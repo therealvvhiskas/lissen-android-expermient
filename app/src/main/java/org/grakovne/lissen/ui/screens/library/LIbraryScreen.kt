@@ -89,7 +89,6 @@ fun LibraryScreen(
     var refreshing by remember { mutableStateOf(false) }
 
     val isContentLoading by remember { derivedStateOf { refreshing || library.loadState.refresh is LoadState.Loading } }
-
     val coroutineScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
@@ -261,7 +260,7 @@ fun LibraryScreen(
                 ) {
 
                     item(key = "recent_books") {
-                        if (isContentLoading) {
+                        if (recentBooks.isEmpty()) {
                             RecentBooksPlaceholderComposable()
                         } else {
                             RecentBooksComposable(
