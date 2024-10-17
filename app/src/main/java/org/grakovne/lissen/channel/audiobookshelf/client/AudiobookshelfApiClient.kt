@@ -20,25 +20,21 @@ import retrofit2.http.Path
 interface AudiobookshelfApiClient {
 
     @GET("/api/libraries")
-    @Headers("Cache-Control: max-age=600")
     suspend fun getLibraries(): Response<LibraryResponse>
 
     @POST("/api/items/{itemId}/play")
-    @Headers("Cache-Control: no-cache")
     suspend fun startPlayback(
         @Path("itemId") itemId: String,
         @Body syncProgressRequest: StartPlaybackRequest
     ): Response<PlaybackSessionResponse>
 
     @POST("/api/session/{sessionId}/close")
-    @Headers("Cache-Control: max-age=600")
     suspend fun stopPlayback(
         @Path("sessionId") sessionId: String
     ): Response<Unit>
 
 
     @GET("/api/libraries/{libraryId}/personalized?include=rssfeed,numEpisodesIncomplete,share")
-    @Headers("Cache-Control: max-age=600")
     suspend fun getRecentItems(
         @Path("libraryId") libraryId: String
     ): Response<List<PersonalizedFeedResponse>>
@@ -50,13 +46,11 @@ interface AudiobookshelfApiClient {
     ): Response<Unit>
 
     @GET("/api/me/progress/{itemId}")
-    @Headers("Cache-Control: no-cache")
     suspend fun getLibraryItemProgress(
         @Path("itemId") itemId: String
     ): Response<MediaProgressResponse>
 
     @GET("/api/items/{itemId}?expanded=1&include=progress")
-    @Headers("Cache-Control: max-age=600")
     suspend fun getLibraryItem(
         @Path("itemId") itemId: String
     ): Response<LibraryItemIdResponse>
@@ -65,7 +59,6 @@ interface AudiobookshelfApiClient {
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
     @GET("api/libraries/{libraryId}/items")
-    @Headers("Cache-Control: max-age=600")
     suspend fun getLibraryItems(
         @Path("libraryId") libraryId: String
     ): Response<LibraryItemsResponse>
