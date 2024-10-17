@@ -48,18 +48,12 @@ class LibraryViewModel @Inject constructor(
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
 
-    fun onPullRefreshed(lazyPagingItems: LazyPagingItems<Book>) {
+    fun libraryRefreshing() {
         _refreshing.postValue(true)
+    }
 
-        viewModelScope.launch {
-            withMinimumTime(500) {
-                listOf(
-                    async { lazyPagingItems.refresh() },
-                    async { fetchRecentListening() },
-                ).awaitAll()
-            }
-            _refreshing.postValue(false)
-        }
+    fun libraryRefreshed() {
+        _refreshing.postValue(false)
     }
 
     fun refreshContent() {
@@ -70,7 +64,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun fetchRecentListening() {
+    fun fetchRecentListening() {
         viewModelScope.launch {
             val response = dataProvider
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)

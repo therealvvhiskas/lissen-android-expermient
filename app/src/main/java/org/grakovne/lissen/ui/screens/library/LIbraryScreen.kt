@@ -43,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +69,10 @@ import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBook
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 import androidx.paging.compose.items
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
@@ -82,8 +87,25 @@ fun LibraryScreen(
     var navigationItemSelected by remember { mutableStateOf(false) }
     val refreshing by viewModel.refreshing.observeAsState(false)
 
-    val pullRefreshState =
-        rememberPullRefreshState(refreshing, { viewModel.onPullRefreshed(library) })
+    val coroutineScope = rememberCoroutineScope()
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = refreshing,
+        onRefresh = {
+            coroutineScope.launch {
+                viewModel.libraryRefreshing()
+
+                withMinimumTime(500) {
+                    listOf(
+                        async { library.refresh() },
+                        async { viewModel.fetchRecentListening() },
+                    ).awaitAll()
+                }
+
+                viewModel.libraryRefreshed()
+            }
+        }
+    )
 
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
@@ -95,9 +117,7 @@ fun LibraryScreen(
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.refreshContent()
-    }
+    LaunchedEffect(Unit) { viewModel.refreshContent() }
 
     val imageLoader = remember {
         EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
