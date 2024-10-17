@@ -50,6 +50,9 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private val _playingBook = MutableLiveData<DetailedBook>()
     val playingBook: LiveData<DetailedBook> = _playingBook
 
+    private val _playbackSpeed = MutableLiveData<Float>()
+    val playbackSpeed: LiveData<Float> = _playbackSpeed
+
     private val handler = Handler(Looper.getMainLooper())
 
     private val bookDetailsReadyReceiver = object : BroadcastReceiver() {
@@ -103,17 +106,6 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         startUpdatingProgress(book)
     }
 
-    private fun preparePlay(book: DetailedBook) {
-        _mediaItemPosition.postValue(0.0)
-        _isPlaying.postValue(false)
-
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_SET_PLAYBACK
-            putExtra(BOOK_EXTRA, book)
-        }
-
-        context.startService(intent)
-    }
 
     fun play() {
         val intent = Intent(context, AudioPlayerService::class.java).apply {
@@ -140,6 +132,18 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         context.startService(intent)
     }
 
+    fun togglePlaybackSpeed() {
+        val speed = when (playbackSpeed.value) {
+            1f -> 1.5f
+            1.5f -> 2f
+            2f -> 1f
+            else -> 1f
+        }
+
+        _playbackSpeed.postValue(speed)
+        mediaController.setPlaybackSpeed(speed)
+    }
+
     private fun startUpdatingProgress(detailedBook: DetailedBook) {
         handler.removeCallbacksAndMessages(null)
 
@@ -159,5 +163,17 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
 
             _mediaItemPosition.value = (accumulated + currentFilePosition)
         }
+    }
+
+    private fun preparePlay(book: DetailedBook) {
+        _mediaItemPosition.postValue(0.0)
+        _isPlaying.postValue(false)
+
+        val intent = Intent(context, AudioPlayerService::class.java).apply {
+            action = AudioPlayerService.ACTION_SET_PLAYBACK
+            putExtra(BOOK_EXTRA, book)
+        }
+
+        context.startService(intent)
     }
 }

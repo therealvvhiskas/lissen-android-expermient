@@ -27,6 +27,7 @@ class PlayerViewModel @Inject constructor(
 
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
+    val playbackSpeed: LiveData<Float> = mediaRepository.playbackSpeed
 
     val isPlaying: LiveData<Boolean> = mediaRepository.isPlaying
 
@@ -113,6 +114,8 @@ class PlayerViewModel @Inject constructor(
 
         mediaRepository.seekTo(chapterStartsAt)
     }
+
+    fun togglePlaybackSpeed() = mediaRepository.togglePlaybackSpeed()
 
     fun nextTrack() {
         val nextChapterIndex = currentChapterIndex.value?.let { it + 1 } ?: return

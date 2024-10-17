@@ -1,12 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import android.widget.Toast
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Headset
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
@@ -34,6 +33,8 @@ fun PlayerNavBarComposable(
     modifier: Modifier = Modifier,
     onChaptersClick: () -> Unit
 ) {
+
+    val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
     val context = LocalContext.current
 
@@ -71,36 +72,6 @@ fun PlayerNavBarComposable(
             NavigationBarItem(
                 icon = {
                     Icon(
-                        Icons.Outlined.Timer,
-                        contentDescription = stringResource(R.string.player_screen_timer_navigation)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.player_screen_timer_navigation),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                selected = false,
-                onClick = {
-                    Toast.makeText(
-                        context,
-                        "Timer Feature Under Construction Yet",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                },
-                enabled = true,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
-                    unselectedIconColor = colorScheme.onSurface.copy(alpha = 0.4f),
-                    unselectedTextColor = colorScheme.onSurface.copy(alpha = 0.4f)
-                )
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
                         Icons.Outlined.Book,
                         contentDescription = stringResource(R.string.player_screen_chapter_list_navigation)
                     )
@@ -118,6 +89,29 @@ fun PlayerNavBarComposable(
                     selectedIconColor = colorScheme.primary,
                 )
             )
+
+            NavigationBarItem(
+                icon = {
+                    Icon(
+                        Icons.Outlined.Speed,
+                        contentDescription = stringResource(R.string.player_screen_timer_navigation)
+                    )
+                },
+                label = {
+                    Text(
+                        text = playbackSpeed.format(),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                selected = false,
+                onClick = { viewModel.togglePlaybackSpeed() },
+                enabled = true,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorScheme.primary
+                )
+            )
+
             NavigationBarItem(
                 icon = {
                     Icon(
@@ -140,4 +134,11 @@ fun PlayerNavBarComposable(
             )
         }
     }
+}
+
+private fun Float.format() = when (this) {
+    1f -> "Normal"
+    1.5f -> "Faster"
+    2f -> "Fast"
+    else -> "Custom"
 }
