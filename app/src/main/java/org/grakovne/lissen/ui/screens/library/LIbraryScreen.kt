@@ -279,7 +279,7 @@ fun LibraryScreen(
                         }
                     }
 
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                    item { Spacer(modifier = Modifier.height(20.dp)) }
 
                     item(key = "library_title") {
                         AnimatedContent(
@@ -311,7 +311,7 @@ fun LibraryScreen(
                         }
                     }
 
-                    item { Spacer(modifier = Modifier.height(8.dp)) }
+                    item { Spacer(modifier = Modifier.height(10.dp)) }
 
                     if (isContentLoading) {
                         item {
