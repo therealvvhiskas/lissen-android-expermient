@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.audiobookshelf.client
+package org.grakovne.lissen.channel.sources.audiobookshelf.client
 
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse

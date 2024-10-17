@@ -1,4 +1,4 @@
-package org.grakovne.lissen
+package org.grakovne.lissen.channel
 
 enum class ChannelCode {
     AUDIOBOOKSHELF

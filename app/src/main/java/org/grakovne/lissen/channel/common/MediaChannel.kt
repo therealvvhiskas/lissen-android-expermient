@@ -1,7 +1,7 @@
 package org.grakovne.lissen.channel.common
 
 import android.net.Uri
-import org.grakovne.lissen.ChannelCode
+import org.grakovne.lissen.channel.ChannelCode
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library

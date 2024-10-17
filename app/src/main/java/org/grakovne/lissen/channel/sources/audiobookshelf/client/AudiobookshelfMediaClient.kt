@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.audiobookshelf.client
+package org.grakovne.lissen.channel.sources.audiobookshelf.client
 
 import okhttp3.ResponseBody
 import retrofit2.Response

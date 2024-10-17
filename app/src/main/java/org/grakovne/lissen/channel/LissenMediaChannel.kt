@@ -1,9 +1,8 @@
 package org.grakovne.lissen.channel
 
 import android.net.Uri
-import org.grakovne.lissen.ChannelCode
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.sources.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library

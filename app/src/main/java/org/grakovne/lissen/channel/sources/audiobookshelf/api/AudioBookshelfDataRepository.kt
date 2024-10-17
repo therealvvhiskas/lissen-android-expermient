@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.audiobookshelf.api
+package org.grakovne.lissen.channel.sources.audiobookshelf.api
 
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfApiClient
 import org.grakovne.lissen.channel.audiobookshelf.converter.LoginResponseConverter

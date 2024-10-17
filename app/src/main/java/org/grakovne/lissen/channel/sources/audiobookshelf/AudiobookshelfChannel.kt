@@ -1,9 +1,9 @@
-package org.grakovne.lissen.channel.audiobookshelf
+package org.grakovne.lissen.channel.sources.audiobookshelf
 
 import android.net.Uri
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import org.grakovne.lissen.ChannelCode
+import org.grakovne.lissen.channel.ChannelCode
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService

@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.audiobookshelf.converter
+package org.grakovne.lissen.channel.sources.audiobookshelf.converter
 
 import org.grakovne.lissen.channel.audiobookshelf.model.Author
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemIdResponse

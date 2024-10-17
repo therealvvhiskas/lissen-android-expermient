@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.audiobookshelf.api
+package org.grakovne.lissen.channel.sources.audiobookshelf.api
 
 import okhttp3.ResponseBody
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfMediaClient
