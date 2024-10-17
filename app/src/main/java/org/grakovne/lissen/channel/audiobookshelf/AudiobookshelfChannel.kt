@@ -18,6 +18,7 @@ import org.grakovne.lissen.channel.common.ApiResult.Success
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.PagedItems
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.domain.RecentBook
@@ -74,9 +75,15 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
 
     suspend fun fetchBooks(
-        libraryId: String
-    ): ApiResult<List<Book>> = dataRepository
-        .fetchLibraryItems(libraryId)
+        libraryId: String,
+        pageSize: Int,
+        pageNumber: Int
+    ): ApiResult<PagedItems<Book>> = dataRepository
+        .fetchLibraryItems(
+            libraryId = libraryId,
+            pageSize = pageSize,
+            pageNumber = pageNumber
+        )
         .map { libraryItemResponseConverter.apply(it) }
 
     suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository

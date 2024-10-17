@@ -2,13 +2,14 @@ package org.grakovne.lissen.channel.audiobookshelf.converter
 
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.PagedItems
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LibraryItemResponseConverter @Inject constructor() {
 
-    fun apply(response: LibraryItemsResponse): List<Book> = response
+    fun apply(response: LibraryItemsResponse): PagedItems<Book> = response
         .results
         .map {
             Book(
@@ -17,6 +18,13 @@ class LibraryItemResponseConverter @Inject constructor() {
                 author = it.media.metadata.authorName,
                 downloaded = false,
                 duration = it.media.duration.toInt()
+            )
+        }
+        .let {
+            PagedItems(
+                items = it,
+                currentPage = response.page,
+                totalElements = response.total
             )
         }
 }

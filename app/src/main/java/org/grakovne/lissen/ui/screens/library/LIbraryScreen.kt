@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +43,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,11 +55,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
-import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
+import org.grakovne.lissen.ui.extensions.withMinimumTime
+import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
@@ -75,25 +84,48 @@ fun LibraryScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
-    var expanded by remember { mutableStateOf(false) }
-    val refreshing by viewModel.refreshing.observeAsState(false)
+    val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
+    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
-    val pullRefreshState = rememberPullRefreshState(refreshing, { viewModel.onPullRefreshed() })
+    var pullRefreshing by remember { mutableStateOf(false) }
+    val isContentLoading by remember {
+        derivedStateOf {
+            pullRefreshing
+                    || recentBooks.isEmpty()
+                    || library.loadState.refresh is LoadState.Loading
+        }
+    }
+
+    var navigationItemSelected by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = pullRefreshing,
+        onRefresh = {
+            coroutineScope.launch {
+                pullRefreshing = true
+                withMinimumTime(500) {
+                    listOf(
+                        async { library.refresh() },
+                        async { viewModel.fetchRecentListening() },
+                    ).awaitAll()
+                }
+
+                pullRefreshing = false
+            }
+        }
+    )
 
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
     val listState = rememberLazyListState()
 
-    val books by viewModel.books.observeAsState(emptyList())
-    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
-
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        viewModel.refreshContent()
-    }
+    LaunchedEffect(Unit) { viewModel.refreshContent() }
 
     val imageLoader = remember {
         EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
@@ -115,15 +147,15 @@ fun LibraryScreen(
         topBar = {
             TopAppBar(
                 actions = {
-                    IconButton(onClick = { expanded = true }) {
+                    IconButton(onClick = { navigationItemSelected = true }) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
                             contentDescription = "Menu"
                         )
                     }
                     DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = navigationItemSelected,
+                        onDismissRequest = { navigationItemSelected = false },
                         modifier = Modifier
                             .background(colorScheme.background)
                             .padding(8.dp)
@@ -145,7 +177,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { expanded = false },
+                            onClick = { navigationItemSelected = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -165,7 +197,7 @@ fun LibraryScreen(
                                 )
                             },
                             onClick = {
-                                expanded = false
+                                navigationItemSelected = false
                                 navController.navigate("settings_screen")
                             },
                             modifier = Modifier
@@ -189,7 +221,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { expanded = false },
+                            onClick = { navigationItemSelected = false },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -229,14 +261,12 @@ fun LibraryScreen(
             ) {
                 LazyColumn(
                     state = listState,
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
 
                     item(key = "recent_books") {
-                        if (recentBooks.isEmpty()) {
+                        if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
                             RecentBooksComposable(
@@ -247,11 +277,16 @@ fun LibraryScreen(
                         }
                     }
 
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+
                     item(key = "library_title") {
                         AnimatedContent(
                             targetState = navBarTitle,
                             transitionSpec = {
-                                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                fadeIn(
+                                    animationSpec =
+                                    tween(300)
+                                ) togetherWith fadeOut(
                                     animationSpec = tween(
                                         300
                                     )
@@ -274,21 +309,25 @@ fun LibraryScreen(
                         }
                     }
 
-                    item(key = "library_list") {
-                        if (books.isEmpty()) {
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                    if (isContentLoading) {
+                        item {
                             LibraryPlaceholderComposable()
-                        } else {
-                            LibraryComposable(
-                                books = books,
+                        }
+                    } else {
+                        items(count = library.itemCount) {
+                            LibraryItemComposable(
+                                book = library[it] ?: return@items,
                                 imageLoader = imageLoader,
-                                navController = navController
+                                navController = navController,
                             )
                         }
                     }
                 }
 
                 PullRefreshIndicator(
-                    refreshing = refreshing,
+                    refreshing = pullRefreshing,
                     state = pullRefreshState,
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
