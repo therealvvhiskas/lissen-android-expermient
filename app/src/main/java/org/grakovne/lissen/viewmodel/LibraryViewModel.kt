@@ -1,7 +1,5 @@
 package org.grakovne.lissen.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,8 +35,8 @@ class LibraryViewModel @Inject constructor(
 
         return Pager(
             config = PagingConfig(
-                pageSize = 1,
-                initialLoadSize = 1,
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PAGE_SIZE,
                 enablePlaceholders = true
             ),
             pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
@@ -96,18 +94,18 @@ class LibraryViewModel @Inject constructor(
             dataProvider
                 .fetchBooks(
                     libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
-                    pageNumber =  0,
+                    pageNumber = 0,
                     pageSize = PAGE_SIZE
                 )
 
         response
             .fold(
-                onSuccess = { _books.postValue(it) },
+                onSuccess = { _books.postValue(it.items) },
                 onFailure = {}
             )
     }
 
     companion object {
-        private val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 10
     }
 }

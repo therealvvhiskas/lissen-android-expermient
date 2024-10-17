@@ -9,6 +9,7 @@ class LibraryPagingSource(
     private val dataProvider: AudiobookshelfChannel,
     private val libraryId: String,
 ) : PagingSource<Int, Book>() {
+
     override fun getRefreshKey(state: PagingState<Int, Book>) = state
         .anchorPosition
         ?.let { anchorPosition ->
@@ -23,19 +24,25 @@ class LibraryPagingSource(
         val currentPage = params.key ?: 0
 
         return dataProvider
-            .fetchBooks(libraryId, currentPage, params.loadSize)
+            .fetchBooks(
+                libraryId = libraryId,
+                pageSize = params.loadSize,
+                pageNumber = currentPage
+            )
             .fold(
-                onSuccess = {
+                onSuccess = { result ->
+                    val nextPage = if (result.items.isEmpty()) null else result.currentPage + 1
+                    val prevKey = if (result.currentPage == 1) null else result.currentPage - 1
+
                     LoadResult.Page(
-                        data = it,
-                        prevKey = if (currentPage == 0) null else currentPage - 1,
-                        nextKey = if (it.isEmpty()) null else currentPage + 1
+                        data = result.items,
+                        prevKey = prevKey,
+                        nextKey = nextPage
                     )
                 },
                 onFailure = {
                     LoadResult.Error(RuntimeException(""))
                 }
             )
-
     }
 }
