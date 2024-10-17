@@ -23,7 +23,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
-    fun getPreferredChannel(): ChannelCode? = ChannelCode.AUDIOBOOKSHELF
+    fun getPreferredChannel(): ChannelCode = ChannelCode.AUDIOBOOKSHELF
 
     fun hasCredentials(): Boolean {
         val host = getHost()
