@@ -40,23 +40,6 @@ import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
-@Composable
-fun LibraryComposable(
-    imageLoader: ImageLoader,
-    navController: NavController,
-    viewModel: LibraryViewModel
-) {
-    val books by viewModel.books.observeAsState(emptyList())
-
-    books
-        .forEach { book ->
-            LibraryItemComposable(
-                book = book,
-                imageLoader = imageLoader,
-                navController = navController
-            )
-        }
-}
 
 @Composable
 fun LibraryItemComposable(

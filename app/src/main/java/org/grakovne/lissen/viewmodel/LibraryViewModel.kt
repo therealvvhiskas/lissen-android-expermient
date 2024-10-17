@@ -10,7 +10,6 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
@@ -30,26 +29,19 @@ class LibraryViewModel @Inject constructor(
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
-    fun getBooksPager(): Flow<PagingData<Book>> {
-        val libraryId = preferences.getPreferredLibrary()?.id ?: ""
-
-        return Pager(
-            config = PagingConfig(
-                pageSize = PAGE_SIZE,
-                prefetchDistance = PAGE_SIZE,
-                enablePlaceholders = true
-            ),
-            pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
-        )
-            .flow
-            .cachedIn(viewModelScope)
-    }
-
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
-    private val _books = MutableLiveData<List<Book>>(emptyList())
-    val books: LiveData<List<Book>> = _books
+    val booksPager: Flow<PagingData<Book>> by lazy {
+        val libraryId = preferences.getPreferredLibrary()?.id ?: ""
+        Pager(
+            config = PagingConfig(
+                pageSize = PAGE_SIZE,
+                prefetchDistance = PAGE_SIZE
+            ),
+            pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
+        ).flow.cachedIn(viewModelScope)
+    }
 
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
@@ -61,7 +53,6 @@ class LibraryViewModel @Inject constructor(
             withMinimumTime(500) {
                 listOf(
                     async { fetchRecentListening() },
-                    async { fetchLibrary() }
                 ).awaitAll()
             }
             _refreshing.postValue(false)
@@ -72,7 +63,6 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 launch(Dispatchers.IO) { fetchRecentListening() }
-                launch(Dispatchers.IO) { fetchLibrary() }
             }
         }
     }
@@ -89,23 +79,7 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    private fun fetchLibrary(): Job = viewModelScope.launch {
-        val response =
-            dataProvider
-                .fetchBooks(
-                    libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
-                    pageNumber = 0,
-                    pageSize = PAGE_SIZE
-                )
-
-        response
-            .fold(
-                onSuccess = { _books.postValue(it.items) },
-                onFailure = {}
-            )
-    }
-
     companion object {
-        private const val PAGE_SIZE = 10
+        private const val PAGE_SIZE = 1
     }
 }

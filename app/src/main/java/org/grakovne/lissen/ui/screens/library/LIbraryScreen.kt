@@ -26,7 +26,6 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,7 +54,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.EntryPointAccessors
@@ -66,11 +64,11 @@ import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
-import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 import androidx.paging.compose.items
+import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -80,8 +78,7 @@ fun LibraryScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
-    val lazyPagingItems: LazyPagingItems<Book> =
-        viewModel.getBooksPager().collectAsLazyPagingItems()
+    val lazyPagingItems: LazyPagingItems<Book> = viewModel.booksPager.collectAsLazyPagingItems()
 
     var navigationItemSelected by remember { mutableStateOf(false) }
     val refreshing by viewModel.refreshing.observeAsState(false)
@@ -93,7 +90,6 @@ fun LibraryScreen(
 
     val listState = rememberLazyListState()
 
-    val books by viewModel.books.observeAsState(emptyList())
     val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val playingBook by playerViewModel.book.observeAsState()
@@ -288,7 +284,7 @@ fun LibraryScreen(
 
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                    if (books.isEmpty()) {
+                    if (false) {
                         item {
                             LibraryPlaceholderComposable()
                         }

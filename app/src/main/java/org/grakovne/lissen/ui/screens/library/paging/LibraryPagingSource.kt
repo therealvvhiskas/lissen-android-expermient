@@ -32,7 +32,7 @@ class LibraryPagingSource(
             .fold(
                 onSuccess = { result ->
                     val nextPage = if (result.items.isEmpty()) null else result.currentPage + 1
-                    val prevKey = if (result.currentPage == 1) null else result.currentPage - 1
+                    val prevKey = if (result.currentPage == 0) null else result.currentPage - 1
 
                     LoadResult.Page(
                         data = result.items,
