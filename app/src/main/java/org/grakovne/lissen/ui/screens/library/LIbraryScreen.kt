@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.EntryPointAccessors
@@ -303,7 +304,7 @@ fun LibraryScreen(
 
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                    if (false) {
+                    if (library.loadState.refresh is LoadState.Loading) {
                         item {
                             LibraryPlaceholderComposable()
                         }
