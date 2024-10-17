@@ -58,7 +58,6 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -87,11 +86,13 @@ fun LibraryScreen(
     val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
     val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
+    val recentBookRefreshing by viewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
+
     val isContentLoading by remember {
         derivedStateOf {
             pullRefreshing
-                    || recentBooks.isEmpty()
+                    || recentBookRefreshing
                     || library.loadState.refresh is LoadState.Loading
         }
     }
@@ -128,7 +129,8 @@ fun LibraryScreen(
     LaunchedEffect(Unit) { viewModel.refreshContent() }
 
     val imageLoader = remember {
-        EntryPointAccessors.fromApplication(context, ImageLoaderEntryPoint::class.java)
+        EntryPointAccessors
+            .fromApplication(context, ImageLoaderEntryPoint::class.java)
             .getImageLoader()
     }
 

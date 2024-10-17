@@ -33,6 +33,9 @@ class LibraryViewModel @Inject constructor(
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
+    private val _recentBookUpdating = MutableLiveData<Boolean>(false)
+    val recentBookUpdating: LiveData<Boolean> = _recentBookUpdating
+
     val libraryPager: Flow<PagingData<Book>> by lazy {
         val libraryId = preferences.getPreferredLibrary()?.id ?: ""
         Pager(
@@ -55,14 +58,19 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun fetchRecentListening() {
-        _recentBooks.postValue(emptyList())
+        _recentBookUpdating.postValue(true)
 
         viewModelScope.launch {
             dataProvider
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
                 .fold(
-                    onSuccess = { _recentBooks.postValue(it) },
-                    onFailure = {}
+                    onSuccess = {
+                        _recentBooks.postValue(it)
+                        _recentBookUpdating.postValue(false)
+                    },
+                    onFailure = {
+                        _recentBookUpdating.postValue(false)
+                    }
                 )
         }
     }
