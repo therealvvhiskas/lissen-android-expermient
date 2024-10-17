@@ -94,7 +94,9 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     fun disableForceCache() =
         sharedPreferences.edit().putBoolean(CACHE_FORCE_ENABLED_TOKEN, false).apply()
 
-    fun isForceCache(): Boolean = sharedPreferences.getBoolean(CACHE_FORCE_ENABLED_TOKEN, false)
+    fun isForceCache(): Boolean {
+        return sharedPreferences.getBoolean(CACHE_FORCE_ENABLED_TOKEN, false)
+    }
 
     fun saveUsername(username: String) =
         sharedPreferences.edit().putString(KEY_USERNAME, username).apply()

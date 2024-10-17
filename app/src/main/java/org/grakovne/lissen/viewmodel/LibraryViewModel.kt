@@ -71,6 +71,17 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
+    fun toggleCacheForce() {
+        when (isCacheForce()) {
+            true -> preferences.disableForceCache()
+            false -> preferences.enableForceCache()
+        }
+
+        refreshContent()
+    }
+
+    fun isCacheForce() = preferences.isForceCache()
+
     companion object {
         private const val PAGE_SIZE = 10
     }

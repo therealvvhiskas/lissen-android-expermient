@@ -76,6 +76,6 @@ class LissenMediaChannel @Inject constructor(
 
     private fun providePreferredChannel(): AudiobookshelfChannel = sharedPreferences
         .getPreferredChannel()
-        ?.let { channels[it] }
+        .let { channels[it] }
         ?: throw IllegalStateException("Selected Channel has been requested but not selected")
 }

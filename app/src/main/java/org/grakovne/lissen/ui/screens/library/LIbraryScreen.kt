@@ -19,7 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.AirplanemodeActive
+import androidx.compose.material.icons.outlined.AirplanemodeInactive
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
@@ -165,21 +166,21 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    modifier = Modifier.alpha(0.6f),
-                                    imageVector = Icons.Outlined.Download,
+                                    imageVector = if (viewModel.isCacheForce()) Icons.Outlined.AirplanemodeInactive else Icons.Outlined.AirplanemodeActive,
                                     contentDescription = null,
                                 )
                             },
                             text = {
                                 Text(
-                                    stringResource(R.string.library_screen_downloads_menu_item),
+                                    text = if (viewModel.isCacheForce()) "Disable Offline" else "Enable Offline",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .alpha(0.6f)
+                                    modifier = Modifier.padding(start = 8.dp)
                                 )
                             },
-                            onClick = { navigationItemSelected = false },
+                            onClick = {
+                                navigationItemSelected = false
+                                viewModel.toggleCacheForce()
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)

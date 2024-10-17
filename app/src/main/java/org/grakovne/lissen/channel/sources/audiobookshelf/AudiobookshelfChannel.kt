@@ -75,8 +75,8 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<Unit> = syncService.syncProgress(itemId, progress)
 
     override suspend fun fetchBookCover(
-        itemId: String
-    ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
+        bookId: String
+    ): ApiResult<InputStream> = mediaRepository.fetchBookCover(bookId)
 
     override suspend fun fetchBooks(
         libraryId: String,
