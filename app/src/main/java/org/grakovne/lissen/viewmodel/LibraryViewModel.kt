@@ -38,6 +38,7 @@ class LibraryViewModel @Inject constructor(
         return Pager(
             config = PagingConfig(
                 pageSize = 1,
+                initialLoadSize = 1,
                 enablePlaceholders = true
             ),
             pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
@@ -54,8 +55,6 @@ class LibraryViewModel @Inject constructor(
 
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
-
-    private val _currentPage = MutableLiveData(0)
 
     fun onPullRefreshed() {
         _refreshing.postValue(true)
@@ -97,7 +96,7 @@ class LibraryViewModel @Inject constructor(
             dataProvider
                 .fetchBooks(
                     libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
-                    pageNumber = _currentPage.value ?: 0,
+                    pageNumber =  0,
                     pageSize = PAGE_SIZE
                 )
 
