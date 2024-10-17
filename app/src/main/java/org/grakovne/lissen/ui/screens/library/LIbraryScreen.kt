@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
@@ -45,6 +47,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -56,10 +59,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.screens.library.composables.LibraryComposable
+import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
@@ -93,6 +99,18 @@ fun LibraryScreen(
 
     LaunchedEffect(Unit) {
         viewModel.refreshContent()
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo }
+            .map { layoutInfo ->
+                val libraryItem = layoutInfo.visibleItemsInfo.find { it.key == "library_list" }
+
+            }
+            .collect {
+                // Выполняем действие при достижении конца списка
+                println("hehey!")
+            }
     }
 
     val imageLoader = remember {
@@ -231,8 +249,7 @@ fun LibraryScreen(
                     state = listState,
                     modifier = Modifier
                         .fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
 
                     item(key = "recent_books") {
@@ -246,6 +263,8 @@ fun LibraryScreen(
                             )
                         }
                     }
+
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
 
                     item(key = "library_title") {
                         AnimatedContent(
@@ -277,14 +296,23 @@ fun LibraryScreen(
                         }
                     }
 
-                    item(key = "library_list") {
-                        if (books.isEmpty()) {
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
+
+                    if (books.isEmpty()) {
+                        item {
                             LibraryPlaceholderComposable()
-                        } else {
-                            LibraryComposable(
-                                viewModel = viewModel,
-                                imageLoader = imageLoader,
-                                navController = navController
+                        }
+                    } else {
+                        items(books) { book ->
+                            LibraryItemComposable(
+                                book = book,
+                                imageLoader = EntryPointAccessors
+                                    .fromApplication(
+                                        LocalContext.current,
+                                        ImageLoaderEntryPoint::class.java
+                                    )
+                                    .getImageLoader(),
+                                navController = navController,
                             )
                         }
                     }

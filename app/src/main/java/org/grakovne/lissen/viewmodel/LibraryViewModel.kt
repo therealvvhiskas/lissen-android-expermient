@@ -87,6 +87,6 @@ class LibraryViewModel @Inject constructor(
     }
 
     companion object {
-        private val PAGE_SIZE = 1
+        private val PAGE_SIZE = 10
     }
 }
