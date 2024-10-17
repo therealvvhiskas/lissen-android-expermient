@@ -251,7 +251,10 @@ fun LibraryScreen(
                         AnimatedContent(
                             targetState = navBarTitle,
                             transitionSpec = {
-                                fadeIn(animationSpec = tween(300)) togetherWith fadeOut(
+                                fadeIn(
+                                    animationSpec =
+                                    tween(300)
+                                ) togetherWith fadeOut(
                                     animationSpec = tween(
                                         300
                                     )
@@ -279,7 +282,7 @@ fun LibraryScreen(
                             LibraryPlaceholderComposable()
                         } else {
                             LibraryComposable(
-                                books = books,
+                                viewModel = viewModel,
                                 imageLoader = imageLoader,
                                 navController = navController
                             )
