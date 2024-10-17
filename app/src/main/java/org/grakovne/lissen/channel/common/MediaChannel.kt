@@ -22,7 +22,7 @@ interface MediaChannel {
     ): Uri
 
     fun provideBookCover(
-        libraryItemId: String
+        bookId: String
     ): Uri
 
     suspend fun syncProgress(
@@ -31,7 +31,7 @@ interface MediaChannel {
     ): ApiResult<Unit>
 
     suspend fun fetchBookCover(
-        itemId: String
+        bookId: String
     ): ApiResult<InputStream>
 
     suspend fun fetchBooks(
@@ -50,7 +50,7 @@ interface MediaChannel {
 
     suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>>
 
-    suspend fun fetchBook(itemId: String): ApiResult<DetailedBook>
+    suspend fun fetchBook(bookId: String): ApiResult<DetailedBook>
 
     suspend fun authorize(
         host: String,
