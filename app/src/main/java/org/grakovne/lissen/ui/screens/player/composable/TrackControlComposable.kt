@@ -55,16 +55,9 @@ fun TrackControlComposable(
     var sliderPosition by remember { mutableDoubleStateOf(0.0) }
     var isDragging by remember { mutableStateOf(false) }
 
-    LaunchedEffect(currentTrackPosition, currentTrackIndex, currentTrackDuration) {
-        if (!playbackReady) {
-            return@LaunchedEffect
-        }
-
-        when (isDragging) {
-            true -> {}
-            false -> {
-                sliderPosition = currentTrackPosition
-            }
+    LaunchedEffect(playbackReady, isDragging, currentTrackPosition) {
+        if (playbackReady && !isDragging) {
+            sliderPosition = currentTrackPosition
         }
     }
 
