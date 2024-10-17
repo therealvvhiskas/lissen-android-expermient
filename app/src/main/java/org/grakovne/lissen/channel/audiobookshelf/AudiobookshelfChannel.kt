@@ -59,12 +59,12 @@ class AudiobookshelfChannel @Inject constructor(
         .build()
 
     override fun provideBookCover(
-        libraryItemId: String
+        bookId: String
     ): Uri = Uri.parse(preferences.getHost())
         .buildUpon()
         .appendPath("api")
         .appendPath("items")
-        .appendPath(libraryItemId)
+        .appendPath(bookId)
         .appendPath("cover")
         .appendQueryParameter("token", preferences.getToken())
         .build()
@@ -123,13 +123,13 @@ class AudiobookshelfChannel @Inject constructor(
             .fetchPersonalizedFeed(libraryId)
             .map { recentBookResponseConverter.apply(it) }
 
-    override suspend fun fetchBook(itemId: String): ApiResult<DetailedBook> = coroutineScope {
-        val libraryItem = async { dataRepository.fetchLibraryItem(itemId) }
-        val itemProgress = async { dataRepository.fetchLibraryItemProgress(itemId) }
+    override suspend fun fetchBook(bookId: String): ApiResult<DetailedBook> = coroutineScope {
+        val book = async { dataRepository.fetchLibraryItem(bookId) }
+        val bookProgress = async { dataRepository.fetchLibraryItemProgress(bookId) }
 
-        libraryItem.await().foldAsync(
+        book.await().foldAsync(
             onSuccess = { item ->
-                itemProgress
+                bookProgress
                     .await()
                     .fold(
                         onSuccess = { Success(libraryItemIdResponseConverter.apply(item, it)) },

@@ -17,7 +17,7 @@ object MediaChannelModule {
     @OptIn(UnstableApi::class)
     @Provides
     @Singleton
-    fun provideMediaChannels(audiobookshelfChannel: AudiobookshelfChannel): List<@JvmSuppressWildcards MediaChannel> {
-        return listOf(audiobookshelfChannel)
+    fun provideMediaChannels(audiobookshelfChannel: AudiobookshelfChannel): Map<ChannelCode, @JvmSuppressWildcards AudiobookshelfChannel> {
+        return mapOf(audiobookshelfChannel.getChannelCode() to audiobookshelfChannel)
     }
 }

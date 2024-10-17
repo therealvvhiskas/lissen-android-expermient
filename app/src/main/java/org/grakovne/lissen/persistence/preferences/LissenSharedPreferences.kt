@@ -6,6 +6,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
+import org.grakovne.lissen.ChannelCode
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
 import java.util.UUID
@@ -22,6 +23,8 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
+    fun getPreferredChannel(): ChannelCode? = ChannelCode.AUDIOBOOKSHELF
+
     fun hasCredentials(): Boolean {
         val host = getHost()
         val username = getUsername()
@@ -32,7 +35,6 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         } catch (ex: Exception) {
             false
         }
-
     }
 
     fun clearCredentials() {
