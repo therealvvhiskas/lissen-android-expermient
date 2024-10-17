@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import android.content.Context
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
@@ -34,6 +35,7 @@ fun PlayerNavBarComposable(
     onChaptersClick: () -> Unit
 ) {
 
+    val context = LocalContext.current
     val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
@@ -98,7 +100,7 @@ fun PlayerNavBarComposable(
                 },
                 label = {
                     Text(
-                        text = playbackSpeed.format(),
+                        text = playbackSpeed.format(context),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -135,9 +137,9 @@ fun PlayerNavBarComposable(
     }
 }
 
-private fun Float.format() = when (this) {
-    1f -> "Normal"
-    1.5f -> "Faster"
-    2f -> "Fast"
-    else -> "Custom"
+private fun Float.format(context: Context) = when (this) {
+    1f -> context.getString(R.string.playback_speed_normal)
+    1.5f -> context.getString(R.string.playback_speed_faster)
+    2f -> context.getString(R.string.playback_speed_fast)
+    else -> context.getString(R.string.playback_speed_custom)
 }

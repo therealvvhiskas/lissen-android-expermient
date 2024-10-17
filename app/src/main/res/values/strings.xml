@@ -28,4 +28,8 @@
     <string name="login_error_credentials_are_invalid">Credentials are invalid</string>
     <string name="login_error_host_url_shall_be_https_or_http">Host URL shall be https:// or http://</string>
     <string name="login_error_connection_error">Connection Error</string>
+    <string name="playback_speed_normal">Normal</string>
+    <string name="playback_speed_faster">Faster</string>
+    <string name="playback_speed_fast">Fast</string>
+    <string name="playback_speed_custom" translatable="false">Custom</string>
 </resources>
