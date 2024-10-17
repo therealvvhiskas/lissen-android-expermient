@@ -73,8 +73,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 
-    implementation ("androidx.paging:paging-runtime:3.1.1")
-    implementation ("androidx.paging:paging-compose:1.0.0-alpha16")
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
     implementation(libs.androidx.compose.material.icons.extended)
 

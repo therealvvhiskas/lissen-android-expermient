@@ -58,7 +58,7 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
+import androidx.paging.compose.itemKey
 import dagger.hilt.android.EntryPointAccessors
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -316,9 +316,9 @@ fun LibraryScreen(
                             LibraryPlaceholderComposable()
                         }
                     } else {
-                        items(library) { book ->
+                        items(count = library.itemCount) {
                             LibraryItemComposable(
-                                book = book ?: return@items,
+                                book = library[it] ?: return@items,
                                 imageLoader = imageLoader,
                                 navController = navController,
                             )
