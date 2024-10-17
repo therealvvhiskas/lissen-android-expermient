@@ -85,7 +85,7 @@ fun LibraryScreen(
 
     val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
     var navigationItemSelected by remember { mutableStateOf(false) }
-    val refreshing by viewModel.refreshing.observeAsState(false)
+    var refreshing by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -93,7 +93,7 @@ fun LibraryScreen(
         refreshing = refreshing,
         onRefresh = {
             coroutineScope.launch {
-                viewModel.libraryRefreshing()
+               refreshing = true
 
                 withMinimumTime(500) {
                     listOf(
@@ -102,7 +102,7 @@ fun LibraryScreen(
                     ).awaitAll()
                 }
 
-                viewModel.libraryRefreshed()
+                refreshing = false
             }
         }
     )

@@ -45,16 +45,6 @@ class LibraryViewModel @Inject constructor(
         ).flow.cachedIn(viewModelScope)
     }
 
-    private val _refreshing = MutableLiveData(false)
-    val refreshing: LiveData<Boolean> = _refreshing
-
-    fun libraryRefreshing() {
-        _refreshing.postValue(true)
-    }
-
-    fun libraryRefreshed() {
-        _refreshing.postValue(false)
-    }
 
     fun refreshContent() {
         viewModelScope.launch {
@@ -66,13 +56,12 @@ class LibraryViewModel @Inject constructor(
 
     fun fetchRecentListening() {
         viewModelScope.launch {
-            val response = dataProvider
+            dataProvider
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
-
-            response.fold(
-                onSuccess = { _recentBooks.postValue(it) },
-                onFailure = {}
-            )
+                .fold(
+                    onSuccess = { _recentBooks.postValue(it) },
+                    onFailure = {}
+                )
         }
     }
 
