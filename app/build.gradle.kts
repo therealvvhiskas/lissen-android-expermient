@@ -25,11 +25,9 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
         }
         debug {
             matchingFallbacks.add("release")
-            isMinifyEnabled = false
             isDebuggable = true
         }
     }
