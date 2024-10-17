@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MediaChannelProvider @Inject constructor(
+class LissenMediaChannel @Inject constructor(
     private val sharedPreferences: LissenSharedPreferences,
     private val channels: Map<ChannelCode, @JvmSuppressWildcards AudiobookshelfChannel>
 ) {

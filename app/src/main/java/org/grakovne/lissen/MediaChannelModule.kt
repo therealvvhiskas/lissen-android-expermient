@@ -7,7 +7,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
-import org.grakovne.lissen.channel.common.MediaChannel
 import javax.inject.Singleton
 
 @Module

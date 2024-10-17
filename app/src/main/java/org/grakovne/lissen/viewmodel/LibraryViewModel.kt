@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfChannel,
+    private val mediaChannel: LissenMediaChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
@@ -40,7 +40,7 @@ class LibraryViewModel @Inject constructor(
                 initialLoadSize = PAGE_SIZE,
                 prefetchDistance = PAGE_SIZE
             ),
-            pagingSourceFactory = { LibraryPagingSource(dataProvider, libraryId) }
+            pagingSourceFactory = { LibraryPagingSource(mediaChannel, libraryId) }
         ).flow.cachedIn(viewModelScope)
     }
 
@@ -57,7 +57,7 @@ class LibraryViewModel @Inject constructor(
         _recentBookUpdating.postValue(true)
 
         viewModelScope.launch {
-            dataProvider
+            mediaChannel
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
                 .fold(
                     onSuccess = {

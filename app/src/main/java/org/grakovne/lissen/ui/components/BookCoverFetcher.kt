@@ -17,18 +17,18 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.channel.common.ApiResult
 import javax.inject.Singleton
 
 class BookCoverFetcher(
-    private val dataProvider: AudiobookshelfChannel,
+    private val mediaChannel: LissenMediaChannel,
     private val uri: Uri,
     private val context: Context
 ) : Fetcher {
 
     override suspend fun fetch(): FetchResult? =
-        when (val response = dataProvider.fetchBookCover(uri.toString())) {
+        when (val response = mediaChannel.fetchBookCover(uri.toString())) {
             is ApiResult.Error -> null
             is ApiResult.Success -> {
                 val stream = response.data
@@ -45,7 +45,7 @@ class BookCoverFetcher(
 }
 
 class BookCoverFetcherFactory(
-    private val dataProvider: AudiobookshelfChannel,
+    private val dataProvider: LissenMediaChannel,
     private val context: Context
 ) : Fetcher.Factory<Uri> {
 
@@ -60,9 +60,9 @@ object ImageLoaderModule {
     @Singleton
     @Provides
     fun provideBookCoverFetcherFactory(
-        dataProvider: AudiobookshelfChannel,
+        mediaChannel: LissenMediaChannel,
         @ApplicationContext context: Context
-    ): BookCoverFetcherFactory = BookCoverFetcherFactory(dataProvider, context)
+    ): BookCoverFetcherFactory = BookCoverFetcherFactory(mediaChannel, context)
 
     @Singleton
     @Provides

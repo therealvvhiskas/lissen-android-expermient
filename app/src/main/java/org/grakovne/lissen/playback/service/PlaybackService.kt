@@ -17,8 +17,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.MediaChannelProvider
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
@@ -35,7 +34,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var mediaSession: MediaSession
 
     @Inject
-    lateinit var dataProvider: AudiobookshelfChannel
+    lateinit var mediaChannel: LissenMediaChannel
 
     @Inject
     lateinit var playbackSynchronizationService: PlaybackSynchronizationService
@@ -44,7 +43,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var sharedPreferences: LissenSharedPreferences
 
     @Inject
-    lateinit var channelProvider: MediaChannelProvider
+    lateinit var channelProvider: LissenMediaChannel
 
     private val playerServiceScope = MainScope()
 
@@ -121,13 +120,13 @@ class AudioPlayerService : MediaSessionService() {
                     .map { file ->
                         MediaItem.Builder()
                             .setMediaId(file.id)
-                            .setUri(dataProvider.provideFileUri(book.id, file.id))
+                            .setUri(mediaChannel.provideFileUri(book.id, file.id))
                             .setTag(book)
                             .setMediaMetadata(
                                 MediaMetadata.Builder()
                                     .setTitle(file.name)
                                     .setArtist(book.title)
-                                    .setArtworkUri(dataProvider.provideBookCover(book.id))
+                                    .setArtworkUri(mediaChannel.provideBookCover(book.id))
                                     .build()
                             )
                             .build()

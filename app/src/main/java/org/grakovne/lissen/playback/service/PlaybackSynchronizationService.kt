@@ -9,7 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 class PlaybackSynchronizationService @OptIn(UnstableApi::class)
 @Inject constructor(
     private val exoPlayer: ExoPlayer,
-    private val channel: AudiobookshelfChannel,
+    private val mediaChannel: LissenMediaChannel,
     private val sharedPreferences: LissenSharedPreferences
 ) {
     private var currentBook: DetailedBook? = null
@@ -72,7 +72,7 @@ class PlaybackSynchronizationService @OptIn(UnstableApi::class)
     private suspend fun synchronizeProgress(
         it: PlaybackSession,
         overallProgress: PlaybackProgress
-    ) = channel
+    ) = mediaChannel
         .syncProgress(
             itemId = it.sessionId,
             progress = overallProgress
@@ -85,7 +85,7 @@ class PlaybackSynchronizationService @OptIn(UnstableApi::class)
     private suspend fun openPlaybackSession() =
         currentBook
             ?.let { book ->
-                channel
+                mediaChannel
                     .startPlayback(
                         itemId = book.id,
                         deviceId = sharedPreferences.getDeviceId(),

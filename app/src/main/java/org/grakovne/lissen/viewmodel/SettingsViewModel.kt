@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfChannel,
+    private val mediaChannel: LissenMediaChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
@@ -46,7 +46,7 @@ class SettingsViewModel @Inject constructor(
 
     fun fetchLibraries() {
         viewModelScope.launch {
-            when (val response = dataProvider.fetchLibraries()) {
+            when (val response = mediaChannel.fetchLibraries()) {
                 is ApiResult.Success -> {
                     val libraries = response.data
                     _libraries.value = libraries

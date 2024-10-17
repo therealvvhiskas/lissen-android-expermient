@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.channel.LissenMediaChannel
 import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError
 import org.grakovne.lissen.channel.common.FetchTokenApiError.InvalidCredentialsHost
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val dataProvider: AudiobookshelfChannel,
+    private val mediaChannel: LissenMediaChannel,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
@@ -78,7 +78,7 @@ class LoginViewModel @Inject constructor(
                 return@launch
             }
 
-            val response = dataProvider.authorize(host, username, password)
+            val response = mediaChannel.authorize(host, username, password)
 
             val result = response
                 .foldAsync(
@@ -112,7 +112,7 @@ class LoginViewModel @Inject constructor(
             token = account.token
         )
 
-        dataProvider
+        mediaChannel
             .fetchLibraries()
             .fold(
                 onSuccess = {
