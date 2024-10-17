@@ -19,8 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,11 +36,9 @@ import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
-import org.grakovne.lissen.viewmodel.LibraryViewModel
-
 
 @Composable
-fun LibraryItemComposable(
+fun BookComposable(
     book: Book,
     imageLoader: ImageLoader,
     navController: NavController

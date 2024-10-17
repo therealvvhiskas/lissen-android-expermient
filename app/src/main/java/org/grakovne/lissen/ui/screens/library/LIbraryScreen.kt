@@ -67,7 +67,7 @@ import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.extensions.withMinimumTime
-import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
+import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
@@ -319,7 +319,7 @@ fun LibraryScreen(
                         }
                     } else {
                         items(count = library.itemCount) {
-                            LibraryItemComposable(
+                            BookComposable(
                                 book = library[it] ?: return@items,
                                 imageLoader = imageLoader,
                                 navController = navController,

@@ -49,7 +49,6 @@ fun RecentBooksComposable(
     val totalSpacing = spacing * (itemsVisible + 1)
     val itemWidth = (screenWidth - totalSpacing) / itemsVisible
 
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -122,7 +121,11 @@ fun RecentBookItemComposable(
             )
             Text(
                 text = book.author,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onBackground.copy(
+                        alpha = 0.6f
+                    )
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
