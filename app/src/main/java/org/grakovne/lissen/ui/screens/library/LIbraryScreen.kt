@@ -88,13 +88,15 @@ fun LibraryScreen(
     var navigationItemSelected by remember { mutableStateOf(false) }
     var refreshing by remember { mutableStateOf(false) }
 
+    val isContentLoading by remember { derivedStateOf { refreshing || library.loadState.refresh is LoadState.Loading } }
+
     val coroutineScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
         onRefresh = {
             coroutineScope.launch {
-               refreshing = true
+                refreshing = true
 
                 withMinimumTime(500) {
                     listOf(
@@ -259,7 +261,7 @@ fun LibraryScreen(
                 ) {
 
                     item(key = "recent_books") {
-                        if (recentBooks.isEmpty()) {
+                        if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
                             RecentBooksComposable(
@@ -304,7 +306,7 @@ fun LibraryScreen(
 
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
-                    if (library.loadState.refresh is LoadState.Loading) {
+                    if (isContentLoading) {
                         item {
                             LibraryPlaceholderComposable()
                         }
