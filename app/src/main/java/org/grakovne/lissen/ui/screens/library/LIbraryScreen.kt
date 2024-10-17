@@ -311,7 +311,7 @@ fun LibraryScreen(
                         }
                     }
 
-                    item { Spacer(modifier = Modifier.height(10.dp)) }
+                    item { Spacer(modifier = Modifier.height(8.dp)) }
 
                     if (isContentLoading) {
                         item {
