@@ -74,9 +74,15 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
 
     suspend fun fetchBooks(
-        libraryId: String
+        libraryId: String,
+        pageSize: Int,
+        pageNumber: Int
     ): ApiResult<List<Book>> = dataRepository
-        .fetchLibraryItems(libraryId)
+        .fetchLibraryItems(
+            libraryId = libraryId,
+            pageSize = pageSize,
+            pageNumber = pageNumber
+        )
         .map { libraryItemResponseConverter.apply(it) }
 
     suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository

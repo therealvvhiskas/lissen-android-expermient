@@ -33,6 +33,8 @@ class LibraryViewModel @Inject constructor(
     private val _refreshing = MutableLiveData(false)
     val refreshing: LiveData<Boolean> = _refreshing
 
+    private val _currentPage = MutableLiveData(0)
+
     fun onPullRefreshed() {
         _refreshing.postValue(true)
 
@@ -73,12 +75,18 @@ class LibraryViewModel @Inject constructor(
         val response =
             dataProvider
                 .fetchBooks(
-                    preferences.getPreferredLibrary()?.id ?: return@launch
+                    libraryId = preferences.getPreferredLibrary()?.id ?: return@launch,
+                    pageNumber = _currentPage.value ?: 0,
+                    pageSize = PAGE_SIZE
                 )
 
         response.fold(
-            onSuccess = { _books.postValue(it)},
+            onSuccess = { _books.postValue(it) },
             onFailure = {}
         )
+    }
+
+    companion object {
+        private val PAGE_SIZE = 1
     }
 }
