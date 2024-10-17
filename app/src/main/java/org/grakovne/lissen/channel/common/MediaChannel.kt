@@ -1,6 +1,7 @@
 package org.grakovne.lissen.channel.common
 
 import android.net.Uri
+import org.grakovne.lissen.ChannelCode
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
@@ -12,6 +13,8 @@ import org.grakovne.lissen.domain.UserAccount
 import java.io.InputStream
 
 interface MediaChannel {
+
+    fun getChannelCode(): ChannelCode
 
     fun provideFileUri(
         libraryItemId: String,
@@ -55,6 +58,4 @@ interface MediaChannel {
         password: String
     ): ApiResult<UserAccount>
 
-
-    fun getClientName(): String
 }

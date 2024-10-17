@@ -3,6 +3,7 @@ package org.grakovne.lissen.channel.audiobookshelf
 import android.net.Uri
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import org.grakovne.lissen.ChannelCode
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
@@ -41,6 +42,8 @@ class AudiobookshelfChannel @Inject constructor(
     private val preferences: LissenSharedPreferences,
     private val syncService: AudioBookshelfSyncService
 ) : MediaChannel {
+
+    override fun getChannelCode() = ChannelCode.AUDIOBOOKSHELF
 
     override fun provideFileUri(
         libraryItemId: String,
@@ -144,5 +147,5 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
 
-    override fun getClientName() = "Lissen App Android"
+    private fun getClientName() = "Lissen App Android"
 }
