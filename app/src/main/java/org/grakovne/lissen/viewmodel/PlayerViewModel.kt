@@ -80,7 +80,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 mediaRepository.mediaPreparing()
-                dataProvider.getLibraryItem(bookId)
+                dataProvider.fetchBook(bookId)
             }
 
             result.foldAsync(

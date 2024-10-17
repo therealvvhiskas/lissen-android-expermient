@@ -60,7 +60,7 @@ class LibraryViewModel @Inject constructor(
     private fun fetchRecentListening() {
         viewModelScope.launch {
             val response = dataProvider
-                .getRecentItems(preferences.getPreferredLibrary()?.id ?: return@launch)
+                .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
 
             response.fold(
                 onSuccess = { _recentBooks.value = it },
@@ -72,7 +72,7 @@ class LibraryViewModel @Inject constructor(
     private fun fetchLibrary(): Job = viewModelScope.launch {
         val response =
             dataProvider
-                .fetchLibraryItems(
+                .fetchBooks(
                     preferences.getPreferredLibrary()?.id ?: return@launch
                 )
 

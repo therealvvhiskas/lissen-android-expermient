@@ -69,7 +69,7 @@ class AudiobookshelfChannel @Inject constructor(
         itemId: String
     ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
 
-    suspend fun fetchLibraryItems(
+    suspend fun fetchBooks(
         libraryId: String
     ): ApiResult<List<Book>> = dataRepository
         .fetchLibraryItems(libraryId)
@@ -103,16 +103,16 @@ class AudiobookshelfChannel @Inject constructor(
             .map { sessionResponseConverter.apply(it) }
     }
 
-    suspend fun getRecentItems(libraryId: String): ApiResult<List<RecentBook>> =
+    suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>> =
         dataRepository
-            .getPersonalizedFeed(libraryId)
+            .fetchPersonalizedFeed(libraryId)
             .map { recentBookResponseConverter.apply(it) }
 
-    suspend fun getLibraryItem(itemId: String) = dataRepository
-        .getLibraryItem(itemId)
+    suspend fun fetchBook(itemId: String) = dataRepository
+        .fetchLibraryItem(itemId)
         .map { item ->
             dataRepository
-                .getItemIdProgress(item.id)
+                .fetchLibraryItemProgress(item.id)
                 .fold(
                     onSuccess = { libraryItemIdResponseConverter.apply(item, it) },
                     onFailure = { libraryItemIdResponseConverter.apply(item, null) }

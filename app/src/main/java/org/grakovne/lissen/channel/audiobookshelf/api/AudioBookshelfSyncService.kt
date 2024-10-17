@@ -31,7 +31,7 @@ class AudioBookshelfSyncService @Inject constructor(
         )
 
         return dataRepository
-            .syncProgress(itemId, request)
+            .publishLibraryItemProgress(itemId, request)
             .also {
                 previousTrackedTime = progress.currentTime
                 previousItemId = itemId

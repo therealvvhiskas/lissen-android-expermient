@@ -31,11 +31,22 @@ class AudioBookshelfDataRepository @Inject constructor(
     @Volatile
     private var secureClient: AudiobookshelfApiClient? = null
 
+    suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
+        safeApiCall { getClientInstance().fetchLibraries() }
+
     suspend fun fetchLibraryItems(
         libraryId: String
-    ): ApiResult<LibraryItemsResponse> {
-        return safeApiCall { getClientInstance().getLibraryItems(libraryId) }
-    }
+    ): ApiResult<LibraryItemsResponse> =
+        safeApiCall { getClientInstance().fetchLibraryItems(libraryId) }
+
+    suspend fun fetchLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
+        safeApiCall { getClientInstance().fetchLibraryItem(itemId) }
+
+    suspend fun fetchPersonalizedFeed(libraryId: String): ApiResult<List<PersonalizedFeedResponse>> =
+        safeApiCall { getClientInstance().fetchPersonalizedFeed(libraryId) }
+
+    suspend fun fetchLibraryItemProgress(itemId: String): ApiResult<MediaProgressResponse> =
+        safeApiCall { getClientInstance().fetchLibraryItemProgress(itemId) }
 
     suspend fun startPlayback(
         itemId: String,
@@ -46,26 +57,12 @@ class AudioBookshelfDataRepository @Inject constructor(
     suspend fun stopPlayback(sessionId: String): ApiResult<Unit> =
         safeApiCall { getClientInstance().stopPlayback(sessionId) }
 
-    suspend fun syncProgress(
+    suspend fun publishLibraryItemProgress(
         itemId: String,
         progress: SyncProgressRequest
     ): ApiResult<Unit> =
-        safeApiCall { getClientInstance().syncProgress(itemId, progress) }
+        safeApiCall { getClientInstance().publishLibraryItemProgress(itemId, progress) }
 
-    suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
-        safeApiCall { getClientInstance().getLibraries() }
-
-    suspend fun getPersonalizedFeed(libraryId: String): ApiResult<List<PersonalizedFeedResponse>> =
-        safeApiCall { getClientInstance().getRecentItems(libraryId) }
-
-
-    suspend fun getItemIdProgress(itemId: String): ApiResult<MediaProgressResponse> =
-        safeApiCall {
-            getClientInstance().getLibraryItemProgress(itemId)
-        }
-
-    suspend fun getLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
-        safeApiCall { getClientInstance().getLibraryItem(itemId) }
 
     suspend fun authorize(
         host: String,
