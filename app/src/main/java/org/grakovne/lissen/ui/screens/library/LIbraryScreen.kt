@@ -58,23 +58,23 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
+import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.screens.library.composables.LibraryItemComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
+import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
-import androidx.paging.compose.items
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
-import org.grakovne.lissen.ui.extensions.withMinimumTime
-import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -85,18 +85,26 @@ fun LibraryScreen(
 ) {
 
     val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
-    var navigationItemSelected by remember { mutableStateOf(false) }
-    var refreshing by remember { mutableStateOf(false) }
+    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
-    val isContentLoading by remember { derivedStateOf { refreshing || library.loadState.refresh is LoadState.Loading } }
+    var pullRefreshing by remember { mutableStateOf(false) }
+    val isContentLoading by remember {
+        derivedStateOf {
+            pullRefreshing
+                    || recentBooks.isEmpty()
+                    || library.loadState.refresh is LoadState.Loading
+        }
+    }
+
+    var navigationItemSelected by remember { mutableStateOf(false) }
+
     val coroutineScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = refreshing,
+        refreshing = pullRefreshing,
         onRefresh = {
             coroutineScope.launch {
-                refreshing = true
-
+                pullRefreshing = true
                 withMinimumTime(500) {
                     listOf(
                         async { library.refresh() },
@@ -104,7 +112,7 @@ fun LibraryScreen(
                     ).awaitAll()
                 }
 
-                refreshing = false
+                pullRefreshing = false
             }
         }
     )
@@ -113,8 +121,6 @@ fun LibraryScreen(
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
     val listState = rememberLazyListState()
-
-    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
@@ -260,7 +266,7 @@ fun LibraryScreen(
                 ) {
 
                     item(key = "recent_books") {
-                        if (recentBooks.isEmpty()) {
+                        if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
                             RecentBooksComposable(
@@ -321,7 +327,7 @@ fun LibraryScreen(
                 }
 
                 PullRefreshIndicator(
-                    refreshing = refreshing,
+                    refreshing = pullRefreshing,
                     state = pullRefreshState,
                     modifier = Modifier.align(Alignment.TopCenter)
                 )

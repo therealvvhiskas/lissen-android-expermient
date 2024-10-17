@@ -55,6 +55,8 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun fetchRecentListening() {
+        _recentBooks.postValue(emptyList())
+
         viewModelScope.launch {
             dataProvider
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
