@@ -15,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface AudiobookshelfApiClient {
 
@@ -31,9 +32,11 @@ interface AudiobookshelfApiClient {
         @Path("itemId") itemId: String
     ): Response<MediaProgressResponse>
 
-    @GET("api/libraries/{libraryId}/items?sort=media.metadata.title&limit=12&page=0&minified=1")
+    @GET("api/libraries/{libraryId}/items?sort=media.metadata.title&minified=1")
     suspend fun fetchLibraryItems(
-        @Path("libraryId") libraryId: String
+        @Path("libraryId") libraryId: String,
+        @Query("limit") pageSize: Int,
+        @Query("page") pageNumber: Int,
     ): Response<LibraryItemsResponse>
 
     @GET("/api/items/{itemId}")

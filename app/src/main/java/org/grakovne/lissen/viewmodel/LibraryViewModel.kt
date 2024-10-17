@@ -34,7 +34,7 @@ class LibraryViewModel @Inject constructor(
     val refreshing: LiveData<Boolean> = _refreshing
 
     fun onPullRefreshed() {
-        _refreshing.value = true
+        _refreshing.postValue(true)
 
         viewModelScope.launch {
             withMinimumTime(500) {
@@ -43,7 +43,7 @@ class LibraryViewModel @Inject constructor(
                     async { fetchLibrary() }
                 ).awaitAll()
             }
-            _refreshing.value = false
+            _refreshing.postValue(false)
         }
     }
 
@@ -63,7 +63,7 @@ class LibraryViewModel @Inject constructor(
                 .fetchRecentListenedBooks(preferences.getPreferredLibrary()?.id ?: return@launch)
 
             response.fold(
-                onSuccess = { _recentBooks.value = it },
+                onSuccess = { _recentBooks.postValue(it) },
                 onFailure = {}
             )
         }
@@ -77,7 +77,7 @@ class LibraryViewModel @Inject constructor(
                 )
 
         response.fold(
-            onSuccess = { _books.value = it },
+            onSuccess = { _books.postValue(it)},
             onFailure = {}
         )
     }

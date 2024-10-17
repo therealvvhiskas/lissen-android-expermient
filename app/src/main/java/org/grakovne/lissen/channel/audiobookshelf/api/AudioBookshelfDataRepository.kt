@@ -37,7 +37,7 @@ class AudioBookshelfDataRepository @Inject constructor(
     suspend fun fetchLibraryItems(
         libraryId: String
     ): ApiResult<LibraryItemsResponse> =
-        safeApiCall { getClientInstance().fetchLibraryItems(libraryId) }
+        safeApiCall { getClientInstance().fetchLibraryItems(libraryId, 100, 0) }
 
     suspend fun fetchLibraryItem(itemId: String): ApiResult<LibraryItemIdResponse> =
         safeApiCall { getClientInstance().fetchLibraryItem(itemId) }
