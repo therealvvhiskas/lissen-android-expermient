@@ -50,7 +50,8 @@ data class BookEntity(
     indices = [Index(value = ["bookId"])]
 )
 data class BookFileEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    val bookFileId: String,
     val name: String,
     val duration: Double,
     val mimeType: String,
@@ -68,7 +69,8 @@ data class BookFileEntity(
     indices = [Index(value = ["bookId"])]
 )
 data class BookChapterEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+    val bookChapterId: String,
     val duration: Double,
     val start: Double,
     val end: Double,
@@ -87,8 +89,7 @@ data class BookChapterEntity(
     indices = [Index(value = ["bookId"])]
 )
 data class MediaProgressEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
-    val bookId: String,
+    @PrimaryKey val bookId: String,
     val currentTime: Double,
     val isFinished: Boolean,
     val lastUpdate: Long

@@ -3,7 +3,6 @@ package org.grakovne.lissen.content.cache.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -30,7 +29,7 @@ interface CachedBookDao {
             .files
             .map { file ->
                 BookFileEntity(
-                    id = file.id,
+                    bookFileId = file.id,
                     name = file.name,
                     duration = file.duration,
                     mimeType = file.mimeType,
@@ -42,7 +41,7 @@ interface CachedBookDao {
             .chapters
             .map { chapter ->
                 BookChapterEntity(
-                    id = chapter.id,
+                    bookChapterId = chapter.id,
                     duration = chapter.duration,
                     start = chapter.start,
                     end = chapter.end,

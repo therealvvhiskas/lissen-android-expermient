@@ -1,8 +1,6 @@
 package org.grakovne.lissen.content.cache.converter
 
 import org.grakovne.lissen.content.cache.entity.CachedBookEntity
-import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
@@ -19,7 +17,7 @@ class CachedBookEntityDetailedConverter @Inject constructor() {
         author = entity.detailedBook.author,
         files = entity.files.map { fileEntity ->
             BookFile(
-                id = fileEntity.id,
+                id = fileEntity.bookFileId,
                 name = fileEntity.name,
                 duration = fileEntity.duration,
                 mimeType = fileEntity.mimeType
@@ -31,7 +29,7 @@ class CachedBookEntityDetailedConverter @Inject constructor() {
                 start = chapterEntity.start,
                 end = chapterEntity.end,
                 title = chapterEntity.title,
-                id = chapterEntity.id
+                id = chapterEntity.bookChapterId
             )
         },
         progress = entity.progress?.let { progressEntity ->
