@@ -5,5 +5,11 @@ data class Book(
     val title: String,
     val author: String,
     val duration: Int,
-    val downloaded: Boolean
+    val cachedState: BookCachedState
 )
+
+enum class BookCachedState {
+    ABLE_TO_CACHE,
+    CACHED,
+    NOT_ABLE_TO_CACHE
+}

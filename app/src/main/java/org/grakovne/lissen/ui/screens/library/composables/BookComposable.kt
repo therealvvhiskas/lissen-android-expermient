@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.SdCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,6 +35,7 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
 
@@ -105,8 +107,12 @@ fun BookComposable(
             verticalArrangement = Arrangement.Center
         ) {
             Icon(
-                imageVector = if (book.downloaded) Icons.Outlined.CloudDownload else Icons.Outlined.Cloud,
-                contentDescription = if (book.downloaded) "Downloaded" else "Not Downloaded",
+                imageVector = when (book.cachedState) {
+                    BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.CloudDownload
+                    BookCachedState.CACHED -> Icons.Outlined.Cloud
+                    BookCachedState.NOT_ABLE_TO_CACHE -> Icons.Outlined.SdCard
+                },
+                contentDescription = "change cache state",
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
