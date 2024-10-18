@@ -12,7 +12,7 @@ class BookCachingService @Inject constructor() {
         emit(CacheProgress.Started(0))
         kotlinx.coroutines.delay(500)
 
-        (1..100).forEach {
+        (1..10).forEach {
             emit(CacheProgress.Started(it))
             kotlinx.coroutines.delay(100)
         }

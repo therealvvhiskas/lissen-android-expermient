@@ -17,7 +17,7 @@ class LibraryItemResponseConverter @Inject constructor() {
                 id = it.id,
                 title = it.media.metadata.title,
                 author = it.media.metadata.authorName,
-                cachedState = BookCachedState.CACHED,
+                cachedState = BookCachedState.ABLE_TO_CACHE,
                 duration = it.media.duration.toInt()
             )
         }

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.SdCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -115,11 +117,14 @@ fun BookComposable(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = provideCachingStateIcon(book, cacheProgress),
-                contentDescription = "Caching Book State",
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            IconButton(
+                onClick = { cachingModelView.toggleBookLocalCache(book) }
+            ) {
+                Icon(
+                    imageVector = provideCachingStateIcon(book, cacheProgress),
+                    contentDescription = "Caching Book State"
+                )
+            }
             Text(
                 text = book.duration.formatShortly(),
                 style = MaterialTheme.typography.bodySmall
@@ -142,8 +147,8 @@ private fun provideCachingStateIcon(
 
 private fun provideIdleStateIcon(book: Book): ImageVector {
     return when (book.cachedState) {
-        BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.CloudDownload
-        BookCachedState.CACHED -> Icons.Outlined.Cloud
+        BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.Cloud
+        BookCachedState.CACHED -> Icons.Outlined.CloudDownload
         BookCachedState.STORED_LOCALLY -> Icons.Outlined.SdCard
     }
 }
