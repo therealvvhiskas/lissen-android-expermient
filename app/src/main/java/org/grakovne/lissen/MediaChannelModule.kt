@@ -6,9 +6,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import org.grakovne.lissen.channel.ChannelCode
-import org.grakovne.lissen.channel.common.MediaChannel
-import org.grakovne.lissen.channel.sources.audiobookshelf.AudiobookshelfChannel
+import org.grakovne.lissen.content.channel.common.ChannelCode
+import org.grakovne.lissen.content.channel.common.MediaChannel
+import org.grakovne.lissen.channel.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.content.cache.LocalCacheChannel
 import javax.inject.Singleton
 

@@ -1,9 +1,9 @@
 package org.grakovne.lissen.content
 
 import android.net.Uri
-import org.grakovne.lissen.channel.ChannelCode
-import org.grakovne.lissen.channel.common.ApiResult
-import org.grakovne.lissen.channel.common.MediaChannel
+import org.grakovne.lissen.content.channel.common.ChannelCode
+import org.grakovne.lissen.content.channel.common.ApiResult
+import org.grakovne.lissen.content.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
