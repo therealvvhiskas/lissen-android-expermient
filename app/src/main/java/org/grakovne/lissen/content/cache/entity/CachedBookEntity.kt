@@ -87,7 +87,7 @@ data class BookChapterEntity(
     indices = [Index(value = ["bookId"])]
 )
 data class MediaProgressEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     val bookId: String,
     val currentTime: Double,
     val isFinished: Boolean,

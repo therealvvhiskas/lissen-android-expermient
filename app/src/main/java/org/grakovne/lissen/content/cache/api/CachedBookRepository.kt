@@ -15,6 +15,10 @@ class CachedBookRepository @Inject constructor(
     private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter
 ) {
 
+    suspend fun cacheBook(book: DetailedBook) {
+        dao.upsertCachedBook(book)
+    }
+
     suspend fun fetchBooks(
         pageNumber: Int,
         pageSize: Int
