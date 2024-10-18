@@ -24,7 +24,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
     fun getPreferredChannel(): ChannelCode = when (isForceCache()) {
-        true -> ChannelCode.CACHE_FORCE
+        true -> ChannelCode.LOCAL_CACHE
         false -> ChannelCode.AUDIOBOOKSHELF // TODO: Implement selector once second channel got
     }
 

@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.sources.cache.entity
+package org.grakovne.lissen.cache.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

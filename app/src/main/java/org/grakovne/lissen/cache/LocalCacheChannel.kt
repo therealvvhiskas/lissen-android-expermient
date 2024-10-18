@@ -1,4 +1,4 @@
-package org.grakovne.lissen.channel.sources.cache
+package org.grakovne.lissen.cache
 
 import android.net.Uri
 import org.grakovne.lissen.channel.ChannelCode
@@ -18,8 +18,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ForceCacheChannel @Inject constructor() : MediaChannel {
-    override fun getChannelCode(): ChannelCode = ChannelCode.CACHE_FORCE
+class LocalCacheChannel @Inject constructor() : MediaChannel {
+    override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
     override fun provideFileUri(libraryItemId: String, chapterId: String): Uri = Uri.EMPTY
 
