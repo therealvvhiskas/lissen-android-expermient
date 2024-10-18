@@ -14,19 +14,19 @@ data class CachedBookEntity(
         parentColumn = "id",
         entityColumn = "bookId"
     )
-    val files: List<BookFile>,
+    val files: List<BookFileEntity>,
 
     @Relation(
         parentColumn = "id",
         entityColumn = "bookId"
     )
-    val chapters: List<BookChapter>,
+    val chapters: List<BookChapterEntity>,
 
     @Relation(
         parentColumn = "id",
         entityColumn = "bookId"
     )
-    val progress: MediaProgress?
+    val progress: MediaProgressEntity?
 )
 
 
@@ -47,7 +47,7 @@ data class BookEntity(
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class BookFile(
+data class BookFileEntity(
     @PrimaryKey val id: String,
     val name: String,
     val duration: Double,
@@ -64,7 +64,7 @@ data class BookFile(
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class BookChapter(
+data class BookChapterEntity(
     @PrimaryKey val id: String,
     val duration: Double,
     val start: Double,
@@ -82,7 +82,7 @@ data class BookChapter(
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class MediaProgress(
+data class MediaProgressEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
     val bookId: String,
     val currentTime: Double,
