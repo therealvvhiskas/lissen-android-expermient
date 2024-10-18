@@ -11,9 +11,13 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.cache.BookCachingService
+import org.grakovne.lissen.content.cache.CacheProgress
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -23,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val mediaChannel: LissenMediaChannel,
+    private val cachingService: BookCachingService,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
@@ -43,7 +48,6 @@ class LibraryViewModel @Inject constructor(
             pagingSourceFactory = { LibraryPagingSource(mediaChannel, libraryId) }
         ).flow.cachedIn(viewModelScope)
     }
-
 
     fun refreshRecentListening() {
         viewModelScope.launch {
