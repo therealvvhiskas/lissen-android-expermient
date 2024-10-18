@@ -34,7 +34,7 @@ class LibraryViewModel @Inject constructor(
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
-    private val _recentBookUpdating = MutableLiveData<Boolean>(false)
+    private val _recentBookUpdating = MutableLiveData(false)
     val recentBookUpdating: LiveData<Boolean> = _recentBookUpdating
 
     val libraryPager: Flow<PagingData<Book>> by lazy {

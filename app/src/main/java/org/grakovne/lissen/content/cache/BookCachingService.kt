@@ -2,7 +2,6 @@ package org.grakovne.lissen.content.cache
 
 import kotlinx.coroutines.flow.flow
 import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.domain.DetailedBook
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,11 +9,11 @@ import javax.inject.Singleton
 class BookCachingService @Inject constructor() {
 
     fun cacheBook(book: Book) = flow {
-        emit(CacheProgress.Started)
+        emit(CacheProgress.Started(0))
         kotlinx.coroutines.delay(500)
 
         (1..100).forEach {
-            emit(CacheProgress.Updated(it))
+            emit(CacheProgress.Started(it))
             kotlinx.coroutines.delay(100)
         }
 
@@ -24,8 +23,8 @@ class BookCachingService @Inject constructor() {
 }
 
 sealed class CacheProgress {
-    data object Started : CacheProgress()
-    data class Updated(val percent: Int) : CacheProgress()
+    data object Idle : CacheProgress()
+    data class Started(val percent: Int) : CacheProgress()
     data object Completed : CacheProgress()
     data object Error : CacheProgress()
 }

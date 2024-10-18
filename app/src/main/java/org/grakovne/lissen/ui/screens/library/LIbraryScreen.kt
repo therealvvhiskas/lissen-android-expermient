@@ -73,6 +73,7 @@ import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
+import org.grakovne.lissen.viewmodel.CachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -80,16 +81,17 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    viewModel: LibraryViewModel = hiltViewModel(),
+    libraryViewModel: LibraryViewModel = hiltViewModel(),
+    cachingModelView: CachingModelView = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
     val coroutineScope = rememberCoroutineScope()
 
-    val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
-    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
+    val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
+    val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
-    val recentBookRefreshing by viewModel.recentBookUpdating.observeAsState(false)
+    val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
 
     fun refreshContent(showRefreshing: Boolean) {
@@ -101,7 +103,7 @@ fun LibraryScreen(
             withMinimumTime(500) {
                 listOf(
                     async { library.refresh() },
-                    async { viewModel.fetchRecentListening() },
+                    async { libraryViewModel.fetchRecentListening() },
                 ).awaitAll()
             }
 
@@ -127,7 +129,6 @@ fun LibraryScreen(
         }
     )
 
-
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
@@ -136,7 +137,7 @@ fun LibraryScreen(
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { viewModel.refreshRecentListening() }
+    LaunchedEffect(Unit) { libraryViewModel.refreshRecentListening() }
 
     val imageLoader = remember {
         EntryPointAccessors
@@ -175,20 +176,20 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    imageVector = if (viewModel.isCacheForce()) Icons.Outlined.AirplanemodeInactive else Icons.Outlined.AirplanemodeActive,
+                                    imageVector = if (libraryViewModel.isCacheForce()) Icons.Outlined.AirplanemodeInactive else Icons.Outlined.AirplanemodeActive,
                                     contentDescription = null,
                                 )
                             },
                             text = {
                                 Text(
-                                    text = if (viewModel.isCacheForce()) "Disable Offline" else "Enable Offline",
+                                    text = if (libraryViewModel.isCacheForce()) "Disable Offline" else "Enable Offline",
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
                             },
                             onClick = {
                                 navigationItemSelected = false
-                                viewModel.toggleCacheForce()
+                                libraryViewModel.toggleCacheForce()
                                 refreshContent(showRefreshing = false)
                             },
                             modifier = Modifier
@@ -334,6 +335,7 @@ fun LibraryScreen(
                                 book = library[it] ?: return@items,
                                 imageLoader = imageLoader,
                                 navController = navController,
+                                cachingModelView = cachingModelView
                             )
                         }
                     }

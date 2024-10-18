@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.content.cache.BookCachingService
 import org.grakovne.lissen.content.cache.CacheProgress
@@ -13,7 +12,7 @@ import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
 @HiltViewModel
-class LibraryCachingModelView @Inject constructor(
+class CachingModelView @Inject constructor(
     private val cachingService: BookCachingService,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
@@ -27,14 +26,14 @@ class LibraryCachingModelView @Inject constructor(
             val cacheProgress = getCacheProgress(book.id)
             progressFlow
                 .collect { progress ->
-                    cacheProgress.value = progress
+                    _bookCachingProgress[book.id]?.value = progress
                 }
         }
     }
 
-    private fun getCacheProgress(bookId: String) = _bookCachingProgress
+    fun getCacheProgress(bookId: String) = _bookCachingProgress
         .getOrPut(bookId) {
-            MutableStateFlow(CacheProgress.Started)
+            MutableStateFlow(CacheProgress.Idle)
         }
 
 }
