@@ -45,7 +45,7 @@ class LibraryViewModel @Inject constructor(
     }
 
 
-    fun refreshContent() {
+    fun refreshRecentListening() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 launch(Dispatchers.IO) { fetchRecentListening() }
@@ -76,8 +76,6 @@ class LibraryViewModel @Inject constructor(
             true -> preferences.disableForceCache()
             false -> preferences.enableForceCache()
         }
-
-        refreshContent()
     }
 
     fun isCacheForce() = preferences.isForceCache()

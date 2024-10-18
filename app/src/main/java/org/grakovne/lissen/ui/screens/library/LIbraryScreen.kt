@@ -84,11 +84,30 @@ fun LibraryScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
 
+    val coroutineScope = rememberCoroutineScope()
+
     val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
     val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
 
     val recentBookRefreshing by viewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
+
+    fun refreshContent(showRefreshing: Boolean) {
+        coroutineScope.launch {
+            if (showRefreshing) {
+                pullRefreshing = true
+            }
+
+            withMinimumTime(500) {
+                listOf(
+                    async { library.refresh() },
+                    async { viewModel.fetchRecentListening() },
+                ).awaitAll()
+            }
+
+            pullRefreshing = false
+        }
+    }
 
     val isContentLoading by remember {
         derivedStateOf {
@@ -100,24 +119,14 @@ fun LibraryScreen(
 
     var navigationItemSelected by remember { mutableStateOf(false) }
 
-    val coroutineScope = rememberCoroutineScope()
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
         onRefresh = {
-            coroutineScope.launch {
-                pullRefreshing = true
-                withMinimumTime(500) {
-                    listOf(
-                        async { library.refresh() },
-                        async { viewModel.fetchRecentListening() },
-                    ).awaitAll()
-                }
-
-                pullRefreshing = false
-            }
+            refreshContent(showRefreshing = true)
         }
     )
+
 
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
@@ -127,7 +136,7 @@ fun LibraryScreen(
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { viewModel.refreshContent() }
+    LaunchedEffect(Unit) { viewModel.refreshRecentListening() }
 
     val imageLoader = remember {
         EntryPointAccessors
@@ -180,6 +189,7 @@ fun LibraryScreen(
                             onClick = {
                                 navigationItemSelected = false
                                 viewModel.toggleCacheForce()
+                                refreshContent(showRefreshing = false)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
