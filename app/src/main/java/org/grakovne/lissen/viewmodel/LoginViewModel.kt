@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.channel.LissenMediaChannel
-import org.grakovne.lissen.channel.common.FetchTokenApiError
-import org.grakovne.lissen.channel.common.FetchTokenApiError.InternalError
-import org.grakovne.lissen.channel.common.FetchTokenApiError.InvalidCredentialsHost
-import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsHost
-import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsPassword
-import org.grakovne.lissen.channel.common.FetchTokenApiError.MissingCredentialsUsername
-import org.grakovne.lissen.channel.common.FetchTokenApiError.Unauthorized
+import org.grakovne.lissen.channel.common.ApiError
+import org.grakovne.lissen.channel.common.ApiError.InternalError
+import org.grakovne.lissen.channel.common.ApiError.InvalidCredentialsHost
+import org.grakovne.lissen.channel.common.ApiError.MissingCredentialsHost
+import org.grakovne.lissen.channel.common.ApiError.MissingCredentialsPassword
+import org.grakovne.lissen.channel.common.ApiError.MissingCredentialsUsername
+import org.grakovne.lissen.channel.common.ApiError.Unauthorized
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.domain.error.LoginError
@@ -135,7 +135,7 @@ class LoginViewModel @Inject constructor(
         return LoginState.Success
     }
 
-    private fun onLoginFailure(error: FetchTokenApiError): LoginState.Error {
+    private fun onLoginFailure(error: ApiError): LoginState.Error {
         _loginError.value = when (error) {
             InternalError -> LoginError.InternalError
             MissingCredentialsHost -> LoginError.MissingCredentialsHost
@@ -143,7 +143,7 @@ class LoginViewModel @Inject constructor(
             MissingCredentialsUsername -> LoginError.MissingCredentialsUsername
             Unauthorized -> LoginError.Unauthorized
             InvalidCredentialsHost -> LoginError.InvalidCredentialsHost
-            FetchTokenApiError.NetworkError -> LoginError.NetworkError
+            ApiError.NetworkError -> LoginError.NetworkError
         }
 
         return LoginState.Error(error)
@@ -153,6 +153,6 @@ class LoginViewModel @Inject constructor(
         data object Idle : LoginState()
         data object Loading : LoginState()
         data object Success : LoginState()
-        data class Error(val message: FetchTokenApiError) : LoginState()
+        data class Error(val message: ApiError) : LoginState()
     }
 }

@@ -2,6 +2,7 @@ package org.grakovne.lissen.channel
 
 import android.net.Uri
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.MediaChannel
 import org.grakovne.lissen.channel.sources.audiobookshelf.AudiobookshelfChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
@@ -19,7 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class LissenMediaChannel @Inject constructor(
     private val sharedPreferences: LissenSharedPreferences,
-    private val channels: Map<ChannelCode, @JvmSuppressWildcards AudiobookshelfChannel>
+    private val channels: Map<ChannelCode, @JvmSuppressWildcards MediaChannel>
 ) {
 
     fun provideFileUri(
@@ -74,7 +75,7 @@ class LissenMediaChannel @Inject constructor(
     ): ApiResult<UserAccount> = providePreferredChannel()
         .authorize(host, username, password)
 
-    private fun providePreferredChannel(): AudiobookshelfChannel = sharedPreferences
+    private fun providePreferredChannel(): MediaChannel = sharedPreferences
         .getPreferredChannel()
         .let { channels[it] }
         ?: throw IllegalStateException("Selected Channel has been requested but not selected")

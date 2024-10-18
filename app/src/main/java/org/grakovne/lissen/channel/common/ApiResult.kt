@@ -2,7 +2,7 @@ package org.grakovne.lissen.channel.common
 
 sealed class ApiResult<T> {
     data class Success<T>(val data: T) : ApiResult<T>()
-    data class Error<T>(val code: FetchTokenApiError, val message: String? = null) : ApiResult<T>()
+    data class Error<T>(val code: ApiError, val message: String? = null) : ApiResult<T>()
 
     fun <R> fold(
         onSuccess: (T) -> R,
