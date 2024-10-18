@@ -107,7 +107,7 @@ fun RecentBookItemComposable(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp)),
-            error = painterResource(R.drawable.fallback_cover)
+            error = painterResource(R.drawable.cover_fallback)
         )
 
         Spacer(modifier = Modifier.height(8.dp))

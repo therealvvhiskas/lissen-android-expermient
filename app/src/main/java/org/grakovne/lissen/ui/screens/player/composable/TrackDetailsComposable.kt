@@ -67,7 +67,7 @@ fun TrackDetailsComposable(
                 .fillMaxWidth(0.7f)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(12.dp)),
-            error = painterResource(R.drawable.fallback_cover)
+            error = painterResource(R.drawable.cover_fallback)
         )
     }
 
