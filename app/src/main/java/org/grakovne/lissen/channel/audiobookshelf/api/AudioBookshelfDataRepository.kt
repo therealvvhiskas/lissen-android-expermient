@@ -59,8 +59,8 @@ class AudioBookshelfDataRepository @Inject constructor(
 
     suspend fun startPlayback(
         itemId: String,
-        request: org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
-    ): ApiResult<org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse> =
+        request: StartPlaybackRequest
+    ): ApiResult<PlaybackSessionResponse> =
         safeApiCall { getClientInstance().startPlayback(itemId, request) }
 
     suspend fun stopPlayback(sessionId: String): ApiResult<Unit> =

@@ -25,7 +25,6 @@ class LibraryItemResponseConverter @Inject constructor() {
             PagedItems(
                 items = it,
                 currentPage = response.page,
-                totalElements = response.total
             )
         }
 }

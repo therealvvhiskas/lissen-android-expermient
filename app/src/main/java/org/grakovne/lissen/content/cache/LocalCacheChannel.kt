@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content.cache
 
 import android.net.Uri
+import org.grakovne.lissen.content.cache.api.CachedBookRepository
 import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.content.channel.common.ApiError
 import org.grakovne.lissen.content.channel.common.ApiResult
@@ -18,7 +19,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LocalCacheChannel @Inject constructor() : MediaChannel {
+class LocalCacheChannel @Inject constructor(
+    private val cachedBookRepository: CachedBookRepository
+) : MediaChannel {
+
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
     override fun provideFileUri(libraryItemId: String, chapterId: String): Uri = Uri.EMPTY
@@ -36,7 +40,20 @@ class LocalCacheChannel @Inject constructor() : MediaChannel {
         libraryId: String,
         pageSize: Int,
         pageNumber: Int
-    ): ApiResult<PagedItems<Book>> = ApiResult.Success(PagedItems(emptyList(), 0, 0))
+    ): ApiResult<PagedItems<Book>> {
+        val books = cachedBookRepository
+            .fetchBooks(
+                pageNumber = pageNumber,
+                pageSize = pageSize
+            )
+
+        return ApiResult.Success(
+            PagedItems(
+                items = books,
+                currentPage = pageNumber
+            )
+        )
+    }
 
     override suspend fun fetchLibraries(): ApiResult<List<Library>> = ApiResult.Success(emptyList())
 

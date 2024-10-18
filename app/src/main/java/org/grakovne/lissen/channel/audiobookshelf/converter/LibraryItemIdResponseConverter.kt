@@ -15,12 +15,12 @@ class LibraryItemIdResponseConverter @Inject constructor() {
 
     fun apply(
         item: LibraryItemIdResponse,
-        progressResponse: org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse? = null
+        progressResponse: MediaProgressResponse? = null
     ): DetailedBook {
         return DetailedBook(
             id = item.id,
             title = item.media.metadata.title,
-            author = item.media.metadata.authors.joinToString(", ", transform = org.grakovne.lissen.channel.audiobookshelf.model.Author::name),
+            author = item.media.metadata.authors.joinToString(", ", transform = Author::name),
             files = item
                 .media
                 .audioFiles

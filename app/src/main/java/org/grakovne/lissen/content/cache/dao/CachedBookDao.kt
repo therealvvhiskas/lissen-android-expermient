@@ -16,16 +16,12 @@ import org.grakovne.lissen.content.cache.entity.MediaProgressEntity
 interface CachedBookDao {
 
     @Transaction
-    suspend fun upsertCachedBook(cachedBook: CachedBookEntity) {
-        upsertBook(cachedBook.detailedBook)
-        upsertBookFiles(cachedBook.files)
-        upsertBookChapters(cachedBook.chapters)
-        cachedBook.progress?.let { upsertMediaProgress(it) }
-    }
+    @Query("SELECT * FROM detailed_books ORDER BY title LIMIT :pageSize OFFSET :pageNumber * :pageSize")
+    suspend fun fetchCachedBooks(pageNumber: Int, pageSize: Int): List<BookEntity>
 
     @Transaction
-    @Query("SELECT * FROM detailed_books ORDER BY title LIMIT :pageSize OFFSET :pageNumber * :pageSize")
-    suspend fun fetchCachedBooks(pageNumber: Int, pageSize: Int): List<CachedBookEntity>
+    @Query("SELECT * FROM detailed_books WHERE id = :bookId")
+    suspend fun fetchCachedBook(bookId: String): CachedBookEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertBook(book: BookEntity)

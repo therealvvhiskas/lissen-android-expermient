@@ -3,6 +3,7 @@ package org.grakovne.lissen.content.cache.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import java.io.Serializable
@@ -45,7 +46,8 @@ data class BookEntity(
         parentColumns = ["id"],
         childColumns = ["bookId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["bookId"])]
 )
 data class BookFileEntity(
     @PrimaryKey val id: String,
@@ -62,7 +64,8 @@ data class BookFileEntity(
         parentColumns = ["id"],
         childColumns = ["bookId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["bookId"])]
 )
 data class BookChapterEntity(
     @PrimaryKey val id: String,
@@ -80,7 +83,8 @@ data class BookChapterEntity(
         parentColumns = ["id"],
         childColumns = ["bookId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["bookId"])]
 )
 data class MediaProgressEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
