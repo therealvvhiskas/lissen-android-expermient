@@ -31,4 +31,6 @@
     <string name="playback_speed_normal">Нормально</string>
     <string name="playback_speed_faster">Быстрее</string>
     <string name="playback_speed_fast">Быстро</string>
+    <string name="disable_offline">Отключить офлайн</string>
+    <string name="enable_offline">Офлайн-режим</string>
 </resources>

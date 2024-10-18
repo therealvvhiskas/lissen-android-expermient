@@ -31,6 +31,9 @@ class LibraryViewModel @Inject constructor(
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
+    private val _isCacheForce = MutableLiveData<Boolean>(preferences.isForceCache())
+    val isCacheForce: LiveData<Boolean> = _isCacheForce
+
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
@@ -80,9 +83,11 @@ class LibraryViewModel @Inject constructor(
             true -> preferences.disableForceCache()
             false -> preferences.enableForceCache()
         }
+
+        _isCacheForce.postValue(isCacheForce())
     }
 
-    fun isCacheForce() = preferences.isForceCache()
+    private fun isCacheForce() = preferences.isForceCache()
 
     companion object {
         private const val PAGE_SIZE = 10

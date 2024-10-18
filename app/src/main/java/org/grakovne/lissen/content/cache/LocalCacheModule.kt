@@ -20,7 +20,7 @@ object LocalCacheModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): LocalCacheStorage {
-        context.deleteDatabase(DATABASE_NAME) // DEBUG ONLY
+        //context.deleteDatabase(DATABASE_NAME) // DEBUG ONLY
 
         val database = Room.databaseBuilder(
             context = context,
