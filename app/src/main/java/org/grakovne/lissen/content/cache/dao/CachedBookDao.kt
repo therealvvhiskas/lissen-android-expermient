@@ -1,4 +1,4 @@
-package org.grakovne.lissen.cache.dao
+package org.grakovne.lissen.content.cache.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,11 +6,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import org.grakovne.lissen.cache.entity.BookChapterEntity
-import org.grakovne.lissen.cache.entity.BookEntity
-import org.grakovne.lissen.cache.entity.BookFileEntity
-import org.grakovne.lissen.cache.entity.CachedBookEntity
-import org.grakovne.lissen.cache.entity.MediaProgressEntity
+import org.grakovne.lissen.content.cache.entity.BookChapterEntity
+import org.grakovne.lissen.content.cache.entity.BookEntity
+import org.grakovne.lissen.content.cache.entity.BookFileEntity
+import org.grakovne.lissen.content.cache.entity.CachedBookEntity
+import org.grakovne.lissen.content.cache.entity.MediaProgressEntity
 
 @Dao
 interface CachedBookDao {

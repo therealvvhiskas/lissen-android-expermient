@@ -2,7 +2,7 @@ package org.grakovne.lissen.ui.screens.library.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.grakovne.lissen.channel.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaChannel
 import org.grakovne.lissen.domain.Book
 
 class LibraryPagingSource(

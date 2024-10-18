@@ -1,4 +1,4 @@
-package org.grakovne.lissen.cache
+package org.grakovne.lissen.content.cache
 
 import android.net.Uri
 import org.grakovne.lissen.channel.ChannelCode

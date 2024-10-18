@@ -17,7 +17,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
-import org.grakovne.lissen.channel.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaChannel
 import org.grakovne.lissen.channel.common.ApiResult
 import javax.inject.Singleton
 
