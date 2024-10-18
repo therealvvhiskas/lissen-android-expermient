@@ -2,12 +2,11 @@ package org.grakovne.lissen.content.cache
 
 import android.net.Uri
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
-import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.content.channel.common.ApiError
 import org.grakovne.lissen.content.channel.common.ApiResult
+import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.content.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.PagedItems
 import org.grakovne.lissen.domain.PlaybackProgress
@@ -47,12 +46,13 @@ class LocalCacheChannel @Inject constructor(
                 pageSize = pageSize
             )
 
-        return ApiResult.Success(
-            PagedItems(
-                items = books,
-                currentPage = pageNumber
+        return ApiResult
+            .Success(
+                PagedItems(
+                    items = books,
+                    currentPage = pageNumber
+                )
             )
-        )
     }
 
     override suspend fun fetchLibraries(): ApiResult<List<Library>> = ApiResult.Success(emptyList())
@@ -67,8 +67,10 @@ class LocalCacheChannel @Inject constructor(
     override suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>> =
         ApiResult.Success(emptyList())
 
-    override suspend fun fetchBook(bookId: String): ApiResult<DetailedBook> =
-        ApiResult.Error(ApiError.InternalError)
+    override suspend fun fetchBook(bookId: String) = cachedBookRepository
+        .fetchBook(bookId)
+        ?.let { ApiResult.Success(it) }
+        ?: ApiResult.Error(ApiError.InternalError)
 
     override suspend fun authorize(
         host: String,

@@ -24,7 +24,7 @@ class CachedBookRepository @Inject constructor(
 
     suspend fun fetchBook(
         bookId: String
-    ): DetailedBook = dao
+    ): DetailedBook? = dao
         .fetchCachedBook(bookId)
-        .let { cachedBookEntityDetailedConverter.apply(it) }
+        ?.let { cachedBookEntityDetailedConverter.apply(it) }
 }
