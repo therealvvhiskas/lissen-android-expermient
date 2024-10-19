@@ -7,6 +7,7 @@ import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConve
 import org.grakovne.lissen.content.cache.dao.CachedBookDao
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,10 +19,7 @@ class CachedBookRepository @Inject constructor(
     private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter
 ) {
 
-    fun provideBookCoverUri(bookId: String): Uri = Uri
-        .parse(
-            properties.provideBookCoverPath(bookId).toString()
-        )
+    fun provideBookCover(bookId: String): File = properties.provideBookCoverPath(bookId)
 
     suspend fun cacheBook(book: DetailedBook) {
         dao.upsertCachedBook(book)

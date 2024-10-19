@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content.cache
 
 import android.net.Uri
+import android.net.Uri.parse
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
 import org.grakovne.lissen.content.channel.common.ApiError
 import org.grakovne.lissen.content.channel.common.ApiResult
@@ -21,19 +22,31 @@ import javax.inject.Singleton
 class LocalCacheChannel @Inject constructor(
     private val cachedBookRepository: CachedBookRepository,
 
-) : MediaChannel {
+    ) : MediaChannel {
 
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
     override fun provideFileUri(libraryItemId: String, chapterId: String): Uri = Uri.EMPTY
 
-    override fun provideBookCover(bookId: String): Uri = cachedBookRepository.provideBookCoverUri(bookId)
+    override fun provideBookCover(bookId: String): Uri =
+        cachedBookRepository
+            .provideBookCover(bookId)
+            .toString()
+            .let { parse(it) }
 
-    override suspend fun syncProgress(itemId: String, progress: PlaybackProgress): ApiResult<Unit> =
-        ApiResult.Success(Unit)
+
+    override suspend fun syncProgress(itemId: String, progress: PlaybackProgress): ApiResult<Unit> {
+        return ApiResult.Success(Unit)
+    }
 
     override suspend fun fetchBookCover(bookId: String): ApiResult<InputStream> {
-        return ApiResult.Error(ApiError.InternalError)
+        val cover = cachedBookRepository
+            .provideBookCover(bookId)
+
+        return when(cover.exists()) {
+            true -> ApiResult.Success(cover.inputStream())
+            false -> ApiResult.Error(ApiError.InternalError)
+        }
     }
 
     override suspend fun fetchBooks(

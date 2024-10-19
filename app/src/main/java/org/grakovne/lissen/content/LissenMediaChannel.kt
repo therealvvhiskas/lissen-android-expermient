@@ -39,7 +39,9 @@ class LissenMediaChannel @Inject constructor(
 
     suspend fun fetchBookCover(
         itemId: String
-    ): ApiResult<InputStream> = providePreferredChannel().fetchBookCover(itemId)
+    ): ApiResult<InputStream> {
+        return providePreferredChannel().fetchBookCover(itemId)
+    }
 
     suspend fun fetchBooks(
         libraryId: String,
