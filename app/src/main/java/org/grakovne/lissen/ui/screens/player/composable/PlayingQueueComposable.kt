@@ -63,7 +63,7 @@ fun PlayingQueueComposable(
         remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 3 }
 
     val collapseFlingThreshold =
-        remember { ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat() * 0.15 }
+        remember { ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat() * 0.2 }
 
     val listState = rememberLazyListState()
 
