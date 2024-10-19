@@ -19,8 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AirplanemodeActive
-import androidx.compose.material.icons.outlined.AirplanemodeInactive
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
@@ -60,6 +60,8 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -178,10 +180,10 @@ fun LibraryScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = when (isCacheForce) {
-                                        true -> Icons.Outlined.AirplanemodeInactive
-                                        else -> Icons.Outlined.AirplanemodeActive
+                                        true -> Icons.Outlined.Cloud
+                                        else -> Icons.Outlined.CloudOff
                                     },
-                                    contentDescription = null,
+                                    contentDescription = null
                                 )
                             },
                             text = {
@@ -195,8 +197,11 @@ fun LibraryScreen(
                                 )
                             },
                             onClick = {
-                                libraryViewModel.toggleCacheForce()
-                                refreshContent(showRefreshing = false)
+                                navigationItemSelected = false
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    libraryViewModel.toggleCacheForce()
+                                    refreshContent(showRefreshing = false)
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -217,7 +222,7 @@ fun LibraryScreen(
                                 )
                             },
                             onClick = {
-                                //navigationItemSelected = false
+                                navigationItemSelected = false
                                 navController.navigate("settings_screen")
                             },
                             modifier = Modifier
@@ -241,7 +246,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = {  },
+                            onClick = { },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)

@@ -34,4 +34,5 @@
     <string name="playback_speed_custom" translatable="false">Custom</string>
     <string name="disable_offline">Disable Offline</string>
     <string name="enable_offline">Enable Offline</string>
+    <string name="menu_item_offline_mode_text">Offline Mode</string>
 </resources>

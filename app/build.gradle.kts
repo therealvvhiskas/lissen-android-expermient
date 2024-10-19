@@ -28,7 +28,7 @@ android {
         }
         debug {
             matchingFallbacks.add("release")
-            isDebuggable = false
+            isDebuggable = true
         }
     }
 
@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.androidx.media3.ui)
 
     implementation(libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
 
