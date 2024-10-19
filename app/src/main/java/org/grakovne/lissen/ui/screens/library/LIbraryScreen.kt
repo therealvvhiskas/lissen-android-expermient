@@ -179,37 +179,6 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    imageVector = when (isCacheForce) {
-                                        true -> Icons.Outlined.Cloud
-                                        else -> Icons.Outlined.CloudOff
-                                    },
-                                    contentDescription = null
-                                )
-                            },
-                            text = {
-                                Text(
-                                    text = when (isCacheForce) {
-                                        true -> stringResource(R.string.disable_offline)
-                                        else -> stringResource(R.string.enable_offline)
-                                    },
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
-                            },
-                            onClick = {
-                                navigationItemSelected = false
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    libraryViewModel.toggleCacheForce()
-                                    refreshContent(showRefreshing = false)
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
                                     imageVector = Icons.Outlined.Settings,
                                     contentDescription = null,
                                 )
@@ -229,6 +198,40 @@ fun LibraryScreen(
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
                         )
+
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = when (libraryViewModel.isCacheForce()) {
+                                        true -> Icons.Outlined.Cloud
+                                        else -> Icons.Outlined.CloudOff
+                                    },
+                                    contentDescription = null
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = when (libraryViewModel.isCacheForce()) {
+                                        true -> stringResource(R.string.disable_offline)
+                                        else -> stringResource(R.string.enable_offline)
+                                    },
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            },
+                            onClick = {
+                                navigationItemSelected = false
+                                libraryViewModel.toggleCacheForce()
+
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    refreshContent(showRefreshing = false)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        )
+
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
