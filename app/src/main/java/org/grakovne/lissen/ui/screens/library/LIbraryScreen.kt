@@ -55,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -124,7 +125,6 @@ fun LibraryScreen(
 
     var navigationItemSelected by remember { mutableStateOf(false) }
 
-
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
         onRefresh = {
@@ -159,11 +159,14 @@ fun LibraryScreen(
         }
     }
 
+
     Scaffold(
         topBar = {
             TopAppBar(
                 actions = {
-                    IconButton(onClick = { navigationItemSelected = true }) {
+                    IconButton(onClick = {
+                        navigationItemSelected = true
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
                             contentDescription = "Menu"
