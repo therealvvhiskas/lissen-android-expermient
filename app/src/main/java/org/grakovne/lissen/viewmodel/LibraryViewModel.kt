@@ -87,7 +87,7 @@ class LibraryViewModel @Inject constructor(
         _isCacheForce.postValue(isCacheForce())
     }
 
-    private fun isCacheForce() = preferences.isForceCache()
+    fun isCacheForce() = preferences.isForceCache()
 
     companion object {
         private const val PAGE_SIZE = 10

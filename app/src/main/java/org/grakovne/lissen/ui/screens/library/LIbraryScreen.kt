@@ -217,7 +217,7 @@ fun LibraryScreen(
                                 )
                             },
                             onClick = {
-                                navigationItemSelected = false
+                                //navigationItemSelected = false
                                 navController.navigate("settings_screen")
                             },
                             modifier = Modifier
@@ -241,7 +241,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { navigationItemSelected = false },
+                            onClick = {  },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)

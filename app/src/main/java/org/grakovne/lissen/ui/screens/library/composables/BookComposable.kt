@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
@@ -115,10 +114,11 @@ fun BookComposable(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
             IconButton(
-                onClick = { cachingModelView.toggleBookLocalCache(book) }
+                onClick = { cachingModelView.toggleBookLocalCache(book) },
+                modifier = Modifier.size(36.dp)
             ) {
                 Icon(
                     imageVector = provideCachingStateIcon(book, cacheProgress),
@@ -129,6 +129,8 @@ fun BookComposable(
                 text = book.duration.formatShortly(),
                 style = MaterialTheme.typography.bodySmall
             )
+
+            Spacer(Modifier.height(6.dp))
         }
     }
 }
