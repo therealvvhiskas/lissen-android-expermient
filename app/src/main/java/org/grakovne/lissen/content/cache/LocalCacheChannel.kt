@@ -19,14 +19,15 @@ import javax.inject.Singleton
 
 @Singleton
 class LocalCacheChannel @Inject constructor(
-    private val cachedBookRepository: CachedBookRepository
+    private val cachedBookRepository: CachedBookRepository,
+
 ) : MediaChannel {
 
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
     override fun provideFileUri(libraryItemId: String, chapterId: String): Uri = Uri.EMPTY
 
-    override fun provideBookCover(bookId: String): Uri = Uri.EMPTY
+    override fun provideBookCover(bookId: String): Uri = cachedBookRepository.provideBookCoverUri(bookId)
 
     override suspend fun syncProgress(itemId: String, progress: PlaybackProgress): ApiResult<Unit> =
         ApiResult.Success(Unit)
