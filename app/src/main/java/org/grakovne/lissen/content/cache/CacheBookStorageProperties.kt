@@ -11,5 +11,9 @@ class CacheBookStorageProperties @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    fun provideBookCoverPath(bookId: String) = File(context.filesDir, "${bookId}_cover.img")
+    fun provideBookCoverPath(bookId: String) =
+        File(
+            context.getExternalFilesDir(null),
+            "${bookId}_cover.img"
+        )
 }

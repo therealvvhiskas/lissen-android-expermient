@@ -32,6 +32,11 @@ class BookCachingService @Inject constructor(
         emit(CacheProgress.Completed)
     }
 
+    private suspend fun cacheAudio(book: Book)= flow {
+
+        emit(CacheProgress.Error)
+    }
+
     private suspend fun cacheBookCover(book: Book) = flow {
         val file = properties.provideBookCoverPath(book.id)
         val coverUrl = mediaChannel.provideBookCover(book.id)
