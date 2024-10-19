@@ -26,7 +26,7 @@ class LocalCacheChannel @Inject constructor(
 
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
-    override fun provideFileUri(libraryItemId: String, chapterId: String): Uri = Uri.EMPTY
+    override fun provideFileUri(libraryItemId: String, fileId: String): Uri = Uri.EMPTY
 
     override fun provideBookCover(bookId: String): Uri =
         cachedBookRepository

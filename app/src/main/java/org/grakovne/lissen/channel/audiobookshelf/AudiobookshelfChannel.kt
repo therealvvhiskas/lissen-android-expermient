@@ -12,8 +12,6 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseC
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
-import org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo
-import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.content.channel.common.ApiResult.Success
 import org.grakovne.lissen.content.channel.common.MediaChannel
@@ -47,14 +45,14 @@ class AudiobookshelfChannel @Inject constructor(
 
     override fun provideFileUri(
         libraryItemId: String,
-        chapterId: String
+        fileId: String
     ): Uri = Uri.parse(preferences.getHost())
         .buildUpon()
         .appendPath("api")
         .appendPath("items")
         .appendPath(libraryItemId)
         .appendPath("file")
-        .appendPath(chapterId)
+        .appendPath(fileId)
         .appendQueryParameter("token", preferences.getToken())
         .build()
 

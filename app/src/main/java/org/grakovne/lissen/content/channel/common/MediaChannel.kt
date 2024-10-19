@@ -17,7 +17,7 @@ interface MediaChannel {
 
     fun provideFileUri(
         libraryItemId: String,
-        chapterId: String
+        fileId: String
     ): Uri
 
     fun provideBookCover(
