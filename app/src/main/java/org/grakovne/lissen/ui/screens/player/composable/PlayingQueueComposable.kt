@@ -60,7 +60,7 @@ fun PlayingQueueComposable(
     val isFlinging = remember { mutableStateOf(false) }
 
     val expandFlingThreshold =
-        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 3 }
+        remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 2 }
 
     val collapseFlingThreshold =
         remember { ViewConfiguration.get(context).scaledMaximumFlingVelocity.toFloat() * 0.2 }
