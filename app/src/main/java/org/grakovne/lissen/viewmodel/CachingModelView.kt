@@ -29,7 +29,9 @@ class CachingModelView @Inject constructor(
         viewModelScope.launch {
             cachingService
                 .removeBook(book)
-                .collect { _bookCachingProgress[book.id]?.value = it }
+                .collect {
+                    _bookCachingProgress[book.id]?.value = it
+                }
         }
     }
 

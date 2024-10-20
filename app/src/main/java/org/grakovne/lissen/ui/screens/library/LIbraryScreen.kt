@@ -201,7 +201,7 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    imageVector = when (libraryViewModel.isCacheForce()) {
+                                    imageVector = when (libraryViewModel.localCacheUsing()) {
                                         true -> Icons.Outlined.Cloud
                                         else -> Icons.Outlined.CloudOff
                                     },
@@ -210,7 +210,7 @@ fun LibraryScreen(
                             },
                             text = {
                                 Text(
-                                    text = when (libraryViewModel.isCacheForce()) {
+                                    text = when (libraryViewModel.localCacheUsing()) {
                                         true -> stringResource(R.string.disable_offline)
                                         else -> stringResource(R.string.enable_offline)
                                     },
@@ -364,7 +364,11 @@ fun LibraryScreen(
                                     imageLoader = imageLoader,
                                     navController = navController,
                                     cachingModelView = cachingModelView,
-                                    onRemoveBook = { libraryViewModel.hideBook(book.id) }
+                                    onRemoveBook = {
+                                        if (libraryViewModel.localCacheUsing()) {
+                                            libraryViewModel.hideBook(book.id)
+                                        }
+                                    }
                                 )
                             }
                         }
