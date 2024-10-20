@@ -2,6 +2,10 @@ package org.grakovne.lissen.content.cache
 
 import android.app.DownloadManager
 import android.app.DownloadManager.COLUMN_STATUS
+import android.app.DownloadManager.Query
+import android.app.DownloadManager.Request
+import android.app.DownloadManager.STATUS_FAILED
+import android.app.DownloadManager.STATUS_SUCCESSFUL
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -10,15 +14,17 @@ import coil.ImageLoader
 import coil.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaChannel
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 
 @Singleton
 class BookCachingService @Inject constructor(
@@ -30,7 +36,7 @@ class BookCachingService @Inject constructor(
 ) {
 
     fun cacheBook(book: Book) = flow {
-        emit(CacheProgress.Started(0))
+        emit(CacheProgress.InProgress)
 
         val detailedBook = mediaChannel
             .fetchBook(book.id)
@@ -39,64 +45,78 @@ class BookCachingService @Inject constructor(
                 onFailure = { null }
             )
 
-        when (detailedBook) {
-            null -> emit(CacheProgress.Error)
-            else -> {
-                cacheBookInfo(detailedBook)
-                cacheBookCover(detailedBook)
-                cacheBookMedia(detailedBook)
-            }
+        if (null == detailedBook) {
+            emit(CacheProgress.Error)
+            return@flow
         }
 
-        emit(CacheProgress.Completed)
+        val cacheResult = withContext(Dispatchers.IO) {
+            listOf(
+                async { cacheBookInfo(detailedBook) },
+                async { cacheBookCover(detailedBook) },
+                async { cacheBookMedia(detailedBook) }
+            ).awaitAll()
+        }
+
+        when {
+            cacheResult.all { it == CacheProgress.Completed } -> emit(CacheProgress.Completed)
+            else -> emit(CacheProgress.Error)
+        }
     }
 
-    private suspend fun cacheBookMedia(book: DetailedBook) {
+    private suspend fun cacheBookMedia(book: DetailedBook): CacheProgress {
         val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        val downloads = mutableMapOf<Long, Int>()
-        val isDownloading = true
-
-        book
+        val downloads = book
             .files
             .map { file ->
-                DownloadManager
-                    .Request(mediaChannel.provideFileUri(book.id, file.id))
+                Request(mediaChannel.provideFileUri(book.id, file.id))
                     .setTitle(file.name)
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+                    .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
                     .setDestinationUri(properties.provideMediaCachePatch(book.id).toUri())
                     .setAllowedOverMetered(true)
                     .setAllowedOverRoaming(true)
                     .let { downloadManager.enqueue(it) }
-                    .let { downloads[it] = DownloadManager.STATUS_PENDING }
             }
 
-        val progressTracking = coroutineScope {
-            async(Dispatchers.IO) {
-                while (isDownloading) {
-                    downloads.map { (id, _) ->
-                        val query = DownloadManager.Query().setFilterById(id)
+        return awaitDownloadProgress(downloads, downloadManager)
+    }
 
-                        downloadManager
-                            .query(query)
-                            ?.use { result ->
-                                if (result.moveToFirst()) {
-                                    result
-                                        .getColumnIndex(COLUMN_STATUS)
-                                        .takeIf { value -> value >= 0 }
-                                        ?.let { result.getInt(it) }
-                                        ?.let { downloads[id] = it }
-                                }
-                            }
-                    }
-                }
+    private suspend fun awaitDownloadProgress(
+        jobs: List<Long>,
+        downloadManager: DownloadManager
+    ): CacheProgress {
+        val result = checkDownloads(jobs, downloadManager)
+
+        return when {
+            result.all { it == STATUS_SUCCESSFUL } -> CacheProgress.Completed
+            result.any { it == STATUS_FAILED } -> CacheProgress.Error
+            else -> {
+                delay(1000)
+                awaitDownloadProgress(jobs, downloadManager)
             }
         }
-
-        progressTracking.await()
     }
 
 
-    private suspend fun cacheBookCover(book: DetailedBook) = flow {
+    private fun checkDownloads(jobs: List<Long>, downloadManager: DownloadManager): List<Int> {
+        return jobs.map { id ->
+            val query = Query().setFilterById(id)
+            downloadManager.query(query)
+                ?.use { cursor ->
+                    if (!cursor.moveToFirst()) {
+                        return@map STATUS_FAILED
+                    }
+
+                    val statusIndex = cursor.getColumnIndex(COLUMN_STATUS)
+                    when (statusIndex >= 0) {
+                        true -> cursor.getInt(statusIndex)
+                        else -> STATUS_FAILED
+                    }
+                } ?: STATUS_FAILED
+        }
+    }
+
+    private suspend fun cacheBookCover(book: DetailedBook): CacheProgress {
         val file = properties.provideBookCoverPath(book.id)
         val coverUrl = mediaChannel.provideBookCover(book.id)
 
@@ -113,19 +133,18 @@ class BookCachingService @Inject constructor(
             .build()
 
         imageLoader.execute(request)
-        emit(CacheProgress.Started(10))
+        return CacheProgress.Completed
     }
 
-    private suspend fun cacheBookInfo(book: DetailedBook) = flow {
-        repository.cacheBook(book)
-        emit(CacheProgress.Completed)
-    }
+    private suspend fun cacheBookInfo(book: DetailedBook) = repository
+        .cacheBook(book)
+        .let { CacheProgress.Completed }
 
 }
 
 sealed class CacheProgress {
     data object Idle : CacheProgress()
-    data class Started(val percent: Int) : CacheProgress()
+    data object InProgress : CacheProgress()
     data object Completed : CacheProgress()
     data object Error : CacheProgress()
 }

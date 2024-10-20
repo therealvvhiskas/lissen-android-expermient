@@ -143,7 +143,7 @@ private fun provideCachingStateIcon(
         CacheProgress.Completed -> Icons.Outlined.CloudDownload
         CacheProgress.Error -> Icons.Outlined.Cloud
         CacheProgress.Idle -> provideIdleStateIcon(book)
-        is CacheProgress.Started -> Icons.Outlined.Downloading
+        is CacheProgress.InProgress -> Icons.Outlined.Downloading
     }
 }
 
