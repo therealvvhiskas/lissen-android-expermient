@@ -21,17 +21,13 @@ object LocalCacheModule {
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): LocalCacheStorage {
-        //context.deleteDatabase(DATABASE_NAME) // DEBUG ONLY
-
         val database = Room.databaseBuilder(
             context = context,
             klass = LocalCacheStorage::class.java,
             name = DATABASE_NAME
         )
 
-        return database
-            .fallbackToDestructiveMigration() // DEBUG ONLY
-            .build()
+        return database.build()
     }
 
     @Provides

@@ -51,16 +51,19 @@ class BookCachingService @Inject constructor(
 
         val cacheResult = withContext(Dispatchers.IO) {
             listOf(
+                async { cacheBookCover(detailedBook) },
+                async { cacheBookMedia(detailedBook) },
                 async { cacheLibraries() },
                 async { cacheBookInfo(detailedBook) },
-                async { cacheBookCover(detailedBook) },
-                async { cacheBookMedia(detailedBook) }
             ).awaitAll()
         }
 
         when {
             cacheResult.all { it == CacheProgress.Completed } -> emit(CacheProgress.Completed)
-            else -> emit(CacheProgress.Error)
+            else -> {
+                removeBook(book)
+                emit(CacheProgress.Error)
+            }
         }
     }
 
@@ -157,16 +160,16 @@ class BookCachingService @Inject constructor(
     }
 
     private suspend fun cacheLibraries() = mediaChannel
-         .fetchLibraries()
-         .foldAsync(
-             onSuccess = {
-                 libraryRepository.cacheLibraries(it)
-                 CacheProgress.Completed
-             },
-             onFailure = {
-                 CacheProgress.Error
-             }
-         )
+        .fetchLibraries()
+        .foldAsync(
+            onSuccess = {
+                libraryRepository.cacheLibraries(it)
+                CacheProgress.Completed
+            },
+            onFailure = {
+                CacheProgress.Error
+            }
+        )
 
     private suspend fun cacheBookInfo(book: DetailedBook) = bookRepository
         .cacheBook(book)
