@@ -4,10 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 
 class LibraryPagingSource(
+    private val preferences: LissenSharedPreferences,
     private val mediaChannel: LissenMediaProvider,
-    private val libraryId: String,
 ) : PagingSource<Int, Book>() {
 
     override fun getRefreshKey(state: PagingState<Int, Book>) = state
@@ -22,6 +23,10 @@ class LibraryPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Book> {
         val currentPage = params.key ?: 0
+        val libraryId = preferences
+            .getPreferredLibrary()
+            ?.id
+            ?: return LoadResult.Error(IllegalStateException("Unable to find preferred Library"))
 
         return mediaChannel
             .fetchBooks(

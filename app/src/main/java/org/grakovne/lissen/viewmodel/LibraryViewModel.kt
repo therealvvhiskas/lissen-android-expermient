@@ -39,15 +39,18 @@ class LibraryViewModel @Inject constructor(
     private val _hiddenBooks = MutableStateFlow<List<String>>(emptyList())
     val hiddenBooks: StateFlow<List<String>> = _hiddenBooks
 
+    private var currentPagingSource: LibraryPagingSource? = null
+
     val libraryPager: Flow<PagingData<Book>> by lazy {
-        val libraryId = preferences.getPreferredLibrary()?.id ?: ""
         Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
                 initialLoadSize = PAGE_SIZE,
                 prefetchDistance = PAGE_SIZE
             ),
-            pagingSourceFactory = { LibraryPagingSource(mediaChannel, libraryId) }
+            pagingSourceFactory = {
+                LibraryPagingSource(preferences, mediaChannel).also { currentPagingSource = it }
+            }
         ).flow.cachedIn(viewModelScope)
     }
 
@@ -62,6 +65,14 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 launch(Dispatchers.IO) { fetchRecentListening() }
+            }
+        }
+    }
+
+    fun refreshLibrary() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                launch(Dispatchers.IO) { currentPagingSource?.invalidate() }
             }
         }
     }

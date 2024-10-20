@@ -110,7 +110,7 @@ fun LibraryScreen(
             withMinimumTime(500) {
                 listOf(
                     async { libraryViewModel.dropHiddenBooks() },
-                    async { library.refresh() },
+                    async { libraryViewModel.refreshLibrary() },
                     async { libraryViewModel.fetchRecentListening() },
                 ).awaitAll()
             }
@@ -146,6 +146,7 @@ fun LibraryScreen(
 
     LaunchedEffect(Unit) {
         libraryViewModel.refreshRecentListening()
+        libraryViewModel.refreshLibrary()
     }
 
     RequestNotificationPermissions()
