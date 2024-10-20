@@ -56,14 +56,15 @@ fun RecentBooksComposable(
             .padding(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        recentBooks.forEach { book ->
-            RecentBookItemComposable(
-                book = book,
-                width = itemWidth,
-                imageLoader = imageLoader,
-                navController = navController
-            )
-        }
+        recentBooks
+            .forEach { book ->
+                RecentBookItemComposable(
+                    book = book,
+                    width = itemWidth,
+                    imageLoader = imageLoader,
+                    navController = navController
+                )
+            }
     }
 }
 

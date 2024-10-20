@@ -56,7 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -92,10 +91,10 @@ fun LibraryScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
-    val removedBooks = remember { mutableStateListOf<String>() } // Храним ID удаленных книг
-
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
+    val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
+
+    val hiddenBooks = remember { mutableStateListOf<String>() }
 
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
@@ -304,7 +303,7 @@ fun LibraryScreen(
                         } else {
                             RecentBooksComposable(
                                 navController = navController,
-                                recentBooks = recentBooks,
+                                recentBooks = recentBooks.filterNot { hiddenBooks.contains(it.id) },
                                 imageLoader = imageLoader
                             )
                         }
@@ -351,14 +350,14 @@ fun LibraryScreen(
                     } else {
                         items(count = library.itemCount) {
                             val book = library[it] ?: return@items
-                            if (!removedBooks.contains(book.id)) {
+                            if (!hiddenBooks.contains(book.id)) {
                                 BookComposable(
                                     book = book,
                                     imageLoader = imageLoader,
                                     navController = navController,
                                     cachingModelView = cachingModelView,
                                     onRemoveBook = {
-                                        removedBooks.add(book.id)
+                                        hiddenBooks.add(book.id)
                                     }
                                 )
                             }
