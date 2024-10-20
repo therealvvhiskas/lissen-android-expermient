@@ -100,8 +100,6 @@ class LocalCacheRepository @Inject constructor(
 
     suspend fun fetchBook(bookId: String) = cachedBookRepository
         .fetchBook(bookId)
-        ?.let { ApiResult.Success(it) }
-        ?: ApiResult.Error(ApiError.InternalError)
 
     suspend fun fetchCachedBookIds() = cachedBookRepository.fetchCachedBooksIds()
 

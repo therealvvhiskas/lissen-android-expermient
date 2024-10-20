@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content
 
 import android.net.Uri
+import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.channel.common.ChannelCode.AUDIOBOOKSHELF
@@ -107,8 +108,14 @@ class LissenMediaProvider @Inject constructor(
     suspend fun fetchBook(
         bookId: String
     ): ApiResult<DetailedBook> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.fetchBook(bookId)
-        false -> providePreferredChannel().fetchBook(bookId)
+        true -> localCacheRepository
+            .fetchBook(bookId)
+            ?.let { ApiResult.Success(it) }
+            ?: ApiResult.Error(ApiError.InternalError)
+
+        false -> providePreferredChannel()
+            .fetchBook(bookId)
+            .map { syncFromLocalProgress(it) }
     }
 
     suspend fun authorize(
@@ -117,6 +124,19 @@ class LissenMediaProvider @Inject constructor(
         password: String
     ): ApiResult<UserAccount> = when (sharedPreferences.getPreferredChannel()) {
         AUDIOBOOKSHELF -> providePreferredChannel().authorize(host, username, password)
+    }
+
+    private suspend fun syncFromLocalProgress(detailedBook: DetailedBook): DetailedBook {
+        val cachedBook = localCacheRepository.fetchBook(detailedBook.id) ?: return detailedBook
+
+        val cachedProgress = cachedBook.progress ?: return detailedBook
+        val channelProgress = detailedBook.progress
+
+        val updatedProgress = listOfNotNull(cachedProgress, channelProgress)
+            .maxByOrNull { it.lastUpdate }
+            ?: return detailedBook
+
+        return detailedBook.copy(progress = updatedProgress)
     }
 
     private suspend fun flagCached(
