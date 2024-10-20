@@ -120,16 +120,17 @@ fun BookComposable(
         ) {
             IconButton(
                 onClick = {
-                    when (cachingModelView.provideCacheAction(book)) {
-                        BookCacheAction.CACHE -> cachingModelView.cacheBook(book)
-                        BookCacheAction.DROP -> {
-                            cachingModelView.dropCache(book)
-                            onRemoveBook.invoke()
+                    cachingModelView
+                        .provideCacheAction(book)
+                        ?.let {
+                            when (it) {
+                                BookCacheAction.CACHE -> cachingModelView.cacheBook(book)
+                                BookCacheAction.DROP -> {
+                                    cachingModelView.dropCache(book)
+                                    onRemoveBook.invoke()
+                                }
+                            }
                         }
-
-                        null -> {}
-
-                    }
 
                 },
                 modifier = Modifier.size(36.dp)

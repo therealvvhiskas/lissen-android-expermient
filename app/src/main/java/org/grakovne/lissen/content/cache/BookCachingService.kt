@@ -157,16 +157,17 @@ class BookCachingService @Inject constructor(
         }
     }
 
-    private suspend fun cacheLibraries() {
-        mediaChannel
-            .fetchLibraries()
-            .foldAsync(
-                onSuccess = {
-                    libraryRepository.cacheLibraries(it)
-                },
-                onFailure = {}
-            )
-    }
+    private suspend fun cacheLibraries() = mediaChannel
+         .fetchLibraries()
+         .foldAsync(
+             onSuccess = {
+                 libraryRepository.cacheLibraries(it)
+                 CacheProgress.Completed
+             },
+             onFailure = {
+                 CacheProgress.Error
+             }
+         )
 
     private suspend fun cacheBookInfo(book: DetailedBook) = bookRepository
         .cacheBook(book)
