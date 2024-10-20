@@ -18,9 +18,7 @@ class CachingModelView @Inject constructor(
 
     private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
 
-    fun toggleBookLocalCache(
-        book: Book
-    ) {
+    fun toggleBookLocalCache(book: Book) {
 
         when (book.cachedState) {
             BookCachedState.ABLE_TO_CACHE -> cacheBook(book)

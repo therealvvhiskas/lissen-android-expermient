@@ -91,7 +91,6 @@ fun LibraryScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val isCacheForce by libraryViewModel.isCacheForce.observeAsState()
     val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 

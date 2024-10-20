@@ -2,6 +2,7 @@ package org.grakovne.lissen.content.cache.api
 
 import android.net.Uri
 import androidx.core.net.toUri
+import kotlinx.coroutines.runBlocking
 import org.grakovne.lissen.content.cache.CacheBookStorageProperties
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityConverter
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConverter
@@ -26,8 +27,10 @@ class CachedBookRepository @Inject constructor(
 
     fun provideBookCover(bookId: String): File = properties.provideBookCoverPath(bookId)
 
-    suspend fun removeBook(bookId: String){
-        dao.deleteBook(bookId)
+    suspend fun removeBook(bookId: String) {
+        dao
+            .fetchBook(bookId)
+            ?.let { dao.deleteBook(it) }
     }
 
     suspend fun cacheBook(book: DetailedBook) {

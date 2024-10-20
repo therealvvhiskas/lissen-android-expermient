@@ -36,6 +36,8 @@ class BookCachingService @Inject constructor(
 ) {
 
     fun removeBook(book: Book) = flow {
+        repository.removeBook(book.id)
+
         val cachedContent = properties
             .provideBookCache(book.id)
             ?: return@flow emit(CacheProgress.Idle)
@@ -45,7 +47,6 @@ class BookCachingService @Inject constructor(
             false -> return@flow emit(CacheProgress.Idle)
         }
 
-        repository.removeBook(book.id)
         return@flow emit(CacheProgress.Idle)
     }
 

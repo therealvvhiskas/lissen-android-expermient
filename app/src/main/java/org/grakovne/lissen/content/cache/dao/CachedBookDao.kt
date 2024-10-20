@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content.cache.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,9 +17,8 @@ import org.grakovne.lissen.domain.DetailedBook
 @Dao
 interface CachedBookDao {
 
-    @Transaction
-    @Query("DELETE FROM detailed_books WHERE id = :bookId")
-    suspend fun deleteBook(bookId: String)
+    @Delete
+    suspend fun deleteBook(book: BookEntity)
 
     @Transaction
     suspend fun upsertCachedBook(book: DetailedBook) {
@@ -78,6 +78,10 @@ interface CachedBookDao {
     @Transaction
     @Query("SELECT * FROM detailed_books WHERE id = :bookId")
     suspend fun fetchCachedBook(bookId: String): CachedBookEntity?
+
+    @Transaction
+    @Query("SELECT * FROM detailed_books WHERE id = :bookId")
+    suspend fun fetchBook(bookId: String): BookEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertBook(book: BookEntity)
