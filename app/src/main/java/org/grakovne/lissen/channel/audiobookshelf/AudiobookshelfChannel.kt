@@ -3,7 +3,6 @@ package org.grakovne.lissen.channel.audiobookshelf
 import android.net.Uri
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
@@ -14,6 +13,7 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionRespo
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
 import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.content.channel.common.ApiResult.Success
+import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.content.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook

@@ -9,11 +9,7 @@ import android.app.DownloadManager.STATUS_FAILED
 import android.app.DownloadManager.STATUS_SUCCESSFUL
 import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import androidx.core.net.toUri
-import coil.ImageLoader
-import coil.request.ImageRequest
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -23,18 +19,17 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaChannel
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
-import org.grakovne.lissen.content.channel.common.ApiResult
+import org.grakovne.lissen.content.cache.api.CachedLibraryRepository
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
-import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class BookCachingService @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val repository: CachedBookRepository,
-    private val imageLoader: ImageLoader,
+    private val bookRepository: CachedBookRepository,
+    private val libraryRepository: CachedLibraryRepository,
     private val mediaChannel: LissenMediaChannel,
     private val properties: CacheBookStorageProperties
 ) {
@@ -56,6 +51,7 @@ class BookCachingService @Inject constructor(
 
         val cacheResult = withContext(Dispatchers.IO) {
             listOf(
+                async { cacheLibraries() },
                 async { cacheBookInfo(detailedBook) },
                 async { cacheBookCover(detailedBook) },
                 async { cacheBookMedia(detailedBook) }
@@ -69,7 +65,7 @@ class BookCachingService @Inject constructor(
     }
 
     fun removeBook(book: Book) = flow {
-        repository.removeBook(book.id)
+        bookRepository.removeBook(book.id)
 
         val cachedContent = properties
             .provideBookCache(book.id)
@@ -161,7 +157,18 @@ class BookCachingService @Inject constructor(
         }
     }
 
-    private suspend fun cacheBookInfo(book: DetailedBook) = repository
+    private suspend fun cacheLibraries() {
+        mediaChannel
+            .fetchLibraries()
+            .foldAsync(
+                onSuccess = {
+                    libraryRepository.cacheLibraries(it)
+                },
+                onFailure = {}
+            )
+    }
+
+    private suspend fun cacheBookInfo(book: DetailedBook) = bookRepository
         .cacheBook(book)
         .let { CacheProgress.Completed }
 

@@ -3,6 +3,7 @@ package org.grakovne.lissen.content.cache
 import android.net.Uri
 import android.net.Uri.parse
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
+import org.grakovne.lissen.content.cache.api.CachedLibraryRepository
 import org.grakovne.lissen.content.channel.common.ApiError
 import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.content.channel.common.ChannelCode
@@ -21,8 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class LocalCacheChannel @Inject constructor(
     private val cachedBookRepository: CachedBookRepository,
-
-    ) : MediaChannel {
+    private val cachedLibraryRepository: CachedLibraryRepository
+) : MediaChannel {
 
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
@@ -70,7 +71,9 @@ class LocalCacheChannel @Inject constructor(
             )
     }
 
-    override suspend fun fetchLibraries(): ApiResult<List<Library>> = ApiResult.Success(emptyList())
+    override suspend fun fetchLibraries(): ApiResult<List<Library>> = cachedLibraryRepository
+        .fetchLibraries()
+        .let { ApiResult.Success(it) }
 
     override suspend fun startPlayback(
         itemId: String,

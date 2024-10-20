@@ -7,14 +7,13 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import org.grakovne.lissen.content.channel.common.ApiClient
-import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.content.channel.common.ApiError
+import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response

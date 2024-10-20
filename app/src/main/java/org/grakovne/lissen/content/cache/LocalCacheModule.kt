@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import org.grakovne.lissen.content.cache.dao.CachedBookDao
+import org.grakovne.lissen.content.cache.dao.CachedLibraryDao
 import javax.inject.Singleton
 
 
@@ -37,5 +38,10 @@ object LocalCacheModule {
     @Singleton
     fun provideCachedBookDao(appDatabase: LocalCacheStorage): CachedBookDao =
         appDatabase.cachedBookDao()
+
+    @Provides
+    @Singleton
+    fun provideCachedLibraryDao(appDatabase: LocalCacheStorage): CachedLibraryDao =
+        appDatabase.cachedLibraryDao()
 
 }

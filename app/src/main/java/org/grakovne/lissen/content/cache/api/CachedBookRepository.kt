@@ -2,7 +2,6 @@ package org.grakovne.lissen.content.cache.api
 
 import android.net.Uri
 import androidx.core.net.toUri
-import kotlinx.coroutines.runBlocking
 import org.grakovne.lissen.content.cache.CacheBookStorageProperties
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityConverter
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConverter
@@ -15,7 +14,7 @@ import javax.inject.Singleton
 
 @Singleton
 class CachedBookRepository @Inject constructor(
-    private val dao: CachedBookDao,
+    private val bookDao: CachedBookDao,
     private val properties: CacheBookStorageProperties,
     private val cachedBookEntityConverter: CachedBookEntityConverter,
     private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter
@@ -28,25 +27,25 @@ class CachedBookRepository @Inject constructor(
     fun provideBookCover(bookId: String): File = properties.provideBookCoverPath(bookId)
 
     suspend fun removeBook(bookId: String) {
-        dao
+        bookDao
             .fetchBook(bookId)
-            ?.let { dao.deleteBook(it) }
+            ?.let { bookDao.deleteBook(it) }
     }
 
     suspend fun cacheBook(book: DetailedBook) {
-        dao.upsertCachedBook(book)
+        bookDao.upsertCachedBook(book)
     }
 
     suspend fun fetchBooks(
         pageNumber: Int,
         pageSize: Int
-    ): List<Book> = dao
+    ): List<Book> = bookDao
         .fetchCachedBooks(pageNumber = pageNumber, pageSize = pageSize)
         .map { cachedBookEntityConverter.apply(it) }
 
     suspend fun fetchBook(
         bookId: String
-    ): DetailedBook? = dao
+    ): DetailedBook? = bookDao
         .fetchCachedBook(bookId)
         ?.let { cachedBookEntityDetailedConverter.apply(it) }
 }
