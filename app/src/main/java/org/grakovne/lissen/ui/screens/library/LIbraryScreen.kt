@@ -47,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -65,6 +66,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
@@ -221,11 +223,16 @@ fun LibraryScreen(
                             onClick = {
                                 navigationItemSelected = false
 
-                                libraryViewModel.dropHiddenBooks()
-                                cachingModelView.toggleCacheForce()
+                                coroutineScope.launch {
+                                    withFrameNanos { }
 
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    refreshContent(showRefreshing = false)
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        cachingModelView.toggleCacheForce()
+                                        libraryViewModel.dropHiddenBooks()
+
+                                        refreshContent(showRefreshing = false)
+
+                                    }
                                 }
                             },
                             modifier = Modifier
