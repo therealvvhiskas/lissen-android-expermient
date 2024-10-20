@@ -17,9 +17,6 @@ import org.grakovne.lissen.domain.DetailedBook
 @Dao
 interface CachedBookDao {
 
-    @Delete
-    suspend fun deleteBook(book: BookEntity)
-
     @Transaction
     suspend fun upsertCachedBook(book: DetailedBook) {
         val bookEntity = BookEntity(
@@ -97,5 +94,8 @@ interface CachedBookDao {
 
     @Update
     suspend fun updateMediaProgress(progress: MediaProgressEntity)
+
+    @Delete
+    suspend fun deleteBook(book: BookEntity)
 
 }
