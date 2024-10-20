@@ -45,13 +45,15 @@ import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
 import org.grakovne.lissen.viewmodel.CachingModelView
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
 fun BookComposable(
     book: Book,
     imageLoader: ImageLoader,
     navController: NavController,
-    cachingModelView: CachingModelView
+    cachingModelView: CachingModelView,
+    libraryViewModel: LibraryViewModel
 ) {
     val cacheProgress: CacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
 
@@ -118,7 +120,9 @@ fun BookComposable(
         ) {
             IconButton(
                 onClick = {
-                    cachingModelView.toggleBookLocalCache(book)
+                    cachingModelView.updateLocalCache(book)
+
+                    // update content
 
                 },
                 modifier = Modifier.size(36.dp)

@@ -351,7 +351,8 @@ fun LibraryScreen(
                                 book = library[it] ?: return@items,
                                 imageLoader = imageLoader,
                                 navController = navController,
-                                cachingModelView = cachingModelView
+                                cachingModelView = cachingModelView,
+                                libraryViewModel = libraryViewModel
                             )
                         }
                     }
