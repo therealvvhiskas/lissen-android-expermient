@@ -72,8 +72,7 @@ class LissenMediaProvider @Inject constructor(
             }
 
     suspend fun fetchLibraries(): ApiResult<List<Library>> =
-        providePreferredChannel()
-            .fetchLibraries()
+        providePreferredChannel().fetchLibraries()
 
     suspend fun startPlayback(
         bookId: String,
@@ -89,8 +88,7 @@ class LissenMediaProvider @Inject constructor(
 
     suspend fun fetchBook(
         bookId: String
-    ): ApiResult<DetailedBook> =
-        providePreferredChannel().fetchBook(bookId)
+    ): ApiResult<DetailedBook> = providePreferredChannel().fetchBook(bookId)
 
     suspend fun authorize(
         host: String,

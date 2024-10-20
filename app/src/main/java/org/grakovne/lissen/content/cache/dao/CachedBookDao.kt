@@ -23,7 +23,7 @@ interface CachedBookDao {
             id = book.id,
             title = book.title,
             author = book.author,
-            duration = book.chapters.sumOf { it.duration }.toInt(),
+            duration = book.chapters.sumOf { it.duration }.toInt()
         )
 
         val bookFiles = book
@@ -73,12 +73,14 @@ interface CachedBookDao {
     suspend fun fetchCachedBooks(pageNumber: Int, pageSize: Int): List<BookEntity>
 
     @Transaction
-    @Query("""
+    @Query(
+        """
         SELECT * FROM detailed_books
         INNER JOIN media_progress ON detailed_books.id = media_progress.bookId
         ORDER BY media_progress.lastUpdate DESC
         LIMIT 10
-    """)
+    """
+    )
     suspend fun fetchRecentlyListenedCachedBooks(): List<BookEntity>
 
 
