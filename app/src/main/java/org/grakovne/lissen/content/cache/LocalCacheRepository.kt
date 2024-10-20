@@ -99,7 +99,10 @@ class LocalCacheRepository @Inject constructor(
             )
 
     suspend fun fetchRecentListenedBooks(): ApiResult<List<RecentBook>> =
-        cachedBookRepository.fetchRecentBooks().let { ApiResult.Success(it) }
+        cachedBookRepository
+            .fetchRecentBooks()
+            .filter { checkBookIntegrity(it.id) }
+            .let { ApiResult.Success(it) }
 
     suspend fun fetchBook(bookId: String) = cachedBookRepository
         .fetchBook(bookId)
