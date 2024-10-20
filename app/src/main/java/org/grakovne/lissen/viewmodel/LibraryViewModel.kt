@@ -30,9 +30,6 @@ class LibraryViewModel @Inject constructor(
     private val localCacheConfiguration: LocalCacheConfiguration
 ) : ViewModel() {
 
-    private val _isCacheForce = MutableLiveData(preferences.isForceCache())
-    val isCacheForce: LiveData<Boolean> = _isCacheForce
-
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
@@ -94,17 +91,6 @@ class LibraryViewModel @Inject constructor(
     fun dropHiddenBooks() {
         _hiddenBooks.value = emptyList()
     }
-
-    fun toggleCacheForce() {
-        when (localCacheUsing()) {
-            true -> preferences.disableForceCache()
-            false -> preferences.enableForceCache()
-        }
-
-        _isCacheForce.postValue(localCacheUsing())
-    }
-
-    fun localCacheUsing() = localCacheConfiguration.localCacheUsing()
 
     companion object {
         private const val PAGE_SIZE = 10

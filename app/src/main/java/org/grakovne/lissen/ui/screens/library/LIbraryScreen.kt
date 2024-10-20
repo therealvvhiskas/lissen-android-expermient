@@ -201,7 +201,7 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    imageVector = when (libraryViewModel.localCacheUsing()) {
+                                    imageVector = when (cachingModelView.localCacheUsing()) {
                                         true -> Icons.Outlined.Cloud
                                         else -> Icons.Outlined.CloudOff
                                     },
@@ -210,7 +210,7 @@ fun LibraryScreen(
                             },
                             text = {
                                 Text(
-                                    text = when (libraryViewModel.localCacheUsing()) {
+                                    text = when (cachingModelView.localCacheUsing()) {
                                         true -> stringResource(R.string.disable_offline)
                                         else -> stringResource(R.string.enable_offline)
                                     },
@@ -222,7 +222,7 @@ fun LibraryScreen(
                                 navigationItemSelected = false
 
                                 libraryViewModel.dropHiddenBooks()
-                                libraryViewModel.toggleCacheForce()
+                                cachingModelView.toggleCacheForce()
 
                                 CoroutineScope(Dispatchers.IO).launch {
                                     refreshContent(showRefreshing = false)
@@ -366,7 +366,7 @@ fun LibraryScreen(
                                     navController = navController,
                                     cachingModelView = cachingModelView,
                                     onRemoveBook = {
-                                        if (libraryViewModel.localCacheUsing()) {
+                                        if (cachingModelView.localCacheUsing()) {
                                             libraryViewModel.hideBook(book.id)
                                         }
                                     }
