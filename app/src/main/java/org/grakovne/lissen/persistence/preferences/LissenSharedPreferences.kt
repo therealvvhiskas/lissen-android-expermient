@@ -6,7 +6,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.grakovne.lissen.content.channel.common.ChannelCode
+import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
 import java.util.UUID
@@ -23,10 +23,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
-    fun getPreferredChannel(): ChannelCode = when (isForceCache()) {
-        true -> ChannelCode.LOCAL_CACHE
-        false -> ChannelCode.AUDIOBOOKSHELF // TODO: Implement selector once second channel got
-    }
+    fun getPreferredChannel(): ChannelCode = ChannelCode.AUDIOBOOKSHELF // TODO: Implement selector once second channel got
 
     fun hasCredentials(): Boolean {
         val host = getHost()

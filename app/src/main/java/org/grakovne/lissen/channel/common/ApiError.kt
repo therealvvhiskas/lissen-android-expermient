@@ -1,4 +1,4 @@
-package org.grakovne.lissen.content.channel.common
+package org.grakovne.lissen.channel.common
 
 sealed class ApiError {
     data object Unauthorized : ApiError()

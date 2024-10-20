@@ -1,4 +1,4 @@
-package org.grakovne.lissen.content.channel.common
+package org.grakovne.lissen.channel.common
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

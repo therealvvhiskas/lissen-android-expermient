@@ -70,7 +70,10 @@ interface CachedBookDao {
 
     @Transaction
     @Query("SELECT * FROM detailed_books ORDER BY title LIMIT :pageSize OFFSET :pageNumber * :pageSize")
-    suspend fun fetchCachedBooks(pageNumber: Int, pageSize: Int): List<BookEntity>
+    suspend fun fetchCachedBooks(
+        pageNumber: Int,
+        pageSize: Int
+    ): List<BookEntity>
 
     @Transaction
     @Query(

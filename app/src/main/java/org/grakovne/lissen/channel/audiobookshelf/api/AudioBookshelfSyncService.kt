@@ -1,7 +1,7 @@
 package org.grakovne.lissen.channel.audiobookshelf.api
 
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
-import org.grakovne.lissen.content.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.PlaybackProgress
 import javax.inject.Inject
 import javax.inject.Singleton

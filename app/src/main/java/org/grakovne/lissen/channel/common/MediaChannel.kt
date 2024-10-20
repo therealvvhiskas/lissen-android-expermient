@@ -1,4 +1,4 @@
-package org.grakovne.lissen.content.channel.common
+package org.grakovne.lissen.channel.common
 
 import android.net.Uri
 import org.grakovne.lissen.domain.Book

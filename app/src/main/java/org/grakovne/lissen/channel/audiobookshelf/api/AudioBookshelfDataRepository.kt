@@ -7,13 +7,14 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
+import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
-import org.grakovne.lissen.content.channel.common.ApiClient
-import org.grakovne.lissen.content.channel.common.ApiError
-import org.grakovne.lissen.content.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.ApiClient
+import org.grakovne.lissen.channel.common.ApiError
+import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
@@ -53,7 +54,7 @@ class AudioBookshelfDataRepository @Inject constructor(
     suspend fun fetchPersonalizedFeed(libraryId: String): ApiResult<List<PersonalizedFeedResponse>> =
         safeApiCall { getClientInstance().fetchPersonalizedFeed(libraryId) }
 
-    suspend fun fetchLibraryItemProgress(itemId: String): ApiResult<org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse> =
+    suspend fun fetchLibraryItemProgress(itemId: String): ApiResult<MediaProgressResponse> =
         safeApiCall { getClientInstance().fetchLibraryItemProgress(itemId) }
 
     suspend fun startPlayback(
