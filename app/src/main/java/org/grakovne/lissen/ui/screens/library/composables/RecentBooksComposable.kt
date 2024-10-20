@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
 fun RecentBooksComposable(
@@ -56,14 +59,15 @@ fun RecentBooksComposable(
             .padding(horizontal = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        recentBooks.forEach { book ->
-            RecentBookItemComposable(
-                book = book,
-                width = itemWidth,
-                imageLoader = imageLoader,
-                navController = navController
-            )
-        }
+        recentBooks
+            .forEach { book ->
+                RecentBookItemComposable(
+                    book = book,
+                    width = itemWidth,
+                    imageLoader = imageLoader,
+                    navController = navController
+                )
+            }
     }
 }
 
@@ -107,7 +111,7 @@ fun RecentBookItemComposable(
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp)),
-            error = painterResource(R.drawable.fallback_cover)
+            error = painterResource(R.drawable.cover_fallback)
         )
 
         Spacer(modifier = Modifier.height(8.dp))

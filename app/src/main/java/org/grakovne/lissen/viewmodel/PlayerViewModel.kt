@@ -9,14 +9,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.playback.MediaRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val mediaRepository: MediaRepository
 ) : ViewModel() {
 

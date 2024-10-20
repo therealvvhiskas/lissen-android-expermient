@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "org.grakovne.lissen"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.androidx.media3.ui)
 
     implementation(libs.androidx.room.runtime)
+    implementation (libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
 

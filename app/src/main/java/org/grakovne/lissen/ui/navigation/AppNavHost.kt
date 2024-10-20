@@ -9,6 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import coil.ImageLoader
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
@@ -18,7 +19,8 @@ import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    preferences: LissenSharedPreferences
+    preferences: LissenSharedPreferences,
+    imageLoader: ImageLoader
 ) {
     val hasCredentials by remember {
         mutableStateOf(
@@ -36,7 +38,7 @@ fun AppNavHost(
     ) {
 
         composable("library_screen") {
-            LibraryScreen(navController)
+            LibraryScreen(navController = navController, imageLoader = imageLoader)
         }
 
         composable(
@@ -51,9 +53,7 @@ fun AppNavHost(
 
             PlayerScreen(
                 navController = navController,
-                onBack = {
-                    navController.popBackStack()
-                },
+                imageLoader = imageLoader,
                 bookId = bookId,
                 bookTitle = bookTitle
             )

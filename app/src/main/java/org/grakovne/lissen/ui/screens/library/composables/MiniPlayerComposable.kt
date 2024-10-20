@@ -88,7 +88,7 @@ fun MiniPlayerComposable(
                     .size(48.dp)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(4.dp)),
-                error = painterResource(R.drawable.fallback_cover)
+                error = painterResource(R.drawable.cover_fallback)
             )
 
             Spacer(modifier = Modifier.width(16.dp))

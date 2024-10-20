@@ -1,7 +1,6 @@
 package org.grakovne.lissen.channel.common
 
 import android.net.Uri
-import org.grakovne.lissen.ChannelCode
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
@@ -18,7 +17,7 @@ interface MediaChannel {
 
     fun provideFileUri(
         libraryItemId: String,
-        chapterId: String
+        fileId: String
     ): Uri
 
     fun provideBookCover(
@@ -26,7 +25,7 @@ interface MediaChannel {
     ): Uri
 
     suspend fun syncProgress(
-        itemId: String,
+        sessionId: String,
         progress: PlaybackProgress
     ): ApiResult<Unit>
 
@@ -43,7 +42,7 @@ interface MediaChannel {
     suspend fun fetchLibraries(): ApiResult<List<Library>>
 
     suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession>

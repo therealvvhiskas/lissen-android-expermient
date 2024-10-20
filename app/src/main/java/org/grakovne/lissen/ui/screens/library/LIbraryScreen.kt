@@ -19,7 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
@@ -38,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -45,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -58,20 +61,23 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import dagger.hilt.android.EntryPointAccessors
+import coil.ImageLoader
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
-import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
+import org.grakovne.lissen.viewmodel.CachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -79,15 +85,39 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @Composable
 fun LibraryScreen(
     navController: NavController,
-    viewModel: LibraryViewModel = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    libraryViewModel: LibraryViewModel = hiltViewModel(),
+    cachingModelView: CachingModelView = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel(),
+    imageLoader: ImageLoader
 ) {
 
-    val library: LazyPagingItems<Book> = viewModel.libraryPager.collectAsLazyPagingItems()
-    val recentBooks: List<RecentBook> by viewModel.recentBooks.observeAsState(emptyList())
+    val coroutineScope = rememberCoroutineScope()
 
-    val recentBookRefreshing by viewModel.recentBookUpdating.observeAsState(false)
+    val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
+    val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
+
+    val hiddenBooks by libraryViewModel.hiddenBooks.collectAsState()
+
+    val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
+
+    fun refreshContent(showRefreshing: Boolean) {
+        coroutineScope.launch {
+            if (showRefreshing) {
+                pullRefreshing = true
+            }
+
+            withMinimumTime(500) {
+                listOf(
+                    async { libraryViewModel.dropHiddenBooks() },
+                    async { library.refresh() },
+                    async { libraryViewModel.fetchRecentListening() },
+                ).awaitAll()
+            }
+
+            pullRefreshing = false
+        }
+    }
 
     val isContentLoading by remember {
         derivedStateOf {
@@ -99,44 +129,26 @@ fun LibraryScreen(
 
     var navigationItemSelected by remember { mutableStateOf(false) }
 
-    val coroutineScope = rememberCoroutineScope()
-
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
         onRefresh = {
-            coroutineScope.launch {
-                pullRefreshing = true
-                withMinimumTime(500) {
-                    listOf(
-                        async { library.refresh() },
-                        async { viewModel.fetchRecentListening() },
-                    ).awaitAll()
-                }
-
-                pullRefreshing = false
-            }
+            refreshContent(showRefreshing = true)
         }
     )
 
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
-    val listState = rememberLazyListState()
+    val libraryListState = rememberLazyListState()
 
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) { viewModel.refreshContent() }
-
-    val imageLoader = remember {
-        EntryPointAccessors
-            .fromApplication(context, ImageLoaderEntryPoint::class.java)
-            .getImageLoader()
-    }
+    LaunchedEffect(Unit) { libraryViewModel.refreshRecentListening() }
 
     val navBarTitle by remember {
         derivedStateOf {
-            val firstVisibleItemIndex = listState.firstVisibleItemIndex
+            val firstVisibleItemIndex = libraryListState.firstVisibleItemIndex
             when {
                 firstVisibleItemIndex >= 1 -> context.getString(R.string.library_screen_library_title)
                 else -> context.getString(R.string.library_screen_continue_listening_title)
@@ -145,11 +157,14 @@ fun LibraryScreen(
         }
     }
 
+
     Scaffold(
         topBar = {
             TopAppBar(
                 actions = {
-                    IconButton(onClick = { navigationItemSelected = true }) {
+                    IconButton(onClick = {
+                        navigationItemSelected = true
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.MoreVert,
                             contentDescription = "Menu"
@@ -162,28 +177,6 @@ fun LibraryScreen(
                             .background(colorScheme.background)
                             .padding(8.dp)
                     ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    modifier = Modifier.alpha(0.6f),
-                                    imageVector = Icons.Outlined.Download,
-                                    contentDescription = null,
-                                )
-                            },
-                            text = {
-                                Text(
-                                    stringResource(R.string.library_screen_downloads_menu_item),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .alpha(0.6f)
-                                )
-                            },
-                            onClick = { navigationItemSelected = false },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
@@ -206,6 +199,47 @@ fun LibraryScreen(
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
                         )
+
+                        DropdownMenuItem(
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = when (cachingModelView.localCacheUsing()) {
+                                        true -> Icons.Outlined.Cloud
+                                        else -> Icons.Outlined.CloudOff
+                                    },
+                                    contentDescription = null
+                                )
+                            },
+                            text = {
+                                Text(
+                                    text = when (cachingModelView.localCacheUsing()) {
+                                        true -> stringResource(R.string.disable_offline)
+                                        else -> stringResource(R.string.enable_offline)
+                                    },
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            },
+                            onClick = {
+                                navigationItemSelected = false
+
+                                coroutineScope.launch {
+                                    withFrameNanos { }
+
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        cachingModelView.toggleCacheForce()
+                                        libraryViewModel.dropHiddenBooks()
+
+                                        refreshContent(showRefreshing = false)
+
+                                    }
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        )
+
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
@@ -223,7 +257,7 @@ fun LibraryScreen(
                                         .alpha(0.6f)
                                 )
                             },
-                            onClick = { navigationItemSelected = false },
+                            onClick = { },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -262,7 +296,7 @@ fun LibraryScreen(
                     .fillMaxSize()
             ) {
                 LazyColumn(
-                    state = listState,
+                    state = libraryListState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
@@ -271,9 +305,17 @@ fun LibraryScreen(
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
+                            val showingBooks by remember(recentBooks, hiddenBooks) {
+                                derivedStateOf {
+                                    recentBooks.filter {
+                                        libraryViewModel.isVisible(it.id)
+                                    }
+                                }
+                            }
+
                             RecentBooksComposable(
                                 navController = navController,
-                                recentBooks = recentBooks,
+                                recentBooks = showingBooks,
                                 imageLoader = imageLoader
                             )
                         }
@@ -319,11 +361,24 @@ fun LibraryScreen(
                         }
                     } else {
                         items(count = library.itemCount) {
-                            BookComposable(
-                                book = library[it] ?: return@items,
-                                imageLoader = imageLoader,
-                                navController = navController,
-                            )
+                            val book = library[it] ?: return@items
+                            val isVisible = remember(hiddenBooks, book.id) {
+                                derivedStateOf { libraryViewModel.isVisible(book.id) }
+                            }
+
+                            if (isVisible.value) {
+                                BookComposable(
+                                    book = book,
+                                    imageLoader = imageLoader,
+                                    navController = navController,
+                                    cachingModelView = cachingModelView,
+                                    onRemoveBook = {
+                                        if (cachingModelView.localCacheUsing()) {
+                                            libraryViewModel.hideBook(book.id)
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }

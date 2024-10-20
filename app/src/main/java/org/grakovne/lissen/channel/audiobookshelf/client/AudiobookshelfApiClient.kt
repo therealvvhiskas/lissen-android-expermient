@@ -5,10 +5,7 @@ import org.grakovne.lissen.channel.audiobookshelf.model.LibraryItemsResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.LoginResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.PersonalizedFeedResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
-import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -30,7 +27,7 @@ interface AudiobookshelfApiClient {
     @GET("/api/me/progress/{itemId}")
     suspend fun fetchLibraryItemProgress(
         @Path("itemId") itemId: String
-    ): Response<MediaProgressResponse>
+    ): Response<org.grakovne.lissen.channel.audiobookshelf.model.MediaProgressResponse>
 
     @GET("api/libraries/{libraryId}/items?sort=media.metadata.title&minified=1")
     suspend fun fetchLibraryItems(
@@ -53,8 +50,8 @@ interface AudiobookshelfApiClient {
     @POST("/api/items/{itemId}/play")
     suspend fun startPlayback(
         @Path("itemId") itemId: String,
-        @Body syncProgressRequest: StartPlaybackRequest
-    ): Response<PlaybackSessionResponse>
+        @Body syncProgressRequest: org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
+    ): Response<org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse>
 
     @POST("/api/session/{sessionId}/close")
     suspend fun stopPlayback(

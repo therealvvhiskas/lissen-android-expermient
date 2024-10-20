@@ -2,9 +2,9 @@ package org.grakovne.lissen.channel.audiobookshelf.api
 
 import okhttp3.ResponseBody
 import org.grakovne.lissen.channel.audiobookshelf.client.AudiobookshelfMediaClient
+import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.BinaryApiClient
-import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
 import java.io.IOException
@@ -31,22 +31,22 @@ class AudioBookshelfMediaRepository @Inject constructor(
 
             return when (response.code()) {
                 200 -> when (val body = response.body()) {
-                    null -> ApiResult.Error(FetchTokenApiError.InternalError)
+                    null -> ApiResult.Error(ApiError.InternalError)
                     else -> ApiResult.Success(body.byteStream())
                 }
 
-                400 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                401 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
-                403 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
-                404 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                500 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                else -> ApiResult.Error(FetchTokenApiError.InternalError)
+                400 -> ApiResult.Error(ApiError.InternalError)
+                401 -> ApiResult.Error(ApiError.Unauthorized)
+                403 -> ApiResult.Error(ApiError.Unauthorized)
+                404 -> ApiResult.Error(ApiError.InternalError)
+                500 -> ApiResult.Error(ApiError.InternalError)
+                else -> ApiResult.Error(ApiError.InternalError)
             }
         } catch (e: IOException) {
-            ApiResult.Error(FetchTokenApiError.NetworkError)
+            ApiResult.Error(ApiError.NetworkError)
         } catch (e: Exception) {
             println(e)
-            ApiResult.Error(FetchTokenApiError.InternalError)
+            ApiResult.Error(ApiError.InternalError)
         }
     }
 

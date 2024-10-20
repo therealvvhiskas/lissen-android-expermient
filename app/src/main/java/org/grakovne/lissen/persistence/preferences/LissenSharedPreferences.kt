@@ -6,7 +6,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.grakovne.lissen.ChannelCode
+import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
 import java.util.UUID
@@ -23,7 +23,8 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
-    fun getPreferredChannel(): ChannelCode? = ChannelCode.AUDIOBOOKSHELF
+    fun getPreferredChannel(): ChannelCode =
+        ChannelCode.AUDIOBOOKSHELF // TODO: Implement selector once second channel got
 
     fun hasCredentials(): Boolean {
         val host = getHost()
@@ -85,6 +86,15 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private fun getPreferredLibraryName(): String? =
         sharedPreferences.getString(KEY_PREFERRED_LIBRARY_NAME, null)
 
+    fun enableForceCache() =
+        sharedPreferences.edit().putBoolean(CACHE_FORCE_ENABLED_TOKEN, true).apply()
+
+    fun disableForceCache() =
+        sharedPreferences.edit().putBoolean(CACHE_FORCE_ENABLED_TOKEN, false).apply()
+
+    fun isForceCache(): Boolean {
+        return sharedPreferences.getBoolean(CACHE_FORCE_ENABLED_TOKEN, false)
+    }
 
     fun saveUsername(username: String) =
         sharedPreferences.edit().putString(KEY_USERNAME, username).apply()
@@ -107,6 +117,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         private const val KEY_HOST = "host"
         private const val KEY_USERNAME = "username"
         private const val KEY_TOKEN = "token"
+        private const val CACHE_FORCE_ENABLED_TOKEN = "cache_force_enabled"
 
         private const val KEY_DEVICE_ID = "device_id"
 

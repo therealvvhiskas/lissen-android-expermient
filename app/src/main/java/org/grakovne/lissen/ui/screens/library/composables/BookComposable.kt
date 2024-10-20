@@ -15,14 +15,20 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDownload
+import androidx.compose.material.icons.outlined.Downloading
+import androidx.compose.material.icons.outlined.SdCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,16 +39,24 @@ import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
+import org.grakovne.lissen.content.cache.CacheProgress
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
+import org.grakovne.lissen.viewmodel.BookCacheAction
+import org.grakovne.lissen.viewmodel.CachingModelView
 
 @Composable
 fun BookComposable(
     book: Book,
     imageLoader: ImageLoader,
-    navController: NavController
+    navController: NavController,
+    cachingModelView: CachingModelView,
+    onRemoveBook: () -> Unit
 ) {
+    val cacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,7 +86,7 @@ fun BookComposable(
                 .size(64.dp)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(4.dp)),
-            error = painterResource(R.drawable.fallback_cover)
+            error = painterResource(R.drawable.cover_fallback)
         )
 
         Spacer(modifier = Modifier.width(16.dp))
@@ -102,17 +116,53 @@ fun BookComposable(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                imageVector = if (book.downloaded) Icons.Outlined.CloudDownload else Icons.Outlined.Cloud,
-                contentDescription = if (book.downloaded) "Downloaded" else "Not Downloaded",
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            IconButton(
+                onClick = {
+                    cachingModelView
+                        .provideCacheAction(book)
+                        ?.let {
+                            when (it) {
+                                BookCacheAction.CACHE -> cachingModelView.cacheBook(book)
+                                BookCacheAction.DROP -> {
+                                    cachingModelView.dropCache(book)
+                                    onRemoveBook.invoke()
+                                }
+                            }
+                        }
+
+                },
+                modifier = Modifier.size(36.dp)
+            ) {
+                Icon(
+                    imageVector = provideCachingStateIcon(book, cacheProgress),
+                    contentDescription = "Caching Book State"
+                )
+            }
             Text(
                 text = book.duration.formatShortly(),
                 style = MaterialTheme.typography.bodySmall
             )
+
+            Spacer(Modifier.height(6.dp))
         }
     }
+}
+
+private fun provideCachingStateIcon(
+    book: Book,
+    cacheProgress: CacheProgress
+): ImageVector = when (cacheProgress) {
+    CacheProgress.Completed -> Icons.Outlined.CloudDownload
+    CacheProgress.Removed -> Icons.Outlined.Cloud
+    CacheProgress.Error -> Icons.Outlined.Cloud
+    CacheProgress.Idle -> provideIdleStateIcon(book)
+    is CacheProgress.Caching -> Icons.Outlined.Downloading
+}
+
+private fun provideIdleStateIcon(book: Book): ImageVector = when (book.cachedState) {
+    BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.Cloud
+    BookCachedState.CACHED -> Icons.Outlined.CloudDownload
+    BookCachedState.STORED_LOCALLY -> Icons.Outlined.SdCard
 }

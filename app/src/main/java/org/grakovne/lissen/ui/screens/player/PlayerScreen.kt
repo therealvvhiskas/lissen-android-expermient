@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.ImageLoader
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
@@ -45,7 +46,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @Composable
 fun PlayerScreen(
     navController: NavController,
-    onBack: () -> Unit,
+    imageLoader: ImageLoader,
     bookId: String?,
     bookTitle: String?
 ) {
@@ -74,7 +75,7 @@ fun PlayerScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBack() }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = "Back",
@@ -112,7 +113,8 @@ fun PlayerScreen(
                             TrackDetailsPlaceholderComposable(bookTitle ?: "")
                         } else {
                             TrackDetailsComposable(
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                imageLoader = imageLoader
                             )
                         }
 

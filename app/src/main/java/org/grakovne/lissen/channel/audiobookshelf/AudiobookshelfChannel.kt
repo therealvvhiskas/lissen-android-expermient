@@ -3,7 +3,6 @@ package org.grakovne.lissen.channel.audiobookshelf
 import android.net.Uri
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import org.grakovne.lissen.ChannelCode
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
@@ -12,10 +11,9 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseC
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
-import org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo
-import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ApiResult.Success
+import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
@@ -47,14 +45,14 @@ class AudiobookshelfChannel @Inject constructor(
 
     override fun provideFileUri(
         libraryItemId: String,
-        chapterId: String
+        fileId: String
     ): Uri = Uri.parse(preferences.getHost())
         .buildUpon()
         .appendPath("api")
         .appendPath("items")
         .appendPath(libraryItemId)
         .appendPath("file")
-        .appendPath(chapterId)
+        .appendPath(fileId)
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
@@ -70,13 +68,13 @@ class AudiobookshelfChannel @Inject constructor(
         .build()
 
     override suspend fun syncProgress(
-        itemId: String,
+        sessionId: String,
         progress: PlaybackProgress
-    ): ApiResult<Unit> = syncService.syncProgress(itemId, progress)
+    ): ApiResult<Unit> = syncService.syncProgress(sessionId, progress)
 
     override suspend fun fetchBookCover(
-        itemId: String
-    ): ApiResult<InputStream> = mediaRepository.fetchBookCover(itemId)
+        bookId: String
+    ): ApiResult<InputStream> = mediaRepository.fetchBookCover(bookId)
 
     override suspend fun fetchBooks(
         libraryId: String,
@@ -95,13 +93,13 @@ class AudiobookshelfChannel @Inject constructor(
         .map { libraryResponseConverter.apply(it) }
 
     override suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession> {
-        val request = StartPlaybackRequest(
+        val request = org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest(
             supportedMimeTypes = supportedMimeTypes,
-            deviceInfo = DeviceInfo(
+            deviceInfo = org.grakovne.lissen.channel.audiobookshelf.model.DeviceInfo(
                 clientName = getClientName(),
                 deviceId = deviceId
             ),
@@ -112,7 +110,7 @@ class AudiobookshelfChannel @Inject constructor(
 
         return dataRepository
             .startPlayback(
-                itemId = itemId,
+                itemId = bookId,
                 request = request
             )
             .map { sessionResponseConverter.apply(it) }

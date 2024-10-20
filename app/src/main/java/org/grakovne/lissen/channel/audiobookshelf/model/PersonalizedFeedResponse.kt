@@ -10,6 +10,7 @@ data class PersonalizedFeedItemResponse(
     val id: String,
     val libraryId: String,
     val media: PersonalizedFeedItemMediaResponse,
+    val updateAt: Long
 )
 
 data class PersonalizedFeedItemMediaResponse(

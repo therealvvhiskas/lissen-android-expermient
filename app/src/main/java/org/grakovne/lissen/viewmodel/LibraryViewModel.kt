@@ -11,9 +11,12 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.channel.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
+import org.grakovne.lissen.content.LocalCacheConfiguration
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -22,15 +25,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val mediaChannel: LissenMediaChannel,
-    private val preferences: LissenSharedPreferences
+    private val mediaChannel: LissenMediaProvider,
+    private val preferences: LissenSharedPreferences,
+    private val localCacheConfiguration: LocalCacheConfiguration
 ) : ViewModel() {
 
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
     val recentBooks: LiveData<List<RecentBook>> = _recentBooks
 
-    private val _recentBookUpdating = MutableLiveData<Boolean>(false)
+    private val _recentBookUpdating = MutableLiveData(false)
     val recentBookUpdating: LiveData<Boolean> = _recentBookUpdating
+
+    private val _hiddenBooks = MutableStateFlow<List<String>>(emptyList())
+    val hiddenBooks: StateFlow<List<String>> = _hiddenBooks
 
     val libraryPager: Flow<PagingData<Book>> by lazy {
         val libraryId = preferences.getPreferredLibrary()?.id ?: ""
@@ -44,8 +51,14 @@ class LibraryViewModel @Inject constructor(
         ).flow.cachedIn(viewModelScope)
     }
 
+    fun isVisible(bookId: String): Boolean {
+        return when (localCacheConfiguration.localCacheUsing()) {
+            true -> !hiddenBooks.value.contains(bookId)
+            false -> true
+        }
+    }
 
-    fun refreshContent() {
+    fun refreshRecentListening() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 launch(Dispatchers.IO) { fetchRecentListening() }
@@ -69,6 +82,14 @@ class LibraryViewModel @Inject constructor(
                     }
                 )
         }
+    }
+
+    fun hideBook(bookId: String) {
+        _hiddenBooks.value += bookId
+    }
+
+    fun dropHiddenBooks() {
+        _hiddenBooks.value = emptyList()
     }
 
     companion object {

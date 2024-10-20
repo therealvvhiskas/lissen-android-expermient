@@ -13,8 +13,8 @@ import org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse
 import org.grakovne.lissen.channel.audiobookshelf.model.StartPlaybackRequest
 import org.grakovne.lissen.channel.audiobookshelf.model.SyncProgressRequest
 import org.grakovne.lissen.channel.common.ApiClient
+import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
-import org.grakovne.lissen.channel.common.FetchTokenApiError
 import org.grakovne.lissen.domain.UserAccount
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import retrofit2.Response
@@ -81,7 +81,7 @@ class AudioBookshelfDataRepository @Inject constructor(
         secureClient = null
 
         if (host.isBlank() || !urlPattern.matches(host)) {
-            return ApiResult.Error(FetchTokenApiError.InvalidCredentialsHost)
+            return ApiResult.Error(ApiError.InvalidCredentialsHost)
         }
 
         lateinit var apiService: AudiobookshelfApiClient
@@ -90,7 +90,7 @@ class AudioBookshelfDataRepository @Inject constructor(
             val apiClient = ApiClient(host = host)
             apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
         } catch (e: Exception) {
-            return ApiResult.Error(FetchTokenApiError.InternalError)
+            return ApiResult.Error(ApiError.InternalError)
         }
 
         val response: ApiResult<LoginResponse> =
@@ -114,21 +114,21 @@ class AudioBookshelfDataRepository @Inject constructor(
 
             return when (response.code()) {
                 200 -> when (val body = response.body()) {
-                    null -> ApiResult.Error(FetchTokenApiError.InternalError)
+                    null -> ApiResult.Error(ApiError.InternalError)
                     else -> ApiResult.Success(body)
                 }
 
-                400 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                401 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
-                403 -> ApiResult.Error(FetchTokenApiError.Unauthorized)
-                404 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                500 -> ApiResult.Error(FetchTokenApiError.InternalError)
-                else -> ApiResult.Error(FetchTokenApiError.InternalError)
+                400 -> ApiResult.Error(ApiError.InternalError)
+                401 -> ApiResult.Error(ApiError.Unauthorized)
+                403 -> ApiResult.Error(ApiError.Unauthorized)
+                404 -> ApiResult.Error(ApiError.InternalError)
+                500 -> ApiResult.Error(ApiError.InternalError)
+                else -> ApiResult.Error(ApiError.InternalError)
             }
         } catch (e: IOException) {
-            ApiResult.Error(FetchTokenApiError.NetworkError)
+            ApiResult.Error(ApiError.NetworkError)
         } catch (e: Exception) {
-            ApiResult.Error(FetchTokenApiError.InternalError)
+            ApiResult.Error(ApiError.InternalError)
         }
     }
 
