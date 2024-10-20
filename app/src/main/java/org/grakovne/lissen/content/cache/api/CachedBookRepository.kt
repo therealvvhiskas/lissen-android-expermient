@@ -67,7 +67,7 @@ class CachedBookRepository @Inject constructor(
             bookId = bookId,
             currentTime = progress.currentTime,
             isFinished = progress.currentTime == book.chapters.sumOf { it.duration },
-            lastUpdate = Instant.now().toEpochMilli() / 1000
+            lastUpdate = Instant.now().toEpochMilli()
         )
 
         bookDao.upsertMediaProgress(entity)
