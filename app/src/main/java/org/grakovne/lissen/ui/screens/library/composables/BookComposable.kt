@@ -117,7 +117,10 @@ fun BookComposable(
             verticalArrangement = Arrangement.Center,
         ) {
             IconButton(
-                onClick = { cachingModelView.toggleBookLocalCache(book) },
+                onClick = {
+                    cachingModelView.toggleBookLocalCache(book)
+
+                },
                 modifier = Modifier.size(36.dp)
             ) {
                 Icon(
