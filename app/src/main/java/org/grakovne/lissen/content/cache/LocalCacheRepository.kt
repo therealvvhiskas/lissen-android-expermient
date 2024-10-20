@@ -55,13 +55,11 @@ class LocalCacheRepository @Inject constructor(
     }
 
     suspend fun fetchBooks(
-        libraryId: String,
         pageSize: Int,
         pageNumber: Int
     ): ApiResult<PagedItems<Book>> {
         val books = cachedBookRepository
             .fetchBooks(
-                libraryId = libraryId,
                 pageNumber = pageNumber,
                 pageSize = pageSize
             )

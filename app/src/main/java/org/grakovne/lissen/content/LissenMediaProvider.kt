@@ -66,7 +66,7 @@ class LissenMediaProvider @Inject constructor(
         pageSize: Int,
         pageNumber: Int
     ): ApiResult<PagedItems<Book>> = when (useCache()) {
-        true -> localCacheRepository.fetchBooks(libraryId, pageSize, pageNumber)
+        true -> localCacheRepository.fetchBooks(pageSize, pageNumber)
         false -> {
             providePreferredChannel()
                 .fetchBooks(libraryId, pageSize, pageNumber)
