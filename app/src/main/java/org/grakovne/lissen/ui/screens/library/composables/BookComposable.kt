@@ -55,7 +55,7 @@ fun BookComposable(
     cachingModelView: CachingModelView,
     onRemoveBook: () -> Unit
 ) {
-    val cacheProgress: CacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
+    val cacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
 
     Row(
         modifier = Modifier
