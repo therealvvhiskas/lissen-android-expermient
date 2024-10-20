@@ -9,17 +9,14 @@ import org.grakovne.lissen.content.cache.BookCachingService
 import org.grakovne.lissen.content.cache.CacheProgress
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.BookCachedState
-import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
 @HiltViewModel
 class CachingModelView @Inject constructor(
-    private val cachingService: BookCachingService,
-    private val preferences: LissenSharedPreferences
+    private val cachingService: BookCachingService
 ) : ViewModel() {
 
     private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
-    val bookCachingProgress = _bookCachingProgress
 
     fun toggleBookLocalCache(
         book: Book
@@ -38,12 +35,9 @@ class CachingModelView @Inject constructor(
 
     private fun cacheBook(book: Book) {
         viewModelScope.launch {
-            val progressFlow = cachingService.cacheBook(book)
-            progressFlow
-                .collect { progress ->
-                    _bookCachingProgress[book.id]?.value = progress
-
-                }
+            cachingService
+                .cacheBook(book)
+                .collect { _bookCachingProgress[book.id]?.value = it }
         }
     }
 
