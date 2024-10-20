@@ -63,7 +63,7 @@ class PlaybackSynchronizationService @OptIn(UnstableApi::class)
         serviceScope
             .launch(Dispatchers.IO) {
                 playbackSession
-                    ?.takeIf { it.itemId == currentBook?.id }
+                    ?.takeIf { it.bookId == currentBook?.id }
                     ?.let { synchronizeProgress(it, overallProgress) }
                     ?: openPlaybackSession()
             }
@@ -87,7 +87,7 @@ class PlaybackSynchronizationService @OptIn(UnstableApi::class)
             ?.let { book ->
                 mediaChannel
                     .startPlayback(
-                        itemId = book.id,
+                        bookId = book.id,
                         deviceId = sharedPreferences.getDeviceId(),
                         supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes()
                     )

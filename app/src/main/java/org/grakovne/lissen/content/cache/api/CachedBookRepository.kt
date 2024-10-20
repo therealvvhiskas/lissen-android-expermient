@@ -5,10 +5,15 @@ import androidx.core.net.toUri
 import org.grakovne.lissen.content.cache.CacheBookStorageProperties
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityConverter
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConverter
+import org.grakovne.lissen.content.cache.converter.CachedBookEntityRecentConverter
 import org.grakovne.lissen.content.cache.dao.CachedBookDao
+import org.grakovne.lissen.content.cache.entity.MediaProgressEntity
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.domain.PlaybackProgress
+import org.grakovne.lissen.domain.RecentBook
 import java.io.File
+import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +22,8 @@ class CachedBookRepository @Inject constructor(
     private val bookDao: CachedBookDao,
     private val properties: CacheBookStorageProperties,
     private val cachedBookEntityConverter: CachedBookEntityConverter,
-    private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter
+    private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter,
+    private val cachedBookEntityRecentConverter: CachedBookEntityRecentConverter
 ) {
 
     fun provideFileUri(bookId: String, fileId: String): Uri = properties
@@ -43,9 +49,27 @@ class CachedBookRepository @Inject constructor(
         .fetchCachedBooks(pageNumber = pageNumber, pageSize = pageSize)
         .map { cachedBookEntityConverter.apply(it) }
 
+    suspend fun fetchRecentBooks(): List<RecentBook> =
+        bookDao
+            .fetchRecentlyListenedCachedBooks()
+            .map { cachedBookEntityRecentConverter.apply(it) }
+
     suspend fun fetchBook(
         bookId: String
     ): DetailedBook? = bookDao
         .fetchCachedBook(bookId)
         ?.let { cachedBookEntityDetailedConverter.apply(it) }
+
+    suspend fun syncProgress(bookId: String, progress: PlaybackProgress) {
+        val book = bookDao.fetchCachedBook(bookId) ?: return
+
+        val entity = MediaProgressEntity(
+            bookId = bookId,
+            currentTime = progress.currentTime,
+            isFinished = progress.currentTime == book.chapters.sumOf { it.duration },
+            lastUpdate = Instant.now().toEpochMilli() / 1000
+        )
+
+        bookDao.upsertMediaProgress(entity)
+    }
 }

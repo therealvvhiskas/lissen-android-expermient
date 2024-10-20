@@ -73,6 +73,16 @@ interface CachedBookDao {
     suspend fun fetchCachedBooks(pageNumber: Int, pageSize: Int): List<BookEntity>
 
     @Transaction
+    @Query("""
+        SELECT * FROM detailed_books
+        INNER JOIN media_progress ON detailed_books.id = media_progress.bookId
+        ORDER BY media_progress.lastUpdate DESC
+        LIMIT 10
+    """)
+    suspend fun fetchRecentlyListenedCachedBooks(): List<BookEntity>
+
+
+    @Transaction
     @Query("SELECT * FROM detailed_books WHERE id = :bookId")
     suspend fun fetchCachedBook(bookId: String): CachedBookEntity?
 
@@ -91,6 +101,10 @@ interface CachedBookDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertMediaProgress(progress: MediaProgressEntity)
+
+    @Transaction
+    @Query("SELECT * FROM media_progress WHERE bookId = :bookId")
+    suspend fun fetchMediaProgress(bookId: String): MediaProgressEntity?
 
     @Update
     suspend fun updateMediaProgress(progress: MediaProgressEntity)

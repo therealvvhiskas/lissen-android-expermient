@@ -8,4 +8,5 @@ sealed class ApiError {
     data object MissingCredentialsUsername : ApiError()
     data object MissingCredentialsPassword : ApiError()
     data object InternalError : ApiError()
+    data object UnsupportedError : ApiError()
 }

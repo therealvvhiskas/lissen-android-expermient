@@ -37,7 +37,15 @@ class LocalCacheChannel @Inject constructor(
             .let { parse(it) }
 
 
-    override suspend fun syncProgress(itemId: String, progress: PlaybackProgress): ApiResult<Unit> {
+    /**
+     * For the local cache we avoiding to create intermediary entity like Session and using BookId
+     * as a Playback Session Key
+     */
+    override suspend fun syncProgress(
+        sessionId: String,
+        progress: PlaybackProgress
+    ): ApiResult<Unit> {
+        cachedBookRepository.syncProgress(sessionId, progress)
         return ApiResult.Success(Unit)
     }
 
@@ -75,24 +83,37 @@ class LocalCacheChannel @Inject constructor(
         .fetchLibraries()
         .let { ApiResult.Success(it) }
 
+    /**
+     * For the local cache we avoiding to create intermediary entity like Session and using BookId
+     * as a Playback Session Key
+     */
     override suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession> =
-        ApiResult.Error(ApiError.InternalError)
+        ApiResult
+            .Success(
+                PlaybackSession(
+                    bookId = bookId,
+                    sessionId = bookId
+                )
+            )
 
     override suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>> =
-        ApiResult.Success(emptyList())
+        cachedBookRepository.fetchRecentBooks().let { ApiResult.Success(it) }
 
     override suspend fun fetchBook(bookId: String) = cachedBookRepository
         .fetchBook(bookId)
         ?.let { ApiResult.Success(it) }
         ?: ApiResult.Error(ApiError.InternalError)
 
+    /**
+     * User not able to log into his local cache because it's not secured.
+     */
     override suspend fun authorize(
         host: String,
         username: String,
         password: String
-    ): ApiResult<UserAccount> = ApiResult.Error(ApiError.InternalError)
+    ): ApiResult<UserAccount> = ApiResult.Error(ApiError.UnsupportedError)
 }

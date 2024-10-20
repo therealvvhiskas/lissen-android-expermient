@@ -25,7 +25,7 @@ interface MediaChannel {
     ): Uri
 
     suspend fun syncProgress(
-        itemId: String,
+        sessionId: String,
         progress: PlaybackProgress
     ): ApiResult<Unit>
 
@@ -42,7 +42,7 @@ interface MediaChannel {
     suspend fun fetchLibraries(): ApiResult<List<Library>>
 
     suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession>

@@ -68,9 +68,9 @@ class AudiobookshelfChannel @Inject constructor(
         .build()
 
     override suspend fun syncProgress(
-        itemId: String,
+        sessionId: String,
         progress: PlaybackProgress
-    ): ApiResult<Unit> = syncService.syncProgress(itemId, progress)
+    ): ApiResult<Unit> = syncService.syncProgress(sessionId, progress)
 
     override suspend fun fetchBookCover(
         bookId: String
@@ -93,7 +93,7 @@ class AudiobookshelfChannel @Inject constructor(
         .map { libraryResponseConverter.apply(it) }
 
     override suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession> {
@@ -110,7 +110,7 @@ class AudiobookshelfChannel @Inject constructor(
 
         return dataRepository
             .startPlayback(
-                itemId = itemId,
+                itemId = bookId,
                 request = request
             )
             .map { sessionResponseConverter.apply(it) }

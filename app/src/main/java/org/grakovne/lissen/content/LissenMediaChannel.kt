@@ -54,11 +54,11 @@ class LissenMediaChannel @Inject constructor(
         providePreferredChannel().fetchLibraries()
 
     suspend fun startPlayback(
-        itemId: String,
+        bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession> =
-        providePreferredChannel().startPlayback(itemId, supportedMimeTypes, deviceId)
+        providePreferredChannel().startPlayback(bookId, supportedMimeTypes, deviceId)
 
     suspend fun fetchRecentListenedBooks(
         libraryId: String

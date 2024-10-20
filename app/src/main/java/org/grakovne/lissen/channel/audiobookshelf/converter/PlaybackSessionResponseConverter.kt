@@ -10,6 +10,6 @@ class PlaybackSessionResponseConverter @Inject constructor() {
     fun apply(response: org.grakovne.lissen.channel.audiobookshelf.model.PlaybackSessionResponse): PlaybackSession =
         PlaybackSession(
             sessionId = response.id,
-            itemId = response.libraryItemId
+            bookId = response.libraryItemId
         )
 }

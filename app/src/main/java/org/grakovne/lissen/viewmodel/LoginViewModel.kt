@@ -144,6 +144,7 @@ class LoginViewModel @Inject constructor(
             Unauthorized -> LoginError.Unauthorized
             InvalidCredentialsHost -> LoginError.InvalidCredentialsHost
             ApiError.NetworkError -> LoginError.NetworkError
+            ApiError.UnsupportedError -> LoginError.InternalError
         }
 
         return LoginState.Error(error)
