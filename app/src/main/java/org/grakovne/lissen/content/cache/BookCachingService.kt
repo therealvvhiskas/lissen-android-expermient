@@ -72,7 +72,7 @@ class BookCachingService @Inject constructor(
                 Request(mediaChannel.provideFileUri(book.id, file.id))
                     .setTitle(file.name)
                     .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
-                    .setDestinationUri(properties.provideMediaCachePatch(book.id).toUri())
+                    .setDestinationUri(properties.provideMediaCachePatch(book.id, file.id).toUri())
                     .setAllowedOverMetered(true)
                     .setAllowedOverRoaming(true)
                     .let { downloadManager.enqueue(it) }

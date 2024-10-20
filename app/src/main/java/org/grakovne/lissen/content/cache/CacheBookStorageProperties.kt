@@ -11,10 +11,11 @@ class CacheBookStorageProperties @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
-    fun provideMediaCachePatch(bookId: String) = File(
-        context.getExternalFilesDir(MEDIA_CACHE_FOLDER),
-        bookId
-    )
+    fun provideMediaCachePatch(bookId: String, fileId: String) = context
+        .getExternalFilesDir(MEDIA_CACHE_FOLDER)
+        ?.resolve(bookId)
+        ?.resolve(fileId)
+        ?: throw IllegalStateException("")
 
     fun provideBookCoverPath(bookId: String) =
         context

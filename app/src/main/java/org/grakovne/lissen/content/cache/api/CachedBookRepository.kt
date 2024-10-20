@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content.cache.api
 
 import android.net.Uri
+import androidx.core.net.toUri
 import org.grakovne.lissen.content.cache.CacheBookStorageProperties
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityConverter
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConverter
@@ -18,6 +19,10 @@ class CachedBookRepository @Inject constructor(
     private val cachedBookEntityConverter: CachedBookEntityConverter,
     private val cachedBookEntityDetailedConverter: CachedBookEntityDetailedConverter
 ) {
+
+    fun provideFileUri(bookId: String, fileId: String): Uri = properties
+        .provideMediaCachePatch(bookId, fileId)
+        .toUri()
 
     fun provideBookCover(bookId: String): File = properties.provideBookCoverPath(bookId)
 

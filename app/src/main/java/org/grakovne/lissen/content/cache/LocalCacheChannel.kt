@@ -26,7 +26,8 @@ class LocalCacheChannel @Inject constructor(
 
     override fun getChannelCode(): ChannelCode = ChannelCode.LOCAL_CACHE
 
-    override fun provideFileUri(libraryItemId: String, fileId: String): Uri = Uri.EMPTY
+    override fun provideFileUri(libraryItemId: String, fileId: String): Uri =
+        cachedBookRepository.provideFileUri(libraryItemId, fileId)
 
     override fun provideBookCover(bookId: String): Uri =
         cachedBookRepository
@@ -43,7 +44,7 @@ class LocalCacheChannel @Inject constructor(
         val cover = cachedBookRepository
             .provideBookCover(bookId)
 
-        return when(cover.exists()) {
+        return when (cover.exists()) {
             true -> ApiResult.Success(cover.inputStream())
             false -> ApiResult.Error(ApiError.InternalError)
         }
