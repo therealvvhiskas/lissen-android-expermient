@@ -25,10 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val mediaChannel: LissenMediaProvider,
-    private val preferences: LissenSharedPreferences
+    private val preferences: LissenSharedPreferences,
 ) : ViewModel() {
 
-    private val _isCacheForce = MutableLiveData<Boolean>(preferences.isForceCache())
+    private val _isCacheForce = MutableLiveData(preferences.isForceCache())
     val isCacheForce: LiveData<Boolean> = _isCacheForce
 
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())

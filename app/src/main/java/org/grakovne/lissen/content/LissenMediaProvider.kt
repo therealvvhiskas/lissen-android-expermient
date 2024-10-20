@@ -24,20 +24,21 @@ import javax.inject.Singleton
 class LissenMediaProvider @Inject constructor(
     private val sharedPreferences: LissenSharedPreferences,
     private val channels: Map<ChannelCode, @JvmSuppressWildcards MediaChannel>,
-    private val localCacheRepository: LocalCacheRepository
+    private val localCacheRepository: LocalCacheRepository,
+    private val cacheConfiguration: LocalCacheConfiguration
 ) {
 
     fun provideFileUri(
         libraryItemId: String,
         chapterId: String
-    ): Uri = when (useCache()) {
+    ): Uri = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.provideFileUri(libraryItemId, chapterId)
         false -> providePreferredChannel().provideFileUri(libraryItemId, chapterId)
     }
 
     fun provideBookCoverUri(
         bookId: String
-    ): Uri = when (useCache()) {
+    ): Uri = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.provideBookCover(bookId)
         false -> providePreferredChannel().provideBookCover(bookId)
     }
@@ -47,7 +48,7 @@ class LissenMediaProvider @Inject constructor(
         bookId: String,
         progress: PlaybackProgress
     ): ApiResult<Unit> =
-        when (useCache()) {
+        when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.syncProgress(bookId, progress)
             false -> providePreferredChannel()
                 .syncProgress(sessionId, progress)
@@ -56,7 +57,7 @@ class LissenMediaProvider @Inject constructor(
 
     suspend fun fetchBookCover(
         bookId: String
-    ): ApiResult<InputStream> = when (useCache()) {
+    ): ApiResult<InputStream> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchBookCover(bookId)
         false -> providePreferredChannel().fetchBookCover(bookId)
     }
@@ -65,7 +66,7 @@ class LissenMediaProvider @Inject constructor(
         libraryId: String,
         pageSize: Int,
         pageNumber: Int
-    ): ApiResult<PagedItems<Book>> = when (useCache()) {
+    ): ApiResult<PagedItems<Book>> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchBooks(pageSize, pageNumber)
         false -> {
             providePreferredChannel()
@@ -74,7 +75,7 @@ class LissenMediaProvider @Inject constructor(
         }
     }
 
-    suspend fun fetchLibraries(): ApiResult<List<Library>> = when (useCache()) {
+    suspend fun fetchLibraries(): ApiResult<List<Library>> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchLibraries()
         false -> providePreferredChannel()
             .fetchLibraries()
@@ -90,21 +91,21 @@ class LissenMediaProvider @Inject constructor(
         bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
-    ): ApiResult<PlaybackSession> = when (useCache()) {
+    ): ApiResult<PlaybackSession> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.startPlayback(bookId)
         false -> providePreferredChannel().startPlayback(bookId, supportedMimeTypes, deviceId)
     }
 
     suspend fun fetchRecentListenedBooks(
         libraryId: String
-    ): ApiResult<List<RecentBook>> = when (useCache()) {
+    ): ApiResult<List<RecentBook>> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchRecentListenedBooks()
         false -> providePreferredChannel().fetchRecentListenedBooks(libraryId)
     }
 
     suspend fun fetchBook(
         bookId: String
-    ): ApiResult<DetailedBook> = when(useCache()) {
+    ): ApiResult<DetailedBook> = when(cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchBook(bookId)
         false -> providePreferredChannel().fetchBook(bookId)
     }
@@ -133,12 +134,7 @@ class LissenMediaProvider @Inject constructor(
 
         return it.copy(items = items)
     }
-
-    private fun useCache(): Boolean {
-        return when (sharedPreferences.getPreferredChannel()) {
-            AUDIOBOOKSHELF -> sharedPreferences.isForceCache()
-        }
-    }
+    
 
     private fun providePreferredChannel(): MediaChannel = sharedPreferences
         .getPreferredChannel()
