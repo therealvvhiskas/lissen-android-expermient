@@ -137,7 +137,7 @@ fun LibraryScreen(
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
-    val listState = rememberLazyListState()
+    val libraryListState = rememberLazyListState()
 
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
@@ -146,7 +146,7 @@ fun LibraryScreen(
 
     val navBarTitle by remember {
         derivedStateOf {
-            val firstVisibleItemIndex = listState.firstVisibleItemIndex
+            val firstVisibleItemIndex = libraryListState.firstVisibleItemIndex
             when {
                 firstVisibleItemIndex >= 1 -> context.getString(R.string.library_screen_library_title)
                 else -> context.getString(R.string.library_screen_continue_listening_title)
@@ -289,7 +289,7 @@ fun LibraryScreen(
                     .fillMaxSize()
             ) {
                 LazyColumn(
-                    state = listState,
+                    state = libraryListState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
