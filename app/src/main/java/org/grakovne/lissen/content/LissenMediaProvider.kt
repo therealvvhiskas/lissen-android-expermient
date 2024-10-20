@@ -32,9 +32,18 @@ class LissenMediaProvider @Inject constructor(
     fun provideFileUri(
         libraryItemId: String,
         chapterId: String
-    ): Uri = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.provideFileUri(libraryItemId, chapterId)
-        false -> providePreferredChannel().provideFileUri(libraryItemId, chapterId)
+    ): ApiResult<Uri> = when (cacheConfiguration.localCacheUsing()) {
+        true -> localCacheRepository
+            .provideFileUri(libraryItemId, chapterId)
+            ?.let { ApiResult.Success(it) }
+            ?: ApiResult.Error(ApiError.InternalError)
+
+        false -> localCacheRepository
+            .provideFileUri(libraryItemId, chapterId)
+            ?.let { ApiResult.Success(it) }
+            ?: providePreferredChannel()
+                .provideFileUri(libraryItemId, chapterId)
+                .let { ApiResult.Success(it) }
     }
 
     fun provideBookCoverUri(

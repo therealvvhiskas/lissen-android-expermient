@@ -2,6 +2,7 @@ package org.grakovne.lissen.content.cache
 
 import android.net.Uri
 import android.net.Uri.parse
+import androidx.core.net.toFile
 import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
@@ -12,6 +13,7 @@ import org.grakovne.lissen.domain.PagedItems
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.domain.RecentBook
+import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -23,15 +25,16 @@ class LocalCacheRepository @Inject constructor(
     private val properties: CacheBookStorageProperties
 ) {
 
-    fun provideFileUri(libraryItemId: String, fileId: String): Uri =
-        cachedBookRepository.provideFileUri(libraryItemId, fileId)
+    fun provideFileUri(libraryItemId: String, fileId: String): Uri? =
+        cachedBookRepository
+            .provideFileUri(libraryItemId, fileId)
+            .takeIf { it.toFile().exists() }
 
     fun provideBookCover(bookId: String): Uri =
         cachedBookRepository
             .provideBookCover(bookId)
             .toString()
             .let { parse(it) }
-
 
     /**
      * For the local cache we avoiding to create intermediary entity like Session and using BookId

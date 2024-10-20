@@ -117,19 +117,27 @@ class AudioPlayerService : MediaSessionService() {
             val prepareQueue = async {
                 val playingQueue = book
                     .files
-                    .map { file ->
-                        MediaItem.Builder()
-                            .setMediaId(file.id)
-                            .setUri(mediaChannel.provideFileUri(book.id, file.id))
-                            .setTag(book)
-                            .setMediaMetadata(
-                                MediaMetadata.Builder()
-                                    .setTitle(file.name)
-                                    .setArtist(book.title)
-                                    .setArtworkUri(mediaChannel.provideBookCoverUri(book.id))
-                                    .build()
+                    .mapNotNull { file ->
+                        mediaChannel
+                            .provideFileUri(book.id, file.id)
+                            .fold(
+                                onSuccess = {
+                                    MediaItem.Builder()
+                                        .setMediaId(file.id)
+                                        .setUri(it)
+                                        .setTag(book)
+                                        .setMediaMetadata(
+                                            MediaMetadata.Builder()
+                                                .setTitle(file.name)
+                                                .setArtist(book.title)
+                                                .setArtworkUri(mediaChannel.provideBookCoverUri(book.id))
+                                                .build()
+                                        )
+                                        .build()
+                                },
+                                onFailure = { null }
                             )
-                            .build()
+
                     }
 
                 withContext(Dispatchers.Main) {
