@@ -69,14 +69,13 @@ class BookCachingService @Inject constructor(
 
         val cachedContent = properties
             .provideBookCache(book.id)
-            ?: return@flow emit(CacheProgress.Idle)
+            ?: return@flow emit(CacheProgress.Removed)
 
-        when (cachedContent.exists()) {
-            true -> cachedContent.deleteRecursively()
-            false -> return@flow emit(CacheProgress.Idle)
+        if (cachedContent.exists()) {
+            cachedContent.deleteRecursively()
         }
 
-        return@flow emit(CacheProgress.Idle)
+        return@flow emit(CacheProgress.Removed)
     }
 
     private suspend fun cacheBookMedia(book: DetailedBook): CacheProgress {
@@ -179,5 +178,6 @@ sealed class CacheProgress {
     data object Idle : CacheProgress()
     data object Caching : CacheProgress()
     data object Completed : CacheProgress()
+    data object Removed : CacheProgress()
     data object Error : CacheProgress()
 }

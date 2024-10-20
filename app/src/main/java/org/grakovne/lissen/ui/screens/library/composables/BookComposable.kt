@@ -156,6 +156,7 @@ private fun provideCachingStateIcon(
 ): ImageVector {
     return when (cacheProgress) {
         CacheProgress.Completed -> Icons.Outlined.CloudDownload
+        CacheProgress.Removed -> Icons.Outlined.Cloud
         CacheProgress.Error -> Icons.Outlined.Cloud
         CacheProgress.Idle -> provideIdleStateIcon(book)
         is CacheProgress.Caching -> Icons.Outlined.Downloading
