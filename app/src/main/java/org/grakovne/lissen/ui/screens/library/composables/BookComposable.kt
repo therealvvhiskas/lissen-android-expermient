@@ -153,20 +153,16 @@ fun BookComposable(
 private fun provideCachingStateIcon(
     book: Book,
     cacheProgress: CacheProgress
-): ImageVector {
-    return when (cacheProgress) {
-        CacheProgress.Completed -> Icons.Outlined.CloudDownload
-        CacheProgress.Removed -> Icons.Outlined.Cloud
-        CacheProgress.Error -> Icons.Outlined.Cloud
-        CacheProgress.Idle -> provideIdleStateIcon(book)
-        is CacheProgress.Caching -> Icons.Outlined.Downloading
-    }
+): ImageVector = when (cacheProgress) {
+    CacheProgress.Completed -> Icons.Outlined.CloudDownload
+    CacheProgress.Removed -> Icons.Outlined.Cloud
+    CacheProgress.Error -> Icons.Outlined.Cloud
+    CacheProgress.Idle -> provideIdleStateIcon(book)
+    is CacheProgress.Caching -> Icons.Outlined.Downloading
 }
 
-private fun provideIdleStateIcon(book: Book): ImageVector {
-    return when (book.cachedState) {
-        BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.Cloud
-        BookCachedState.CACHED -> Icons.Outlined.CloudDownload
-        BookCachedState.STORED_LOCALLY -> Icons.Outlined.SdCard
-    }
+private fun provideIdleStateIcon(book: Book): ImageVector = when (book.cachedState) {
+    BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.Cloud
+    BookCachedState.CACHED -> Icons.Outlined.CloudDownload
+    BookCachedState.STORED_LOCALLY -> Icons.Outlined.SdCard
 }
