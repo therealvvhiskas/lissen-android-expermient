@@ -107,6 +107,7 @@ fun LibraryScreen(
 
             withMinimumTime(500) {
                 listOf(
+                    async { libraryViewModel.dropHiddenBooks() },
                     async { library.refresh() },
                     async { libraryViewModel.fetchRecentListening() },
                 ).awaitAll()
@@ -219,6 +220,8 @@ fun LibraryScreen(
                             },
                             onClick = {
                                 navigationItemSelected = false
+
+                                libraryViewModel.dropHiddenBooks()
                                 libraryViewModel.toggleCacheForce()
 
                                 CoroutineScope(Dispatchers.IO).launch {

@@ -55,7 +55,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun isVisible(bookId: String): Boolean {
-        return when(localCacheConfiguration.localCacheUsing()) {
+        return when (localCacheConfiguration.localCacheUsing()) {
             true -> !hiddenBooks.value.contains(bookId)
             false -> true
         }
@@ -89,6 +89,10 @@ class LibraryViewModel @Inject constructor(
 
     fun hideBook(bookId: String) {
         _hiddenBooks.value += bookId
+    }
+
+    fun dropHiddenBooks() {
+        _hiddenBooks.value = emptyList()
     }
 
     fun toggleCacheForce() {
