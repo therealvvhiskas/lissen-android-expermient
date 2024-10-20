@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.LocalCacheConfiguration
 import org.grakovne.lissen.content.cache.BookCachingService
 import org.grakovne.lissen.content.cache.CacheProgress
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class CachingModelView @Inject constructor(
     private val cachingService: BookCachingService,
     private val preferences: LissenSharedPreferences,
+    private val mediaProvider: LissenMediaProvider,
     private val localCacheConfiguration: LocalCacheConfiguration
 ) : ViewModel() {
 
@@ -52,8 +54,9 @@ class CachingModelView @Inject constructor(
 
     fun cacheBook(book: Book) {
         viewModelScope.launch {
+
             cachingService
-                .cacheBook(book)
+                .cacheBook(book, mediaProvider.providePreferredChannel())
                 .collect { _bookCachingProgress[book.id]?.value = it }
         }
     }

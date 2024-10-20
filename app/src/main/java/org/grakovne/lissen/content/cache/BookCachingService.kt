@@ -17,6 +17,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import org.grakovne.lissen.channel.common.MediaChannel
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
 import org.grakovne.lissen.content.cache.api.CachedLibraryRepository
@@ -30,14 +31,16 @@ class BookCachingService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val bookRepository: CachedBookRepository,
     private val libraryRepository: CachedLibraryRepository,
-    private val mediaChannel: LissenMediaProvider,
     private val properties: CacheBookStorageProperties
 ) {
 
-    fun cacheBook(book: Book) = flow {
+    fun cacheBook(
+        book: Book,
+        channel: MediaChannel
+    ) = flow {
         emit(CacheProgress.Caching)
 
-        val detailedBook = mediaChannel
+        val detailedBook = channel
             .fetchBook(book.id)
             .fold(
                 onSuccess = { it },
@@ -51,9 +54,9 @@ class BookCachingService @Inject constructor(
 
         val cacheResult = withContext(Dispatchers.IO) {
             listOf(
-                async { cacheBookCover(detailedBook) },
-                async { cacheBookMedia(detailedBook) },
-                async { cacheLibraries() },
+                async { cacheBookCover(detailedBook, channel) },
+                async { cacheBookMedia(detailedBook, channel) },
+                async { cacheLibraries(channel) },
                 async { cacheBookInfo(detailedBook) },
             ).awaitAll()
         }
@@ -81,12 +84,12 @@ class BookCachingService @Inject constructor(
         return@flow emit(CacheProgress.Removed)
     }
 
-    private suspend fun cacheBookMedia(book: DetailedBook): CacheProgress {
+    private suspend fun cacheBookMedia(book: DetailedBook, channel: MediaChannel): CacheProgress {
         val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val downloads = book
             .files
             .map { file ->
-                Request(mediaChannel.provideFileUri(book.id, file.id))
+                Request(channel.provideFileUri(book.id, file.id))
                     .setTitle(file.name)
                     .setNotificationVisibility(VISIBILITY_VISIBLE)
                     .setDestinationUri(properties.provideMediaCachePatch(book.id, file.id).toUri())
@@ -133,11 +136,11 @@ class BookCachingService @Inject constructor(
         }
     }
 
-    private suspend fun cacheBookCover(book: DetailedBook): CacheProgress {
+    private suspend fun cacheBookCover(book: DetailedBook, channel: MediaChannel): CacheProgress {
         val file = properties.provideBookCoverPath(book.id)
 
         return withContext(Dispatchers.IO) {
-            mediaChannel
+            channel
                 .fetchBookCover(book.id)
                 .fold(
                     onSuccess = { inputStream ->
@@ -159,7 +162,7 @@ class BookCachingService @Inject constructor(
         }
     }
 
-    private suspend fun cacheLibraries() = mediaChannel
+    private suspend fun cacheLibraries(channel: MediaChannel) = channel
         .fetchLibraries()
         .foldAsync(
             onSuccess = {

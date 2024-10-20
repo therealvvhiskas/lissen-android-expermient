@@ -137,7 +137,7 @@ class LissenMediaProvider @Inject constructor(
     }
 
 
-    private fun providePreferredChannel(): MediaChannel = sharedPreferences
+    fun providePreferredChannel(): MediaChannel = sharedPreferences
         .getPreferredChannel()
         .let { channels[it] }
         ?: throw IllegalStateException("Selected Channel has been requested but not selected")
