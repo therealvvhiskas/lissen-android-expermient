@@ -1,5 +1,7 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,6 +58,14 @@ fun BookComposable(
     onRemoveBook: () -> Unit
 ) {
     val cacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
+    val context = LocalContext.current
+
+    val imageRequest = remember(book.id) {
+        ImageRequest.Builder(context)
+            .data(book.id)
+            .size(coil.size.Size.ORIGINAL)
+            .build()
+    }
 
     Row(
         modifier = Modifier
@@ -69,13 +79,7 @@ fun BookComposable(
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val context = LocalContext.current
-        val imageRequest = remember(book.id) {
-            ImageRequest.Builder(context)
-                .data(book.id)
-                .size(coil.size.Size.ORIGINAL)
-                .build()
-        }
+
 
         AsyncShimmeringImage(
             imageRequest = imageRequest,

@@ -54,7 +54,6 @@ class CachingModelView @Inject constructor(
 
     fun cacheBook(book: Book) {
         viewModelScope.launch {
-
             cachingService
                 .cacheBook(book, mediaProvider.providePreferredChannel())
                 .collect { _bookCachingProgress[book.id]?.value = it }
