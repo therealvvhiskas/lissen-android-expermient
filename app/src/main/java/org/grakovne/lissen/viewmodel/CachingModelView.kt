@@ -22,9 +22,6 @@ class CachingModelView @Inject constructor(
     private val localCacheConfiguration: LocalCacheConfiguration
 ) : ViewModel() {
 
-    private val _isCacheForce = MutableLiveData(preferences.isForceCache())
-    val isCacheForce: LiveData<Boolean> = _isCacheForce
-
     private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
 
     fun provideCacheAction(book: Book): BookCacheAction? {
@@ -71,8 +68,6 @@ class CachingModelView @Inject constructor(
             true -> preferences.disableForceCache()
             false -> preferences.enableForceCache()
         }
-
-        _isCacheForce.postValue(localCacheUsing())
     }
 
     fun localCacheUsing() = localCacheConfiguration.localCacheUsing()
