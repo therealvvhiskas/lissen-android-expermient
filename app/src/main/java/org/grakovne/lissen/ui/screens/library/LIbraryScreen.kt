@@ -298,16 +298,17 @@ fun LibraryScreen(
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
-                            val showingBooks = remember {
+                            val showingBooks by remember(recentBooks, hiddenBooks) {
                                 derivedStateOf {
                                     recentBooks.filter {
                                         libraryViewModel.isVisible(it.id)
                                     }
                                 }
                             }
+
                             RecentBooksComposable(
                                 navController = navController,
-                                recentBooks = showingBooks.value,
+                                recentBooks = showingBooks,
                                 imageLoader = imageLoader
                             )
                         }
