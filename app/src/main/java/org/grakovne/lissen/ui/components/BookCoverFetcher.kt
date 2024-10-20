@@ -17,12 +17,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okio.buffer
 import okio.source
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.channel.common.ApiResult
 import javax.inject.Singleton
 
 class BookCoverFetcher(
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val uri: Uri,
     private val context: Context
 ) : Fetcher {
@@ -45,7 +45,7 @@ class BookCoverFetcher(
 }
 
 class BookCoverFetcherFactory(
-    private val dataProvider: LissenMediaChannel,
+    private val dataProvider: LissenMediaProvider,
     private val context: Context
 ) : Fetcher.Factory<Uri> {
 
@@ -60,7 +60,7 @@ object ImageLoaderModule {
     @Singleton
     @Provides
     fun provideBookCoverFetcherFactory(
-        mediaChannel: LissenMediaChannel,
+        mediaChannel: LissenMediaProvider,
         @ApplicationContext context: Context
     ): BookCoverFetcherFactory = BookCoverFetcherFactory(mediaChannel, context)
 

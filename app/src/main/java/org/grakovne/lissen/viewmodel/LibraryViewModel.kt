@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 

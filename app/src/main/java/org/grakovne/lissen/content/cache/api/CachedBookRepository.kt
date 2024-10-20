@@ -42,6 +42,8 @@ class CachedBookRepository @Inject constructor(
         bookDao.upsertCachedBook(book)
     }
 
+    suspend fun fetchCachedBooksIds() = bookDao.fetchBookIds()
+
     suspend fun fetchBooks(
         pageNumber: Int,
         pageSize: Int

@@ -90,6 +90,10 @@ interface CachedBookDao {
     @Query("SELECT * FROM detailed_books WHERE id = :bookId")
     suspend fun fetchBook(bookId: String): BookEntity?
 
+    @Transaction
+    @Query("SELECT id FROM detailed_books")
+    suspend fun fetchBookIds(): List<String>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertBook(book: BookEntity)
 

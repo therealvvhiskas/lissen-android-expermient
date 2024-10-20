@@ -1,10 +1,12 @@
 package org.grakovne.lissen.content
 
 import android.net.Uri
+import org.grakovne.lissen.content.cache.LocalCacheChannel
 import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.content.channel.common.ChannelCode
 import org.grakovne.lissen.content.channel.common.MediaChannel
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.PagedItems
@@ -18,9 +20,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LissenMediaChannel @Inject constructor(
+class LissenMediaProvider @Inject constructor(
     private val sharedPreferences: LissenSharedPreferences,
-    private val channels: Map<ChannelCode, @JvmSuppressWildcards MediaChannel>
+    private val channels: Map<ChannelCode, @JvmSuppressWildcards MediaChannel>,
+    private val localCacheChannel: LocalCacheChannel
 ) {
 
     fun provideFileUri(
@@ -33,9 +36,12 @@ class LissenMediaChannel @Inject constructor(
     ): Uri = providePreferredChannel().provideBookCover(bookId)
 
     suspend fun syncProgress(
-        itemId: String,
+        sessionId: String,
+        bookId: String,
         progress: PlaybackProgress
-    ): ApiResult<Unit> = providePreferredChannel().syncProgress(itemId, progress)
+    ): ApiResult<Unit> = providePreferredChannel()
+        .syncProgress(sessionId, progress)
+        .also { localCacheChannel.syncProgress(bookId, progress) }
 
     suspend fun fetchBookCover(
         itemId: String
@@ -48,10 +54,26 @@ class LissenMediaChannel @Inject constructor(
         pageSize: Int,
         pageNumber: Int
     ): ApiResult<PagedItems<Book>> =
-        providePreferredChannel().fetchBooks(libraryId, pageSize, pageNumber)
+        providePreferredChannel()
+            .fetchBooks(libraryId, pageSize, pageNumber)
+            .map { page ->
+                val cachedBooks = localCacheChannel.fetchCachedBookIds()
+
+                page
+                    .copy(items = page
+                        .items
+                        .map { item ->
+                            when (cachedBooks.contains(item.id)) { // add check data integrity check
+                                true -> item.copy(cachedState = BookCachedState.CACHED)
+                                false -> item
+                            }
+                        }
+                    )
+            }
 
     suspend fun fetchLibraries(): ApiResult<List<Library>> =
-        providePreferredChannel().fetchLibraries()
+        providePreferredChannel()
+            .fetchLibraries()
 
     suspend fun startPlayback(
         bookId: String,

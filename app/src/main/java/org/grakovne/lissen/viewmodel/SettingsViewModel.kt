@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 

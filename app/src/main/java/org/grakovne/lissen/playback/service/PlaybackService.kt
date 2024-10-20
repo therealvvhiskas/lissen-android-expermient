@@ -17,7 +17,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.MediaProgress
@@ -34,7 +34,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var mediaSession: MediaSession
 
     @Inject
-    lateinit var mediaChannel: LissenMediaChannel
+    lateinit var mediaChannel: LissenMediaProvider
 
     @Inject
     lateinit var playbackSynchronizationService: PlaybackSynchronizationService
@@ -43,7 +43,7 @@ class AudioPlayerService : MediaSessionService() {
     lateinit var sharedPreferences: LissenSharedPreferences
 
     @Inject
-    lateinit var channelProvider: LissenMediaChannel
+    lateinit var channelProvider: LissenMediaProvider
 
     private val playerServiceScope = MainScope()
 

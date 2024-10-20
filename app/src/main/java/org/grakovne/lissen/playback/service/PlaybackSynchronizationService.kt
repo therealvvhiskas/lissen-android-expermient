@@ -9,7 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 class PlaybackSynchronizationService @OptIn(UnstableApi::class)
 @Inject constructor(
     private val exoPlayer: ExoPlayer,
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val sharedPreferences: LissenSharedPreferences
 ) {
     private var currentBook: DetailedBook? = null
@@ -74,7 +74,8 @@ class PlaybackSynchronizationService @OptIn(UnstableApi::class)
         overallProgress: PlaybackProgress
     ) = mediaChannel
         .syncProgress(
-            itemId = it.sessionId,
+            sessionId = it.sessionId,
+            bookId = it.bookId,
             progress = overallProgress
         )
         .foldAsync(

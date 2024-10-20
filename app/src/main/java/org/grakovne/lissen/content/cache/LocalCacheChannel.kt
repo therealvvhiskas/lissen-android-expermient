@@ -116,4 +116,6 @@ class LocalCacheChannel @Inject constructor(
         username: String,
         password: String
     ): ApiResult<UserAccount> = ApiResult.Error(ApiError.UnsupportedError)
+
+    suspend fun fetchCachedBookIds() = cachedBookRepository.fetchCachedBooksIds()
 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
 import org.grakovne.lissen.content.cache.api.CachedLibraryRepository
 import org.grakovne.lissen.domain.Book
@@ -30,7 +30,7 @@ class BookCachingService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val bookRepository: CachedBookRepository,
     private val libraryRepository: CachedLibraryRepository,
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val properties: CacheBookStorageProperties
 ) {
 

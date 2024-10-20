@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.content.LissenMediaChannel
+import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.channel.common.ApiError
 import org.grakovne.lissen.content.channel.common.ApiError.InternalError
 import org.grakovne.lissen.content.channel.common.ApiError.InvalidCredentialsHost
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val mediaChannel: LissenMediaChannel,
+    private val mediaChannel: LissenMediaProvider,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
