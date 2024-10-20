@@ -39,6 +39,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -94,7 +95,7 @@ fun LibraryScreen(
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
     val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
 
-    val hiddenBooks = remember { mutableStateListOf<String>() }
+    val hiddenBooks by libraryViewModel.hiddenBooks.collectAsState()
 
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
@@ -356,9 +357,7 @@ fun LibraryScreen(
                                     imageLoader = imageLoader,
                                     navController = navController,
                                     cachingModelView = cachingModelView,
-                                    onRemoveBook = {
-                                        hiddenBooks.add(book.id)
-                                    }
+                                    onRemoveBook = { libraryViewModel.hideBook(book.id) }
                                 )
                             }
                         }

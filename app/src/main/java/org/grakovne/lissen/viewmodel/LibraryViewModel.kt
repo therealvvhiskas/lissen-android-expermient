@@ -1,5 +1,6 @@
 package org.grakovne.lissen.viewmodel
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -76,6 +77,10 @@ class LibraryViewModel @Inject constructor(
                     }
                 )
         }
+    }
+
+    fun hideBook(bookId: String) {
+        _hiddenBooks.value += bookId
     }
 
     fun toggleCacheForce() {
