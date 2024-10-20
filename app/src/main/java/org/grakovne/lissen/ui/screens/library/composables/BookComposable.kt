@@ -46,7 +46,6 @@ import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
 import org.grakovne.lissen.viewmodel.BookCacheAction
 import org.grakovne.lissen.viewmodel.CachingModelView
-import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
 fun BookComposable(
@@ -158,7 +157,7 @@ private fun provideCachingStateIcon(
         CacheProgress.Completed -> Icons.Outlined.CloudDownload
         CacheProgress.Error -> Icons.Outlined.Cloud
         CacheProgress.Idle -> provideIdleStateIcon(book)
-        is CacheProgress.InProgress -> Icons.Outlined.Downloading
+        is CacheProgress.Caching -> Icons.Outlined.Downloading
     }
 }
 

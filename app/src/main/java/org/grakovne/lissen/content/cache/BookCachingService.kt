@@ -4,9 +4,11 @@ import android.app.DownloadManager
 import android.app.DownloadManager.COLUMN_STATUS
 import android.app.DownloadManager.Query
 import android.app.DownloadManager.Request
+import android.app.DownloadManager.Request.VISIBILITY_VISIBLE
 import android.app.DownloadManager.STATUS_FAILED
 import android.app.DownloadManager.STATUS_SUCCESSFUL
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import androidx.core.net.toUri
@@ -21,8 +23,10 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaChannel
 import org.grakovne.lissen.content.cache.api.CachedBookRepository
+import org.grakovne.lissen.content.channel.common.ApiResult
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
+import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,23 +39,8 @@ class BookCachingService @Inject constructor(
     private val properties: CacheBookStorageProperties
 ) {
 
-    fun removeBook(book: Book) = flow {
-        repository.removeBook(book.id)
-
-        val cachedContent = properties
-            .provideBookCache(book.id)
-            ?: return@flow emit(CacheProgress.Idle)
-
-        when (cachedContent.exists()) {
-            true -> cachedContent.deleteRecursively()
-            false -> return@flow emit(CacheProgress.Idle)
-        }
-
-        return@flow emit(CacheProgress.Idle)
-    }
-
     fun cacheBook(book: Book) = flow {
-        emit(CacheProgress.InProgress)
+        emit(CacheProgress.Caching)
 
         val detailedBook = mediaChannel
             .fetchBook(book.id)
@@ -79,14 +68,29 @@ class BookCachingService @Inject constructor(
         }
     }
 
+    fun removeBook(book: Book) = flow {
+        repository.removeBook(book.id)
+
+        val cachedContent = properties
+            .provideBookCache(book.id)
+            ?: return@flow emit(CacheProgress.Idle)
+
+        when (cachedContent.exists()) {
+            true -> cachedContent.deleteRecursively()
+            false -> return@flow emit(CacheProgress.Idle)
+        }
+
+        return@flow emit(CacheProgress.Idle)
+    }
+
     private suspend fun cacheBookMedia(book: DetailedBook): CacheProgress {
-        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = context.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val downloads = book
             .files
             .map { file ->
                 Request(mediaChannel.provideFileUri(book.id, file.id))
                     .setTitle(file.name)
-                    .setNotificationVisibility(Request.VISIBILITY_VISIBLE)
+                    .setNotificationVisibility(VISIBILITY_VISIBLE)
                     .setDestinationUri(properties.provideMediaCachePatch(book.id, file.id).toUri())
                     .setAllowedOverMetered(true)
                     .setAllowedOverRoaming(true)
@@ -133,22 +137,28 @@ class BookCachingService @Inject constructor(
 
     private suspend fun cacheBookCover(book: DetailedBook): CacheProgress {
         val file = properties.provideBookCoverPath(book.id)
-        val coverUrl = mediaChannel.provideBookCover(book.id)
 
-        val request = ImageRequest.Builder(context)
-            .data(coverUrl)
-            .target { drawable ->
-                file.outputStream()
-                    .use {
-                        (drawable as BitmapDrawable)
-                            .bitmap
-                            .compress(Bitmap.CompressFormat.PNG, 100, it)
+        return withContext(Dispatchers.IO) {
+            mediaChannel
+                .fetchBookCover(book.id)
+                .fold(
+                    onSuccess = { inputStream ->
+                        if (!file.exists()) {
+                            file.parentFile?.mkdirs()
+                            file.createNewFile()
+                        }
+
+                        file.outputStream().use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    },
+                    onFailure = {
+
                     }
-            }
-            .build()
+                )
 
-        imageLoader.execute(request)
-        return CacheProgress.Completed
+            CacheProgress.Completed
+        }
     }
 
     private suspend fun cacheBookInfo(book: DetailedBook) = repository
@@ -159,7 +169,7 @@ class BookCachingService @Inject constructor(
 
 sealed class CacheProgress {
     data object Idle : CacheProgress()
-    data object InProgress : CacheProgress()
+    data object Caching : CacheProgress()
     data object Completed : CacheProgress()
     data object Error : CacheProgress()
 }

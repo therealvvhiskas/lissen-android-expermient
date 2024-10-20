@@ -28,7 +28,7 @@ class LissenMediaChannel @Inject constructor(
         chapterId: String
     ): Uri = providePreferredChannel().provideFileUri(libraryItemId, chapterId)
 
-    fun provideBookCover(
+    fun provideBookCoverUri(
         bookId: String
     ): Uri = providePreferredChannel().provideBookCover(bookId)
 

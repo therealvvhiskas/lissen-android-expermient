@@ -126,7 +126,7 @@ class AudioPlayerService : MediaSessionService() {
                                 MediaMetadata.Builder()
                                     .setTitle(file.name)
                                     .setArtist(book.title)
-                                    .setArtworkUri(mediaChannel.provideBookCover(book.id))
+                                    .setArtworkUri(mediaChannel.provideBookCoverUri(book.id))
                                     .build()
                             )
                             .build()
