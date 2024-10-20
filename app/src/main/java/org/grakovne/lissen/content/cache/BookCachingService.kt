@@ -35,6 +35,20 @@ class BookCachingService @Inject constructor(
     private val properties: CacheBookStorageProperties
 ) {
 
+    fun removeBook(book: Book) = flow {
+        val cachedContent = properties
+            .provideBookCache(book.id)
+            ?: return@flow emit(CacheProgress.Idle)
+
+        when (cachedContent.exists()) {
+            true -> cachedContent.deleteRecursively()
+            false -> return@flow emit(CacheProgress.Idle)
+        }
+
+        repository.removeBook(book.id)
+        return@flow emit(CacheProgress.Idle)
+    }
+
     fun cacheBook(book: Book) = flow {
         emit(CacheProgress.InProgress)
 

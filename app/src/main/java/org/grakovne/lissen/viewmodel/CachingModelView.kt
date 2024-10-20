@@ -29,8 +29,12 @@ class CachingModelView @Inject constructor(
         }
     }
 
-    fun dropCache(book: Book) {
-        //
+    private fun dropCache(book: Book) {
+        viewModelScope.launch {
+            cachingService
+                .removeBook(book)
+                .collect { _bookCachingProgress[book.id]?.value = it }
+        }
     }
 
     private fun cacheBook(book: Book) {

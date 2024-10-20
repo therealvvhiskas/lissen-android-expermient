@@ -11,6 +11,10 @@ class CacheBookStorageProperties @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
+    fun provideBookCache(bookId: String) = context
+        .getExternalFilesDir(MEDIA_CACHE_FOLDER)
+        ?.resolve(bookId)
+
     fun provideMediaCachePatch(bookId: String, fileId: String) = context
         .getExternalFilesDir(MEDIA_CACHE_FOLDER)
         ?.resolve(bookId)

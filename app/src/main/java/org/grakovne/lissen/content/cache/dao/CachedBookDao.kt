@@ -17,6 +17,10 @@ import org.grakovne.lissen.domain.DetailedBook
 interface CachedBookDao {
 
     @Transaction
+    @Query("DELETE FROM detailed_books WHERE id = :bookId")
+    suspend fun deleteBook(bookId: String)
+
+    @Transaction
     suspend fun upsertCachedBook(book: DetailedBook) {
         val bookEntity = BookEntity(
             id = book.id,

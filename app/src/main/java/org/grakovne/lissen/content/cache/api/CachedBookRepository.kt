@@ -26,6 +26,10 @@ class CachedBookRepository @Inject constructor(
 
     fun provideBookCover(bookId: String): File = properties.provideBookCoverPath(bookId)
 
+    suspend fun removeBook(bookId: String){
+        dao.deleteBook(bookId)
+    }
+
     suspend fun cacheBook(book: DetailedBook) {
         dao.upsertCachedBook(book)
     }
