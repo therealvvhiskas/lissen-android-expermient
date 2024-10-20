@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaChannel
-import org.grakovne.lissen.content.cache.BookCachingService
-import org.grakovne.lissen.content.cache.CacheProgress
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -27,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val mediaChannel: LissenMediaChannel,
-    private val cachingService: BookCachingService,
     private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
@@ -39,6 +36,9 @@ class LibraryViewModel @Inject constructor(
 
     private val _recentBookUpdating = MutableLiveData(false)
     val recentBookUpdating: LiveData<Boolean> = _recentBookUpdating
+
+    private val _hiddenBooks = MutableStateFlow<List<String>>(emptyList())
+    val hiddenBooks: StateFlow<List<String>> = _hiddenBooks
 
     val libraryPager: Flow<PagingData<Book>> by lazy {
         val libraryId = preferences.getPreferredLibrary()?.id ?: ""

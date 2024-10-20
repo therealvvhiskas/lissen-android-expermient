@@ -42,6 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -92,6 +93,8 @@ fun LibraryScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val library: LazyPagingItems<Book> = libraryViewModel.libraryPager.collectAsLazyPagingItems()
+    val removedBooks = remember { mutableStateListOf<String>() } // Храним ID удаленных книг
+
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
@@ -347,13 +350,18 @@ fun LibraryScreen(
                         }
                     } else {
                         items(count = library.itemCount) {
-                            BookComposable(
-                                book = library[it] ?: return@items,
-                                imageLoader = imageLoader,
-                                navController = navController,
-                                cachingModelView = cachingModelView,
-                                libraryViewModel = libraryViewModel
-                            )
+                            val book = library[it] ?: return@items
+                            if (!removedBooks.contains(book.id)) {
+                                BookComposable(
+                                    book = book,
+                                    imageLoader = imageLoader,
+                                    navController = navController,
+                                    cachingModelView = cachingModelView,
+                                    onRemoveBook = {
+                                        removedBooks.add(book.id)
+                                    }
+                                )
+                            }
                         }
                     }
                 }

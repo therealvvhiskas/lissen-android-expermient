@@ -18,15 +18,14 @@ class CachingModelView @Inject constructor(
 
     private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
 
-    fun updateLocalCache(book: Book) {
-        when (book.cachedState) {
-            BookCachedState.ABLE_TO_CACHE -> cacheBook(book)
-            BookCachedState.CACHED -> dropCache(book)
-            BookCachedState.STORED_LOCALLY -> {}
-        }
+    fun provideCacheAction(book: Book): BookCacheAction? = when (book.cachedState) {
+        BookCachedState.ABLE_TO_CACHE -> BookCacheAction.CACHE
+        BookCachedState.CACHED -> BookCacheAction.DROP
+        BookCachedState.STORED_LOCALLY -> null
     }
 
-    private fun dropCache(book: Book) {
+
+    fun dropCache(book: Book) {
         viewModelScope.launch {
             cachingService
                 .removeBook(book)
@@ -34,7 +33,7 @@ class CachingModelView @Inject constructor(
         }
     }
 
-    private fun cacheBook(book: Book) {
+    fun cacheBook(book: Book) {
         viewModelScope.launch {
             cachingService
                 .cacheBook(book)
