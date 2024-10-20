@@ -19,7 +19,8 @@ import javax.inject.Singleton
 @Singleton
 class LocalCacheRepository @Inject constructor(
     private val cachedBookRepository: CachedBookRepository,
-    private val cachedLibraryRepository: CachedLibraryRepository
+    private val cachedLibraryRepository: CachedLibraryRepository,
+    private val properties: CacheBookStorageProperties
 ) {
 
     fun provideFileUri(libraryItemId: String, fileId: String): Uri =
@@ -44,7 +45,7 @@ class LocalCacheRepository @Inject constructor(
         return ApiResult.Success(Unit)
     }
 
-    suspend fun fetchBookCover(bookId: String): ApiResult<InputStream> {
+    fun fetchBookCover(bookId: String): ApiResult<InputStream> {
         val cover = cachedBookRepository
             .provideBookCover(bookId)
 
@@ -59,10 +60,8 @@ class LocalCacheRepository @Inject constructor(
         pageNumber: Int
     ): ApiResult<PagedItems<Book>> {
         val books = cachedBookRepository
-            .fetchBooks(
-                pageNumber = pageNumber,
-                pageSize = pageSize
-            )
+            .fetchBooks(pageNumber = pageNumber, pageSize = pageSize)
+            .filter { checkBookIntegrity(it.id) }
 
         return ApiResult
             .Success(
@@ -81,12 +80,11 @@ class LocalCacheRepository @Inject constructor(
         cachedLibraryRepository.cacheLibraries(libraries)
     }
 
-
     /**
      * For the local cache we avoiding to create intermediary entity like Session and using BookId
      * as a Playback Session Key
      */
-    suspend fun startPlayback(
+    fun startPlayback(
         bookId: String
     ): ApiResult<PlaybackSession> =
         ApiResult
@@ -106,4 +104,9 @@ class LocalCacheRepository @Inject constructor(
         ?: ApiResult.Error(ApiError.InternalError)
 
     suspend fun fetchCachedBookIds() = cachedBookRepository.fetchCachedBooksIds()
+
+    private suspend fun checkBookIntegrity(bookId: String): Boolean {
+        val book = cachedBookRepository.fetchBook(bookId) ?: return false
+        return book.files.all { properties.provideMediaCachePatch(bookId, it.id).exists() }
+    }
 }
