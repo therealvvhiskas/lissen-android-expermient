@@ -17,12 +17,13 @@ class CacheBookStorageProperties @Inject constructor(
         ?.resolve(fileId)
         ?: throw IllegalStateException("")
 
-    fun provideBookCoverPath(bookId: String) =
-        context
+    fun provideBookCoverPath(bookId: String): File {
+        return context
             .getExternalFilesDir(MEDIA_CACHE_FOLDER)
             ?.resolve(bookId)
             ?.resolve("cover.img")
             ?: throw IllegalStateException("")
+    }
 
     companion object {
         const val MEDIA_CACHE_FOLDER = "media_cache"
