@@ -139,12 +139,10 @@ class LissenMediaProvider @Inject constructor(
         return detailedBook.copy(progress = updatedProgress)
     }
 
-    private suspend fun flagCached(
-        it: PagedItems<Book>
-    ): PagedItems<Book> {
+    private suspend fun flagCached(page: PagedItems<Book>): PagedItems<Book> {
         val cachedBooks = localCacheRepository.fetchCachedBookIds()
 
-        val items = it
+        val items = page
             .items
             .map { book ->
                 when (cachedBooks.contains(book.id)) {
@@ -153,7 +151,7 @@ class LissenMediaProvider @Inject constructor(
                 }
             }
 
-        return it.copy(items = items)
+        return page.copy(items = items)
     }
 
 
