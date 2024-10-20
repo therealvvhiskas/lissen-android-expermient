@@ -295,9 +295,16 @@ fun LibraryScreen(
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
+                            val showingBooks = remember {
+                                derivedStateOf {
+                                    recentBooks.filter {
+                                        libraryViewModel.isVisible(it.id)
+                                    }
+                                }
+                            }
                             RecentBooksComposable(
                                 navController = navController,
-                                recentBooks = recentBooks.filterNot { hiddenBooks.contains(it.id) },
+                                recentBooks = showingBooks.value,
                                 imageLoader = imageLoader
                             )
                         }
@@ -344,7 +351,11 @@ fun LibraryScreen(
                     } else {
                         items(count = library.itemCount) {
                             val book = library[it] ?: return@items
-                            if (!hiddenBooks.contains(book.id)) {
+                            val isVisible = remember(hiddenBooks, book.id) {
+                                derivedStateOf { libraryViewModel.isVisible(book.id) }
+                            }
+
+                            if (isVisible.value) {
                                 BookComposable(
                                     book = book,
                                     imageLoader = imageLoader,
