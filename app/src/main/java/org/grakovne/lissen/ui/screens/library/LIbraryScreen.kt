@@ -43,7 +43,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,7 +60,7 @@ import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import dagger.hilt.android.EntryPointAccessors
+import coil.ImageLoader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -70,7 +69,6 @@ import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
-import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
@@ -87,7 +85,8 @@ fun LibraryScreen(
     navController: NavController,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     cachingModelView: CachingModelView = hiltViewModel(),
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    playerViewModel: PlayerViewModel = hiltViewModel(),
+    imageLoader: ImageLoader
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -143,12 +142,6 @@ fun LibraryScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) { libraryViewModel.refreshRecentListening() }
-
-    val imageLoader = remember {
-        EntryPointAccessors
-            .fromApplication(context, ImageLoaderEntryPoint::class.java)
-            .getImageLoader()
-    }
 
     val navBarTitle by remember {
         derivedStateOf {

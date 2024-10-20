@@ -75,17 +75,18 @@ class LissenMediaProvider @Inject constructor(
         }
     }
 
-    suspend fun fetchLibraries(): ApiResult<List<Library>> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.fetchLibraries()
-        false -> providePreferredChannel()
-            .fetchLibraries()
-            .also {
-                it.foldAsync(
-                    onSuccess = { libraries -> localCacheRepository.updateLibraries(libraries) },
-                    onFailure = {}
-                )
-            }
-    }
+    suspend fun fetchLibraries(): ApiResult<List<Library>> =
+        when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.fetchLibraries()
+            false -> providePreferredChannel()
+                .fetchLibraries()
+                .also {
+                    it.foldAsync(
+                        onSuccess = { libraries -> localCacheRepository.updateLibraries(libraries) },
+                        onFailure = {}
+                    )
+                }
+        }
 
     suspend fun startPlayback(
         bookId: String,
@@ -105,7 +106,7 @@ class LissenMediaProvider @Inject constructor(
 
     suspend fun fetchBook(
         bookId: String
-    ): ApiResult<DetailedBook> = when(cacheConfiguration.localCacheUsing()) {
+    ): ApiResult<DetailedBook> = when (cacheConfiguration.localCacheUsing()) {
         true -> localCacheRepository.fetchBook(bookId)
         false -> providePreferredChannel().fetchBook(bookId)
     }
@@ -114,7 +115,7 @@ class LissenMediaProvider @Inject constructor(
         host: String,
         username: String,
         password: String
-    ): ApiResult<UserAccount> = when(sharedPreferences.getPreferredChannel()) {
+    ): ApiResult<UserAccount> = when (sharedPreferences.getPreferredChannel()) {
         AUDIOBOOKSHELF -> providePreferredChannel().authorize(host, username, password)
     }
 
@@ -134,7 +135,7 @@ class LissenMediaProvider @Inject constructor(
 
         return it.copy(items = items)
     }
-    
+
 
     private fun providePreferredChannel(): MediaChannel = sharedPreferences
         .getPreferredChannel()

@@ -24,17 +24,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.ImageLoader
 import coil.request.ImageRequest
-import dagger.hilt.android.EntryPointAccessors
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
-import org.grakovne.lissen.ui.components.ImageLoaderEntryPoint
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun TrackDetailsComposable(
     viewModel: PlayerViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageLoader: ImageLoader
 ) {
 
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
@@ -46,12 +46,6 @@ fun TrackDetailsComposable(
             .data(book?.id)
             .size(coil.size.Size.ORIGINAL)
             .build()
-    }
-
-    val imageLoader = remember {
-        EntryPointAccessors
-            .fromApplication(context, ImageLoaderEntryPoint::class.java)
-            .getImageLoader()
     }
 
     Box(

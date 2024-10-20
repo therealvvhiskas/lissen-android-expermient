@@ -1,6 +1,5 @@
 package org.grakovne.lissen.viewmodel
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
