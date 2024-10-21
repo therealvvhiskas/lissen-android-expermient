@@ -75,7 +75,9 @@ fun LoginScreen(
                 navController
                     .navigate("library_screen") {
                         launchSingleTop = true
-                        popUpTo("library_screen") { inclusive = true }
+                        popUpTo(navController.graph.startDestinationId) {
+                            inclusive = false
+                        }
                     }
             }
 
