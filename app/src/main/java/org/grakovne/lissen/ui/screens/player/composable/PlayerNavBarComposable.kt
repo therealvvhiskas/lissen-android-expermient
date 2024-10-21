@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.theme.ItemAccented
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
@@ -67,6 +68,7 @@ fun PlayerNavBarComposable(
                 onClick = { navController.navigate("library_screen") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
+                    indicatorColor = ItemAccented,
                 )
             )
 
@@ -88,6 +90,7 @@ fun PlayerNavBarComposable(
                 onClick = { onChaptersClick() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
+                    indicatorColor = ItemAccented,
                 )
             )
 
@@ -109,7 +112,8 @@ fun PlayerNavBarComposable(
                 onClick = { viewModel.togglePlaybackSpeed() },
                 enabled = true,
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary
+                    selectedIconColor = colorScheme.primary,
+                    indicatorColor = ItemAccented,
                 )
             )
 
@@ -131,6 +135,7 @@ fun PlayerNavBarComposable(
                 onClick = { navController.navigate("settings_screen") },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
+                    indicatorColor = ItemAccented,
                 )
             )
         }
