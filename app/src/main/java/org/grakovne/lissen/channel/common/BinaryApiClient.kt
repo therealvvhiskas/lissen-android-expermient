@@ -21,6 +21,7 @@ class BinaryApiClient(
                 .request()
                 .newBuilder()
                 .header("Authorization", "Bearer $token")
+                .header("User-Agent", USER_AGENT)
                 .build()
             chain.proceed(request)
         }

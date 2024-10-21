@@ -25,6 +25,7 @@ class ApiClient(
                 requestBuilder.header("Authorization", "Bearer $token")
             }
 
+            requestBuilder.header("User-Agent", USER_AGENT)
             val request: Request = requestBuilder.build()
             chain.proceed(request)
         }

@@ -10,5 +10,6 @@ data class StartPlaybackRequest(
 
 data class DeviceInfo(
     val clientName: String,
-    val deviceId: String
+    val deviceId: String,
+    val deviceName: String
 )
