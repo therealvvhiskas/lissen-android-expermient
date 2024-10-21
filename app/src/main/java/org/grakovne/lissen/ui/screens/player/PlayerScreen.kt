@@ -126,20 +126,15 @@ fun PlayerScreen(
                     }
                 }
 
-                Crossfade(
-                    targetState = isPlaybackReady,
-                    label = "isPlaybackReady"
-                ) { playbackReady ->
-                    if (playbackReady) {
-                        PlayingQueueComposable(
-                            viewModel = viewModel,
-                            modifier = Modifier
-                        )
-                    } else {
-                        PlayingQueuePlaceholderComposable(
-                            modifier = Modifier
-                        )
-                    }
+                if (isPlaybackReady) {
+                    PlayingQueueComposable(
+                        viewModel = viewModel,
+                        modifier = Modifier
+                    )
+                } else {
+                    PlayingQueuePlaceholderComposable(
+                        modifier = Modifier
+                    )
                 }
             }
         }
