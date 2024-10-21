@@ -41,6 +41,7 @@ fun TrackDetailsComposable(
     val book by viewModel.book.observeAsState()
 
     val context = LocalContext.current
+
     val imageRequest = remember(book?.id) {
         ImageRequest.Builder(context)
             .data(book?.id)
@@ -50,7 +51,7 @@ fun TrackDetailsComposable(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
     ) {
         AsyncShimmeringImage(
             imageRequest = imageRequest,
@@ -60,7 +61,7 @@ fun TrackDetailsComposable(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(12.dp)),
+                .clip(RoundedCornerShape(8.dp)),
             error = painterResource(R.drawable.cover_fallback)
         )
     }
