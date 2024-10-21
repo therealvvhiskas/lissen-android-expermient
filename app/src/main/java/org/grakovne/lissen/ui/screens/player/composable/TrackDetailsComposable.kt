@@ -66,7 +66,7 @@ fun TrackDetailsComposable(
             error = painterResource(R.drawable.cover_fallback)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
             text = book?.title.orEmpty(),
