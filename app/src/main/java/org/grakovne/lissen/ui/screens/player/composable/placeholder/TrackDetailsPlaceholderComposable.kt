@@ -35,7 +35,7 @@ fun TrackDetailsPlaceholderComposable(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.75f)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp))
                 .shimmer()

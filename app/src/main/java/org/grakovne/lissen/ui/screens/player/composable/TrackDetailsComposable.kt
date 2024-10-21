@@ -59,7 +59,7 @@ fun TrackDetailsComposable(
             contentDescription = "${book?.title} cover",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.75f)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp)),
             error = painterResource(R.drawable.cover_fallback)
