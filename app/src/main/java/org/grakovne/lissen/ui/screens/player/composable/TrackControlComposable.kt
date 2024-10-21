@@ -134,9 +134,7 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            onClick = {
-                viewModel.seekTo(maxOf(0.0, currentTrackPosition - 10L))
-            },
+            onClick = { viewModel.rewind() },
             modifier = Modifier.weight(1f)
         ) {
             Icon(
@@ -162,9 +160,7 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            onClick = {
-                viewModel.seekTo(minOf(currentTrackDuration, currentTrackPosition + 30.0))
-            },
+            onClick = { viewModel.forward() },
             modifier = Modifier.weight(1f)
         ) {
             Icon(

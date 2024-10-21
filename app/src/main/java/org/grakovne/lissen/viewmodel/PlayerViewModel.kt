@@ -96,6 +96,17 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
+    fun rewind() {
+        val currentPosition = _currentChapterPosition.value ?: 0.0
+        seekTo(maxOf(0.0, currentPosition - 30L))
+    }
+
+    fun forward() {
+        val currentPosition = _currentChapterPosition.value ?: 0.0
+        val currentDuration = _currentChapterDuration.value ?: 0.0
+        seekTo(minOf(currentDuration, currentPosition + 30L))
+    }
+
     fun seekTo(chapterPosition: Double) {
         val absolutePosition = currentChapterIndex.value
             ?.let { chapterIndex -> book.value?.chapters?.get(chapterIndex)?.start }
