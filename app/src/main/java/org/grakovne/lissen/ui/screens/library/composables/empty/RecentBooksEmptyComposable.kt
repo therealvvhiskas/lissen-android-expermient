@@ -44,8 +44,8 @@ fun RecentBooksEmptyComposable() {
             .fillMaxWidth()
             .height(itemHeight)
             .clip(RoundedCornerShape(8.dp))
-
             .background(ItemAccented),
+
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -53,7 +53,6 @@ fun RecentBooksEmptyComposable() {
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(16.dp)
         ) {
-
             Icon(
                 imageVector = Icons.Outlined.AutoStories,
                 contentDescription = null,
