@@ -99,7 +99,7 @@ fun MiniPlayerComposable(
                 Text(
                     text = book.title,
                     style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground
                     ),
                     maxLines = 2,
