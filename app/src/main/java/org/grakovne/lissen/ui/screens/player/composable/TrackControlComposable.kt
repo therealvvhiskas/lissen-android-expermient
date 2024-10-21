@@ -121,9 +121,7 @@ fun TrackControlComposable(
                 if (currentTrackIndex > 0) {
                     viewModel.previousTrack()
                 }
-            },
-            modifier = Modifier
-                .weight(1f)
+            }
         ) {
             Icon(
                 imageVector = Icons.Rounded.SkipPrevious,
@@ -135,21 +133,18 @@ fun TrackControlComposable(
 
         IconButton(
             onClick = { viewModel.rewind() },
-            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Rounded.Replay30,
                 contentDescription = "Replay",
                 tint = colorScheme.onBackground,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(48.dp)
             )
         }
 
         IconButton(
             onClick = { viewModel.togglePlayPause() },
-            modifier = Modifier
-                .size(72.dp)
-                .weight(1.5f)
+            modifier = Modifier.size(72.dp)
         ) {
             Icon(
                 imageVector = if (isPlaying) Icons.Rounded.PauseCircleFilled else Icons.Rounded.PlayCircleFilled,
@@ -160,14 +155,13 @@ fun TrackControlComposable(
         }
 
         IconButton(
-            onClick = { viewModel.forward() },
-            modifier = Modifier.weight(1f)
+            onClick = { viewModel.forward() }
         ) {
             Icon(
                 imageVector = Icons.Default.Forward30,
                 contentDescription = "Forward",
                 tint = colorScheme.onBackground,
-                modifier = Modifier.size(36.dp)
+                modifier = Modifier.size(48.dp)
             )
         }
 
@@ -176,8 +170,7 @@ fun TrackControlComposable(
                 if (currentTrackIndex < chapters.size.minus(1)) {
                     viewModel.nextTrack()
                 }
-            },
-            modifier = Modifier.weight(1f)
+            }
         ) {
             Icon(
                 imageVector = Icons.Rounded.SkipNext,
