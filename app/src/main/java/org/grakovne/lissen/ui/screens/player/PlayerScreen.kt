@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.ImageLoader
+import kotlinx.coroutines.delay
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
