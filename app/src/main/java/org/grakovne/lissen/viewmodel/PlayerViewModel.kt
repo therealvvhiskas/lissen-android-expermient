@@ -23,9 +23,10 @@ class PlayerViewModel @Inject constructor(
     val book: LiveData<DetailedBook> = mediaRepository.playingBook
 
     private val mediaItemPosition: LiveData<Double> = mediaRepository.mediaItemPosition
-    private val _playingQueueExpanded = MutableLiveData(false)
 
+    private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
+
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
     val playbackSpeed: LiveData<Float> = mediaRepository.playbackSpeed
 

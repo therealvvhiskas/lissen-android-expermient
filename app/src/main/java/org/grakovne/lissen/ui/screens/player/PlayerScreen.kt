@@ -7,6 +7,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -94,7 +96,6 @@ fun PlayerScreen(
         },
         modifier = Modifier.systemBarsPadding(),
         content = { innerPadding ->
-
             Column(
                 modifier = Modifier.padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,7 +106,6 @@ fun PlayerScreen(
                     exit = shrinkVertically(animationSpec = tween(500))
                 ) {
                     Column(
-                        modifier = Modifier.weight(1f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
@@ -118,12 +118,12 @@ fun PlayerScreen(
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
-
                         TrackControlComposable(
                             viewModel = viewModel,
                             modifier = Modifier
                         )
+
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
 
