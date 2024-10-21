@@ -182,7 +182,7 @@ fun LibraryScreen(
                         onDismissRequest = { navigationItemSelected = false },
                         modifier = Modifier
                             .background(colorScheme.background)
-                            .padding(8.dp)
+                            .padding(4.dp)
                     ) {
                         DropdownMenuItem(
                             leadingIcon = {
@@ -194,7 +194,7 @@ fun LibraryScreen(
                             text = {
                                 Text(
                                     stringResource(R.string.library_screen_preferences_menu_item),
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
                             },
@@ -223,7 +223,7 @@ fun LibraryScreen(
                                         true -> stringResource(R.string.disable_offline)
                                         else -> stringResource(R.string.enable_offline)
                                     },
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier.padding(start = 8.dp)
                                 )
                             },
@@ -258,7 +258,7 @@ fun LibraryScreen(
                             text = {
                                 Text(
                                     stringResource(R.string.library_screen_report_issue_menu_item),
-                                    style = MaterialTheme.typography.bodyLarge,
+                                    style = MaterialTheme.typography.bodyMedium,
                                     modifier = Modifier
                                         .padding(start = 8.dp)
                                         .alpha(0.6f)
