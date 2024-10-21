@@ -99,7 +99,7 @@ fun BookComposable(
             Text(
                 text = book.title,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onBackground
                 ),
                 maxLines = 2,
@@ -115,6 +115,8 @@ fun BookComposable(
                 overflow = TextOverflow.Ellipsis
             )
         }
+
+        Spacer(modifier = Modifier.width(16.dp))
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -116,7 +116,7 @@ fun RecentBookItemComposable(
         Column(modifier = Modifier.padding(horizontal = 4.dp)) {
             Text(
                 text = book.title,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

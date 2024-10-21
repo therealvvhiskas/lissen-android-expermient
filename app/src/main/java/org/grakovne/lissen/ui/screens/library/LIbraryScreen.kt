@@ -138,7 +138,7 @@ fun LibraryScreen(
         }
     )
 
-    val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
     val libraryListState = rememberLazyListState()
