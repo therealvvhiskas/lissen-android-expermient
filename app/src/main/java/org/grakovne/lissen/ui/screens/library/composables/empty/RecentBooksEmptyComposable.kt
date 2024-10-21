@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.library.composables.empty
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
-import org.grakovne.lissen.ui.theme.ItemAccented
 
 @Composable
 fun RecentBooksEmptyComposable() {
@@ -43,8 +41,7 @@ fun RecentBooksEmptyComposable() {
         modifier = Modifier
             .fillMaxWidth()
             .height(itemHeight)
-            .clip(RoundedCornerShape(8.dp))
-            .background(ItemAccented),
+            .clip(RoundedCornerShape(8.dp)),
 
         contentAlignment = Alignment.Center
     ) {
