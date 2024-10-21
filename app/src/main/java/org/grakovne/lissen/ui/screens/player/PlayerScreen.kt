@@ -7,7 +7,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -95,46 +94,50 @@ fun PlayerScreen(
         },
         modifier = Modifier.systemBarsPadding(),
         content = { innerPadding ->
-            AnimatedVisibility(
-                visible = !playingQueueExpanded,
-                enter = expandVertically(animationSpec = tween(500)),
-                exit = shrinkVertically(animationSpec = tween(500))
+            Column(
+                modifier = Modifier.padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
-                    modifier = Modifier.padding(innerPadding),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                AnimatedVisibility(
+                    visible = !playingQueueExpanded,
+                    enter = expandVertically(animationSpec = tween(500)),
+                    exit = shrinkVertically(animationSpec = tween(500))
                 ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
 
-                    if (!isPlaybackReady) {
-                        TrackDetailsPlaceholderComposable(bookTitle)
-                    } else {
-                        TrackDetailsComposable(
-                            viewModel = viewModel,
-                            imageLoader = imageLoader
-                        )
-                    }
-
-                    TrackControlComposable(
-                        viewModel = viewModel,
-                        modifier = Modifier
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Crossfade(
-                        targetState = isPlaybackReady,
-                        label = "isPlaybackReady"
-                    ) { playbackReady ->
-                        if (playbackReady) {
-                            PlayingQueueComposable(
-                                viewModel = viewModel,
-                                modifier = Modifier
-                            )
+                        if (!isPlaybackReady) {
+                            TrackDetailsPlaceholderComposable(bookTitle)
                         } else {
-                            PlayingQueuePlaceholderComposable(
-                                modifier = Modifier
+                            TrackDetailsComposable(
+                                viewModel = viewModel,
+                                imageLoader = imageLoader
                             )
                         }
+
+                        TrackControlComposable(
+                            viewModel = viewModel,
+                            modifier = Modifier
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+
+                Crossfade(
+                    targetState = isPlaybackReady,
+                    label = "isPlaybackReady"
+                ) { playbackReady ->
+                    if (playbackReady) {
+                        PlayingQueueComposable(
+                            viewModel = viewModel,
+                            modifier = Modifier
+                        )
+                    } else {
+                        PlayingQueuePlaceholderComposable(
+                            modifier = Modifier
+                        )
                     }
                 }
             }
