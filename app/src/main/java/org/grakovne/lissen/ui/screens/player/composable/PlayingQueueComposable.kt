@@ -83,10 +83,7 @@ fun PlayingQueueComposable(
         }
     }
 
-    Column(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-    ) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
         Text(
             text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = fontSize.sp,
