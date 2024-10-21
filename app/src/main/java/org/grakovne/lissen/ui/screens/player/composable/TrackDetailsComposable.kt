@@ -1,9 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -36,7 +38,6 @@ fun TrackDetailsComposable(
     modifier: Modifier = Modifier,
     imageLoader: ImageLoader
 ) {
-
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
     val book by viewModel.book.observeAsState()
 
@@ -49,8 +50,8 @@ fun TrackDetailsComposable(
             .build()
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
         AsyncShimmeringImage(
@@ -64,30 +65,34 @@ fun TrackDetailsComposable(
                 .clip(RoundedCornerShape(8.dp)),
             error = painterResource(R.drawable.cover_fallback)
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = book?.title.orEmpty(),
+            style = typography.headlineMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 2,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = stringResource(
+                R.string.player_screen_now_playing_title_chapter_of,
+                currentTrackIndex + 1,
+                book?.chapters?.size ?: "?"
+            ),
+            style = typography.bodyMedium,
+            color = colorScheme.onBackground.copy(alpha = 0.6f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
-
-    Spacer(Modifier.padding(vertical = 8.dp))
-
-    Text(
-        text = book?.title ?: return,
-        style = typography.headlineMedium,
-        fontWeight = FontWeight.SemiBold,
-        color = colorScheme.onBackground,
-        textAlign = TextAlign.Center,
-        overflow = TextOverflow.Ellipsis,
-        maxLines = 2,
-        modifier = Modifier.padding(horizontal = 16.dp)
-    )
-
-    Spacer(Modifier.padding(vertical = 4.dp))
-
-    Text(
-        text = stringResource(
-            R.string.player_screen_now_playing_title_chapter_of,
-            currentTrackIndex + 1,
-            book?.chapters?.size ?: "?"
-        ),
-        style = typography.bodyMedium,
-        color = colorScheme.onBackground.copy(alpha = 0.6f)
-    )
 }
