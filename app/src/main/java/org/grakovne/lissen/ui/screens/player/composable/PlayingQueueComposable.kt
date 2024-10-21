@@ -87,7 +87,7 @@ fun PlayingQueueComposable(
         Text(
             text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = fontSize.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 8.dp)
         )

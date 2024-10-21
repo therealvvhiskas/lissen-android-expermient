@@ -41,7 +41,7 @@ fun PreferredLibraryComposable(viewModel: SettingsViewModel) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = stringResource(R.string.settings_screen_preferred_library_title),
-            style = typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            style = typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             modifier = Modifier.padding(bottom = 12.dp)
         )
 

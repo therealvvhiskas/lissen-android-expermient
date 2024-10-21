@@ -39,7 +39,7 @@ fun SettingsScreen(
 ) {
 
     val viewModel: SettingsViewModel = hiltViewModel()
-    val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
     LaunchedEffect(Unit) {
         viewModel.fetchLibraries()

@@ -33,7 +33,7 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(vertical = 8.dp)
         )

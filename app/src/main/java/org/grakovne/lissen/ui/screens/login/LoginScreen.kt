@@ -110,7 +110,7 @@ fun LoginScreen(
                     text = stringResource(R.string.login_screen_title),
                     style = TextStyle(
                         fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.SemiBold,
                         letterSpacing = 2.sp,
                         textAlign = TextAlign.Start,
                     ),

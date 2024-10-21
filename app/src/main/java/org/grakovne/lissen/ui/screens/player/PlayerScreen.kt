@@ -51,7 +51,7 @@ fun PlayerScreen(
 ) {
 
     val viewModel: PlayerViewModel = hiltViewModel()
-    val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+    val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
     val playingBook by viewModel.book.observeAsState()
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
