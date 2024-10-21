@@ -75,6 +75,7 @@ import org.grakovne.lissen.ui.screens.common.RequestNotificationPermissions
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
+import org.grakovne.lissen.ui.screens.library.composables.empty.RecentBooksEmptyComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.CachingModelView
@@ -318,11 +319,14 @@ fun LibraryScreen(
                                 }
                             }
 
-                            RecentBooksComposable(
-                                navController = navController,
-                                recentBooks = showingBooks,
-                                imageLoader = imageLoader
-                            )
+                            when (showingBooks.isEmpty()) {
+                                true -> RecentBooksEmptyComposable()
+                                false -> RecentBooksComposable(
+                                    navController = navController,
+                                    recentBooks = showingBooks,
+                                    imageLoader = imageLoader
+                                )
+                            }
                         }
                     }
 
