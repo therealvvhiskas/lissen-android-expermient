@@ -24,7 +24,7 @@ import org.grakovne.lissen.R
 
 @Composable
 fun TrackDetailsPlaceholderComposable(
-    bookTitle: String
+    bookTitle: String?
 ) {
     Box(
         modifier = Modifier
@@ -39,7 +39,7 @@ fun TrackDetailsPlaceholderComposable(
     Spacer(Modifier.padding(vertical = 8.dp))
 
     Text(
-        text = bookTitle,
+        text = bookTitle ?: "",
         style = typography.headlineMedium,
         fontWeight = FontWeight.SemiBold,
         color = colorScheme.onBackground,
