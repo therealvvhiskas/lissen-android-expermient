@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Forward30
 import androidx.compose.material.icons.rounded.PauseCircleFilled
 import androidx.compose.material.icons.rounded.PlayCircleFilled
+import androidx.compose.material.icons.rounded.Replay10
 import androidx.compose.material.icons.rounded.Replay30
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
@@ -156,7 +157,7 @@ fun TrackControlComposable(
                     onClick = { viewModel.rewind() },
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Replay30,
+                        imageVector = Icons.Rounded.Replay10,
                         contentDescription = "Rewind",
                         tint = colorScheme.onBackground,
                         modifier = Modifier.size(48.dp)

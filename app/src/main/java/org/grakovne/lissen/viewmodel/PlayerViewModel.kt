@@ -99,7 +99,7 @@ class PlayerViewModel @Inject constructor(
 
     fun rewind() {
         val currentPosition = _currentChapterPosition.value ?: 0.0
-        seekTo(maxOf(0.0, currentPosition - 30L))
+        seekTo(maxOf(0.0, currentPosition - 10L))
     }
 
     fun forward() {
