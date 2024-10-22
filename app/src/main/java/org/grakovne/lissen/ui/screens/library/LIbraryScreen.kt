@@ -76,7 +76,6 @@ import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.empty.LibraryEmptyComposable
-import org.grakovne.lissen.ui.screens.library.composables.empty.RecentBooksEmptyComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.CachingModelView
@@ -157,13 +156,17 @@ fun LibraryScreen(
         derivedStateOf {
             val firstVisibleItemIndex = libraryListState.firstVisibleItemIndex
             when {
-                firstVisibleItemIndex >= 1 -> context.getString(R.string.library_screen_library_title)
+                firstVisibleItemIndex >= 1 ||
+                        filterRecentBooks(
+                            recentBooks,
+                            libraryViewModel
+                        ).isEmpty() -> context.getString(R.string.library_screen_library_title)
+
                 else -> context.getString(R.string.library_screen_continue_listening_title)
 
             }
         }
     }
-
 
     Scaffold(
         topBar = {
@@ -313,16 +316,11 @@ fun LibraryScreen(
                             RecentBooksPlaceholderComposable()
                         } else {
                             val showingBooks by remember(recentBooks, hiddenBooks) {
-                                derivedStateOf {
-                                    recentBooks.filter {
-                                        libraryViewModel.isVisible(it.id)
-                                    }
-                                }
+                                derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
                             }
 
-                            when (showingBooks.isEmpty()) {
-                                true -> RecentBooksEmptyComposable()
-                                false -> RecentBooksComposable(
+                            if (showingBooks.isEmpty().not()) {
+                                RecentBooksComposable(
                                     navController = navController,
                                     recentBooks = showingBooks,
                                     imageLoader = imageLoader
@@ -334,31 +332,33 @@ fun LibraryScreen(
                     item { Spacer(modifier = Modifier.height(20.dp)) }
 
                     item(key = "library_title") {
-                        AnimatedContent(
-                            targetState = navBarTitle,
-                            transitionSpec = {
-                                fadeIn(
-                                    animationSpec =
-                                    tween(300)
-                                ) togetherWith fadeOut(
-                                    animationSpec = tween(
-                                        300
+                        if (filterRecentBooks(recentBooks, libraryViewModel).isNotEmpty()) {
+                            AnimatedContent(
+                                targetState = navBarTitle,
+                                transitionSpec = {
+                                    fadeIn(
+                                        animationSpec =
+                                        tween(300)
+                                    ) togetherWith fadeOut(
+                                        animationSpec = tween(
+                                            300
+                                        )
                                     )
-                                )
-                            }, label = "library_header_fade"
-                        ) {
-                            if (it != stringResource(R.string.library_screen_library_title)) {
-                                Text(
-                                    style = titleTextStyle,
-                                    text = stringResource(R.string.library_screen_library_title),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-                            } else {
-                                Spacer(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(titleHeightDp)
-                                )
+                                }, label = "library_header_fade"
+                            ) {
+                                if (it != stringResource(R.string.library_screen_library_title)) {
+                                    Text(
+                                        style = titleTextStyle,
+                                        text = stringResource(R.string.library_screen_library_title),
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                } else {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(titleHeightDp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -406,4 +406,11 @@ fun LibraryScreen(
             }
         }
     )
+}
+
+private fun filterRecentBooks(
+    books: List<RecentBook>,
+    libraryViewModel: LibraryViewModel
+) = books.filter {
+    libraryViewModel.isVisible(it.id)
 }
