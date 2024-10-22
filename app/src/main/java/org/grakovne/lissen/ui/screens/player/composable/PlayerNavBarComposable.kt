@@ -55,7 +55,7 @@ fun PlayerNavBarComposable(
             modifier = Modifier.fillMaxWidth()
         ) {
             val iconSize = 24.dp
-            val labelStyle = typography.labelSmall.copy(fontSize = 12.sp)
+            val labelStyle = typography.labelSmall.copy(fontSize = 10.sp)
 
             NavigationBarItem(
                 icon = {
