@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -70,8 +71,8 @@ fun PlayingQueueComposable(
 
     val fontSize by animateFloatAsState(
         targetValue = when (playingQueueExpanded) {
-            true -> typography.titleLarge.fontSize.value * 1.2f
-            false -> typography.titleLarge.fontSize.value
+            true -> typography.titleMedium.fontSize.value * 1.3f
+            false -> typography.titleMedium.fontSize.value * 1.2f
         },
         animationSpec = tween(durationMillis = 500),
         label = "playing_queue_font_size"
@@ -89,15 +90,15 @@ fun PlayingQueueComposable(
     }
 
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        Crossfade(fontSize, label = "playerQueueFontSize") { size ->
-            Text(
-                text = stringResource(R.string.player_screen_now_playing_title),
-                fontSize = size.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
+        Text(
+            text = stringResource(R.string.player_screen_now_playing_title),
+            fontSize = fontSize.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+
+        Spacer(modifier = Modifier.padding(vertical = 4.dp))
 
         LazyColumn(
             modifier = Modifier
