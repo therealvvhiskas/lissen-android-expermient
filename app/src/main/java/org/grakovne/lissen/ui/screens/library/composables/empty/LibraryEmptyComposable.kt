@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.theme.ItemAccented
@@ -59,6 +60,7 @@ fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
             Spacer(modifier = Modifier.height(36.dp))
 
             Text(
+                textAlign = TextAlign.Center,
                 text = when(cachingModelView.localCacheUsing()) {
                     true -> stringResource(R.string.the_offline_library_is_empty)
                     false -> stringResource(R.string.the_library_is_empty)
