@@ -101,11 +101,9 @@ fun TrackControlComposable(
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
             Text(
-                text = "-${
-                    maxOf(0.0, currentTrackDuration - currentTrackPosition)
-                        .toInt()
-                        .formatFully()
-                }",
+                text = maxOf(0.0, currentTrackDuration - currentTrackPosition)
+                    .toInt()
+                    .formatFully(),
                 style = typography.bodySmall,
                 color = colorScheme.onBackground.copy(alpha = 0.6f)
             )
