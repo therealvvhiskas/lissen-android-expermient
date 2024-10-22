@@ -70,10 +70,7 @@ fun PlayingQueueComposable(
     val listState = rememberLazyListState()
 
     val fontSize by animateFloatAsState(
-        targetValue = when (playingQueueExpanded) {
-            true -> typography.titleMedium.fontSize.value * 1.3f
-            false -> typography.titleMedium.fontSize.value * 1.2f
-        },
+        targetValue = typography.titleMedium.fontSize.value * 1.25f,
         animationSpec = tween(durationMillis = 500),
         label = "playing_queue_font_size"
     )
@@ -95,7 +92,7 @@ fun PlayingQueueComposable(
             fontSize = fontSize.sp,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier.padding(horizontal = 6.dp)
         )
 
         Spacer(modifier = Modifier.padding(vertical = 4.dp))
