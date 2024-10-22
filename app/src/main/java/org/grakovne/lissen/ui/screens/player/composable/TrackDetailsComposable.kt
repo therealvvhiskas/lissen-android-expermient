@@ -75,7 +75,7 @@ fun TrackDetailsComposable(
 
         Text(
             text = book?.title.orEmpty(),
-            style = typography.headlineMedium,
+            style = typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
             color = colorScheme.onBackground,
             textAlign = TextAlign.Center,
@@ -94,7 +94,7 @@ fun TrackDetailsComposable(
                 currentTrackIndex + 1,
                 book?.chapters?.size ?: "?"
             ),
-            style = typography.bodyMedium,
+            style = typography.bodySmall,
             color = colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()

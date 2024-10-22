@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -67,7 +68,10 @@ fun PlayingQueueComposable(
     val listState = rememberLazyListState()
 
     val fontSize by animateFloatAsState(
-        targetValue = if (playingQueueExpanded) 24f else 20f,
+        targetValue = when (playingQueueExpanded) {
+            true -> typography.titleLarge.fontSize.value * 1.2f
+            false -> typography.titleLarge.fontSize.value
+        },
         animationSpec = tween(durationMillis = 300),
         label = "playing_queue_font_size"
     )

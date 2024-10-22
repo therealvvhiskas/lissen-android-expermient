@@ -34,15 +34,14 @@ fun TrackDetailsPlaceholderComposable(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val maxImageHeight = screenHeight * 0.33f
+    val maxImageHeight = screenHeight * 0.1f
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
+        modifier = Modifier.heightIn(max = maxImageHeight)
     ) {
         Box(
             modifier = Modifier
-                .heightIn(max = maxImageHeight)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp))
                 .shimmer()
