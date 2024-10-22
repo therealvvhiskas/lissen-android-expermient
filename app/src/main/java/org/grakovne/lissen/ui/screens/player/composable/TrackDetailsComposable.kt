@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -18,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +51,10 @@ fun TrackDetailsComposable(
             .build()
     }
 
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+    val maxImageHeight = screenHeight * 0.33f
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -59,7 +65,7 @@ fun TrackDetailsComposable(
             contentDescription = "${book?.title} cover",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
-                .fillMaxWidth(0.75f)
+                .heightIn(max = maxImageHeight)
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(8.dp)),
             error = painterResource(R.drawable.cover_fallback)
