@@ -2,7 +2,7 @@ package org.grakovne.lissen.ui.screens.login
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -72,13 +75,12 @@ fun LoginScreen(
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginState.Success -> {
-                navController
-                    .navigate("library_screen") {
-                        launchSingleTop = true
-                        popUpTo(navController.graph.startDestinationId) {
-                            inclusive = false
-                        }
+                navController.navigate("library_screen") {
+                    launchSingleTop = true
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = false
                     }
+                }
             }
 
             is LoginState.Error -> loginError
@@ -98,86 +100,108 @@ fun LoginScreen(
             .systemBarsPadding()
             .fillMaxSize(),
         content = { innerPadding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
             ) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth(0.8f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Text(
+                        text = stringResource(R.string.login_screen_title),
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 2.sp,
+                            textAlign = TextAlign.Start,
+                        ),
+                        modifier = Modifier
+                            .padding(vertical = 32.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = host,
+                        onValueChange = {
+                            viewModel.setHost(it)
+                        },
+                        label = { Text(stringResource(R.string.login_screen_server_url_input)) },
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = username,
+                        onValueChange = {
+                            viewModel.setUsername(it)
+                        },
+                        label = { Text(stringResource(R.string.login_screen_login_input)) },
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = password,
+                        visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
+                        onValueChange = {
+                            viewModel.setPassword(it)
+                        },
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { showPassword = !showPassword }
+                            ) {
+                                Icon(
+                                    imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                    contentDescription = stringResource(R.string.login_screen_show_password_hint)
+                                )
+                            }
+                        },
+                        label = { Text(stringResource(R.string.login_screen_password_input)) },
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    )
+
+                    Button(
+                        onClick = {
+                            viewModel.login()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp)
+                    ) {
+                        Text(text = stringResource(R.string.login_screen_connect_button_text))
+                    }
+                }
 
                 Text(
-                    text = stringResource(R.string.login_screen_title),
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 2.sp,
-                        textAlign = TextAlign.Start,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .alpha(0.5f)
+                        .padding(bottom = 32.dp),
+                    text = stringResource(R.string.audiobookshelf_server_is_required),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = colorScheme.onBackground,
+                        letterSpacing = 0.5.sp,
+                        lineHeight = 32.sp
                     ),
-                    modifier = Modifier
-                        .padding(vertical = 32.dp)
+                    textAlign = TextAlign.Center
                 )
 
-                OutlinedTextField(
-                    value = host,
-                    onValueChange = {
-                        viewModel.setHost(it)
-                    },
-                    label = { Text(stringResource(R.string.login_screen_server_url_input)) },
-                    shape = RoundedCornerShape(16.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 4.dp)
-                )
-
-                OutlinedTextField(
-                    value = username,
-                    onValueChange = {
-                        viewModel.setUsername(it)
-                    },
-                    label = { Text(stringResource(R.string.login_screen_login_input)) },
-                    shape = RoundedCornerShape(16.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 12.dp)
-                )
-
-                OutlinedTextField(
-                    value = password,
-                    visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-                    onValueChange = {
-                        viewModel.setPassword(it)
-                    },
-                    trailingIcon = {
-                        IconButton(
-                            onClick = { showPassword = !showPassword }
-                        ) {
-                            Icon(
-                                imageVector = if (showPassword) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                contentDescription = stringResource(R.string.login_screen_show_password_hint)
-                            )
-                        }
-                    },
-                    label = { Text(stringResource(R.string.login_screen_password_input)) },
-                    shape = RoundedCornerShape(16.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 4.dp)
-                )
-
-                Button(
-                    onClick = {
-                        viewModel.login()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(vertical = 32.dp)
-                ) {
-                    Text(text = stringResource(R.string.login_screen_connect_button_text))
-                }
             }
         }
     )
