@@ -150,7 +150,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         handler.postDelayed(object : Runnable {
             override fun run() {
                 updateProgress(detailedBook)
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, 500)
             }
         }, 500)
     }
