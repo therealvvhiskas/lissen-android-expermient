@@ -145,9 +145,8 @@ fun PlayingQueueComposable(
                         return available
                     }
                 }),
-            state = listState,
-
-            ) {
+            state = listState
+        ) {
             itemsIndexed(chapters) { index, track ->
                 PlaylistItemComposable(
                     track = track,
