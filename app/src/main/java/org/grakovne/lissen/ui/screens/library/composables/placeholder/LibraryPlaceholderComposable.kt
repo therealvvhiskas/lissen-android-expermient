@@ -50,7 +50,7 @@ fun LibraryItemPlaceholderComposable() {
                 .background(Color.Gray)
         )
 
-        Spacer(modifier = Modifier.width(14.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
         Column(modifier = Modifier.weight(1f)) {
             Box(
