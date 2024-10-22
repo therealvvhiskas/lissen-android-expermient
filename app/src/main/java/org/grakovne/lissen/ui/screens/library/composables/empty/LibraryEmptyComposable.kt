@@ -24,9 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.theme.ItemAccented
+import org.grakovne.lissen.viewmodel.CachingModelView
 
 @Composable
-fun LibraryEmptyComposable() {
+fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -58,7 +59,10 @@ fun LibraryEmptyComposable() {
             Spacer(modifier = Modifier.height(36.dp))
 
             Text(
-                text = stringResource(R.string.the_library_is_empty),
+                text = when(cachingModelView.localCacheUsing()) {
+                    true -> stringResource(R.string.the_offline_library_is_empty)
+                    false -> stringResource(R.string.the_library_is_empty)
+                },
                 style = MaterialTheme.typography.headlineMedium
             )
         }

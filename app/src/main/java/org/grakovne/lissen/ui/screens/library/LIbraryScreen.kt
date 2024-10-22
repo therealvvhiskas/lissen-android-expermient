@@ -371,7 +371,10 @@ fun LibraryScreen(
                         }
                     } else {
                         when (library.itemCount == 0) {
-                            true -> item { LibraryEmptyComposable() }
+                            true -> {
+                                item { LibraryEmptyComposable(cachingModelView) }
+                            }
+
                             false -> items(count = library.itemCount) {
                                 val book = library[it] ?: return@items
                                 val isVisible = remember(hiddenBooks, book.id) {

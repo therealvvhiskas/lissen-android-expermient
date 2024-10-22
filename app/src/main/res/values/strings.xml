@@ -36,4 +36,5 @@
     <string name="enable_offline">Turn on offline</string>
     <string name="no_books_listened_to_yet">No books listened to yet</string>
     <string name="the_library_is_empty">The library is empty</string>
+    <string name="the_offline_library_is_empty">No saved books yet</string>
 </resources>
