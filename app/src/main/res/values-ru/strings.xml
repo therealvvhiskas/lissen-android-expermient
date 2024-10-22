@@ -35,6 +35,6 @@
     <string name="enable_offline">Только скачанные</string>
     <string name="no_books_listened_to_yet">Еще нет прослушанных книг</string>
     <string name="the_library_is_empty">В библиотеке нет книг</string>
-    <string name="the_offline_library_is_empty">Загруженных книг еще нет</string>
+    <string name="the_offline_library_is_empty">Загруженных книг нет</string>
     <string name="audiobookshelf_server_is_required">"Для работы приложения необходим Audiobookshelf"</string>
 </resources>

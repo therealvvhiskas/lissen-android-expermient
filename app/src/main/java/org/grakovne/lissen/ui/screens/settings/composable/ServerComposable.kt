@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
@@ -52,7 +53,7 @@ fun ServerComposable(
                         Icons.Outlined.Podcasts,
                         contentDescription = "Preferences",
                         modifier = Modifier
-                            .padding(start = 10.dp, end = 10.dp)
+                            .padding(start = 10.dp, end = 3.dp)
                             .size(24.dp)
                     )
                     Column(modifier = Modifier.weight(1f)) {
@@ -60,7 +61,9 @@ fun ServerComposable(
                             Text(
                                 modifier = Modifier.padding(start = 10.dp),
                                 text = host ?: "",
-                                style = TextStyle(fontFamily = FontFamily.Monospace)
+                                style = TextStyle(fontFamily = FontFamily.Monospace),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                         Text(
@@ -69,7 +72,9 @@ fun ServerComposable(
                                 R.string.settings_screen_connected_as_title,
                                 username ?: ""
                             ),
-                            style = TextStyle(fontFamily = FontFamily.Monospace)
+                            style = TextStyle(fontFamily = FontFamily.Monospace),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
