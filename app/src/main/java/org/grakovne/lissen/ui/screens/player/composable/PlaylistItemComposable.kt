@@ -55,7 +55,7 @@ fun PlaylistItemComposable(
 
         Text(
             text = track.title,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.bodyMedium,
             color = colorScheme.onBackground,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
