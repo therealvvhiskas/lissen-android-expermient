@@ -1,7 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
 import android.content.Context
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Headset
@@ -9,6 +13,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -23,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.theme.ItemAccented
@@ -35,31 +41,34 @@ fun PlayerNavBarComposable(
     modifier: Modifier = Modifier,
     onChaptersClick: () -> Unit
 ) {
-
     val context = LocalContext.current
     val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     Surface(
-        shape = RoundedCornerShape(8.dp),
         shadowElevation = 4.dp,
-        modifier = modifier
+        modifier = modifier.height(64.dp)
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
             contentColor = colorScheme.onBackground,
-            modifier = modifier
+            modifier = Modifier.fillMaxWidth()
         ) {
+            val iconSize = 24.dp
+            val labelStyle = typography.labelSmall.copy(fontSize = 12.sp)
+
             NavigationBarItem(
                 icon = {
                     Icon(
                         Icons.Outlined.Headset,
                         contentDescription = stringResource(R.string.player_screen_library_navigation),
+                        modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(R.string.player_screen_library_navigation),
+                        style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -76,12 +85,14 @@ fun PlayerNavBarComposable(
                 icon = {
                     Icon(
                         Icons.Outlined.Book,
-                        contentDescription = stringResource(R.string.player_screen_chapter_list_navigation)
+                        contentDescription = stringResource(R.string.player_screen_chapter_list_navigation),
+                        modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(R.string.player_screen_chapter_list_navigation),
+                        style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -98,12 +109,14 @@ fun PlayerNavBarComposable(
                 icon = {
                     Icon(
                         Icons.Outlined.Speed,
-                        contentDescription = stringResource(R.string.player_screen_timer_navigation)
+                        contentDescription = stringResource(R.string.player_screen_timer_navigation),
+                        modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
                         text = playbackSpeed.format(context),
+                        style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -121,12 +134,14 @@ fun PlayerNavBarComposable(
                 icon = {
                     Icon(
                         Icons.Outlined.Settings,
-                        contentDescription = stringResource(R.string.player_screen_preferences_navigation)
+                        contentDescription = stringResource(R.string.player_screen_preferences_navigation),
+                        modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(R.string.player_screen_preferences_navigation),
+                        style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -141,6 +156,7 @@ fun PlayerNavBarComposable(
         }
     }
 }
+
 
 private fun Float.format(context: Context) = when (this) {
     1f -> context.getString(R.string.playback_speed_normal)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,9 +52,9 @@ fun MiniPlayerComposable(
     val isPlaying: Boolean by playerViewModel.isPlaying.observeAsState(false)
 
     Surface(
-        shape = RoundedCornerShape(8.dp),
         shadowElevation = 4.dp,
         modifier = modifier
+            .height(64.dp)
             .clickable {
                 navController
                     .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
