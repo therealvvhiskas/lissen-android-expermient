@@ -71,48 +71,44 @@ fun TrackControlComposable(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Slider(
-                value = sliderPosition.toFloat(),
-                onValueChange = { newPosition ->
-                    isDragging = true
-                    sliderPosition = newPosition.toDouble()
-                },
-                onValueChangeFinished = {
-                    isDragging = false
-                    viewModel.seekTo(sliderPosition)
-                },
-                valueRange = 0f..currentTrackDuration.toFloat(),
-                colors = SliderDefaults.colors(
-                    thumbColor = colorScheme.primary,
-                    activeTrackColor = colorScheme.primary
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
+        Slider(
+            value = sliderPosition.toFloat(),
+            onValueChange = { newPosition ->
+                isDragging = true
+                sliderPosition = newPosition.toDouble()
+            },
+            onValueChangeFinished = {
+                isDragging = false
+                viewModel.seekTo(sliderPosition)
+            },
+            valueRange = 0f..currentTrackDuration.toFloat(),
+            colors = SliderDefaults.colors(
+                thumbColor = colorScheme.primary,
+                activeTrackColor = colorScheme.primary
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = currentTrackPosition.toInt().formatFully(),
-                    style = typography.bodySmall,
-                    color = colorScheme.onBackground.copy(alpha = 0.6f)
-                )
-                Text(
-                    text = "-${
-                        maxOf(0.0, currentTrackDuration - currentTrackPosition)
-                            .toInt()
-                            .formatFully()
-                    }",
-                    style = typography.bodySmall,
-                    color = colorScheme.onBackground.copy(alpha = 0.6f)
-                )
-            }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = currentTrackPosition.toInt().formatFully(),
+                style = typography.bodySmall,
+                color = colorScheme.onBackground.copy(alpha = 0.6f)
+            )
+            Text(
+                text = "-${
+                    maxOf(0.0, currentTrackDuration - currentTrackPosition)
+                        .toInt()
+                        .formatFully()
+                }",
+                style = typography.bodySmall,
+                color = colorScheme.onBackground.copy(alpha = 0.6f)
+            )
         }
 
         Row(
