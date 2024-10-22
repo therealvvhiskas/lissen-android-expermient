@@ -54,7 +54,7 @@ fun TrackDetailsPlaceholderComposable(
 
         Text(
             text = bookTitle ?: "",
-            style = typography.headlineMedium,
+            style = typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
             color = colorScheme.onBackground,
             textAlign = TextAlign.Center,
@@ -66,7 +66,7 @@ fun TrackDetailsPlaceholderComposable(
 
         Text(
             text = stringResource(R.string.player_screen_now_playing_title_chapter_of, 100, "1000"),
-            style = typography.bodyMedium,
+            style = typography.bodySmall,
             color = Color.Transparent,
             modifier = Modifier
                 .shimmer()

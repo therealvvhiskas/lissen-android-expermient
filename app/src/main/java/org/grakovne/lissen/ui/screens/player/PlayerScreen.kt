@@ -98,9 +98,9 @@ fun PlayerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 AnimatedVisibility(
-                    visible = !playingQueueExpanded,
-                    enter = expandVertically(animationSpec = tween(300)),
-                    exit = shrinkVertically(animationSpec = tween(300))
+                    visible = playingQueueExpanded.not(),
+                    enter = expandVertically(animationSpec = tween(400)),
+                    exit = shrinkVertically(animationSpec = tween(400))
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally

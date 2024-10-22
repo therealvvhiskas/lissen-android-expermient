@@ -1,6 +1,7 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
 import android.view.ViewConfiguration
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
@@ -72,7 +73,7 @@ fun PlayingQueueComposable(
             true -> typography.titleLarge.fontSize.value * 1.2f
             false -> typography.titleLarge.fontSize.value
         },
-        animationSpec = tween(durationMillis = 300),
+        animationSpec = tween(durationMillis = 500),
         label = "playing_queue_font_size"
     )
 
@@ -88,13 +89,15 @@ fun PlayingQueueComposable(
     }
 
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        Text(
-            text = stringResource(R.string.player_screen_now_playing_title),
-            fontSize = fontSize.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 8.dp)
-        )
+        Crossfade(fontSize, label = "playerQueueFontSize") { size ->
+            Text(
+                text = stringResource(R.string.player_screen_now_playing_title),
+                fontSize = size.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
 
         LazyColumn(
             modifier = Modifier
