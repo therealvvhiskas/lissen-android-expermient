@@ -42,8 +42,6 @@ fun LibraryItemPlaceholderComposable() {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Spacer(modifier = Modifier.width(8.dp))
-
         Box(
             modifier = Modifier
                 .size(64.dp)
