@@ -54,7 +54,6 @@ fun MiniPlayerComposable(
     Surface(
         shadowElevation = 4.dp,
         modifier = modifier
-            .height(64.dp)
             .clickable {
                 navController
                     .navigate("player_screen/${book.id}?bookTitle=${book.title}") {

@@ -68,6 +68,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
+import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.extensions.withMinimumTime
@@ -75,7 +76,7 @@ import org.grakovne.lissen.ui.screens.common.RequestNotificationPermissions
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
-import org.grakovne.lissen.ui.screens.library.composables.empty.LibraryEmptyComposable
+import org.grakovne.lissen.ui.screens.library.composables.fallback.LibraryFallbackComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
 import org.grakovne.lissen.viewmodel.CachingModelView
@@ -89,7 +90,8 @@ fun LibraryScreen(
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     cachingModelView: CachingModelView = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
-    imageLoader: ImageLoader
+    imageLoader: ImageLoader,
+    networkQualityService: NetworkQualityService
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -372,7 +374,7 @@ fun LibraryScreen(
                     } else {
                         when (library.itemCount == 0) {
                             true -> {
-                                item { LibraryEmptyComposable(cachingModelView) }
+                                item { LibraryFallbackComposable(cachingModelView, networkQualityService) }
                             }
 
                             false -> items(count = library.itemCount) {

@@ -1,4 +1,4 @@
-package org.grakovne.lissen.ui.screens.library.composables.empty
+package org.grakovne.lissen.ui.screens.library.composables.fallback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,11 +25,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
+import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.ui.theme.ItemAccented
 import org.grakovne.lissen.viewmodel.CachingModelView
 
 @Composable
-fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
+fun LibraryFallbackComposable(
+    cachingModelView: CachingModelView,
+    networkQualityService: NetworkQualityService
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -42,6 +47,21 @@ fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val hasNetwork = networkQualityService.isNetworkAvailable()
+            val isLocalCache = cachingModelView.localCacheUsing()
+
+            val text = when {
+                isLocalCache -> stringResource(R.string.the_offline_library_is_empty)
+                hasNetwork.not() -> stringResource(R.string.no_internet_connection)
+                else -> stringResource(R.string.the_library_is_empty)
+            }
+
+            val icon = when {
+                isLocalCache -> Icons.AutoMirrored.Filled.LibraryBooks
+                hasNetwork.not() -> Icons.Filled.WifiOff
+                else -> Icons.AutoMirrored.Filled.LibraryBooks
+            }
+
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -50,7 +70,7 @@ fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier.size(64.dp)
@@ -61,10 +81,7 @@ fun LibraryEmptyComposable(cachingModelView: CachingModelView) {
 
             Text(
                 textAlign = TextAlign.Center,
-                text = when(cachingModelView.localCacheUsing()) {
-                    true -> stringResource(R.string.the_offline_library_is_empty)
-                    false -> stringResource(R.string.the_library_is_empty)
-                },
+                text = text,
                 style = MaterialTheme.typography.headlineMedium
             )
         }

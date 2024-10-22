@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import coil.ImageLoader
+import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.screens.library.LibraryScreen
 import org.grakovne.lissen.ui.screens.login.LoginScreen
@@ -20,6 +21,7 @@ import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 fun AppNavHost(
     navController: NavHostController,
     preferences: LissenSharedPreferences,
+    networkQualityService: NetworkQualityService,
     imageLoader: ImageLoader
 ) {
     val hasCredentials by remember {
@@ -38,7 +40,10 @@ fun AppNavHost(
     ) {
 
         composable("library_screen") {
-            LibraryScreen(navController = navController, imageLoader = imageLoader)
+            LibraryScreen(
+                navController = navController,
+                imageLoader = imageLoader,
+                networkQualityService = networkQualityService)
         }
 
         composable(

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import coil.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
+import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.navigation.AppNavHost
 import org.grakovne.lissen.ui.theme.LissenTheme
@@ -21,6 +22,9 @@ class AppActivity : ComponentActivity() {
     @Inject
     lateinit var imageLoader: ImageLoader
 
+    @Inject
+    lateinit var networkQualityService: NetworkQualityService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,7 +34,8 @@ class AppActivity : ComponentActivity() {
                 AppNavHost(
                     navController = navController,
                     preferences = preferences,
-                    imageLoader = imageLoader
+                    imageLoader = imageLoader,
+                    networkQualityService = networkQualityService
                 )
             }
         }
