@@ -120,6 +120,9 @@ fun RecentBookItemComposable(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             Text(
                 text = book.author,
                 style = MaterialTheme.typography.bodySmall.copy(
