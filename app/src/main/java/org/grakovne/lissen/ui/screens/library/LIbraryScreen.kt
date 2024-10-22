@@ -370,7 +370,6 @@ fun LibraryScreen(
                             LibraryPlaceholderComposable()
                         }
                     } else {
-
                         when (library.itemCount == 0) {
                             true -> item { LibraryEmptyComposable() }
                             false -> items(count = library.itemCount) {
@@ -411,6 +410,4 @@ fun LibraryScreen(
 private fun filterRecentBooks(
     books: List<RecentBook>,
     libraryViewModel: LibraryViewModel
-) = books.filter {
-    libraryViewModel.isVisible(it.id)
-}
+) = books.filter { libraryViewModel.isVisible(it.id) }

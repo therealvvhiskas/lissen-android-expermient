@@ -1,7 +1,6 @@
 package org.grakovne.lissen.ui.screens.library.composables.empty
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
@@ -27,33 +27,40 @@ import org.grakovne.lissen.ui.theme.ItemAccented
 
 @Composable
 fun LibraryEmptyComposable() {
-    Column(
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .height(screenHeight / 2)
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(ItemAccented),
-            contentAlignment = Alignment.Center
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(64.dp)
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(ItemAccented),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(36.dp))
+
+            Text(
+                text = stringResource(R.string.the_library_is_empty),
+                style = MaterialTheme.typography.headlineMedium
             )
         }
-
-        Spacer(modifier = Modifier.height(36.dp))
-
-        Text(
-            text = stringResource(R.string.the_library_is_empty),
-            style = MaterialTheme.typography.headlineMedium
-        )
     }
 }
