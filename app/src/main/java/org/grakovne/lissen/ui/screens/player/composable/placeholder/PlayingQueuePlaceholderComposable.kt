@@ -25,20 +25,16 @@ import org.grakovne.lissen.R
 
 @Composable
 fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
         Text(
             text = stringResource(R.string.player_screen_now_playing_title),
-            fontSize = typography.titleLarge.fontSize,
+            fontSize = typography.titleMedium.fontSize * 1.25f,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 6.dp)
         )
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(modifier = Modifier.padding(vertical = 4.dp))
 
         LazyColumn(
             modifier = Modifier
@@ -48,7 +44,7 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(36.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .shimmer()
                         .background(Color.Gray)
