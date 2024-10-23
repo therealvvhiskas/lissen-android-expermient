@@ -17,6 +17,37 @@ class LibraryItemIdResponseConverter @Inject constructor() {
         item: LibraryItemIdResponse,
         progressResponse: MediaProgressResponse? = null
     ): DetailedBook {
+
+        val maybeChapters = item
+            .media
+            .chapters
+            .takeIf { it.isNotEmpty() }
+            ?.map {
+                BookChapter(
+                    start = it.start,
+                    end = it.end,
+                    title = it.title,
+                    id = it.id,
+                    duration = it.end - it.start
+                )
+            }
+
+        val filesAsChapters: () -> List<BookChapter> = {
+            item.media.audioFiles.fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
+                chapters.add(
+                    BookChapter(
+                        start = accDuration,
+                        end = accDuration + file.duration,
+                        title = file.metaTags?.tagTitle
+                            ?: file.metadata.filename.removeSuffix(file.metadata.ext),
+                        duration = file.duration,
+                        id = file.ino
+                    )
+                )
+                accDuration + file.duration to chapters
+            }.second
+        }
+
         return DetailedBook(
             id = item.id,
             title = item.media.metadata.title,
@@ -34,18 +65,7 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                         mimeType = it.mimeType
                     )
                 },
-            chapters = item
-                .media
-                .chapters
-                .map {
-                    BookChapter(
-                        start = it.start,
-                        end = it.end,
-                        title = it.title,
-                        id = it.id,
-                        duration = it.end - it.start
-                    )
-                },
+            chapters = maybeChapters ?: filesAsChapters(),
             progress = progressResponse
                 ?.let {
                     MediaProgress(
