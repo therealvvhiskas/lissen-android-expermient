@@ -38,11 +38,16 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         }
     }
 
-    fun clearCredentials() {
+    fun clearPreferences() {
         sharedPreferences.edit().apply {
-            putString(KEY_HOST, null)
-            putString(KEY_USERNAME, null)
-            putString(KEY_TOKEN, null)
+            remove(KEY_HOST)
+            remove(KEY_USERNAME)
+            remove(KEY_TOKEN)
+
+            remove(CACHE_FORCE_ENABLED_TOKEN)
+
+            remove(KEY_PREFERRED_LIBRARY_ID)
+            remove(KEY_PREFERRED_LIBRARY_NAME)
         }.apply()
     }
 

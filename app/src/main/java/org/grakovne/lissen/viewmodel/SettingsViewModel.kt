@@ -38,7 +38,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun logout() {
-        preferences.clearCredentials()
+        preferences.clearPreferences()
 
         _host.value = preferences.getHost()
         _username.value = preferences.getUsername()
