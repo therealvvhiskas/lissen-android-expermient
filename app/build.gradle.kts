@@ -71,8 +71,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 
-    implementation (libs.androidx.paging.runtime.ktx)
-    implementation (libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.compose.material.icons.extended)
 
@@ -96,8 +96,12 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.androidx.media3.ui)
 
+    implementation(libs.acra.core)
+    implementation(libs.acra.http)
+    implementation(libs.acra.toast)
+
     implementation(libs.androidx.room.runtime)
-    implementation (libs.androidx.room.ktx)
+    implementation(libs.androidx.room.ktx)
     annotationProcessor(libs.androidx.room.compiler)
     kapt(libs.androidx.room.compiler)
 

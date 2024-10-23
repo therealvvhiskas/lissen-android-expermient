@@ -21,7 +21,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -50,7 +49,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -192,29 +190,6 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    contentDescription = null,
-                                )
-                            },
-                            text = {
-                                Text(
-                                    stringResource(R.string.library_screen_preferences_menu_item),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
-                            },
-                            onClick = {
-                                navigationItemSelected = false
-                                navController.navigate("settings_screen")
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
-
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
                                     imageVector = when (cachingModelView.localCacheUsing()) {
                                         true -> Icons.Outlined.Cloud
                                         else -> Icons.Outlined.CloudOff
@@ -255,21 +230,21 @@ fun LibraryScreen(
                         DropdownMenuItem(
                             leadingIcon = {
                                 Icon(
-                                    modifier = Modifier.alpha(0.6f),
-                                    imageVector = Icons.Outlined.Flag,
+                                    imageVector = Icons.Outlined.Settings,
                                     contentDescription = null,
                                 )
                             },
                             text = {
                                 Text(
-                                    stringResource(R.string.library_screen_report_issue_menu_item),
+                                    stringResource(R.string.library_screen_preferences_menu_item),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .alpha(0.6f)
+                                    modifier = Modifier.padding(start = 8.dp)
                                 )
                             },
-                            onClick = { },
+                            onClick = {
+                                navigationItemSelected = false
+                                navController.navigate("settings_screen")
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
@@ -374,7 +349,12 @@ fun LibraryScreen(
                     } else {
                         when (library.itemCount == 0) {
                             true -> {
-                                item { LibraryFallbackComposable(cachingModelView, networkQualityService) }
+                                item {
+                                    LibraryFallbackComposable(
+                                        cachingModelView,
+                                        networkQualityService
+                                    )
+                                }
                             }
 
                             false -> items(count = library.itemCount) {
