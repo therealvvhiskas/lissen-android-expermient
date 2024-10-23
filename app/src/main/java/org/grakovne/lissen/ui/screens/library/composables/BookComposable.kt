@@ -17,14 +17,18 @@ import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.SdCard
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -44,6 +49,7 @@ import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
 import org.grakovne.lissen.ui.navigation.AppNavigationService
+import org.grakovne.lissen.ui.theme.backgroundColor
 import org.grakovne.lissen.viewmodel.BookCacheAction
 import org.grakovne.lissen.viewmodel.CachingModelView
 
@@ -57,6 +63,7 @@ fun BookComposable(
 ) {
     val cacheProgress by cachingModelView.getCacheProgress(book.id).collectAsState()
     val context = LocalContext.current
+    var showDeleteFromCacheDialog by remember { mutableStateOf(false) }
 
     val imageRequest = remember(book.id) {
         ImageRequest.Builder(context)
@@ -125,8 +132,7 @@ fun BookComposable(
                             when (it) {
                                 BookCacheAction.CACHE -> cachingModelView.cacheBook(book)
                                 BookCacheAction.DROP -> {
-                                    cachingModelView.dropCache(book)
-                                    onRemoveBook.invoke()
+                                    showDeleteFromCacheDialog = true
                                 }
                             }
                         }
@@ -147,7 +153,32 @@ fun BookComposable(
             Spacer(Modifier.height(6.dp))
         }
     }
+
+    if (showDeleteFromCacheDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteFromCacheDialog = false },
+            title = { Text(text = stringResource(R.string.dialog_remove_from_cache_title)) },
+            text = { Text(stringResource(R.string.dialog_remove_from_cache_text)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    cachingModelView.dropCache(book)
+                    onRemoveBook.invoke()
+                    showDeleteFromCacheDialog = false
+                }
+                ) {
+                    Text(stringResource(R.string.dialog_confirm_remove))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteFromCacheDialog = false }) {
+                    Text(stringResource(R.string.dialog_dismiss_cancel))
+                }
+            },
+            containerColor = backgroundColor
+        )
+    }
 }
+
 
 private fun provideCachingStateIcon(
     book: Book,
