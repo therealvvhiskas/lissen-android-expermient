@@ -91,7 +91,6 @@ fun LibraryScreen(
     imageLoader: ImageLoader,
     networkQualityService: NetworkQualityService
 ) {
-
     val coroutineScope = rememberCoroutineScope()
 
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
@@ -116,7 +115,7 @@ fun LibraryScreen(
                 listOf(
                     async { libraryViewModel.dropHiddenBooks() },
                     async { libraryViewModel.refreshLibrary() },
-                    async { libraryViewModel.fetchRecentListening() },
+                    async { libraryViewModel.fetchRecentListening() }
                 ).awaitAll()
             }
 
@@ -126,9 +125,9 @@ fun LibraryScreen(
 
     val isContentLoading by remember {
         derivedStateOf {
-            pullRefreshing
-                    || recentBookRefreshing
-                    || library.loadState.refresh is LoadState.Loading
+            pullRefreshing ||
+                recentBookRefreshing ||
+                library.loadState.refresh is LoadState.Loading
         }
     }
 
@@ -161,13 +160,12 @@ fun LibraryScreen(
             val firstVisibleItemIndex = libraryListState.firstVisibleItemIndex
             when {
                 firstVisibleItemIndex >= 1 ||
-                        filterRecentBooks(
-                            recentBooks,
-                            libraryViewModel
-                        ).isEmpty() -> context.getString(R.string.library_screen_library_title)
+                    filterRecentBooks(
+                        recentBooks,
+                        libraryViewModel
+                    ).isEmpty() -> context.getString(R.string.library_screen_library_title)
 
                 else -> context.getString(R.string.library_screen_continue_listening_title)
-
             }
         }
     }
@@ -222,7 +220,6 @@ fun LibraryScreen(
                                         libraryViewModel.dropHiddenBooks()
 
                                         refreshContent(showRefreshing = false)
-
                                     }
                                 }
                             },
@@ -235,7 +232,7 @@ fun LibraryScreen(
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Outlined.Settings,
-                                    contentDescription = null,
+                                    contentDescription = null
                                 )
                             },
                             text = {
@@ -291,7 +288,6 @@ fun LibraryScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-
                     item(key = "recent_books") {
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
@@ -321,7 +317,8 @@ fun LibraryScreen(
                                             300
                                         )
                                     )
-                                }, label = "library_header_fade"
+                                },
+                                label = "library_header_fade"
                             ) {
                                 if (it != stringResource(R.string.library_screen_library_title)) {
                                     Text(
@@ -386,7 +383,6 @@ fun LibraryScreen(
                                 }
                             }
                         }
-
                     }
                 }
 

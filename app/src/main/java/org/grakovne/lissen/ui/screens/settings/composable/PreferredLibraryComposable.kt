@@ -37,7 +37,6 @@ fun PreferredLibraryComposable(viewModel: SettingsViewModel) {
 
     var expanded by remember { mutableStateOf(false) }
 
-
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
             text = stringResource(R.string.settings_screen_preferred_library_title),
@@ -76,6 +75,5 @@ fun PreferredLibraryComposable(viewModel: SettingsViewModel) {
                 }
             }
         }
-
     }
 }

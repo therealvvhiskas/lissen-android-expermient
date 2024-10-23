@@ -11,7 +11,6 @@ import org.grakovne.lissen.content.cache.dao.CachedBookDao
 import org.grakovne.lissen.content.cache.dao.CachedLibraryDao
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalCacheModule {
@@ -39,5 +38,4 @@ object LocalCacheModule {
     @Singleton
     fun provideCachedLibraryDao(appDatabase: LocalCacheStorage): CachedLibraryDao =
         appDatabase.cachedLibraryDao()
-
 }

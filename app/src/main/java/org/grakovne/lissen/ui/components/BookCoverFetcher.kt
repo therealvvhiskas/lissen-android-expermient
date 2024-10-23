@@ -82,7 +82,6 @@ object ImageLoaderModule {
                 DiskCache.Builder()
                     .directory(context.cacheDir.resolve("сover_cache"))
                     .build()
-
             }
             .build()
     }

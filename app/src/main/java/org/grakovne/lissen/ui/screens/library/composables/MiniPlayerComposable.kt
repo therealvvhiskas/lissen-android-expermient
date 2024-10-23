@@ -58,7 +58,7 @@ fun MiniPlayerComposable(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             val context = LocalContext.current
             val imageRequest = remember(book.id) {
@@ -109,7 +109,6 @@ fun MiniPlayerComposable(
                 verticalArrangement = Arrangement.Center
             ) {
                 Row {
-
                     IconButton(
                         onClick = { playerViewModel.togglePlayPause() }
                     ) {

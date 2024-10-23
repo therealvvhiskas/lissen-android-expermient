@@ -56,7 +56,7 @@ class BookCachingService @Inject constructor(
                 async { cacheBookCover(detailedBook, channel) },
                 async { cacheBookMedia(detailedBook, channel) },
                 async { cacheLibraries(channel) },
-                async { cacheBookInfo(detailedBook) },
+                async { cacheBookInfo(detailedBook) }
             ).awaitAll()
         }
 
@@ -116,7 +116,6 @@ class BookCachingService @Inject constructor(
         }
     }
 
-
     private fun checkDownloads(jobs: List<Long>, downloadManager: DownloadManager): List<Int> {
         return jobs.map { id ->
             val query = Query().setFilterById(id)
@@ -153,7 +152,6 @@ class BookCachingService @Inject constructor(
                         }
                     },
                     onFailure = {
-
                     }
                 )
 
@@ -176,7 +174,6 @@ class BookCachingService @Inject constructor(
     private suspend fun cacheBookInfo(book: DetailedBook) = bookRepository
         .cacheBook(book)
         .let { CacheProgress.Completed }
-
 }
 
 sealed class CacheProgress {

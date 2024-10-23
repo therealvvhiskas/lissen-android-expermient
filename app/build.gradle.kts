@@ -4,6 +4,16 @@ plugins {
 
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    id("org.jmailen.kotlinter") version "3.10.0"
+}
+
+kotlinter {
+    reporters = arrayOf("checkstyle", "plain")
+    experimentalRules = true
+}
+
+tasks.lintKotlinMain {
+    dependsOn(tasks.formatKotlinMain)
 }
 
 android {

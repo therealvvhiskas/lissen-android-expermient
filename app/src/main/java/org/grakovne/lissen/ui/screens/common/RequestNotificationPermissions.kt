@@ -19,7 +19,6 @@ fun RequestNotificationPermissions() {
         onResult = { }
     )
     LaunchedEffect(Unit) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permissionStatus = ContextCompat.checkSelfPermission(
                 context,

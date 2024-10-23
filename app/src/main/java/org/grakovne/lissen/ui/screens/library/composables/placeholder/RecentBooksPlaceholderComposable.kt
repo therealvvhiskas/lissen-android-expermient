@@ -48,7 +48,7 @@ fun RecentBooksPlaceholderComposable(
 
 @Composable
 fun RecentBookItemComposable(
-    width: Dp,
+    width: Dp
 ) {
     Column(
         modifier = Modifier

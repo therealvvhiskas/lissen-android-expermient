@@ -105,7 +105,6 @@ class LoginViewModel @Inject constructor(
         username: String,
         account: UserAccount
     ): LoginState.Success {
-
         persistCredentials(
             host = host,
             username = username,

@@ -77,10 +77,8 @@ fun BookComposable(
             .fillMaxWidth()
             .clickable { navController.showPlayer(book.id, book.title) }
             .padding(horizontal = 4.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-
-
         AsyncShimmeringImage(
             imageRequest = imageRequest,
             imageLoader = imageLoader,
@@ -122,7 +120,7 @@ fun BookComposable(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center
         ) {
             IconButton(
                 onClick = {
@@ -136,7 +134,6 @@ fun BookComposable(
                                 }
                             }
                         }
-
                 },
                 modifier = Modifier.size(36.dp)
             ) {
@@ -160,11 +157,12 @@ fun BookComposable(
             title = { Text(text = stringResource(R.string.dialog_remove_from_cache_title)) },
             text = { Text(stringResource(R.string.dialog_remove_from_cache_text)) },
             confirmButton = {
-                TextButton(onClick = {
-                    cachingModelView.dropCache(book)
-                    onRemoveBook.invoke()
-                    showDeleteFromCacheDialog = false
-                }
+                TextButton(
+                    onClick = {
+                        cachingModelView.dropCache(book)
+                        onRemoveBook.invoke()
+                        showDeleteFromCacheDialog = false
+                    }
                 ) {
                     Text(stringResource(R.string.dialog_confirm_remove))
                 }
@@ -178,7 +176,6 @@ fun BookComposable(
         )
     }
 }
-
 
 private fun provideCachingStateIcon(
     book: Book,

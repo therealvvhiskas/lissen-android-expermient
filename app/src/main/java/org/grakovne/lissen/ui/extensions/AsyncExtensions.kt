@@ -18,5 +18,3 @@ suspend fun <T> CoroutineScope.withMinimumTime(
     }
     return result
 }
-
-

@@ -37,19 +37,21 @@ class LissenMediaProvider @Inject constructor(
         Log.d(TAG, "Fetching File $libraryItemId and $chapterId URI")
 
         return when (cacheConfiguration.localCacheUsing()) {
-            true -> localCacheRepository
-                .provideFileUri(libraryItemId, chapterId)
-                ?.let {
-                    ApiResult.Success(it)
-                }
-                ?: ApiResult.Error(ApiError.InternalError)
-
-            false -> localCacheRepository
-                .provideFileUri(libraryItemId, chapterId)
-                ?.let { ApiResult.Success(it) }
-                ?: providePreferredChannel()
+            true ->
+                localCacheRepository
                     .provideFileUri(libraryItemId, chapterId)
-                    .let { ApiResult.Success(it) }
+                    ?.let {
+                        ApiResult.Success(it)
+                    }
+                    ?: ApiResult.Error(ApiError.InternalError)
+
+            false ->
+                localCacheRepository
+                    .provideFileUri(libraryItemId, chapterId)
+                    ?.let { ApiResult.Success(it) }
+                    ?: providePreferredChannel()
+                        .provideFileUri(libraryItemId, chapterId)
+                        .let { ApiResult.Success(it) }
         }
     }
 
@@ -83,7 +85,6 @@ class LissenMediaProvider @Inject constructor(
         bookId: String
     ): ApiResult<InputStream> {
         Log.d(TAG, "Fetching Cover stream for $bookId")
-
 
         return when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.fetchBookCover(bookId)
@@ -154,10 +155,11 @@ class LissenMediaProvider @Inject constructor(
         Log.d(TAG, "Fetching Detailed book info for $bookId")
 
         return when (cacheConfiguration.localCacheUsing()) {
-            true -> localCacheRepository
-                .fetchBook(bookId)
-                ?.let { ApiResult.Success(it) }
-                ?: ApiResult.Error(ApiError.InternalError)
+            true ->
+                localCacheRepository
+                    .fetchBook(bookId)
+                    ?.let { ApiResult.Success(it) }
+                    ?: ApiResult.Error(ApiError.InternalError)
 
             false -> providePreferredChannel()
                 .fetchBook(bookId)
@@ -188,12 +190,13 @@ class LissenMediaProvider @Inject constructor(
             ?: return detailedBook
 
         Log.d(
-            TAG, """
+            TAG,
+            """
             Merging local playback progress into channel-fetched:
                 Channel Progress: $channelProgress
                 Local Progress: $cachedProgress
                 Final Progress: $updatedProgress
-        """.trimIndent()
+            """.trimIndent()
         )
 
         return detailedBook.copy(progress = updatedProgress)
@@ -206,9 +209,10 @@ class LissenMediaProvider @Inject constructor(
             .items
             .map { book ->
                 when (cachedBooks.contains(book.id)) {
-                    true -> book
-                        .copy(cachedState = CACHED)
-                        .also { Log.d(TAG, "${book.id} flagged as Cached") }
+                    true ->
+                        book
+                            .copy(cachedState = CACHED)
+                            .also { Log.d(TAG, "${book.id} flagged as Cached") }
                     false -> book
                 }
             }

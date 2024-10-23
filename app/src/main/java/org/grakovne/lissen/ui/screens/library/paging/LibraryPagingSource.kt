@@ -8,7 +8,7 @@ import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 
 class LibraryPagingSource(
     private val preferences: LissenSharedPreferences,
-    private val mediaChannel: LissenMediaProvider,
+    private val mediaChannel: LissenMediaProvider
 ) : PagingSource<Int, Book>() {
 
     override fun getRefreshKey(state: PagingState<Int, Book>) = state

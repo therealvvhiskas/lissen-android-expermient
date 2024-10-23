@@ -25,7 +25,7 @@ import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AudioPlayerService : MediaSessionService() {
+class PlaybackService : MediaSessionService() {
 
     @Inject
     lateinit var exoPlayer: ExoPlayer
@@ -137,7 +137,6 @@ class AudioPlayerService : MediaSessionService() {
                                 },
                                 onFailure = { null }
                             )
-
                     }
 
                 withContext(Dispatchers.Main) {
@@ -156,7 +155,6 @@ class AudioPlayerService : MediaSessionService() {
                 .getInstance(baseContext)
                 .sendBroadcast(Intent(PLAYBACK_READY))
         }
-
     }
 
     private fun seek(

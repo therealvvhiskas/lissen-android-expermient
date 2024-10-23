@@ -24,7 +24,7 @@ class LibraryItemResponseConverter @Inject constructor() {
         .let {
             PagedItems(
                 items = it,
-                currentPage = response.page,
+                currentPage = response.page
             )
         }
 }

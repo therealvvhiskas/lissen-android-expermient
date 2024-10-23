@@ -36,5 +36,4 @@ fun LissenTheme(
         color = backgroundColor,
         darkIcons = true
     )
-
 }

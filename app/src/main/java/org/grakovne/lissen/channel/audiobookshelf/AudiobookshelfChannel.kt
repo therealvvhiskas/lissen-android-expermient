@@ -145,6 +145,5 @@ class AudiobookshelfChannel @Inject constructor(
         password: String
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
-
     private fun getClientName() = "Lissen App Android"
 }

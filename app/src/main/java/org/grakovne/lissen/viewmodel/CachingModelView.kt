@@ -39,7 +39,6 @@ class CachingModelView @Inject constructor(
         }
     }
 
-
     fun dropCache(book: Book) {
         viewModelScope.launch {
             cachingService
@@ -71,5 +70,4 @@ class CachingModelView @Inject constructor(
     }
 
     fun localCacheUsing() = localCacheConfiguration.localCacheUsing()
-
 }

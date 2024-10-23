@@ -72,7 +72,6 @@ class AudioBookshelfDataRepository @Inject constructor(
     ): ApiResult<Unit> =
         safeApiCall { getClientInstance().publishLibraryItemProgress(itemId, progress) }
 
-
     suspend fun authorize(
         host: String,
         username: String,
@@ -103,7 +102,6 @@ class AudioBookshelfDataRepository @Inject constructor(
             },
             onFailure = { ApiResult.Error(it.code) }
         )
-
     }
 
     private suspend fun <T> safeApiCall(

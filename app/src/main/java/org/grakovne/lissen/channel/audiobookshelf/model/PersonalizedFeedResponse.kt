@@ -15,7 +15,7 @@ data class PersonalizedFeedItemResponse(
 
 data class PersonalizedFeedItemMediaResponse(
     val id: String,
-    val metadata: PersonalizedFeedItemMetadataResponse,
+    val metadata: PersonalizedFeedItemMetadataResponse
 )
 
 data class PersonalizedFeedItemMetadataResponse(

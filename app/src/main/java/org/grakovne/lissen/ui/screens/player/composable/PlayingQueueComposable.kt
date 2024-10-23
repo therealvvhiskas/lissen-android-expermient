@@ -41,11 +41,10 @@ import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
-
 @Composable
 fun PlayingQueueComposable(
     viewModel: PlayerViewModel,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -118,7 +117,6 @@ fun PlayingQueueComposable(
                             }
                         }
                     }
-
                 }
                 .nestedScroll(object : NestedScrollConnection {
                     override fun onPreScroll(
@@ -160,7 +158,6 @@ fun PlayingQueueComposable(
                     )
                 }
             }
-
         }
     }
 }

@@ -56,5 +56,4 @@ interface MediaChannel {
         username: String,
         password: String
     ): ApiResult<UserAccount>
-
 }

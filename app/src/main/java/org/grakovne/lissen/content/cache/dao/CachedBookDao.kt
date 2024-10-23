@@ -47,7 +47,7 @@ interface CachedBookDao {
                     start = chapter.start,
                     end = chapter.end,
                     title = chapter.title,
-                    bookId = book.id,
+                    bookId = book.id
                 )
             }
 
@@ -86,7 +86,6 @@ interface CachedBookDao {
     )
     suspend fun fetchRecentlyListenedCachedBooks(): List<BookEntity>
 
-
     @Transaction
     @Query("SELECT * FROM detailed_books WHERE id = :bookId")
     suspend fun fetchCachedBook(bookId: String): CachedBookEntity?
@@ -120,5 +119,4 @@ interface CachedBookDao {
 
     @Delete
     suspend fun deleteBook(book: BookEntity)
-
 }

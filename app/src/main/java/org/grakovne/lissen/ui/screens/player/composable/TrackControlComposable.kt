@@ -141,7 +141,7 @@ fun TrackControlComposable(
                 }
 
                 IconButton(
-                    onClick = { viewModel.rewind() },
+                    onClick = { viewModel.rewind() }
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Replay10,
@@ -188,7 +188,7 @@ fun TrackControlComposable(
                         tint = if (currentTrackIndex < chapters.size - 1) colorScheme.onBackground else colorScheme.onBackground.copy(
                             alpha = 0.3f
                         ),
-                        modifier = Modifier.size(36.dp),
+                        modifier = Modifier.size(36.dp)
                     )
                 }
             }

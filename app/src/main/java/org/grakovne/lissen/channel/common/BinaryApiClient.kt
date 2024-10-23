@@ -11,11 +11,12 @@ class BinaryApiClient(
     token: String
 ) {
 
-
     private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.NONE
-        })
+        .addInterceptor(
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.NONE
+            }
+        )
         .addInterceptor { chain: Interceptor.Chain ->
             val request = chain
                 .request()

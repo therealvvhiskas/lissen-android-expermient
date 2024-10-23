@@ -173,6 +173,5 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
 
             return String(cipher.doFinal(cipherText))
         }
-
     }
 }

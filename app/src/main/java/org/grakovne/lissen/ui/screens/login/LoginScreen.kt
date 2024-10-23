@@ -57,13 +57,11 @@ import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.LoginViewModel
 import org.grakovne.lissen.viewmodel.LoginViewModel.LoginState
 
-
 @Composable
 fun LoginScreen(
     navController: AppNavigationService,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
-
     val loginState by viewModel.loginState.collectAsState()
     val loginError by viewModel.loginError.observeAsState()
 
@@ -81,8 +79,9 @@ fun LoginScreen(
                 navController.showLibrary()
             }
 
-            is LoginState.Error -> loginError
-                ?.let { Toast.makeText(context, it.makeText(context), LENGTH_SHORT).show() }
+            is LoginState.Error ->
+                loginError
+                    ?.let { Toast.makeText(context, it.makeText(context), LENGTH_SHORT).show() }
 
             is LoginState.Idle -> {}
             is LoginState.Loading -> {}
@@ -107,14 +106,13 @@ fun LoginScreen(
                         .fillMaxWidth(0.8f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
                     Text(
                         text = stringResource(R.string.login_screen_title),
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold,
                             letterSpacing = 2.sp,
-                            textAlign = TextAlign.Start,
+                            textAlign = TextAlign.Start
                         ),
                         modifier = Modifier
                             .padding(vertical = 32.dp)
@@ -198,7 +196,6 @@ fun LoginScreen(
                     ),
                     textAlign = TextAlign.Center
                 )
-
             }
         }
     )

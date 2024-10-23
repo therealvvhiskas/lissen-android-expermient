@@ -36,6 +36,5 @@ class AudioBookshelfSyncService @Inject constructor(
                 previousTrackedTime = progress.currentTime
                 previousItemId = itemId
             }
-
     }
 }

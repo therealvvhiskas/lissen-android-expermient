@@ -7,11 +7,10 @@ import javax.inject.Singleton
 
 @Singleton
 class LocalCacheConfiguration @Inject constructor(
-    private val sharedPreferences: LissenSharedPreferences,
+    private val sharedPreferences: LissenSharedPreferences
 ) {
 
     fun localCacheUsing(): Boolean = when (sharedPreferences.getPreferredChannel()) {
         AUDIOBOOKSHELF -> sharedPreferences.isForceCache()
     }
-
 }

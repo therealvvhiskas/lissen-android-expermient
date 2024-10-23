@@ -29,7 +29,7 @@ data class LibraryItem(
     val isMissing: Boolean,
     val isInvalid: Boolean,
     val mediaType: String,
-    val media: Media,
+    val media: Media
 )
 
 data class Media(
@@ -56,5 +56,5 @@ data class Metadata(
     val isbn: String?,
     val asin: String?,
     val language: String?,
-    val explicit: Boolean,
+    val explicit: Boolean
 )

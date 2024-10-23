@@ -22,11 +22,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.domain.DetailedBook
-import org.grakovne.lissen.playback.service.AudioPlayerService
-import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.ACTION_SEEK_TO
-import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.BOOK_EXTRA
-import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.PLAYBACK_READY
-import org.grakovne.lissen.playback.service.AudioPlayerService.Companion.POSITION
+import org.grakovne.lissen.playback.service.PlaybackService
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.ACTION_SEEK_TO
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.BOOK_EXTRA
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.PLAYBACK_READY
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.POSITION
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +36,7 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private lateinit var mediaController: MediaController
 
     private val token =
-        SessionToken(context, ComponentName(context, AudioPlayerService::class.java))
+        SessionToken(context, ComponentName(context, PlaybackService::class.java))
 
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
@@ -106,23 +106,22 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         startUpdatingProgress(book)
     }
 
-
     fun play() {
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_PLAY
+        val intent = Intent(context, PlaybackService::class.java).apply {
+            action = PlaybackService.ACTION_PLAY
         }
         ContextCompat.startForegroundService(context, intent)
     }
 
     fun pauseAudio() {
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_PAUSE
+        val intent = Intent(context, PlaybackService::class.java).apply {
+            action = PlaybackService.ACTION_PAUSE
         }
         context.startService(intent)
     }
 
     fun seekTo(position: Double) {
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
+        val intent = Intent(context, PlaybackService::class.java).apply {
             action = ACTION_SEEK_TO
 
             putExtra(BOOK_EXTRA, playingBook.value)
@@ -147,12 +146,15 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
     private fun startUpdatingProgress(detailedBook: DetailedBook) {
         handler.removeCallbacksAndMessages(null)
 
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                updateProgress(detailedBook)
-                handler.postDelayed(this, 500)
-            }
-        }, 500)
+        handler.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    updateProgress(detailedBook)
+                    handler.postDelayed(this, 500)
+                }
+            },
+            500
+        )
     }
 
     private fun updateProgress(detailedBook: DetailedBook) {
@@ -169,8 +171,8 @@ class MediaRepository @Inject constructor(@ApplicationContext private val contex
         _mediaItemPosition.postValue(0.0)
         _isPlaying.postValue(false)
 
-        val intent = Intent(context, AudioPlayerService::class.java).apply {
-            action = AudioPlayerService.ACTION_SET_PLAYBACK
+        val intent = Intent(context, PlaybackService::class.java).apply {
+            action = PlaybackService.ACTION_SET_PLAYBACK
             putExtra(BOOK_EXTRA, book)
         }
 

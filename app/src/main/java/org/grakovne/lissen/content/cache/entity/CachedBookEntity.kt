@@ -30,7 +30,6 @@ data class CachedBookEntity(
     val progress: MediaProgressEntity?
 )
 
-
 @Entity(tableName = "detailed_books")
 data class BookEntity(
     @PrimaryKey val id: String,
@@ -41,12 +40,14 @@ data class BookEntity(
 
 @Entity(
     tableName = "book_files",
-    foreignKeys = [ForeignKey(
-        entity = BookEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["bookId"],
-        onDelete = ForeignKey.CASCADE
-    )],
+    foreignKeys = [
+        ForeignKey(
+            entity = BookEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["bookId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
     indices = [Index(value = ["bookId"])]
 )
 data class BookFileEntity(
@@ -60,12 +61,14 @@ data class BookFileEntity(
 
 @Entity(
     tableName = "book_chapters",
-    foreignKeys = [ForeignKey(
-        entity = BookEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["bookId"],
-        onDelete = ForeignKey.CASCADE
-    )],
+    foreignKeys = [
+        ForeignKey(
+            entity = BookEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["bookId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
     indices = [Index(value = ["bookId"])]
 )
 data class BookChapterEntity(
@@ -80,12 +83,14 @@ data class BookChapterEntity(
 
 @Entity(
     tableName = "media_progress",
-    foreignKeys = [ForeignKey(
-        entity = BookEntity::class,
-        parentColumns = ["id"],
-        childColumns = ["bookId"],
-        onDelete = ForeignKey.CASCADE
-    )],
+    foreignKeys = [
+        ForeignKey(
+            entity = BookEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["bookId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
     indices = [Index(value = ["bookId"])]
 )
 data class MediaProgressEntity(

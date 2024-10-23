@@ -1,6 +1,5 @@
 package org.grakovne.lissen.channel.audiobookshelf.model
 
-
 data class MediaMetadataResponse(
     val title: String,
     val subtitle: String?,

@@ -75,7 +75,7 @@ fun PlayerNavBarComposable(
                 onClick = { navController.showLibrary() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    indicatorColor = ItemAccented,
+                    indicatorColor = ItemAccented
                 )
             )
 
@@ -99,7 +99,7 @@ fun PlayerNavBarComposable(
                 onClick = { onChaptersClick() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    indicatorColor = ItemAccented,
+                    indicatorColor = ItemAccented
                 )
             )
 
@@ -124,7 +124,7 @@ fun PlayerNavBarComposable(
                 enabled = true,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    indicatorColor = ItemAccented,
+                    indicatorColor = ItemAccented
                 )
             )
 
@@ -148,13 +148,12 @@ fun PlayerNavBarComposable(
                 onClick = { navController.showSettings() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    indicatorColor = ItemAccented,
+                    indicatorColor = ItemAccented
                 )
             )
         }
     }
 }
-
 
 private fun Float.format(context: Context) = when (this) {
     1f -> context.getString(R.string.playback_speed_normal)

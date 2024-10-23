@@ -40,7 +40,6 @@ import org.grakovne.lissen.ui.screens.player.composable.placeholder.PlayingQueue
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetailsPlaceholderComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
@@ -49,7 +48,6 @@ fun PlayerScreen(
     bookId: String?,
     bookTitle: String?
 ) {
-
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
@@ -95,7 +93,7 @@ fun PlayerScreen(
         content = { innerPadding ->
             Column(
                 modifier = Modifier.padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AnimatedVisibility(
                     visible = playingQueueExpanded.not(),
@@ -105,7 +103,6 @@ fun PlayerScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
                         if (!isPlaybackReady) {
                             TrackDetailsPlaceholderComposable(bookTitle)
                         } else {
@@ -138,4 +135,3 @@ fun PlayerScreen(
         }
     )
 }
-

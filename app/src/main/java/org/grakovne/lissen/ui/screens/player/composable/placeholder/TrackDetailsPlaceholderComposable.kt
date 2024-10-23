@@ -29,9 +29,8 @@ import org.grakovne.lissen.R
 @Composable
 fun TrackDetailsPlaceholderComposable(
     bookTitle: String?,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
-
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val maxImageHeight = screenHeight * 0.33f

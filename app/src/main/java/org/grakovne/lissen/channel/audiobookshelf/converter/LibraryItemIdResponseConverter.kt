@@ -17,7 +17,6 @@ class LibraryItemIdResponseConverter @Inject constructor() {
         item: LibraryItemIdResponse,
         progressResponse: MediaProgressResponse? = null
     ): DetailedBook {
-
         val maybeChapters = item
             .media
             .chapters
@@ -71,9 +70,9 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                     MediaProgress(
                         currentTime = it.currentTime,
                         isFinished = it.isFinished,
-                        lastUpdate = it.lastUpdate,
+                        lastUpdate = it.lastUpdate
                     )
-                },
+                }
         )
     }
 }

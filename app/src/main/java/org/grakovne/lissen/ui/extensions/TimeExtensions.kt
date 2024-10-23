@@ -2,7 +2,6 @@ package org.grakovne.lissen.ui.extensions
 
 import android.annotation.SuppressLint
 
-
 @SuppressLint("DefaultLocale")
 fun Int.formatFully(): String {
     val hours = this / 3600

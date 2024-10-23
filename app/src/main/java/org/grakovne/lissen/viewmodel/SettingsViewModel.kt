@@ -53,9 +53,10 @@ class SettingsViewModel @Inject constructor(
 
                     when (val preferredLibrary = preferences.getPreferredLibrary()) {
                         null -> libraries.firstOrNull()
-                        else -> libraries
-                            .find { it.id == preferredLibrary.id }
-                            ?: libraries.firstOrNull()
+                        else ->
+                            libraries
+                                .find { it.id == preferredLibrary.id }
+                                ?: libraries.firstOrNull()
                     }
                 }
 
@@ -63,7 +64,6 @@ class SettingsViewModel @Inject constructor(
                     preferences.getPreferredLibrary()
                 }
             }
-
         }
     }
 

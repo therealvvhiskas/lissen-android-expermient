@@ -39,7 +39,6 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-
         composable("library_screen") {
             LibraryScreen(
                 navController = navigationService,
@@ -52,7 +51,7 @@ fun AppNavHost(
             "player_screen/{bookId}?bookTitle={bookTitle}",
             arguments = listOf(
                 navArgument("bookId") { type = NavType.StringType },
-                navArgument("bookTitle") { type = NavType.StringType; nullable = true },
+                navArgument("bookTitle") { type = NavType.StringType; nullable = true }
             )
         ) { navigationStack ->
             val bookId = navigationStack.arguments?.getString("bookId")

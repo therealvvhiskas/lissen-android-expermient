@@ -143,7 +143,6 @@ class PlayerViewModel @Inject constructor(
         when (isPlaying.value) {
             true -> pause()
             else -> play()
-
         }
     }
 
@@ -154,7 +153,6 @@ class PlayerViewModel @Inject constructor(
     private fun pause() {
         mediaRepository.pauseAudio()
     }
-
 
     private fun calculateChapterIndex(position: Double): Int {
         val currentBook = book.value ?: return 0

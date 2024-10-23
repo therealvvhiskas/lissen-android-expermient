@@ -35,9 +35,8 @@ import org.grakovne.lissen.viewmodel.SettingsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 fun SettingsScreen(
     onBack: () -> Unit,
-    navController: AppNavigationService,
+    navController: AppNavigationService
 ) {
-
     val viewModel: SettingsViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
@@ -75,13 +74,13 @@ fun SettingsScreen(
                     .fillMaxSize()
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     ServerComposable(navController, viewModel)
                     PreferredLibraryComposable(viewModel)
@@ -91,5 +90,3 @@ fun SettingsScreen(
         }
     )
 }
-
-

@@ -38,7 +38,7 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
         ) {
             items(10) {
                 Box(
