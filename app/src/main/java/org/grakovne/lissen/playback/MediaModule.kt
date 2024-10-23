@@ -4,6 +4,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.OptIn
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
@@ -25,13 +27,21 @@ object MediaModule {
     @Singleton
     fun provideExoPlayer(@ApplicationContext context: Context): ExoPlayer {
         return ExoPlayer.Builder(context)
-            .setSeekBackIncrementMs(30_000)
+            .setSeekBackIncrementMs(10_000)
             .setSeekForwardIncrementMs(30_000)
+            .setHandleAudioBecomingNoisy(true)
             .setLoadControl(
                 DefaultLoadControl
                     .Builder()
                     .setPrioritizeTimeOverSizeThresholds(true)
                     .build()
+            )
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
+                true
             )
             .build()
     }
