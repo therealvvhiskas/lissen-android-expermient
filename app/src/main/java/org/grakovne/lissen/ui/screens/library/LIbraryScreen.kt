@@ -102,6 +102,10 @@ fun LibraryScreen(
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
 
+    val showingRecentBooks by remember(recentBooks, hiddenBooks) {
+        derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
+    }
+
     fun refreshContent(showRefreshing: Boolean) {
         coroutineScope.launch {
             if (showRefreshing) {
@@ -292,14 +296,10 @@ fun LibraryScreen(
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
                         } else {
-                            val showingBooks by remember(recentBooks, hiddenBooks) {
-                                derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
-                            }
-
-                            if (showingBooks.isEmpty().not()) {
+                            if (showingRecentBooks.isEmpty().not()) {
                                 RecentBooksComposable(
                                     navController = navController,
-                                    recentBooks = showingBooks,
+                                    recentBooks = showingRecentBooks,
                                     imageLoader = imageLoader
                                 )
                             }
@@ -372,6 +372,14 @@ fun LibraryScreen(
                                         onRemoveBook = {
                                             if (cachingModelView.localCacheUsing()) {
                                                 libraryViewModel.hideBook(book.id)
+
+                                                val showingBooks = (0..<library.itemCount)
+                                                    .mapNotNull { index -> library[index] }
+                                                    .count { book -> libraryViewModel.isVisible(book.id) }
+
+                                                if (showingBooks == 0) {
+                                                    refreshContent(false)
+                                                }
                                             }
                                         }
                                     )
