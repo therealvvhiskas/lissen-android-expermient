@@ -24,8 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
 import org.grakovne.lissen.ui.screens.settings.composable.PreferredLibraryComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerComposable
@@ -35,7 +35,7 @@ import org.grakovne.lissen.viewmodel.SettingsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 fun SettingsScreen(
     onBack: () -> Unit,
-    navController: NavController,
+    navController: AppNavigationService,
 ) {
 
     val viewModel: SettingsViewModel = hiltViewModel()

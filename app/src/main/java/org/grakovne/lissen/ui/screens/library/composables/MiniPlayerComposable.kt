@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -33,17 +32,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun MiniPlayerComposable(
-    navController: NavController,
+    navController: AppNavigationService,
     modifier: Modifier = Modifier,
     book: DetailedBook,
     imageLoader: ImageLoader,
@@ -53,17 +52,7 @@ fun MiniPlayerComposable(
 
     Surface(
         shadowElevation = 4.dp,
-        modifier = modifier
-            .clickable {
-                navController
-                    .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
-                        launchSingleTop = true
-                        navController.currentBackStackEntry?.arguments?.putString(
-                            "bookTitle",
-                            book.title
-                        )
-                    }
-            }
+        modifier = modifier.clickable { navController.showPlayer(book.id, book.title) }
     ) {
         Row(
             modifier = Modifier

@@ -27,16 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 
 @Composable
 fun RecentBooksComposable(
-    navController: NavController,
+    navController: AppNavigationService,
     recentBooks: List<RecentBook>,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier
@@ -70,7 +70,7 @@ fun RecentBooksComposable(
 
 @Composable
 fun RecentBookItemComposable(
-    navController: NavController,
+    navController: AppNavigationService,
     book: RecentBook,
     width: Dp,
     imageLoader: ImageLoader
@@ -78,16 +78,7 @@ fun RecentBookItemComposable(
     Column(
         modifier = Modifier
             .width(width)
-            .clickable {
-                navController
-                    .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
-                        launchSingleTop = true
-                        navController.currentBackStackEntry?.arguments?.putString(
-                            "bookTitle",
-                            book.title
-                        )
-                    }
-            }
+            .clickable { navController.showPlayer(book.id, book.title) }
     ) {
         val context = LocalContext.current
 

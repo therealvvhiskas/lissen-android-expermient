@@ -55,7 +55,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -70,6 +69,7 @@ import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.extensions.withMinimumTime
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.common.RequestNotificationPermissions
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
@@ -84,7 +84,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun LibraryScreen(
-    navController: NavController,
+    navController: AppNavigationService,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     cachingModelView: CachingModelView = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
@@ -243,7 +243,7 @@ fun LibraryScreen(
                             },
                             onClick = {
                                 navigationItemSelected = false
-                                navController.navigate("settings_screen")
+                                navController.showSettings()
                             },
                             modifier = Modifier
                                 .fillMaxWidth()

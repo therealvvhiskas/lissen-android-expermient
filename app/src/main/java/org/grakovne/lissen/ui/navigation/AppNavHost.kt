@@ -22,6 +22,7 @@ fun AppNavHost(
     navController: NavHostController,
     preferences: LissenSharedPreferences,
     networkQualityService: NetworkQualityService,
+    navigationService: AppNavigationService,
     imageLoader: ImageLoader
 ) {
     val hasCredentials by remember {
@@ -41,9 +42,10 @@ fun AppNavHost(
 
         composable("library_screen") {
             LibraryScreen(
-                navController = navController,
+                navController = navigationService,
                 imageLoader = imageLoader,
-                networkQualityService = networkQualityService)
+                networkQualityService = networkQualityService
+            )
         }
 
         composable(
@@ -57,7 +59,7 @@ fun AppNavHost(
             val bookTitle = navigationStack.arguments?.getString("bookTitle")
 
             PlayerScreen(
-                navController = navController,
+                navController = navigationService,
                 imageLoader = imageLoader,
                 bookId = bookId,
                 bookTitle = bookTitle
@@ -65,13 +67,13 @@ fun AppNavHost(
         }
 
         composable("login_screen") {
-            LoginScreen(navController)
+            LoginScreen(navigationService)
         }
 
         composable("settings_screen") {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
-                navController = navController
+                navController = navigationService
             )
         }
     }

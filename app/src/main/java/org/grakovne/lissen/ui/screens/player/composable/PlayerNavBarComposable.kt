@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Headset
@@ -29,15 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.theme.ItemAccented
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun PlayerNavBarComposable(
     viewModel: PlayerViewModel,
-    navController: NavController,
+    navController: AppNavigationService,
     modifier: Modifier = Modifier,
     onChaptersClick: () -> Unit
 ) {
@@ -74,7 +72,7 @@ fun PlayerNavBarComposable(
                     )
                 },
                 selected = false,
-                onClick = { navController.navigate("library_screen") },
+                onClick = { navController.showLibrary() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                     indicatorColor = ItemAccented,
@@ -147,7 +145,7 @@ fun PlayerNavBarComposable(
                     )
                 },
                 selected = false,
-                onClick = { navController.navigate("settings_screen") },
+                onClick = { navController.showSettings() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                     indicatorColor = ItemAccented,

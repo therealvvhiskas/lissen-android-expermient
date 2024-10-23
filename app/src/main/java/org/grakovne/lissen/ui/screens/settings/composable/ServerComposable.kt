@@ -24,13 +24,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
 fun ServerComposable(
-    navController: NavController,
+    navController: AppNavigationService,
     viewModel: SettingsViewModel
 ) {
     val host by viewModel.host.observeAsState("")
@@ -82,12 +82,7 @@ fun ServerComposable(
             trailingContent = {
                 IconButton(
                     onClick = {
-                        navController.navigate("login_screen") {
-                            popUpTo("settings_screen") {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        }
+                        navController.showLogin()
                         viewModel.logout()
                     }
                 ) {

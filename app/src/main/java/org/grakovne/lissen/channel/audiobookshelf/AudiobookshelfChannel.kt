@@ -15,7 +15,6 @@ import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ApiResult.Success
 import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.channel.common.MediaChannel
-import org.grakovne.lissen.channel.common.USER_AGENT
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.DetailedBook
 import org.grakovne.lissen.domain.Library

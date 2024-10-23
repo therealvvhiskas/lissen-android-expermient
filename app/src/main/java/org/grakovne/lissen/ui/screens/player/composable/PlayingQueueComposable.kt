@@ -1,7 +1,6 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
 import android.view.ViewConfiguration
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation

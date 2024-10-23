@@ -29,9 +29,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import coil.ImageLoader
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
@@ -44,7 +44,7 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayerScreen(
-    navController: NavController,
+    navController: AppNavigationService,
     imageLoader: ImageLoader,
     bookId: String?,
     bookTitle: String?
@@ -74,7 +74,7 @@ fun PlayerScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.showLibrary() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = "Back",

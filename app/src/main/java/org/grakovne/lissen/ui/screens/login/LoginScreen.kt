@@ -2,6 +2,7 @@ package org.grakovne.lissen.ui.screens.login
 
 import android.content.Context
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,7 +44,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.error.LoginError
 import org.grakovne.lissen.domain.error.LoginError.InternalError
@@ -53,13 +53,14 @@ import org.grakovne.lissen.domain.error.LoginError.MissingCredentialsPassword
 import org.grakovne.lissen.domain.error.LoginError.MissingCredentialsUsername
 import org.grakovne.lissen.domain.error.LoginError.NetworkError
 import org.grakovne.lissen.domain.error.LoginError.Unauthorized
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.LoginViewModel
 import org.grakovne.lissen.viewmodel.LoginViewModel.LoginState
 
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
+    navController: AppNavigationService,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
 
@@ -77,18 +78,11 @@ fun LoginScreen(
     LaunchedEffect(loginState) {
         when (loginState) {
             is LoginState.Success -> {
-                navController.navigate("library_screen") {
-                    launchSingleTop = true
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = false
-                    }
-                }
+                navController.showLibrary()
             }
 
             is LoginState.Error -> loginError
-                ?.let {
-                    Toast.makeText(context, it.makeText(context), Toast.LENGTH_SHORT).show()
-                }
+                ?.let { Toast.makeText(context, it.makeText(context), LENGTH_SHORT).show() }
 
             is LoginState.Idle -> {}
             is LoginState.Loading -> {}

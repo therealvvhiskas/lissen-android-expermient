@@ -13,7 +13,6 @@ import org.grakovne.lissen.domain.PagedItems
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.domain.RecentBook
-import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 import javax.inject.Singleton

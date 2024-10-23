@@ -35,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
@@ -44,6 +43,7 @@ import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.BookCachedState
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.extensions.formatShortly
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.BookCacheAction
 import org.grakovne.lissen.viewmodel.CachingModelView
 
@@ -51,7 +51,7 @@ import org.grakovne.lissen.viewmodel.CachingModelView
 fun BookComposable(
     book: Book,
     imageLoader: ImageLoader,
-    navController: NavController,
+    navController: AppNavigationService,
     cachingModelView: CachingModelView,
     onRemoveBook: () -> Unit
 ) {
@@ -68,12 +68,7 @@ fun BookComposable(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                navController
-                    .navigate("player_screen/${book.id}?bookTitle=${book.title}") {
-                        launchSingleTop = true
-                    }
-            }
+            .clickable { navController.showPlayer(book.id, book.title) }
             .padding(horizontal = 4.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

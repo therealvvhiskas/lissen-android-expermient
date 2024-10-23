@@ -10,6 +10,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.navigation.AppNavHost
+import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.theme.LissenTheme
 import javax.inject.Inject
 
@@ -33,6 +34,7 @@ class AppActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 AppNavHost(
                     navController = navController,
+                    navigationService = AppNavigationService(navController),
                     preferences = preferences,
                     imageLoader = imageLoader,
                     networkQualityService = networkQualityService
