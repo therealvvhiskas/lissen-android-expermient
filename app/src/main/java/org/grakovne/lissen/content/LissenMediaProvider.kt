@@ -1,6 +1,7 @@
 package org.grakovne.lissen.content
 
 import android.net.Uri
+import android.util.Log
 import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ChannelCode
@@ -32,61 +33,85 @@ class LissenMediaProvider @Inject constructor(
     fun provideFileUri(
         libraryItemId: String,
         chapterId: String
-    ): ApiResult<Uri> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository
-            .provideFileUri(libraryItemId, chapterId)
-            ?.let { ApiResult.Success(it) }
-            ?: ApiResult.Error(ApiError.InternalError)
+    ): ApiResult<Uri> {
+        Log.d(TAG, "Fetching File $libraryItemId and $chapterId URI")
 
-        false -> localCacheRepository
-            .provideFileUri(libraryItemId, chapterId)
-            ?.let { ApiResult.Success(it) }
-            ?: providePreferredChannel()
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository
                 .provideFileUri(libraryItemId, chapterId)
-                .let { ApiResult.Success(it) }
+                ?.let {
+                    ApiResult.Success(it)
+                }
+                ?: ApiResult.Error(ApiError.InternalError)
+
+            false -> localCacheRepository
+                .provideFileUri(libraryItemId, chapterId)
+                ?.let { ApiResult.Success(it) }
+                ?: providePreferredChannel()
+                    .provideFileUri(libraryItemId, chapterId)
+                    .let { ApiResult.Success(it) }
+        }
     }
 
     fun provideBookCoverUri(
         bookId: String
-    ): Uri = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.provideBookCover(bookId)
-        false -> providePreferredChannel().provideBookCover(bookId)
+    ): Uri {
+        Log.d(TAG, "Fetching Cover URI for $bookId")
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.provideBookCover(bookId)
+            false -> providePreferredChannel().provideBookCover(bookId)
+        }
     }
 
     suspend fun syncProgress(
         sessionId: String,
         bookId: String,
         progress: PlaybackProgress
-    ): ApiResult<Unit> =
-        when (cacheConfiguration.localCacheUsing()) {
+    ): ApiResult<Unit> {
+        Log.d(TAG, "Syncing Progress for $bookId. $progress")
+
+        return when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.syncProgress(bookId, progress)
             false -> providePreferredChannel()
                 .syncProgress(sessionId, progress)
                 .also { localCacheRepository.syncProgress(bookId, progress) }
         }
+    }
 
     suspend fun fetchBookCover(
         bookId: String
-    ): ApiResult<InputStream> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.fetchBookCover(bookId)
-        false -> providePreferredChannel().fetchBookCover(bookId)
+    ): ApiResult<InputStream> {
+        Log.d(TAG, "Fetching Cover stream for $bookId")
+
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.fetchBookCover(bookId)
+            false -> providePreferredChannel().fetchBookCover(bookId)
+        }
     }
 
     suspend fun fetchBooks(
         libraryId: String,
         pageSize: Int,
         pageNumber: Int
-    ): ApiResult<PagedItems<Book>> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.fetchBooks(pageSize, pageNumber)
-        false -> {
-            providePreferredChannel()
-                .fetchBooks(libraryId, pageSize, pageNumber)
-                .map { flagCached(it) }
+    ): ApiResult<PagedItems<Book>> {
+        Log.d(TAG, "Fetching page $pageNumber of library: $libraryId")
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.fetchBooks(pageSize, pageNumber)
+            false -> {
+                providePreferredChannel()
+                    .fetchBooks(libraryId, pageSize, pageNumber)
+                    .map { flagCached(it) }
+            }
         }
     }
 
-    suspend fun fetchLibraries(): ApiResult<List<Library>> =
-        when (cacheConfiguration.localCacheUsing()) {
+    suspend fun fetchLibraries(): ApiResult<List<Library>> {
+        Log.d(TAG, "Fetching List of libraries")
+
+        return when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.fetchLibraries()
             false -> providePreferredChannel()
                 .fetchLibraries()
@@ -97,42 +122,59 @@ class LissenMediaProvider @Inject constructor(
                     )
                 }
         }
+    }
 
     suspend fun startPlayback(
         bookId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
-    ): ApiResult<PlaybackSession> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.startPlayback(bookId)
-        false -> providePreferredChannel().startPlayback(bookId, supportedMimeTypes, deviceId)
+    ): ApiResult<PlaybackSession> {
+        Log.d(TAG, "Starting Playback for $bookId. $supportedMimeTypes are supported")
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.startPlayback(bookId)
+            false -> providePreferredChannel().startPlayback(bookId, supportedMimeTypes, deviceId)
+        }
     }
 
     suspend fun fetchRecentListenedBooks(
         libraryId: String
-    ): ApiResult<List<RecentBook>> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository.fetchRecentListenedBooks()
-        false -> providePreferredChannel().fetchRecentListenedBooks(libraryId)
+    ): ApiResult<List<RecentBook>> {
+        Log.d(TAG, "Fetching Recent books of library $libraryId")
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.fetchRecentListenedBooks()
+            false -> providePreferredChannel().fetchRecentListenedBooks(libraryId)
+        }
     }
 
     suspend fun fetchBook(
         bookId: String
-    ): ApiResult<DetailedBook> = when (cacheConfiguration.localCacheUsing()) {
-        true -> localCacheRepository
-            .fetchBook(bookId)
-            ?.let { ApiResult.Success(it) }
-            ?: ApiResult.Error(ApiError.InternalError)
+    ): ApiResult<DetailedBook> {
+        Log.d(TAG, "Fetching Detailed book info for $bookId")
 
-        false -> providePreferredChannel()
-            .fetchBook(bookId)
-            .map { syncFromLocalProgress(it) }
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository
+                .fetchBook(bookId)
+                ?.let { ApiResult.Success(it) }
+                ?: ApiResult.Error(ApiError.InternalError)
+
+            false -> providePreferredChannel()
+                .fetchBook(bookId)
+                .map { syncFromLocalProgress(it) }
+        }
     }
 
     suspend fun authorize(
         host: String,
         username: String,
         password: String
-    ): ApiResult<UserAccount> = when (sharedPreferences.getPreferredChannel()) {
-        AUDIOBOOKSHELF -> providePreferredChannel().authorize(host, username, password)
+    ): ApiResult<UserAccount> {
+        Log.d(TAG, "Authorizing for $username@$host")
+
+        return when (sharedPreferences.getPreferredChannel()) {
+            AUDIOBOOKSHELF -> providePreferredChannel().authorize(host, username, password)
+        }
     }
 
     private suspend fun syncFromLocalProgress(detailedBook: DetailedBook): DetailedBook {
@@ -145,6 +187,15 @@ class LissenMediaProvider @Inject constructor(
             .maxByOrNull { it.lastUpdate }
             ?: return detailedBook
 
+        Log.d(
+            TAG, """
+            Merging local playback progress into channel-fetched:
+                Channel Progress: $channelProgress
+                Local Progress: $cachedProgress
+                Final Progress: $updatedProgress
+        """.trimIndent()
+        )
+
         return detailedBook.copy(progress = updatedProgress)
     }
 
@@ -155,7 +206,9 @@ class LissenMediaProvider @Inject constructor(
             .items
             .map { book ->
                 when (cachedBooks.contains(book.id)) {
-                    true -> book.copy(cachedState = CACHED)
+                    true -> book
+                        .copy(cachedState = CACHED)
+                        .also { Log.d(TAG, "${book.id} flagged as Cached") }
                     false -> book
                 }
             }
@@ -163,9 +216,12 @@ class LissenMediaProvider @Inject constructor(
         return page.copy(items = items)
     }
 
-
     fun providePreferredChannel(): MediaChannel = sharedPreferences
         .getPreferredChannel()
         .let { channels[it] }
         ?: throw IllegalStateException("Selected Channel has been requested but not selected")
+
+    companion object {
+        private const val TAG: String = "LissenMediaProvider"
+    }
 }
