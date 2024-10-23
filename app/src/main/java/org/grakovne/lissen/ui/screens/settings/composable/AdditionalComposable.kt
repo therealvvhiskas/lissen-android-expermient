@@ -14,6 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.BuildConfig
 
 @Composable
 fun AdditionalComposable() {
@@ -34,7 +35,7 @@ fun AdditionalComposable() {
                         .fillMaxWidth()
                         .padding(top = 16.dp)
                         .align(Alignment.CenterHorizontally),
-                    text = "Lissen v 0.10\n\nMax Grakov © 2024 MIT Licence",
+                    text = "Lissen v ${BuildConfig.VERSION_NAME}\n\n© 2024 Max Grakov. MIT License",
                     style = TextStyle(
                         fontFamily = FontFamily.Monospace,
                         textAlign = TextAlign.Center
