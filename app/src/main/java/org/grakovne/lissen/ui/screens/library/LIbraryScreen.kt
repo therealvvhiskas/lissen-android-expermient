@@ -291,6 +291,8 @@ fun LibraryScreen(
                     item(key = "recent_books") {
                         if (isContentLoading) {
                             RecentBooksPlaceholderComposable()
+
+                            Spacer(modifier = Modifier.height(20.dp))
                         } else {
                             if (showingRecentBooks.isEmpty().not()) {
                                 RecentBooksComposable(
@@ -298,11 +300,11 @@ fun LibraryScreen(
                                     recentBooks = showingRecentBooks,
                                     imageLoader = imageLoader
                                 )
+
+                                Spacer(modifier = Modifier.height(20.dp))
                             }
                         }
                     }
-
-                    item { Spacer(modifier = Modifier.height(20.dp)) }
 
                     item(key = "library_title") {
                         if (filterRecentBooks(recentBooks, libraryViewModel).isNotEmpty()) {
