@@ -1,14 +1,13 @@
 # Lissen - Clean Audiobookshelf Player
 
-## Lissen is an alternative client for Audiobookshelf, designed for users to not only listen to their audiobooks but also access and manage their audiobook library through a clean, user-friendly interface.
+### Features
 
-## Features
   * Beautiful Interface: Intuitive design that makes browsing and listening to your audiobooks easy and enjoyable.
   * Cloud Sync: Automatically syncs your audiobook progress across devices, keeping everything up to date no matter where you are.
   * Streaming Support: Stream your audiobooks directly from the cloud without needing to download them first.
   * Offline Listening: Download audiobooks to listen offline, ideal for those who want to access their collection without an internet connection.
 
-## Installation
+### Installation
 
 1. Clone the repository:
 ```
