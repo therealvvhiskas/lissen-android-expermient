@@ -11,6 +11,7 @@ import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseC
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.channel.common.ApiResult.Success
 import org.grakovne.lissen.channel.common.ChannelCode
@@ -90,7 +91,16 @@ class AudiobookshelfChannel @Inject constructor(
 
     override suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
         .fetchLibraries()
+        .map { filterSupportingLibraries(it) }
         .map { libraryResponseConverter.apply(it) }
+
+    private fun filterSupportingLibraries(response: LibraryResponse): LibraryResponse {
+        val filteredLibraries = response
+            .libraries
+            .filter { supportedLibraryTypes.contains(it.mediaType) }
+
+        return response.copy(libraries = filteredLibraries)
+    }
 
     override suspend fun startPlayback(
         bookId: String,
@@ -146,4 +156,6 @@ class AudiobookshelfChannel @Inject constructor(
     ): ApiResult<UserAccount> = dataRepository.authorize(host, username, password)
 
     private fun getClientName() = "Lissen App Android"
+
+    private val supportedLibraryTypes = listOf("book")
 }
