@@ -14,8 +14,17 @@
 git clone https://github.com/grakovne/lissen.git
 ```
 
-2. Open the project in Android Studio.
-3. Build and run the app on an Android device or emulator.
+2. Setup the SDK into your local.properties file
+```
+nano local.properties
+```
+
+3. Open the project in Android Studio or build it manually
+```
+./gradlew assembleDebug # Debug Build
+./gradlew assembleRelease # Release Build
+```
+5. Build and run the app on an Android device or emulator.
 
 ## License
 Lissen is open-source and licensed under the MIT License. See the LICENSE file for more details.
