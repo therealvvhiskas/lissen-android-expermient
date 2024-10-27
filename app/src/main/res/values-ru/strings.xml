@@ -12,7 +12,7 @@
     <string name="login_screen_password_input">Пароль</string>
     <string name="login_screen_connect_button_text">Подключиться</string>
     <string name="player_screen_library_navigation">Библиотека</string>
-    <string name="player_screen_timer_navigation">Таймер</string>
+    <string name="player_screen_playback_speed_navigation">Скорость</string>
     <string name="player_screen_chapter_list_navigation">Эпизоды</string>
     <string name="player_screen_preferences_navigation">Настройки</string>
     <string name="player_screen_now_playing_title">"Сейчас играет "</string>
@@ -28,19 +28,17 @@
     <string name="login_error_credentials_are_invalid">Данные для входа неверные</string>
     <string name="login_error_host_url_shall_be_https_or_http">URL должен начинаться с http:// или https://</string>
     <string name="login_error_connection_error">Ошибка подключения. Наши полномочия всё</string>
-    <string name="playback_speed_normal">Нормально</string>
-    <string name="playback_speed_faster">Быстрее</string>
-    <string name="playback_speed_fast">Быстро</string>
     <string name="disable_offline">Слушать онлайн</string>
     <string name="enable_offline">Только скачанные</string>
     <string name="no_books_listened_to_yet">Еще нет прослушанных книг</string>
     <string name="the_library_is_empty">В библиотеке нет книг</string>
     <string name="the_offline_library_is_empty">Загруженных книг нет</string>
-    <string name="audiobookshelf_server_is_required">"Для работы приложения необходим Audiobookshelf"</string>
+    <string name="audiobookshelf_server_is_required">"Для работы приложения необходим Audiobookshelf сервер"</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
     <string name="app_crach_toast">Извините за ошибку в приложении\nДанные уже отправлены для расследования</string>
     <string name="dialog_remove_from_cache_title">Удалить из скачанных?</string>
     <string name="dialog_remove_from_cache_text">Книга останется доступна в библиотеке и её можно будет продолжить слушать</string>
     <string name="dialog_confirm_remove">Удалить</string>
     <string name="dialog_dismiss_cancel">Отмена</string>
+    <string name="playback_speed_title">Скорость воспроизведения</string>
 </resources>
