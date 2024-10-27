@@ -24,8 +24,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 5
-        versionName = "1.0.4"
+        versionCode = 6
+        versionName = "1.0.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,7 +38,7 @@ android {
         }
         debug {
             matchingFallbacks.add("release")
-            isDebuggable = false
+            isDebuggable = true
         }
     }
 
