@@ -1,6 +1,5 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
-import android.content.Context
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -20,9 +19,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,15 +34,16 @@ import org.grakovne.lissen.ui.theme.ItemAccented
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
-fun PlayerNavBarComposable(
+fun NavigationBarComposable(
     viewModel: PlayerViewModel,
     navController: AppNavigationService,
     modifier: Modifier = Modifier,
     onChaptersClick: () -> Unit
 ) {
-    val context = LocalContext.current
     val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
+
+    var playbackSpeedExpanded by remember { mutableStateOf(false) }
 
     Surface(
         shadowElevation = 4.dp,
@@ -107,20 +109,20 @@ fun PlayerNavBarComposable(
                 icon = {
                     Icon(
                         Icons.Outlined.Speed,
-                        contentDescription = stringResource(R.string.player_screen_timer_navigation),
+                        contentDescription = stringResource(R.string.player_screen_playback_speed_navigation),
                         modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
-                        text = playbackSpeed.format(context),
+                        text = stringResource(R.string.player_screen_playback_speed_navigation),
                         style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 selected = false,
-                onClick = { viewModel.togglePlaybackSpeed() },
+                onClick = { playbackSpeedExpanded = true },
                 enabled = true,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
@@ -151,13 +153,14 @@ fun PlayerNavBarComposable(
                     indicatorColor = ItemAccented
                 )
             )
+
+            if (playbackSpeedExpanded) {
+                PlaybackSpeedComposable(
+                    currentSpeed = playbackSpeed,
+                    onSpeedChange = { viewModel.setPlaybackSpeed(it) },
+                    onDismissRequest = { playbackSpeedExpanded = false }
+                )
+            }
         }
     }
-}
-
-private fun Float.format(context: Context) = when (this) {
-    1f -> context.getString(R.string.playback_speed_normal)
-    1.5f -> context.getString(R.string.playback_speed_faster)
-    2f -> context.getString(R.string.playback_speed_fast)
-    else -> context.getString(R.string.playback_speed_custom)
 }

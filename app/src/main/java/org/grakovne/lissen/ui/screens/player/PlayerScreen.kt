@@ -32,7 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.navigation.AppNavigationService
-import org.grakovne.lissen.ui.screens.player.composable.PlayerNavBarComposable
+import org.grakovne.lissen.ui.screens.player.composable.NavigationBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
@@ -83,7 +83,7 @@ fun PlayerScreen(
             )
         },
         bottomBar = {
-            PlayerNavBarComposable(
+            NavigationBarComposable(
                 viewModel,
                 navController = navController,
                 onChaptersClick = { viewModel.togglePlayingQueue() }
