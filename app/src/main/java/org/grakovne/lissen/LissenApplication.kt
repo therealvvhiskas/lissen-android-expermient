@@ -7,7 +7,6 @@ import org.acra.ReportField
 import org.acra.config.httpSender
 import org.acra.config.toast
 import org.acra.data.StringFormat
-import org.acra.http.BuildConfig
 import org.acra.ktx.initAcra
 import org.acra.sender.HttpSender
 
