@@ -35,7 +35,6 @@ fun LissenTheme(
     }
 
     val colors = if (isDarkTheme) DarkColorScheme else LightColorScheme
-    val itemAccented = if (isDarkTheme) Color(0xFF444444) else Color(0xFFEEEEEE)
     val systemUiController = rememberSystemUiController()
 
     SideEffect {
