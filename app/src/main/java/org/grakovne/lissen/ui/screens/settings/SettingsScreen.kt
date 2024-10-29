@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import org.grakovne.lissen.R
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
-import org.grakovne.lissen.ui.screens.settings.composable.PreferredLibraryComposable
+import org.grakovne.lissen.ui.screens.settings.composable.GeneralSettingsComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerComposable
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
@@ -78,12 +80,12 @@ fun SettingsScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     ServerComposable(navController, viewModel)
-                    PreferredLibraryComposable(viewModel)
+                    GeneralSettingsComposable(viewModel)
                 }
                 AdditionalComposable()
             }

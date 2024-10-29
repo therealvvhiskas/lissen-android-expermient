@@ -1,12 +1,12 @@
 package org.grakovne.lissen.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -24,14 +24,14 @@ class SettingsViewModel @Inject constructor(
     private val _username = MutableLiveData(preferences.getUsername())
     val username = _username
 
-    private val _isConnected = MutableLiveData(true)
-    val isConnected: LiveData<Boolean> = _isConnected
-
     private val _libraries = MutableLiveData<List<Library>>()
     val libraries = _libraries
 
     private val _preferredLibrary = MutableLiveData<Library>(preferences.getPreferredLibrary())
     val preferredLibrary = _preferredLibrary
+
+    private val _preferredColorScheme = MutableLiveData(preferences.getColorScheme())
+    val preferredColorScheme = _preferredColorScheme
 
     init {
         fetchLibraries()
@@ -70,5 +70,10 @@ class SettingsViewModel @Inject constructor(
     fun preferLibrary(library: Library) {
         _preferredLibrary.value = library
         preferences.savePreferredLibrary(library)
+    }
+
+    fun preferColorScheme(colorScheme: ColorScheme) {
+        _preferredColorScheme.value = colorScheme
+        preferences.saveColorScheme(colorScheme)
     }
 }

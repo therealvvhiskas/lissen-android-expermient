@@ -6,7 +6,12 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.grakovne.lissen.channel.common.ChannelCode
+import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.domain.Library
 import java.security.KeyStore
 import java.util.UUID
@@ -81,11 +86,30 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         saveActiveLibraryName(library.title)
     }
 
+    fun saveColorScheme(colorScheme: ColorScheme) =
+        sharedPreferences.edit().putString(KEY_PREFERRED_COLOR_SCHEME, colorScheme.name).apply()
+
+    fun getColorScheme(): ColorScheme =
+        sharedPreferences.getString(KEY_PREFERRED_COLOR_SCHEME, ColorScheme.FOLLOW_SYSTEM.name)
+            ?.let { ColorScheme.valueOf(it) }
+            ?: ColorScheme.FOLLOW_SYSTEM
+
     fun savePlaybackSpeed(factor: Float) =
         sharedPreferences.edit().putFloat(KEY_PREFERRED_PLAYBACK_SPEED, factor).apply()
 
     fun getPlaybackSpeed(): Float =
         sharedPreferences.getFloat(KEY_PREFERRED_PLAYBACK_SPEED, 1f)
+
+    val colorSchemeFlow: Flow<ColorScheme> = callbackFlow {
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == KEY_PREFERRED_COLOR_SCHEME) {
+                trySend(getColorScheme())
+            }
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+        trySend(getColorScheme())
+        awaitClose { sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener) }
+    }.distinctUntilChanged()
 
     private fun saveActiveLibraryId(host: String) =
         sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_ID, host).apply()
@@ -138,6 +162,8 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         private const val KEY_PREFERRED_LIBRARY_NAME = "preferred_library_name"
 
         private const val KEY_PREFERRED_PLAYBACK_SPEED = "preferred_playback_speed"
+
+        private const val KEY_PREFERRED_COLOR_SCHEME = "preferred_color_scheme"
 
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
