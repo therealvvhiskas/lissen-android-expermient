@@ -33,10 +33,6 @@ class SettingsViewModel @Inject constructor(
     private val _preferredColorScheme = MutableLiveData(preferences.getColorScheme())
     val preferredColorScheme = _preferredColorScheme
 
-    init {
-        fetchLibraries()
-    }
-
     fun logout() {
         preferences.clearPreferences()
 
