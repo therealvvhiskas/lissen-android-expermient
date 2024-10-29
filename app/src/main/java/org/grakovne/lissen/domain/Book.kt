@@ -10,6 +10,5 @@ data class Book(
 
 enum class BookCachedState {
     ABLE_TO_CACHE,
-    CACHED,
-    STORED_LOCALLY
+    CACHED
 }

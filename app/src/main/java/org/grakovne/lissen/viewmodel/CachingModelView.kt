@@ -32,7 +32,6 @@ class CachingModelView @Inject constructor(
             CacheProgress.Idle -> when (book.cachedState) {
                 BookCachedState.ABLE_TO_CACHE -> BookCacheAction.CACHE
                 BookCachedState.CACHED -> BookCacheAction.DROP
-                BookCachedState.STORED_LOCALLY -> null
             }
 
             CacheProgress.Removed -> BookCacheAction.CACHE

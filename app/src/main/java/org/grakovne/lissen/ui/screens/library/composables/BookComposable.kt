@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.Downloading
-import androidx.compose.material.icons.outlined.SdCard
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -180,15 +179,18 @@ private fun provideCachingStateIcon(
     book: Book,
     cacheProgress: CacheProgress
 ): ImageVector = when (cacheProgress) {
-    CacheProgress.Completed -> Icons.Outlined.CloudDownload
-    CacheProgress.Removed -> Icons.Outlined.Cloud
-    CacheProgress.Error -> Icons.Outlined.Cloud
+    CacheProgress.Completed -> cachedIcon
+    CacheProgress.Removed -> ableToCacheIcon
+    CacheProgress.Error -> ableToCacheIcon
     CacheProgress.Idle -> provideIdleStateIcon(book)
-    is CacheProgress.Caching -> Icons.Outlined.Downloading
+    is CacheProgress.Caching -> cachingIcon
 }
 
 private fun provideIdleStateIcon(book: Book): ImageVector = when (book.cachedState) {
-    BookCachedState.ABLE_TO_CACHE -> Icons.Outlined.Cloud
-    BookCachedState.CACHED -> Icons.Outlined.CloudDownload
-    BookCachedState.STORED_LOCALLY -> Icons.Outlined.SdCard
+    BookCachedState.ABLE_TO_CACHE -> ableToCacheIcon
+    BookCachedState.CACHED -> cachedIcon
 }
+
+private val ableToCacheIcon = Icons.Outlined.Cloud
+private val cachedIcon = Icons.Outlined.CloudDownload
+private val cachingIcon = Icons.Outlined.Downloading
