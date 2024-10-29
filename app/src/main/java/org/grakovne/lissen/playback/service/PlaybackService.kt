@@ -117,9 +117,12 @@ class PlaybackService : MediaSessionService() {
 
         withContext(Dispatchers.IO) {
             val prepareQueue = async {
+                val coverUri = mediaChannel.provideBookCoverUri(book.id)
+
                 val playingQueue = book
                     .files
                     .mapNotNull { file ->
+
                         mediaChannel
                             .provideFileUri(book.id, file.id)
                             .fold(
@@ -132,7 +135,7 @@ class PlaybackService : MediaSessionService() {
                                             MediaMetadata.Builder()
                                                 .setTitle(file.name)
                                                 .setArtist(book.title)
-                                                .setArtworkUri(mediaChannel.provideBookCoverUri(book.id))
+                                                .setArtworkUri(coverUri)
                                                 .build()
                                         )
                                         .build()
