@@ -49,9 +49,12 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Text(
-                text = preferredLibrary?.title ?: "",
+                text = preferredLibrary?.title ?: stringResource(R.string.library_is_not_available),
                 style = typography.bodyMedium,
-                color = colorScheme.onSurfaceVariant
+                color = when (preferredLibrary?.title) {
+                    null -> colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    else -> colorScheme.onSurfaceVariant
+                }
             )
         }
     }
@@ -78,7 +81,7 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
         }
     }
 
-    if (preferredLibraryExpanded) {
+    if (preferredLibraryExpanded && libraries.isNotEmpty()) {
         SideEffect {
             viewModel.fetchLibraries()
         }
