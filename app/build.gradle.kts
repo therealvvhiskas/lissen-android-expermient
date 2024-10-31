@@ -25,8 +25,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 10
-        versionName = "1.0.9"
+        versionCode = 11
+        versionName = "1.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -92,6 +92,8 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.media3.session)
     kapt(libs.hilt.android.compiler)
+
+    implementation(libs.icons.lucide)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

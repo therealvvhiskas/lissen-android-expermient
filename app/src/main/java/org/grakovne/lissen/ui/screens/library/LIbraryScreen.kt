@@ -1,12 +1,14 @@
 package org.grakovne.lissen.ui.screens.library
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
+import androidx.compose.animation.with
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -18,21 +20,11 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Cloud
-import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material.icons.outlined.MoreVert
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -46,21 +38,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.ImageLoader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -72,8 +62,10 @@ import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.common.RequestNotificationPermissions
 import org.grakovne.lissen.ui.screens.library.composables.BookComposable
+import org.grakovne.lissen.ui.screens.library.composables.DefaultActionComposable
 import org.grakovne.lissen.ui.screens.library.composables.MiniPlayerComposable
 import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
+import org.grakovne.lissen.ui.screens.library.composables.SearchActionComposable
 import org.grakovne.lissen.ui.screens.library.composables.fallback.LibraryFallbackComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
@@ -81,7 +73,7 @@ import org.grakovne.lissen.viewmodel.CachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun LibraryScreen(
     navController: AppNavigationService,
@@ -101,8 +93,14 @@ fun LibraryScreen(
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     var pullRefreshing by remember { mutableStateOf(false) }
 
+    var searchRequested by remember { mutableStateOf(false) }
+
     val showingRecentBooks by remember(recentBooks, hiddenBooks) {
         derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
+    }
+
+    BackHandler(enabled = searchRequested) {
+        searchRequested = false
     }
 
     fun refreshContent(showRefreshing: Boolean) {
@@ -130,8 +128,6 @@ fun LibraryScreen(
                 library.loadState.refresh is LoadState.Loading
         }
     }
-
-    var navigationItemSelected by remember { mutableStateOf(false) }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
@@ -174,90 +170,43 @@ fun LibraryScreen(
         topBar = {
             TopAppBar(
                 actions = {
-                    IconButton(onClick = {
-                        navigationItemSelected = true
-                    }) {
-                        Icon(
-                            imageVector = Icons.Outlined.MoreVert,
-                            contentDescription = "Menu"
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = navigationItemSelected,
-                        onDismissRequest = { navigationItemSelected = false },
-                        modifier = Modifier
-                            .background(colorScheme.background)
-                            .padding(4.dp)
-                    ) {
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = when (cachingModelView.localCacheUsing()) {
-                                        true -> Icons.Outlined.Cloud
-                                        else -> Icons.Outlined.CloudOff
-                                    },
-                                    contentDescription = null
-                                )
-                            },
-                            text = {
-                                Text(
-                                    text = when (cachingModelView.localCacheUsing()) {
-                                        true -> stringResource(R.string.disable_offline)
-                                        else -> stringResource(R.string.enable_offline)
-                                    },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
-                            },
-                            onClick = {
-                                navigationItemSelected = false
-
-                                coroutineScope.launch {
-                                    withFrameNanos { }
-
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        cachingModelView.toggleCacheForce()
-                                        libraryViewModel.dropHiddenBooks()
-
-                                        refreshContent(showRefreshing = false)
-                                    }
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
-
-                        DropdownMenuItem(
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Outlined.Settings,
-                                    contentDescription = null
-                                )
-                            },
-                            text = {
-                                Text(
-                                    stringResource(R.string.library_screen_preferences_menu_item),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
-                            },
-                            onClick = {
-                                navigationItemSelected = false
-                                navController.showSettings()
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
+                    AnimatedContent(
+                        targetState = searchRequested,
+                        label = "library_action_animation"
+                    ) { isSearchRequested ->
+                        if (isSearchRequested) {
+                            SearchActionComposable(
+                                onSearchDismissed = { searchRequested = false }
+                            )
+                        } else {
+                            DefaultActionComposable(
+                                navController = navController,
+                                cachingModelView = cachingModelView,
+                                libraryViewModel = libraryViewModel,
+                                onContentRefreshing = { refreshContent(showRefreshing = false) },
+                                onSearchRequested = { searchRequested = true }
+                            )
+                        }
                     }
                 },
                 title = {
-                    Crossfade(targetState = navBarTitle, label = "navbar_title_fade") { title ->
-                        Text(
-                            text = title,
-                            style = titleTextStyle
-                        )
+                    AnimatedContent(
+                        targetState = searchRequested,
+                        transitionSpec = {
+                            fadeIn(animationSpec = keyframes { durationMillis = 300 }) with
+                                fadeOut(animationSpec = keyframes { durationMillis = 300 })
+                        },
+                        label = "library_title_animation"
+                    ) { isSearchRequested ->
+                        if (!isSearchRequested) {
+                            Text(
+                                text = navBarTitle,
+                                style = titleTextStyle,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 },
                 modifier = Modifier.systemBarsPadding()

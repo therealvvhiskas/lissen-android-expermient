@@ -7,6 +7,9 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -25,6 +28,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -32,11 +36,16 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.viewmodel.PlayerViewModel
@@ -47,6 +56,7 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
     val book by viewModel.book.observeAsState()
@@ -58,6 +68,8 @@ fun PlayingQueueComposable(
 
     val playingQueueHeight = remember { mutableIntStateOf(0) }
     val isFlinging = remember { mutableStateOf(false) }
+
+    val itemHeight = remember { mutableStateOf(0.dp) }
 
     val expandFlingThreshold =
         remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 2 }
@@ -73,18 +85,29 @@ fun PlayingQueueComposable(
         label = "playing_queue_font_size"
     )
 
-    LaunchedEffect(currentTrackIndex) {
-        if (!playingQueueExpanded) {
-            scrollPlayingQueue(
-                currentTrackIndex = currentTrackIndex,
-                listState = listState,
-                playbackReady = playbackReady,
-                animate = true
-            )
+    LaunchedEffect(playingQueueHeight) {
+        if (playingQueueHeight.intValue > 0 && !playingQueueExpanded && itemHeight.value == 0.dp) {
+            itemHeight.value = calculateQueueItemHeight(density, playingQueueHeight.intValue)
         }
     }
 
-    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+    LaunchedEffect(currentTrackIndex) {
+        awaitFrame()
+        scrollPlayingQueue(
+            currentTrackIndex = currentTrackIndex,
+            listState = listState,
+            playbackReady = playbackReady,
+            animate = true,
+            playingQueueExpanded = playingQueueExpanded
+        )
+
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ) {
         Text(
             text = stringResource(R.string.player_screen_now_playing_title),
             fontSize = fontSize.sp,
@@ -93,10 +116,11 @@ fun PlayingQueueComposable(
             modifier = Modifier.padding(horizontal = 6.dp)
         )
 
-        Spacer(modifier = Modifier.padding(vertical = 4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
             modifier = Modifier
+                .weight(1f)
                 .scrollable(
                     state = rememberScrollState(),
                     orientation = Orientation.Vertical,
@@ -107,14 +131,13 @@ fun PlayingQueueComposable(
                         playingQueueHeight.intValue = intSize.height
 
                         coroutineScope.launch {
-                            if (!playingQueueExpanded) {
-                                scrollPlayingQueue(
-                                    currentTrackIndex = currentTrackIndex,
-                                    listState = listState,
-                                    playbackReady = playbackReady,
-                                    animate = false
-                                )
-                            }
+                            scrollPlayingQueue(
+                                currentTrackIndex = currentTrackIndex,
+                                listState = listState,
+                                playbackReady = playbackReady,
+                                animate = false,
+                                playingQueueExpanded = playingQueueExpanded
+                            )
                         }
                     }
                 }
@@ -148,7 +171,8 @@ fun PlayingQueueComposable(
                 PlaylistItemComposable(
                     track = track,
                     onClick = { viewModel.setChapter(index) },
-                    isSelected = index == currentTrackIndex
+                    isSelected = index == currentTrackIndex,
+                    modifier = Modifier.heightIn(min = itemHeight.value)
                 )
 
                 if (index < chapters.size - 1) {
@@ -166,8 +190,13 @@ private suspend fun scrollPlayingQueue(
     currentTrackIndex: Int,
     listState: LazyListState,
     playbackReady: Boolean,
-    animate: Boolean
+    animate: Boolean,
+    playingQueueExpanded: Boolean
 ) {
+    if (playingQueueExpanded) {
+        return
+    }
+
     val targetIndex = when (currentTrackIndex > 0) {
         true -> currentTrackIndex - 1
         false -> 0
@@ -176,5 +205,31 @@ private suspend fun scrollPlayingQueue(
     when (animate && playbackReady) {
         true -> listState.animateScrollToItem(targetIndex)
         false -> listState.scrollToItem(targetIndex)
+    }
+}
+
+private fun calculateQueueItemHeight(
+    screenDensity: Density,
+    playingQueueHeight: Int
+): Dp {
+    with(screenDensity) {
+        val minItemHeightDp = 32.dp
+        val minItemHeightPx = minItemHeightDp.toPx()
+
+        val itemPaddingPx = 8.dp.toPx()
+        val dividerHeightPx = 1.dp.toPx()
+
+        val totalHeightPerItemPx = minItemHeightPx + itemPaddingPx + dividerHeightPx
+
+        val computedItemsPerScreen = (playingQueueHeight / totalHeightPerItemPx).toInt()
+
+        val totalPaddingPx = itemPaddingPx * computedItemsPerScreen
+        val totalDividerHeightPx = dividerHeightPx * (computedItemsPerScreen - 1)
+
+        val availableHeightPx = playingQueueHeight - totalPaddingPx - totalDividerHeightPx
+        val singleItemHeightPx = availableHeightPx / computedItemsPerScreen
+        val singleItemHeightDp = singleItemHeightPx.toDp()
+
+        return singleItemHeightDp
     }
 }
