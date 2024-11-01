@@ -35,8 +35,7 @@ android {
     }
 
     buildTypes {
-        release {
-        }
+        release {}
         debug {
             matchingFallbacks.add("release")
             isDebuggable = false

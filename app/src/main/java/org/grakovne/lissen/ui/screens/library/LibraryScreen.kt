@@ -51,7 +51,8 @@ import coil.ImageLoader
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.R
+import org.grakovne.lissen.R.string.library_screen_continue_listening_title
+import org.grakovne.lissen.R.string.library_screen_library_title
 import org.grakovne.lissen.common.NetworkQualityService
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.extensions.withMinimumTime
@@ -89,6 +90,7 @@ fun LibraryScreen(
     var pullRefreshing by remember { mutableStateOf(false) }
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     val searchRequested by libraryViewModel.searchRequested.observeAsState(false)
+    var hasNetworkConnection by remember { mutableStateOf(networkQualityService.isNetworkAvailable()) }
 
     val library = when (searchRequested) {
         true -> libraryViewModel.searchPager.collectAsLazyPagingItems()
@@ -97,6 +99,13 @@ fun LibraryScreen(
 
     val showingRecentBooks by remember(recentBooks, hiddenBooks) {
         derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
+    }
+
+    fun showRecentContent(): Boolean {
+        val hasRecentContent = showingRecentBooks.isEmpty().not()
+        val ableFetchContent = cachingModelView.localCacheUsing().not() && networkQualityService.isNetworkAvailable()
+
+        return searchRequested.not() && hasRecentContent && ableFetchContent
     }
 
     BackHandler(enabled = searchRequested) {
@@ -141,7 +150,7 @@ fun LibraryScreen(
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
-    val libraryListState = rememberLazyListState()
+    val screenState = rememberLazyListState()
 
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
@@ -152,20 +161,19 @@ fun LibraryScreen(
     }
 
     LaunchedEffect(searchRequested) {
-        libraryListState.scrollToItem(0)
+        screenState.scrollToItem(0)
     }
 
-    val navBarTitle by remember {
-        derivedStateOf {
-            val firstVisibleItemIndex = libraryListState.firstVisibleItemIndex
-            when {
-                firstVisibleItemIndex >= 1 ||
-                    filterRecentBooks(
-                        recentBooks,
-                        libraryViewModel
-                    ).isEmpty() -> context.getString(R.string.library_screen_library_title)
+    var navBarTitle by remember { mutableStateOf(context.getString(library_screen_continue_listening_title)) }
+    val firstVisibleIndex by remember { derivedStateOf { screenState.firstVisibleItemIndex } }
 
-                else -> context.getString(R.string.library_screen_continue_listening_title)
+    LaunchedEffect(firstVisibleIndex, showRecentContent()) {
+        val recentContentScrolled = screenState.firstVisibleItemIndex >= 1
+
+        navBarTitle = with(context) {
+            when {
+                recentContentScrolled || showRecentContent().not() -> getString(library_screen_library_title)
+                else -> getString(library_screen_continue_listening_title)
             }
         }
     }
@@ -242,20 +250,18 @@ fun LibraryScreen(
                     .fillMaxSize()
             ) {
                 LazyColumn(
-                    state = libraryListState,
+                    state = screenState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     item(key = "recent_books") {
-                        val showRecent = !searchRequested && showingRecentBooks.isEmpty().not()
-
                         when {
                             isPlaceholderRequired -> {
                                 RecentBooksPlaceholderComposable()
                                 Spacer(modifier = Modifier.height(20.dp))
                             }
 
-                            showRecent -> {
+                            showRecentContent() -> {
                                 RecentBooksComposable(
                                     navController = navController,
                                     recentBooks = showingRecentBooks,
@@ -284,7 +290,7 @@ fun LibraryScreen(
                                 label = "library_header_fade"
                             ) {
                                 when {
-                                    it == stringResource(R.string.library_screen_library_title) ->
+                                    it == stringResource(library_screen_library_title) ->
                                         Spacer(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -293,7 +299,7 @@ fun LibraryScreen(
 
                                     else -> Text(
                                         style = titleTextStyle,
-                                        text = stringResource(R.string.library_screen_library_title),
+                                        text = stringResource(library_screen_library_title),
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
