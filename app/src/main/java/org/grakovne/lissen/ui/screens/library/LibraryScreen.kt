@@ -103,7 +103,7 @@ fun LibraryScreen(
 
     fun showRecentContent(): Boolean {
         val hasRecentContent = showingRecentBooks.isEmpty().not()
-        val ableFetchContent = cachingModelView.localCacheUsing().not() && networkQualityService.isNetworkAvailable()
+        val ableFetchContent = cachingModelView.localCacheUsing() || networkQualityService.isNetworkAvailable()
 
         return searchRequested.not() && hasRecentContent && ableFetchContent
     }
