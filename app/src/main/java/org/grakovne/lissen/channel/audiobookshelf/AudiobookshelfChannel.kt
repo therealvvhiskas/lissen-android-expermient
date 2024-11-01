@@ -9,6 +9,7 @@ import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfSyncService
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemIdResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryItemResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.LibraryResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.converter.LibrarySearchItemResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.PlaybackSessionResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.converter.RecentBookResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.model.LibraryResponse
@@ -38,6 +39,7 @@ class AudiobookshelfChannel @Inject constructor(
     private val libraryResponseConverter: LibraryResponseConverter,
     private val libraryItemIdResponseConverter: LibraryItemIdResponseConverter,
     private val sessionResponseConverter: PlaybackSessionResponseConverter,
+    private val librarySearchItemResponseConverter: LibrarySearchItemResponseConverter,
     private val preferences: LissenSharedPreferences,
     private val syncService: AudioBookshelfSyncService
 ) : MediaChannel {
@@ -57,7 +59,7 @@ class AudiobookshelfChannel @Inject constructor(
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
-    override fun provideBookCover(
+    override fun provideBookCoverUri(
         bookId: String
     ): Uri = Uri.parse(preferences.getHost())
         .buildUpon()
@@ -88,6 +90,16 @@ class AudiobookshelfChannel @Inject constructor(
             pageNumber = pageNumber
         )
         .map { libraryItemResponseConverter.apply(it) }
+
+    override suspend fun searchBooks(
+        libraryId: String,
+        query: String,
+        limit: Int
+    ): ApiResult<List<Book>> {
+        return dataRepository
+            .searchLibraryItems(libraryId, query, limit)
+            .map { librarySearchItemResponseConverter.apply(it) }
+    }
 
     override suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
         .fetchLibraries()

@@ -62,7 +62,7 @@ class LissenMediaProvider @Inject constructor(
 
         return when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.provideBookCover(bookId)
-            false -> providePreferredChannel().provideBookCover(bookId)
+            false -> providePreferredChannel().provideBookCoverUri(bookId)
         }
     }
 
@@ -89,6 +89,24 @@ class LissenMediaProvider @Inject constructor(
         return when (cacheConfiguration.localCacheUsing()) {
             true -> localCacheRepository.fetchBookCover(bookId)
             false -> providePreferredChannel().fetchBookCover(bookId)
+        }
+    }
+
+    suspend fun searchBooks(
+        libraryId: String,
+        query: String,
+        limit: Int
+    ): ApiResult<List<Book>> {
+        Log.d(TAG, "Searching books with query $query of library: $libraryId")
+
+        return when (cacheConfiguration.localCacheUsing()) {
+            true -> localCacheRepository.searchBooks(query)
+            false -> providePreferredChannel()
+                .searchBooks(
+                    libraryId = libraryId,
+                    query = query,
+                    limit = limit
+                )
         }
     }
 
@@ -213,6 +231,7 @@ class LissenMediaProvider @Inject constructor(
                         book
                             .copy(cachedState = CACHED)
                             .also { Log.d(TAG, "${book.id} flagged as Cached") }
+
                     false -> book
                 }
             }
@@ -226,6 +245,7 @@ class LissenMediaProvider @Inject constructor(
         ?: throw IllegalStateException("Selected Channel has been requested but not selected")
 
     companion object {
+
         private const val TAG: String = "LissenMediaProvider"
     }
 }

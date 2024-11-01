@@ -20,7 +20,7 @@ interface MediaChannel {
         fileId: String
     ): Uri
 
-    fun provideBookCover(
+    fun provideBookCoverUri(
         bookId: String
     ): Uri
 
@@ -38,6 +38,12 @@ interface MediaChannel {
         pageSize: Int,
         pageNumber: Int
     ): ApiResult<PagedItems<Book>>
+
+    suspend fun searchBooks(
+        libraryId: String,
+        query: String,
+        limit: Int
+    ): ApiResult<List<Book>>
 
     suspend fun fetchLibraries(): ApiResult<List<Library>>
 

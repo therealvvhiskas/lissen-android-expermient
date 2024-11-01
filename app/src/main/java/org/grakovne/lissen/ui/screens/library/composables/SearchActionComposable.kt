@@ -9,7 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,16 +24,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import org.grakovne.lissen.R
 
 @Composable
 fun SearchActionComposable(
-    onSearchDismissed: () -> Unit
+    onSearchDismissed: () -> Unit,
+    onSearchRequested: (String) -> Unit
 ) {
     val focusRequester = remember { FocusRequester() }
     val searchText = remember { mutableStateOf("") }
+
+    fun updateSearchText(text: String) {
+        searchText.value = text
+        onSearchRequested(searchText.value)
+    }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -47,10 +54,11 @@ fun SearchActionComposable(
             .height(40.dp)
     ) {
         IconButton(
+            modifier = Modifier.height(36.dp),
             onClick = { onSearchDismissed() }
         ) {
             Icon(
-                imageVector = Icons.Outlined.ArrowBack,
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = "Back"
             )
         }
@@ -59,16 +67,17 @@ fun SearchActionComposable(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .weight(1f)
+                .height(36.dp)
                 .background(colorScheme.surfaceContainer, RoundedCornerShape(36.dp))
                 .padding(start = 16.dp, end = 4.dp)
         ) {
             BasicTextField(
                 value = searchText.value,
-                onValueChange = { searchText.value = it },
+                onValueChange = { updateSearchText(it) },
                 modifier = Modifier
                     .weight(1f)
                     .focusRequester(focusRequester),
-                textStyle = typography.bodyLarge,
+                textStyle = typography.bodyLarge.copy(color = colorScheme.onBackground),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Search
@@ -76,21 +85,25 @@ fun SearchActionComposable(
                 decorationBox = { innerTextField ->
                     if (searchText.value.isEmpty()) {
                         Text(
-                            "Search",
-                            color = Color.Gray,
+                            text = stringResource(R.string.library_search_hint),
+                            color = colorScheme.onSurfaceVariant,
                             style = typography.bodyLarge
                         )
                     }
                     innerTextField()
                 }
             )
-            IconButton(
-                onClick = { searchText.value = "" }
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Clear,
-                    contentDescription = "Clear"
-                )
+
+            if (searchText.value.isNotEmpty()) {
+                IconButton(
+                    modifier = Modifier.height(36.dp),
+                    onClick = { updateSearchText("") }
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Clear,
+                        contentDescription = "Clear"
+                    )
+                }
             }
         }
     }
