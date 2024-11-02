@@ -2,6 +2,7 @@ package org.grakovne.lissen.channel.audiobookshelf
 
 import android.net.Uri
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfDataRepository
 import org.grakovne.lissen.channel.audiobookshelf.api.AudioBookshelfMediaRepository
@@ -106,18 +107,21 @@ class AudiobookshelfChannel @Inject constructor(
 
         val byAuthor = async {
             val searchResult = dataRepository.searchLibraryItems(libraryId, query, limit)
+
             searchResult
                 .map { it.authors }
                 .map { authors -> authors.map { it.id } }
-                .map { ids ->
-                    ids.map { id ->
-                        dataRepository.fetchAuthorItems(id)
-                    }.flatMap { authorResponse ->
-                        authorResponse.fold(
-                            onSuccess = { it.libraryItems },
-                            onFailure = { emptyList() }
-                        )
-                    }
+                .map { ids -> ids.map { id -> async { dataRepository.fetchAuthorItems(id) } } }
+                .map { it.awaitAll() }
+                .map { result ->
+                    result
+                        .flatMap { authorResponse ->
+                            authorResponse
+                                .fold(
+                                    onSuccess = { it.libraryItems },
+                                    onFailure = { emptyList() }
+                                )
+                        }
                 }
                 .map { librarySearchItemsConverter.apply(it) }
         }
