@@ -95,32 +95,34 @@ class AudiobookshelfChannel @Inject constructor(
         libraryId: String,
         query: String,
         limit: Int
-    ): ApiResult<List<Book>> {
-        val searchResult = dataRepository.searchLibraryItems(libraryId, query, limit)
+    ): ApiResult<List<Book>> = coroutineScope {
+        val byTitle = async {
+            dataRepository
+                .searchLibraryItems(libraryId, query, limit)
+                .map { it.book }
+                .map { it.map { response -> response.libraryItem } }
+                .map { librarySearchItemsConverter.apply(it) }
+        }
 
-        val byTitle: ApiResult<List<Book>> = dataRepository
-            .searchLibraryItems(libraryId, query, limit)
-            .map { it.book }
-            .map { it.map { response -> response.libraryItem } }
-            .map { librarySearchItemsConverter.apply(it) }
-
-        val byAuthor = searchResult
-            .map { it.authors }
-            .map { authors -> authors.map { it.id } }
-            .map { ids -> ids.map { dataRepository.fetchAuthorItems(it) } }
-            .map { response ->
-                response
-                    .flatMap { author ->
-                        author
-                            .fold(
-                                onSuccess = { it.libraryItems },
-                                onFailure = { emptyList() }
-                            )
+        val byAuthor = async {
+            val searchResult = dataRepository.searchLibraryItems(libraryId, query, limit)
+            searchResult
+                .map { it.authors }
+                .map { authors -> authors.map { it.id } }
+                .map { ids ->
+                    ids.map { id ->
+                        dataRepository.fetchAuthorItems(id)
+                    }.flatMap { authorResponse ->
+                        authorResponse.fold(
+                            onSuccess = { it.libraryItems },
+                            onFailure = { emptyList() }
+                        )
                     }
-            }
-            .map { librarySearchItemsConverter.apply(it) }
+                }
+                .map { librarySearchItemsConverter.apply(it) }
+        }
 
-        return byTitle.flatMap { title -> byAuthor.map { author -> title + author } }
+        byTitle.await().flatMap { title -> byAuthor.await().map { author -> title + author } }
     }
 
     override suspend fun fetchLibraries(): ApiResult<List<Library>> = dataRepository
