@@ -86,11 +86,12 @@ fun LibraryScreen(
 
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
+    val screenState = rememberLazyListState()
+
     val hiddenBooks by libraryViewModel.hiddenBooks.collectAsState()
     var pullRefreshing by remember { mutableStateOf(false) }
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     val searchRequested by libraryViewModel.searchRequested.observeAsState(false)
-    var hasNetworkConnection by remember { mutableStateOf(networkQualityService.isNetworkAvailable()) }
 
     val library = when (searchRequested) {
         true -> libraryViewModel.searchPager.collectAsLazyPagingItems()
@@ -126,6 +127,7 @@ fun LibraryScreen(
                 ).awaitAll()
             }
 
+            screenState.scrollToItem(0)
             pullRefreshing = false
         }
     }
@@ -150,8 +152,6 @@ fun LibraryScreen(
     val titleTextStyle = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
     val titleHeightDp = with(LocalDensity.current) { titleTextStyle.lineHeight.toPx().toDp() }
 
-    val screenState = rememberLazyListState()
-
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
@@ -167,7 +167,7 @@ fun LibraryScreen(
     var navBarTitle by remember { mutableStateOf(context.getString(library_screen_continue_listening_title)) }
     val firstVisibleIndex by remember { derivedStateOf { screenState.firstVisibleItemIndex } }
 
-    LaunchedEffect(firstVisibleIndex, showRecentContent()) {
+    LaunchedEffect(firstVisibleIndex) {
         val recentContentScrolled = screenState.firstVisibleItemIndex >= 1
 
         navBarTitle = with(context) {
