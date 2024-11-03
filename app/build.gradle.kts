@@ -25,8 +25,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 19
-        versionName = "1.0.18"
+        versionCode = 20
+        versionName = "1.0.19"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -38,7 +38,7 @@ android {
         release {}
         debug {
             matchingFallbacks.add("release")
-            isDebuggable = true
+            isDebuggable = false
         }
     }
 
@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation (libs.material)
     implementation(libs.material3)
 
     implementation(libs.androidx.material)
