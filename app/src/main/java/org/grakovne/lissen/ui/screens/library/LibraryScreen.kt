@@ -23,6 +23,7 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -65,6 +66,7 @@ import org.grakovne.lissen.ui.screens.library.composables.SearchActionComposable
 import org.grakovne.lissen.ui.screens.library.composables.fallback.LibraryFallbackComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
+import org.grakovne.lissen.ui.theme.LissenTheme
 import org.grakovne.lissen.viewmodel.CachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
@@ -360,6 +362,7 @@ fun LibraryScreen(
                     PullRefreshIndicator(
                         refreshing = pullRefreshing,
                         state = pullRefreshState,
+                        contentColor = colorScheme.primary,
                         modifier = Modifier.align(Alignment.TopCenter)
                     )
                 }
