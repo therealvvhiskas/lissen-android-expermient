@@ -1,9 +1,11 @@
-# Lissen - Clean Audiobookshelf Player <p align="center">
+# Lissen - Clean Audiobookshelf Player
+
+[![Android CI](https://github.com/GrakovNe/lissen-android/actions/workflows/android.yml/badge.svg)](https://github.com/GrakovNe/lissen-android/actions/workflows/android.yml)
+
+<p align="center"> 
   <a href="https://play.google.com/store/apps/details?id=org.grakovne.lissen"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="60"></a>&nbsp;&nbsp;&nbsp;<!--
   --><a href="https://f-droid.org/packages/org.grakovne.lissen"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Get_it_on_F-Droid_%28material_design%29.svg" alt="Get it on F-Droid" height="60"></a>
 </p>
-
-
 
 ### Features
 
