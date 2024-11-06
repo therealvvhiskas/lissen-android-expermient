@@ -37,7 +37,6 @@ fun AsyncShimmeringImage(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .shimmer()
                     .background(Color.Gray)
             )
         }
