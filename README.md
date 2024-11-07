@@ -46,9 +46,11 @@ nano local.properties
 
 You can connect to a demo [Audiobookshelf](https://github.com/advplyr/audiobookshelf) instance through the Lissen app:
 
+```
 URL: https://demo.lissenapp.org
 Username: demo
 Password: demo
+```
 
 This instance contains only Public Domain audiobooks from [LibriVox](https://librivox.org/) and is intended solely for demonstrating the client’s functionality.
 
