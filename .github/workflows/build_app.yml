@@ -42,4 +42,4 @@ jobs:
 
       # Run Build Project
       - name: Build gradle project
-        run: ./gradlew build
+        run: ./gradlew build -Proom.schemaLocation=$GITHUB_WORKSPACE/app/schemas
