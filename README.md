@@ -41,5 +41,16 @@ nano local.properties
 ```
 5. Build and run the app on an Android device or emulator.
 
+### Demo Environment
+
+
+You can connect to a demo [Audiobookshelf](https://github.com/advplyr/audiobookshelf) instance through the Lissen app:
+
+URL: https://demo.lissenapp.org
+Username: demo
+Password: demo
+
+This instance contains only Public Domain audiobooks from [LibriVox](https://librivox.org/) and is intended solely for demonstrating the client’s functionality.
+
 ## License
 Lissen is open-source and licensed under the MIT License. See the LICENSE file for more details.
