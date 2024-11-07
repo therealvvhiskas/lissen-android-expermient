@@ -7,7 +7,6 @@ import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import dagger.Module
@@ -30,12 +29,6 @@ object MediaModule {
             .setSeekBackIncrementMs(10_000)
             .setSeekForwardIncrementMs(30_000)
             .setHandleAudioBecomingNoisy(true)
-            .setLoadControl(
-                DefaultLoadControl
-                    .Builder()
-                    .setPrioritizeTimeOverSizeThresholds(true)
-                    .build()
-            )
             .setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)

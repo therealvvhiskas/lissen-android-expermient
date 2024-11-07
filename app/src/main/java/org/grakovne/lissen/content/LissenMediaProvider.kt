@@ -40,9 +40,7 @@ class LissenMediaProvider @Inject constructor(
             true ->
                 localCacheRepository
                     .provideFileUri(libraryItemId, chapterId)
-                    ?.let {
-                        ApiResult.Success(it)
-                    }
+                    ?.let { ApiResult.Success(it) }
                     ?: ApiResult.Error(ApiError.InternalError)
 
             false ->
@@ -52,17 +50,6 @@ class LissenMediaProvider @Inject constructor(
                     ?: providePreferredChannel()
                         .provideFileUri(libraryItemId, chapterId)
                         .let { ApiResult.Success(it) }
-        }
-    }
-
-    fun provideBookCoverUri(
-        bookId: String
-    ): Uri {
-        Log.d(TAG, "Fetching Cover URI for $bookId")
-
-        return when (cacheConfiguration.localCacheUsing()) {
-            true -> localCacheRepository.provideBookCover(bookId)
-            false -> providePreferredChannel().provideBookCoverUri(bookId)
         }
     }
 

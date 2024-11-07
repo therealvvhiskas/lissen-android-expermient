@@ -14,11 +14,12 @@ import javax.inject.Singleton
 
 @Singleton
 class AudioBookshelfMediaRepository @Inject constructor(
-    private val preferences: LissenSharedPreferences
+    private val preferences: LissenSharedPreferences,
+    private val requestHeadersProvider: RequestHeadersProvider
 ) {
 
-    @Volatile
-    private var secureClient: AudiobookshelfMediaClient? = null
+    private var configCache: ApiClientConfig? = null
+    private var clientCache: AudiobookshelfMediaClient? = null
 
     suspend fun fetchBookCover(itemId: String): ApiResult<InputStream> =
         safeApiCall { getClientInstance().getItemCover(itemId) }
@@ -45,7 +46,6 @@ class AudioBookshelfMediaRepository @Inject constructor(
         } catch (e: IOException) {
             ApiResult.Error(ApiError.NetworkError)
         } catch (e: Exception) {
-            println(e)
             ApiResult.Error(ApiError.InternalError)
         }
     }
@@ -54,13 +54,45 @@ class AudioBookshelfMediaRepository @Inject constructor(
         val host = preferences.getHost()
         val token = preferences.getToken()
 
+        val cache = ApiClientConfig(
+            host = host,
+            token = token,
+            customHeaders = requestHeadersProvider.fetchRequestHeaders()
+        )
+
+        val currentClientCache = clientCache
+
+        return when (currentClientCache == null || cache != configCache) {
+            true -> {
+                val instance = createClientInstance()
+                configCache = cache
+                clientCache = instance
+                instance
+            }
+
+            else -> currentClientCache
+        }
+    }
+
+    private fun createClientInstance(): AudiobookshelfMediaClient {
+        val host = preferences.getHost()
+        val token = preferences.getToken()
+
         if (host.isNullOrBlank() || token.isNullOrBlank()) {
             throw IllegalStateException("Host or token is missing")
         }
 
-        return secureClient ?: run {
-            val apiClient = BinaryApiClient(host, token)
-            apiClient.retrofit.create(AudiobookshelfMediaClient::class.java)
-        }
+        return apiClient(host, token)
+            .retrofit
+            .create(AudiobookshelfMediaClient::class.java)
     }
+
+    private fun apiClient(
+        host: String,
+        token: String
+    ): BinaryApiClient = BinaryApiClient(
+        host = host,
+        token = token,
+        requestHeaders = requestHeadersProvider.fetchRequestHeaders()
+    )
 }

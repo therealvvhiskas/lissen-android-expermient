@@ -6,8 +6,12 @@ import androidx.annotation.OptIn
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MediaMetadata.PICTURE_TYPE_FRONT_COVER
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +22,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.grakovne.lissen.channel.audiobookshelf.api.RequestHeadersProvider
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedBook
@@ -45,6 +50,9 @@ class PlaybackService : MediaSessionService() {
 
     @Inject
     lateinit var channelProvider: LissenMediaProvider
+
+    @Inject
+    lateinit var requestHeadersProvider: RequestHeadersProvider
 
     private val playerServiceScope = MainScope()
 
@@ -117,35 +125,51 @@ class PlaybackService : MediaSessionService() {
 
         withContext(Dispatchers.IO) {
             val prepareQueue = async {
-                val coverUri = mediaChannel.provideBookCoverUri(book.id)
+                val cover: ByteArray? = channelProvider
+                    .fetchBookCover(bookId = book.id)
+                    .fold(
+                        onSuccess = {
+                            try {
+                                it.readBytes()
+                            } catch (ex: Exception) {
+                                null
+                            }
+                        },
+                        onFailure = { null }
+                    )
+
+                val sourceFactory = buildDataSourceFactory()
 
                 val playingQueue = book
                     .files
                     .mapNotNull { file ->
-
                         mediaChannel
                             .provideFileUri(book.id, file.id)
                             .fold(
-                                onSuccess = {
-                                    MediaItem.Builder()
+                                onSuccess = { request ->
+                                    val mediaData = MediaMetadata.Builder()
+                                        .setTitle(file.name)
+                                        .setArtist(book.title)
+
+                                    cover?.let { mediaData.setArtworkData(it, PICTURE_TYPE_FRONT_COVER) }
+
+                                    val mediaItem = MediaItem.Builder()
                                         .setMediaId(file.id)
-                                        .setUri(it)
+                                        .setUri(request)
                                         .setTag(book)
-                                        .setMediaMetadata(
-                                            MediaMetadata.Builder()
-                                                .setTitle(file.name)
-                                                .setArtist(book.title)
-                                                .setArtworkUri(coverUri)
-                                                .build()
-                                        )
+                                        .setMediaMetadata(mediaData.build())
                                         .build()
+
+                                    ProgressiveMediaSource
+                                        .Factory(sourceFactory)
+                                        .createMediaSource(mediaItem)
                                 },
                                 onFailure = { null }
                             )
                     }
 
                 withContext(Dispatchers.Main) {
-                    exoPlayer.setMediaItems(playingQueue)
+                    exoPlayer.setMediaSources(playingQueue)
                     setPlaybackProgress(book.files, book.progress)
                 }
             }
@@ -203,6 +227,22 @@ class PlaybackService : MediaSessionService() {
         chapters: List<BookFile>,
         progress: MediaProgress?
     ) = seek(chapters, progress?.currentTime)
+
+    @OptIn(UnstableApi::class)
+    private fun buildDataSourceFactory(): DefaultDataSource.Factory {
+        val requestHeaders = requestHeadersProvider
+            .fetchRequestHeaders()
+            .associate { it.name to it.value }
+
+        val networkDatasourceFactory = DefaultHttpDataSource
+            .Factory()
+            .setDefaultRequestProperties(requestHeaders)
+
+        return DefaultDataSource.Factory(
+            baseContext,
+            networkDatasourceFactory
+        )
+    }
 
     companion object {
 

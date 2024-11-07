@@ -9,6 +9,8 @@ import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.connection.ServerRequestHeader
+import org.grakovne.lissen.domain.connection.ServerRequestHeader.Companion.clean
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 
@@ -32,6 +34,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _preferredColorScheme = MutableLiveData(preferences.getColorScheme())
     val preferredColorScheme = _preferredColorScheme
+
+    private val _customHeaders = MutableLiveData(preferences.getCustomHeaders())
+    val customHeaders = _customHeaders
 
     fun logout() {
         preferences.clearPreferences()
@@ -73,5 +78,17 @@ class SettingsViewModel @Inject constructor(
     fun preferColorScheme(colorScheme: ColorScheme) {
         _preferredColorScheme.value = colorScheme
         preferences.saveColorScheme(colorScheme)
+    }
+
+    fun updateCustomHeaders(headers: List<ServerRequestHeader>) {
+        _customHeaders.value = headers
+
+        val meaningfulHeaders = headers
+            .map { it.clean() }
+            .distinctBy { it.name }
+            .filterNot { it.name.isEmpty() }
+            .filterNot { it.value.isEmpty() }
+
+        preferences.saveCustomHeaders(meaningfulHeaders)
     }
 }

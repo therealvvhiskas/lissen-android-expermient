@@ -63,17 +63,6 @@ class AudiobookshelfChannel @Inject constructor(
         .appendQueryParameter("token", preferences.getToken())
         .build()
 
-    override fun provideBookCoverUri(
-        bookId: String
-    ): Uri = Uri.parse(preferences.getHost())
-        .buildUpon()
-        .appendPath("api")
-        .appendPath("items")
-        .appendPath(bookId)
-        .appendPath("cover")
-        .appendQueryParameter("token", preferences.getToken())
-        .build()
-
     override suspend fun syncProgress(
         sessionId: String,
         progress: PlaybackProgress

@@ -3,11 +3,13 @@ package org.grakovne.lissen.channel.common
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.grakovne.lissen.domain.connection.ServerRequestHeader
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
 class BinaryApiClient(
     host: String,
+    requestHeaders: List<ServerRequestHeader>?,
     token: String
 ) {
 
@@ -22,9 +24,13 @@ class BinaryApiClient(
                 .request()
                 .newBuilder()
                 .header("Authorization", "Bearer $token")
-                .header("User-Agent", USER_AGENT)
-                .build()
-            chain.proceed(request)
+
+            requestHeaders
+                ?.filter { it.name.isNotEmpty() }
+                ?.filter { it.value.isNotEmpty() }
+                ?.forEach { request.header(it.name, it.value) }
+
+            chain.proceed(request.build())
         }
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)

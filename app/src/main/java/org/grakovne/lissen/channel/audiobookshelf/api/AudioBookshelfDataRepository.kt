@@ -27,11 +27,12 @@ import javax.inject.Singleton
 @Singleton
 class AudioBookshelfDataRepository @Inject constructor(
     private val loginResponseConverter: LoginResponseConverter,
-    private val preferences: LissenSharedPreferences
+    private val preferences: LissenSharedPreferences,
+    private val requestHeadersProvider: RequestHeadersProvider
 ) {
 
-    @Volatile
-    private var secureClient: AudiobookshelfApiClient? = null
+    private var configCache: ApiClientConfig? = null
+    private var clientCache: AudiobookshelfApiClient? = null
 
     suspend fun fetchLibraries(): ApiResult<LibraryResponse> =
         safeApiCall { getClientInstance().fetchLibraries() }
@@ -101,8 +102,6 @@ class AudioBookshelfDataRepository @Inject constructor(
         username: String,
         password: String
     ): ApiResult<UserAccount> {
-        secureClient = null
-
         if (host.isBlank() || !urlPattern.matches(host)) {
             return ApiResult.Error(ApiError.InvalidCredentialsHost)
         }
@@ -110,7 +109,11 @@ class AudioBookshelfDataRepository @Inject constructor(
         lateinit var apiService: AudiobookshelfApiClient
 
         try {
-            val apiClient = ApiClient(host = host)
+            val apiClient = ApiClient(
+                host = host,
+                requestHeaders = requestHeadersProvider.fetchRequestHeaders()
+            )
+
             apiService = apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
         } catch (e: Exception) {
             return ApiResult.Error(ApiError.InternalError)
@@ -118,14 +121,16 @@ class AudioBookshelfDataRepository @Inject constructor(
 
         val response: ApiResult<LoginResponse> =
             safeApiCall { apiService.login(LoginRequest(username, password)) }
-        return response.fold(
-            onSuccess = {
-                loginResponseConverter
-                    .apply(it)
-                    .let { ApiResult.Success(it) }
-            },
-            onFailure = { ApiResult.Error(it.code) }
-        )
+
+        return response
+            .fold(
+                onSuccess = {
+                    loginResponseConverter
+                        .apply(it)
+                        .let { ApiResult.Success(it) }
+                },
+                onFailure = { ApiResult.Error(it.code) }
+            )
     }
 
     private suspend fun <T> safeApiCall(
@@ -158,15 +163,47 @@ class AudioBookshelfDataRepository @Inject constructor(
         val host = preferences.getHost()
         val token = preferences.getToken()
 
+        val cache = ApiClientConfig(
+            host = host,
+            token = token,
+            customHeaders = requestHeadersProvider.fetchRequestHeaders()
+        )
+
+        val currentClientCache = clientCache
+
+        return when (currentClientCache == null || cache != configCache) {
+            true -> {
+                val instance = createClientInstance()
+                configCache = cache
+                clientCache = instance
+                instance
+            }
+
+            else -> currentClientCache
+        }
+    }
+
+    private fun createClientInstance(): AudiobookshelfApiClient {
+        val host = preferences.getHost()
+        val token = preferences.getToken()
+
         if (host.isNullOrBlank() || token.isNullOrBlank()) {
             throw IllegalStateException("Host or token is missing")
         }
 
-        return secureClient ?: run {
-            val apiClient = ApiClient(host = host, token = token)
-            apiClient.retrofit.create(AudiobookshelfApiClient::class.java)
-        }
+        return apiClient(host, token)
+            .retrofit
+            .create(AudiobookshelfApiClient::class.java)
     }
+
+    private fun apiClient(
+        host: String,
+        token: String?
+    ): ApiClient = ApiClient(
+        host = host,
+        token = token,
+        requestHeaders = requestHeadersProvider.fetchRequestHeaders()
+    )
 
     companion object {
 

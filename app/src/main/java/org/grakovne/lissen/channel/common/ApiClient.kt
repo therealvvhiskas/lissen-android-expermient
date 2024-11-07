@@ -4,12 +4,14 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import org.grakovne.lissen.domain.connection.ServerRequestHeader
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class ApiClient(
     host: String,
+    requestHeaders: List<ServerRequestHeader>?,
     token: String? = null
 ) {
 
@@ -27,7 +29,11 @@ class ApiClient(
                 requestBuilder.header("Authorization", "Bearer $token")
             }
 
-            requestBuilder.header("User-Agent", USER_AGENT)
+            requestHeaders
+                ?.filter { it.name.isNotEmpty() }
+                ?.filter { it.value.isNotEmpty() }
+                ?.forEach { requestBuilder.header(it.name, it.value) }
+
             val request: Request = requestBuilder.build()
             chain.proceed(request)
         }
