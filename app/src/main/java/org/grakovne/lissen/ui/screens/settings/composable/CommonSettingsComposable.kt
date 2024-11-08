@@ -26,7 +26,7 @@ import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
-fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
+fun CommonSettingsComposable(viewModel: SettingsViewModel) {
     val libraries by viewModel.libraries.observeAsState(emptyList())
     val preferredLibrary by viewModel.preferredLibrary.observeAsState()
     val preferredColorScheme by viewModel.preferredColorScheme.observeAsState()
@@ -42,7 +42,7 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { preferredLibraryExpanded = true }
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 24.dp, vertical = 12.dp)
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -67,7 +67,7 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { colorSchemeExpanded = true }
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 24.dp, vertical = 12.dp)
     ) {
         Column(
             modifier = Modifier.weight(1f)
@@ -90,9 +90,9 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
             viewModel.fetchLibraries()
         }
 
-        GeneralSettingsItemComposable(
-            items = libraries.map { GeneralSettingsItem(it.id, it.title) },
-            selectedItem = preferredLibrary?.let { GeneralSettingsItem(it.id, it.title) },
+        CommonSettingsItemComposable(
+            items = libraries.map { CommonSettingsItem(it.id, it.title) },
+            selectedItem = preferredLibrary?.let { CommonSettingsItem(it.id, it.title) },
             onDismissRequest = { preferredLibraryExpanded = false },
             onItemSelected = { item ->
                 libraries
@@ -103,7 +103,7 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
     }
 
     if (colorSchemeExpanded) {
-        GeneralSettingsItemComposable(
+        CommonSettingsItemComposable(
             items = listOf(
                 ColorScheme.LIGHT.toItem(context),
                 ColorScheme.FOLLOW_SYSTEM.toItem(context),
@@ -121,7 +121,7 @@ fun GeneralSettingsComposable(viewModel: SettingsViewModel) {
     }
 }
 
-private fun ColorScheme.toItem(context: Context): GeneralSettingsItem {
+private fun ColorScheme.toItem(context: Context): CommonSettingsItem {
     val id = this.name
     val name = when (this) {
         ColorScheme.FOLLOW_SYSTEM -> context.getString(R.string.color_scheme_follow_system)
@@ -129,5 +129,5 @@ private fun ColorScheme.toItem(context: Context): GeneralSettingsItem {
         ColorScheme.DARK -> context.getString(R.string.color_scheme_dark)
     }
 
-    return GeneralSettingsItem(id, name)
+    return CommonSettingsItem(id, name)
 }

@@ -203,7 +203,7 @@ fun LoginScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.login_screen_connect_button_text),
-                                    fontSize = 18.sp
+                                    fontSize = 16.sp
                                 )
                             }
                         }
@@ -225,7 +225,7 @@ fun LoginScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
-                                contentDescription = null,
+                                contentDescription = "Settings",
                                 modifier = Modifier.size(24.dp)
                             )
                         }

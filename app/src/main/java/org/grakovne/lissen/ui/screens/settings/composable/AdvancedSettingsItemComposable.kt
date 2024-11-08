@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
+import androidx.compose.material.icons.outlined.ArrowForwardIos
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -28,7 +30,7 @@ fun AdvancedSettingsItemComposable(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onclick() }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(start = 24.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -42,15 +44,18 @@ fun AdvancedSettingsItemComposable(
             Text(
                 text = description,
                 style = typography.bodyMedium,
-                color = colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                color = colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
         }
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-            contentDescription = "Arrow Icon",
-            tint = colorScheme.onSurfaceVariant
-        )
+        IconButton(
+            onClick = { onclick() }
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowForwardIos,
+                contentDescription = "Logout"
+            )
+        }
     }
 }
