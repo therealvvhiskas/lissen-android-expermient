@@ -61,7 +61,7 @@ fun AppNavHost(
                     navArgument("bookTitle") { type = NavType.StringType; nullable = true }
                 )
             ) { navigationStack ->
-                val bookId = navigationStack.arguments?.getString("bookId") ?: return@composable
+                val bookId = navigationStack.arguments?.getString("bookId")!!
                 val bookTitle = navigationStack.arguments?.getString("bookTitle") ?: ""
 
                 PlayerScreen(

@@ -51,11 +51,14 @@ fun PlayerScreen(
     val viewModel: PlayerViewModel = hiltViewModel()
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
+    val playingBook by viewModel.book.observeAsState()
     val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     LaunchedEffect(bookId) {
-        bookId.let { viewModel.preparePlayback(it) }
+        bookId
+            .takeIf { it != playingBook?.id }
+            ?.let { viewModel.preparePlayback(it) }
     }
 
     Scaffold(
