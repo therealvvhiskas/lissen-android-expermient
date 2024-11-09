@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.BuildConfig
 
@@ -41,8 +40,7 @@ fun AdditionalComposable() {
             text = "Lissen v ${BuildConfig.VERSION_NAME}",
             style = TextStyle(
                 fontFamily = FontFamily.Monospace,
-                textAlign = TextAlign.Center,
-                textDecoration = TextDecoration.Underline
+                textAlign = TextAlign.Center
             )
         )
         Text(
