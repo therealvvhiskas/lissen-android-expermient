@@ -8,8 +8,8 @@ data class LibraryItemIdResponse(
 
 data class LibraryIdMedia(
     val metadata: MediaMetadataResponse,
-    val audioFiles: List<AudioFileResponse>,
-    val chapters: List<PlaybackChapterResponse>
+    val audioFiles: List<AudioFileResponse>?,
+    val chapters: List<PlaybackChapterResponse>?
 )
 
 data class PlaybackChapterResponse(

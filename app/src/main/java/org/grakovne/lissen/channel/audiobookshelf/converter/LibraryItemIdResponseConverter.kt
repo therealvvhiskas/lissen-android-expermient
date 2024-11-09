@@ -20,7 +20,7 @@ class LibraryItemIdResponseConverter @Inject constructor() {
         val maybeChapters = item
             .media
             .chapters
-            .takeIf { it.isNotEmpty() }
+            ?.takeIf { it.isNotEmpty() }
             ?.map {
                 BookChapter(
                     start = it.start,
@@ -35,8 +35,8 @@ class LibraryItemIdResponseConverter @Inject constructor() {
             item
                 .media
                 .audioFiles
-                .sortedBy { it.index }
-                .fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
+                ?.sortedBy { it.index }
+                ?.fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
                     chapters.add(
                         BookChapter(
                             start = accDuration,
@@ -48,7 +48,9 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                         )
                     )
                     accDuration + file.duration to chapters
-                }.second
+                }
+                ?.second
+                ?: emptyList()
         }
 
         return DetailedBook(
@@ -58,8 +60,8 @@ class LibraryItemIdResponseConverter @Inject constructor() {
             files = item
                 .media
                 .audioFiles
-                .sortedBy { it.index }
-                .map {
+                ?.sortedBy { it.index }
+                ?.map {
                     BookFile(
                         id = it.ino,
                         name = it.metaTags
@@ -68,7 +70,8 @@ class LibraryItemIdResponseConverter @Inject constructor() {
                         duration = it.duration,
                         mimeType = it.mimeType
                     )
-                },
+                }
+                ?: emptyList(),
             chapters = maybeChapters ?: filesAsChapters(),
             progress = progressResponse
                 ?.let {
