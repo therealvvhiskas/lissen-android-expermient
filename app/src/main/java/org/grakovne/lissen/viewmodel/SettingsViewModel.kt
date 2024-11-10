@@ -40,9 +40,6 @@ class SettingsViewModel @Inject constructor(
 
     fun logout() {
         preferences.clearPreferences()
-
-        _host.value = preferences.getHost()
-        _username.value = preferences.getUsername()
     }
 
     fun fetchLibraries() {
