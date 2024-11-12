@@ -42,6 +42,10 @@ fun CommonSettingsComposable(viewModel: SettingsViewModel) {
 
     val context = LocalContext.current
 
+    SideEffect {
+        viewModel.fetchLibraries()
+    }
+
     if (host?.isNotEmpty() == true) {
         Row(
             modifier = Modifier
@@ -91,10 +95,6 @@ fun CommonSettingsComposable(viewModel: SettingsViewModel) {
     }
 
     if (preferredLibraryExpanded && libraries.isNotEmpty()) {
-        SideEffect {
-            viewModel.fetchLibraries()
-        }
-
         CommonSettingsItemComposable(
             items = libraries.map { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
             selectedItem = preferredLibrary?.let { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
