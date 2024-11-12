@@ -9,7 +9,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MediaMetadata.PICTURE_TYPE_FRONT_COVER
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.datasource.DefaultDataSource
-import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.session.MediaSession
@@ -22,7 +22,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import org.grakovne.lissen.channel.audiobookshelf.common.api.RequestHeadersProvider
+import org.grakovne.lissen.common.withTrustedCertificates
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
@@ -228,19 +231,33 @@ class PlaybackService : MediaSessionService() {
         progress: MediaProgress?
     ) = seek(chapters, progress?.currentTime)
 
+    private fun createOkHttpClient(): OkHttpClient {
+        return OkHttpClient
+            .Builder()
+            .withTrustedCertificates()
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.NONE
+                }
+            )
+            .build()
+    }
+
     @OptIn(UnstableApi::class)
     private fun buildDataSourceFactory(): DefaultDataSource.Factory {
         val requestHeaders = requestHeadersProvider
             .fetchRequestHeaders()
             .associate { it.name to it.value }
 
-        val networkDatasourceFactory = DefaultHttpDataSource
-            .Factory()
+        val okHttpClient = createOkHttpClient()
+
+        val okHttpDataSourceFactory = OkHttpDataSource
+            .Factory(okHttpClient)
             .setDefaultRequestProperties(requestHeaders)
 
         return DefaultDataSource.Factory(
             baseContext,
-            networkDatasourceFactory
+            okHttpDataSourceFactory
         )
     }
 

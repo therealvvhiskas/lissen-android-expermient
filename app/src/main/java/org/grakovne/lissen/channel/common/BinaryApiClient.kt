@@ -3,6 +3,7 @@ package org.grakovne.lissen.channel.common
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.grakovne.lissen.common.withTrustedCertificates
 import org.grakovne.lissen.domain.connection.ServerRequestHeader
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -13,7 +14,9 @@ class BinaryApiClient(
     token: String
 ) {
 
-    private val httpClient = OkHttpClient.Builder()
+    private val httpClient = OkHttpClient
+        .Builder()
+        .withTrustedCertificates()
         .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.NONE

@@ -4,6 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import org.grakovne.lissen.common.withTrustedCertificates
 import org.grakovne.lissen.domain.connection.ServerRequestHeader
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -15,7 +16,9 @@ class ApiClient(
     token: String? = null
 ) {
 
-    private val httpClient = OkHttpClient.Builder()
+    private val httpClient = OkHttpClient
+        .Builder()
+        .withTrustedCertificates()
         .addInterceptor(
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.NONE
