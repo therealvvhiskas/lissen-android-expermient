@@ -8,7 +8,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.content.LissenMediaProvider
-import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -21,7 +21,9 @@ class PlaybackSynchronizationService @Inject constructor(
     private val mediaChannel: LissenMediaProvider,
     private val sharedPreferences: LissenSharedPreferences
 ) {
-    private var currentBook: DetailedBook? = null
+
+    private var currentBook: DetailedItem? = null
+    private var currentChapterIndex: Int? = null
     private var playbackSession: PlaybackSession? = null
     private val serviceScope = MainScope()
 
@@ -37,7 +39,7 @@ class PlaybackSynchronizationService @Inject constructor(
         })
     }
 
-    fun startPlaybackSynchronization(book: DetailedBook) {
+    fun startPlaybackSynchronization(book: DetailedItem) {
         serviceScope.coroutineContext.cancelChildren()
         currentBook = book
     }
@@ -62,44 +64,56 @@ class PlaybackSynchronizationService @Inject constructor(
                 playbackSession
                     ?.takeIf { it.bookId == currentBook?.id }
                     ?.let { synchronizeProgress(it, overallProgress) }
-                    ?: openPlaybackSession()
+                    ?: openPlaybackSession(overallProgress)
             }
     }
 
     private suspend fun synchronizeProgress(
         it: PlaybackSession,
         overallProgress: PlaybackProgress
-    ) = mediaChannel
-        .syncProgress(
-            sessionId = it.sessionId,
-            bookId = it.bookId,
-            progress = overallProgress
-        )
-        .foldAsync(
-            onSuccess = {},
-            onFailure = { openPlaybackSession() }
-        )
+    ): Unit? {
+        val currentIndex = currentBook
+            ?.let { calculateChapterIndex(it, overallProgress.currentTime) }
+            ?: 0
 
-    private suspend fun openPlaybackSession() =
-        currentBook
-            ?.let { book ->
-                mediaChannel
-                    .startPlayback(
-                        bookId = book.id,
-                        deviceId = sharedPreferences.getDeviceId(),
-                        supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes()
-                    )
-                    .fold(
-                        onSuccess = { playbackSession = it },
-                        onFailure = {}
-                    )
-            }
+        if (currentIndex != currentChapterIndex) {
+            openPlaybackSession(overallProgress)
+            currentChapterIndex = currentIndex
+        }
+
+        return mediaChannel
+            .syncProgress(
+                sessionId = it.sessionId,
+                bookId = it.bookId,
+                progress = overallProgress
+            )
+            .foldAsync(
+                onSuccess = {},
+                onFailure = { openPlaybackSession(overallProgress) }
+            )
+    }
+
+    private suspend fun openPlaybackSession(overallProgress: PlaybackProgress) = currentBook
+        ?.let { book ->
+            val chapterIndex = calculateChapterIndex(book, overallProgress.currentTime)
+            mediaChannel
+                .startPlayback(
+                    bookId = book.id,
+                    deviceId = sharedPreferences.getDeviceId(),
+                    supportedMimeTypes = MimeTypeProvider.getSupportedMimeTypes(),
+                    chapterId = book.chapters[chapterIndex].id
+                )
+                .fold(
+                    onSuccess = { playbackSession = it },
+                    onFailure = {}
+                )
+        }
 
     private fun getProgress(currentElapsedMs: Long): PlaybackProgress {
         val currentBook = exoPlayer
             .currentMediaItem
             ?.localConfiguration
-            ?.tag as? DetailedBook
+            ?.tag as? DetailedItem
             ?: return PlaybackProgress(0.0, 0.0)
 
         val currentIndex = exoPlayer.currentMediaItemIndex
@@ -111,6 +125,7 @@ class PlaybackSynchronizationService @Inject constructor(
         val totalDuration = currentBook.files.sumOf { it.duration * 1000 }
 
         val totalElapsedMs = previousDuration + currentElapsedMs
+
         return PlaybackProgress(
             currentTime = totalElapsedMs / 1000.0,
             totalTime = totalDuration / 1000.0
@@ -118,6 +133,7 @@ class PlaybackSynchronizationService @Inject constructor(
     }
 
     companion object {
+
         private const val SYNC_INTERVAL = 30_000L
     }
 }

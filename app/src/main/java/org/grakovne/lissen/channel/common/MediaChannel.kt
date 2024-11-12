@@ -2,18 +2,17 @@ package org.grakovne.lissen.channel.common
 
 import android.net.Uri
 import org.grakovne.lissen.domain.Book
-import org.grakovne.lissen.domain.DetailedBook
+import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.PagedItems
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.PlaybackSession
 import org.grakovne.lissen.domain.RecentBook
-import org.grakovne.lissen.domain.UserAccount
 import java.io.InputStream
 
 interface MediaChannel {
 
-    fun getChannelCode(): ChannelCode
+    fun getLibraryType(): LibraryType
 
     fun provideFileUri(
         libraryItemId: String,
@@ -45,17 +44,14 @@ interface MediaChannel {
 
     suspend fun startPlayback(
         bookId: String,
+        episodeId: String,
         supportedMimeTypes: List<String>,
         deviceId: String
     ): ApiResult<PlaybackSession>
 
+    suspend fun fetchConnectionInfo(): ApiResult<ConnectionInfo>
+
     suspend fun fetchRecentListenedBooks(libraryId: String): ApiResult<List<RecentBook>>
 
-    suspend fun fetchBook(bookId: String): ApiResult<DetailedBook>
-
-    suspend fun authorize(
-        host: String,
-        username: String,
-        password: String
-    ): ApiResult<UserAccount>
+    suspend fun fetchBook(bookId: String): ApiResult<DetailedItem>
 }

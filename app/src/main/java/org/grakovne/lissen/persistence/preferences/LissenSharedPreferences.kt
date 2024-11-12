@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.grakovne.lissen.channel.common.ChannelCode
+import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.connection.ServerRequestHeader
@@ -31,9 +32,6 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("secure_prefs", Context.MODE_PRIVATE)
 
-    fun getPreferredChannel(): ChannelCode =
-        ChannelCode.AUDIOBOOKSHELF // TODO: Implement selector once second channel got
-
     fun hasCredentials(): Boolean {
         val host = getHost()
         val username = getUsername()
@@ -51,6 +49,8 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
             remove(KEY_HOST)
             remove(KEY_USERNAME)
             remove(KEY_TOKEN)
+
+            remove(KEY_SERVER_VERSION)
 
             remove(CACHE_FORCE_ENABLED)
 
@@ -77,16 +77,27 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
             .also { sharedPreferences.edit().putString(KEY_DEVICE_ID, it).apply() }
     }
 
+    // Once the different channel will supported, this shall be extended
+    fun getChannel() = ChannelCode.AUDIOBOOKSHELF
+
     fun getPreferredLibrary(): Library? {
         val id = getPreferredLibraryId() ?: return null
         val name = getPreferredLibraryName() ?: return null
 
-        return Library(id, name)
+        // We shall set the library type AUDIOBOOKSHELF_LIBRARY for backward compatibility
+        val type = getPreferredLibraryType() ?: LibraryType.LIBRARY
+
+        return Library(
+            id = id,
+            title = name,
+            type = type
+        )
     }
 
     fun savePreferredLibrary(library: Library) {
         saveActiveLibraryId(library.id)
         saveActiveLibraryName(library.title)
+        saveActiveLibraryType(library.type)
     }
 
     fun saveColorScheme(colorScheme: ColorScheme) =
@@ -123,6 +134,14 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
     private fun saveActiveLibraryName(host: String) =
         sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_NAME, host).apply()
 
+    private fun getPreferredLibraryType(): LibraryType? =
+        sharedPreferences
+            .getString(KEY_PREFERRED_LIBRARY_TYPE, null)
+            ?.let { LibraryType.valueOf(it) }
+
+    private fun saveActiveLibraryType(type: LibraryType) =
+        sharedPreferences.edit().putString(KEY_PREFERRED_LIBRARY_TYPE, type.name).apply()
+
     private fun getPreferredLibraryName(): String? =
         sharedPreferences.getString(KEY_PREFERRED_LIBRARY_NAME, null)
 
@@ -140,6 +159,11 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         sharedPreferences.edit().putString(KEY_USERNAME, username).apply()
 
     fun getUsername(): String? = sharedPreferences.getString(KEY_USERNAME, null)
+
+    fun saveServerVersion(version: String) =
+        sharedPreferences.edit().putString(KEY_SERVER_VERSION, version).apply()
+
+    fun getServerVersion(): String? = sharedPreferences.getString(KEY_SERVER_VERSION, null)
 
     fun saveToken(password: String) {
         val encrypted = encrypt(password)
@@ -177,10 +201,13 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         private const val KEY_TOKEN = "token"
         private const val CACHE_FORCE_ENABLED = "cache_force_enabled"
 
+        private const val KEY_SERVER_VERSION = "server_version"
+
         private const val KEY_DEVICE_ID = "device_id"
 
         private const val KEY_PREFERRED_LIBRARY_ID = "preferred_library_id"
         private const val KEY_PREFERRED_LIBRARY_NAME = "preferred_library_name"
+        private const val KEY_PREFERRED_LIBRARY_TYPE = "preferred_library_type"
 
         private const val KEY_PREFERRED_PLAYBACK_SPEED = "preferred_playback_speed"
 
