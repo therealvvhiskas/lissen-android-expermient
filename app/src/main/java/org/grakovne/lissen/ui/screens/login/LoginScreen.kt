@@ -131,9 +131,7 @@ fun LoginScreen(
 
                     OutlinedTextField(
                         value = host,
-                        onValueChange = {
-                            viewModel.setHost(it)
-                        },
+                        onValueChange = { viewModel.setHost(it.trim()) },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
                         label = { Text(stringResource(R.string.login_screen_server_url_input)) },
                         shape = RoundedCornerShape(16.dp),
@@ -146,9 +144,7 @@ fun LoginScreen(
 
                     OutlinedTextField(
                         value = username,
-                        onValueChange = {
-                            viewModel.setUsername(it)
-                        },
+                        onValueChange = { viewModel.setUsername(it.trim()) },
                         label = { Text(stringResource(R.string.login_screen_login_input)) },
                         shape = RoundedCornerShape(16.dp),
                         singleLine = true,
@@ -161,9 +157,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         visualTransformation = if (!showPassword) PasswordVisualTransformation() else VisualTransformation.None,
-                        onValueChange = {
-                            viewModel.setPassword(it)
-                        },
+                        onValueChange = { viewModel.setPassword(it) },
                         trailingIcon = {
                             IconButton(
                                 onClick = { showPassword = !showPassword }
