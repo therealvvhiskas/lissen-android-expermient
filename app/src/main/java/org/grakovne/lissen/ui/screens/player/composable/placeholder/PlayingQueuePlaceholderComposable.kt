@@ -34,7 +34,7 @@ fun PlayingQueuePlaceholderComposable(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(horizontal = 6.dp)
         )
 
-        Spacer(modifier = Modifier.padding(vertical = 4.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         LazyColumn(
             modifier = Modifier
