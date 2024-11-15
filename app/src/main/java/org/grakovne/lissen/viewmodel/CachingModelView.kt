@@ -6,7 +6,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.content.LissenMediaProvider
-import org.grakovne.lissen.content.LocalCacheConfiguration
 import org.grakovne.lissen.content.cache.BookCachingService
 import org.grakovne.lissen.content.cache.CacheProgress
 import org.grakovne.lissen.domain.Book
@@ -18,8 +17,7 @@ import javax.inject.Inject
 class CachingModelView @Inject constructor(
     private val cachingService: BookCachingService,
     private val preferences: LissenSharedPreferences,
-    private val mediaProvider: LissenMediaProvider,
-    private val localCacheConfiguration: LocalCacheConfiguration
+    private val mediaProvider: LissenMediaProvider
 ) : ViewModel() {
 
     private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
@@ -69,5 +67,5 @@ class CachingModelView @Inject constructor(
         }
     }
 
-    fun localCacheUsing() = localCacheConfiguration.localCacheUsing()
+    fun localCacheUsing() = preferences.isForceCache()
 }

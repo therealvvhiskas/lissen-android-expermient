@@ -27,8 +27,7 @@ import javax.inject.Singleton
 class LissenMediaProvider @Inject constructor(
     private val sharedPreferences: LissenSharedPreferences,
     private val channels: Map<ChannelCode, @JvmSuppressWildcards ChannelProvider>,
-    private val localCacheRepository: LocalCacheRepository,
-    private val cacheConfiguration: LocalCacheConfiguration
+    private val localCacheRepository: LocalCacheRepository
 ) {
 
     fun provideFileUri(
@@ -37,7 +36,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<Uri> {
         Log.d(TAG, "Fetching File $libraryItemId and $chapterId URI")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true ->
                 localCacheRepository
                     .provideFileUri(libraryItemId, chapterId)
@@ -61,7 +60,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<Unit> {
         Log.d(TAG, "Syncing Progress for $bookId. $progress")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.syncProgress(bookId, progress)
             false -> providePreferredChannel()
                 .syncProgress(sessionId, progress)
@@ -74,7 +73,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<InputStream> {
         Log.d(TAG, "Fetching Cover stream for $bookId")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.fetchBookCover(bookId)
             false -> providePreferredChannel().fetchBookCover(bookId)
         }
@@ -87,7 +86,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<List<Book>> {
         Log.d(TAG, "Searching books with query $query of library: $libraryId")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.searchBooks(query)
             false -> providePreferredChannel()
                 .searchBooks(
@@ -105,7 +104,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<PagedItems<Book>> {
         Log.d(TAG, "Fetching page $pageNumber of library: $libraryId")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.fetchBooks(pageSize, pageNumber)
             false -> {
                 providePreferredChannel()
@@ -118,7 +117,7 @@ class LissenMediaProvider @Inject constructor(
     suspend fun fetchLibraries(): ApiResult<List<Library>> {
         Log.d(TAG, "Fetching List of libraries")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.fetchLibraries()
             false -> providePreferredChannel()
                 .fetchLibraries()
@@ -139,7 +138,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<PlaybackSession> {
         Log.d(TAG, "Starting Playback for $bookId. $supportedMimeTypes are supported")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.startPlayback(bookId)
             false -> providePreferredChannel().startPlayback(
                 bookId = bookId,
@@ -155,7 +154,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<List<RecentBook>> {
         Log.d(TAG, "Fetching Recent books of library $libraryId")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true -> localCacheRepository.fetchRecentListenedBooks()
             false -> providePreferredChannel().fetchRecentListenedBooks(libraryId)
         }
@@ -166,7 +165,7 @@ class LissenMediaProvider @Inject constructor(
     ): ApiResult<DetailedItem> {
         Log.d(TAG, "Fetching Detailed book info for $bookId")
 
-        return when (cacheConfiguration.localCacheUsing()) {
+        return when (sharedPreferences.isForceCache()) {
             true ->
                 localCacheRepository
                     .fetchBook(bookId)

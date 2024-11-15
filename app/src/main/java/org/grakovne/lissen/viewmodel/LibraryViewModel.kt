@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.content.LissenMediaProvider
-import org.grakovne.lissen.content.LocalCacheConfiguration
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -34,8 +33,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryViewModel @Inject constructor(
     private val mediaChannel: LissenMediaProvider,
-    private val preferences: LissenSharedPreferences,
-    private val localCacheConfiguration: LocalCacheConfiguration
+    private val preferences: LissenSharedPreferences
 ) : ViewModel() {
 
     private val _recentBooks = MutableLiveData<List<RecentBook>>(emptyList())
@@ -96,7 +94,7 @@ class LibraryViewModel @Inject constructor(
     }
 
     fun isVisible(bookId: String): Boolean {
-        return when (localCacheConfiguration.localCacheUsing()) {
+        return when (preferences.isForceCache()) {
             true -> !hiddenBooks.value.contains(bookId)
             false -> true
         }

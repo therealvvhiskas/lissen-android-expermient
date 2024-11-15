@@ -45,7 +45,7 @@ fun CommonSettingsItemComposable(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {

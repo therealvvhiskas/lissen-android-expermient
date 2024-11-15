@@ -111,7 +111,7 @@ fun PlayingQueueComposable(
 
         LazyColumn(
             contentPadding = when (playingQueueExpanded) {
-                true -> PaddingValues(0.dp)
+                true -> PaddingValues(12.dp)
                 false -> PaddingValues(bottom = with(density) { collapsedPlayingQueueHeight.toDp() })
             },
             modifier = Modifier
