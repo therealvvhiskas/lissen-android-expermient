@@ -118,10 +118,10 @@ fun PlayerScreen(
                             viewModel = viewModel,
                             modifier = Modifier
                         )
-
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 if (isPlaybackReady) {
                     PlayingQueueComposable(

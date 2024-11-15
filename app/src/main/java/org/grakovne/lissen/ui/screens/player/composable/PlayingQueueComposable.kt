@@ -6,11 +6,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,18 +29,18 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,7 +55,6 @@ fun PlayingQueueComposable(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
     val book by viewModel.book.observeAsState()
@@ -64,10 +64,10 @@ fun PlayingQueueComposable(
     val playbackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
-    val playingQueueHeight = remember { mutableIntStateOf(0) }
-    val isFlinging = remember { mutableStateOf(false) }
+    val density = LocalDensity.current
 
-    val itemHeight = remember { mutableStateOf(0.dp) }
+    var collapsedPlayingQueueHeight by remember { mutableIntStateOf(0) }
+    val isFlinging = remember { mutableStateOf(false) }
 
     val expandFlingThreshold =
         remember { ViewConfiguration.get(context).scaledMinimumFlingVelocity.toFloat() * 2 }
@@ -82,12 +82,6 @@ fun PlayingQueueComposable(
         animationSpec = tween(durationMillis = 500),
         label = "playing_queue_font_size"
     )
-
-    LaunchedEffect(playingQueueHeight) {
-        if (playingQueueHeight.intValue > 0 && !playingQueueExpanded && itemHeight.value == 0.dp) {
-            itemHeight.value = calculateQueueItemHeight(density, playingQueueHeight.intValue)
-        }
-    }
 
     LaunchedEffect(currentTrackIndex) {
         awaitFrame()
@@ -116,18 +110,25 @@ fun PlayingQueueComposable(
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
+            contentPadding = when (playingQueueExpanded) {
+                true -> PaddingValues(0.dp)
+                false -> PaddingValues(bottom = with(density) { collapsedPlayingQueueHeight.toDp() })
+            },
             modifier = Modifier
-                .weight(1f)
                 .scrollable(
                     state = rememberScrollState(),
                     orientation = Orientation.Vertical,
                     enabled = playingQueueExpanded
                 )
+                .onGloballyPositioned {
+                    if (collapsedPlayingQueueHeight == 0) {
+                        collapsedPlayingQueueHeight = it.size.height
+                    }
+                }
                 .onSizeChanged { intSize ->
-                    if (intSize.height != playingQueueHeight.intValue) {
-                        playingQueueHeight.intValue = intSize.height
-
+                    if (intSize.height != collapsedPlayingQueueHeight) {
                         coroutineScope.launch {
+                            awaitFrame()
                             scrollPlayingQueue(
                                 currentTrackIndex = currentTrackIndex,
                                 listState = listState,
@@ -169,13 +170,15 @@ fun PlayingQueueComposable(
                     track = track,
                     onClick = { viewModel.setChapter(index) },
                     isSelected = index == currentTrackIndex,
-                    modifier = Modifier.heightIn(min = itemHeight.value)
+                    modifier = Modifier.wrapContentWidth()
                 )
 
                 if (index < chapters.size - 1) {
                     HorizontalDivider(
                         thickness = 1.dp,
-                        modifier = Modifier.padding(start = 20.dp)
+                        modifier = Modifier
+                            .padding(start = 20.dp)
+                            .padding(vertical = 8.dp)
                     )
                 }
             }
@@ -202,31 +205,5 @@ private suspend fun scrollPlayingQueue(
     when (animate && playbackReady) {
         true -> listState.animateScrollToItem(targetIndex)
         false -> listState.scrollToItem(targetIndex)
-    }
-}
-
-private fun calculateQueueItemHeight(
-    screenDensity: Density,
-    playingQueueHeight: Int
-): Dp {
-    with(screenDensity) {
-        val minItemHeightDp = 32.dp
-        val minItemHeightPx = minItemHeightDp.toPx()
-
-        val itemPaddingPx = 8.dp.toPx()
-        val dividerHeightPx = 1.dp.toPx()
-
-        val totalHeightPerItemPx = minItemHeightPx + itemPaddingPx + dividerHeightPx
-
-        val computedItemsPerScreen = (playingQueueHeight / totalHeightPerItemPx).toInt()
-
-        val totalPaddingPx = itemPaddingPx * computedItemsPerScreen
-        val totalDividerHeightPx = dividerHeightPx * (computedItemsPerScreen - 1)
-
-        val availableHeightPx = playingQueueHeight - totalPaddingPx - totalDividerHeightPx
-        val singleItemHeightPx = availableHeightPx / computedItemsPerScreen
-        val singleItemHeightDp = singleItemHeightPx.toDp()
-
-        return singleItemHeightDp
     }
 }
