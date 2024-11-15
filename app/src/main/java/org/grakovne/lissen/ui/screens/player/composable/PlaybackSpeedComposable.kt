@@ -51,19 +51,24 @@ fun PlaybackSpeedComposable(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(bottom = 16.dp)
+                    .padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = stringResource(R.string.playback_speed_title),
                     style = typography.titleMedium
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = "${String.format("%.2f", selectedPlaybackSpeed)}x",
                     style = typography.titleLarge.copy(fontWeight = SemiBold)
                 )
+
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Slider(
                     value = selectedPlaybackSpeed,
                     onValueChange = { value ->
@@ -87,7 +92,7 @@ fun PlaybackSpeedComposable(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
