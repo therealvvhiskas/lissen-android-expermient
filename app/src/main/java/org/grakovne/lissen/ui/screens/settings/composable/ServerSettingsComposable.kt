@@ -88,7 +88,8 @@ fun ServerSettingsComposable(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)
+                        .padding(bottom = 16.dp)
+                        .padding(horizontal = 16.dp),
                 ) {
                     viewModel.username.value?.let {
                         InfoRow(
