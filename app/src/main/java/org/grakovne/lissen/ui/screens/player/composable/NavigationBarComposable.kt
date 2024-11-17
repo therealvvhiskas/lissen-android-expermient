@@ -6,10 +6,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.Headset
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.grakovne.lissen.R
+import org.grakovne.lissen.ui.icons.Timer_play
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -39,10 +39,12 @@ fun NavigationBarComposable(
     navController: AppNavigationService,
     modifier: Modifier = Modifier
 ) {
+    val timerOption by viewModel.timerOption.observeAsState(null)
     val playbackSpeed by viewModel.playbackSpeed.observeAsState(1f)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
 
     var playbackSpeedExpanded by remember { mutableStateOf(false) }
+    var timerExpanded by remember { mutableStateOf(false) }
 
     Surface(
         shadowElevation = 4.dp,
@@ -76,7 +78,7 @@ fun NavigationBarComposable(
                 onClick = { navController.showLibrary() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.surfaceContainer
+                    indicatorColor = colorScheme.surfaceContainer
                 )
             )
 
@@ -132,21 +134,24 @@ fun NavigationBarComposable(
             NavigationBarItem(
                 icon = {
                     Icon(
-                        Icons.Outlined.Settings,
-                        contentDescription = stringResource(R.string.player_screen_preferences_navigation),
+                        when (timerOption) {
+                            null -> Icons.Outlined.Timer
+                            else -> Timer_play
+                        },
+                        contentDescription = "Timer",
                         modifier = Modifier.size(iconSize)
                     )
                 },
                 label = {
                     Text(
-                        text = stringResource(R.string.player_screen_preferences_navigation),
+                        text = "Timer",
                         style = labelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 selected = false,
-                onClick = { navController.showSettings() },
+                onClick = { timerExpanded = true },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                     indicatorColor = colorScheme.surfaceContainer
@@ -158,6 +163,14 @@ fun NavigationBarComposable(
                     currentSpeed = playbackSpeed,
                     onSpeedChange = { viewModel.setPlaybackSpeed(it) },
                     onDismissRequest = { playbackSpeedExpanded = false }
+                )
+            }
+
+            if (timerExpanded) {
+                TimerComposable(
+                    currentOption = timerOption,
+                    onOptionSelected = { viewModel.setTimer(it) },
+                    onDismissRequest = { timerExpanded = false }
                 )
             }
         }

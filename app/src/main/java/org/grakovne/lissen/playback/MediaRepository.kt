@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -22,17 +23,23 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import org.grakovne.lissen.domain.CurrentEpisodeTimerOption
 import org.grakovne.lissen.domain.DetailedItem
+import org.grakovne.lissen.domain.DurationTimerOption
+import org.grakovne.lissen.domain.TimerOption
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.playback.service.PlaybackService
 import org.grakovne.lissen.playback.service.PlaybackService.Companion.ACTION_SEEK_TO
 import org.grakovne.lissen.playback.service.PlaybackService.Companion.BOOK_EXTRA
 import org.grakovne.lissen.playback.service.PlaybackService.Companion.PLAYBACK_READY
 import org.grakovne.lissen.playback.service.PlaybackService.Companion.POSITION
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.TIMER_EXPIRED
+import org.grakovne.lissen.playback.service.PlaybackService.Companion.TIMER_VALUE_EXTRA
+import org.grakovne.lissen.playback.service.calculateChapterIndex
+import org.grakovne.lissen.playback.service.calculateChapterPosition
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Suppress("DEPRECATION")
 @Singleton
 class MediaRepository @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -41,11 +48,16 @@ class MediaRepository @Inject constructor(
 
     private lateinit var mediaController: MediaController
 
-    private val token =
-        SessionToken(context, ComponentName(context, PlaybackService::class.java))
+    private val token = SessionToken(
+        context,
+        ComponentName(context, PlaybackService::class.java)
+    )
 
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean> = _isPlaying
+
+    private val _timerOption = MutableLiveData<TimerOption?>()
+    val timerOption = _timerOption
 
     private val _isPlaybackReady = MutableLiveData(false)
     val isPlaybackReady: LiveData<Boolean> = _isPlaybackReady
@@ -62,6 +74,7 @@ class MediaRepository @Inject constructor(
     private val handler = Handler(Looper.getMainLooper())
 
     private val bookDetailsReadyReceiver = object : BroadcastReceiver() {
+        @Suppress("DEPRECATION")
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == PLAYBACK_READY) {
                 val book = intent.getSerializableExtra(BOOK_EXTRA) as? DetailedItem
@@ -75,6 +88,14 @@ class MediaRepository @Inject constructor(
                         _isPlaybackReady.postValue(true)
                     }
                 }
+            }
+        }
+    }
+
+    private val timerExpiredReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == TIMER_EXPIRED) {
+                _timerOption.postValue(null)
             }
         }
     }
@@ -93,6 +114,10 @@ class MediaRepository @Inject constructor(
                         .getInstance(context)
                         .registerReceiver(bookDetailsReadyReceiver, IntentFilter(PLAYBACK_READY))
 
+                    LocalBroadcastManager
+                        .getInstance(context)
+                        .registerReceiver(timerExpiredReceiver, IntentFilter(TIMER_EXPIRED))
+
                     mediaController.addListener(object : Player.Listener {
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
                             _isPlaying.value = isPlaying
@@ -108,21 +133,62 @@ class MediaRepository @Inject constructor(
                 }
 
                 override fun onFailure(t: Throwable) {
-                    throw RuntimeException("Unable to add callback to player")
+                    Log.e(TAG, "Unable to add callback to player")
                 }
             },
             MoreExecutors.directExecutor()
         )
     }
 
-    fun mediaPreparing() {
-        _isPlaybackReady.postValue(false)
+    fun updateTimer(
+        timerOption: TimerOption?,
+        position: Double? = null
+    ) {
+        _timerOption.postValue(timerOption)
+
+        when (timerOption) {
+            is DurationTimerOption -> scheduleServiceTimer(timerOption.duration * 60.0)
+
+            is CurrentEpisodeTimerOption -> {
+                val playingBook = playingBook.value ?: return
+                val currentPosition = position ?: mediaItemPosition.value ?: return
+
+                val chapterDuration = calculateChapterIndex(playingBook, currentPosition)
+                    .let { playingBook.chapters[it] }
+                    .duration
+
+                val chapterPosition = calculateChapterPosition(
+                    book = playingBook,
+                    overallPosition = currentPosition
+                )
+
+                scheduleServiceTimer(chapterDuration - chapterPosition)
+            }
+
+            null -> cancelServiceTimer()
+        }
     }
 
-    fun startPreparingPlayingBook(book: DetailedItem) {
-        if (::mediaController.isInitialized && _playingBook.value != book) {
-            startPreparingPlayback(book)
+    private fun scheduleServiceTimer(delay: Double) {
+        val intent = Intent(context, PlaybackService::class.java).apply {
+            action = PlaybackService.ACTION_SET_TIMER
+            putExtra(TIMER_VALUE_EXTRA, delay)
         }
+
+        context.startService(intent)
+    }
+
+    private fun cancelServiceTimer() {
+        val intent = Intent(context, PlaybackService::class.java).apply {
+            action = PlaybackService.ACTION_CANCEL_TIMER
+        }
+
+        context.startService(intent)
+    }
+
+    fun mediaPreparing() {
+        updateTimer(timerOption = null)
+        _isPlaybackReady.postValue(false)
     }
 
     fun play() {
@@ -148,6 +214,16 @@ class MediaRepository @Inject constructor(
         }
 
         context.startService(intent)
+
+        when (_timerOption.value) {
+            is CurrentEpisodeTimerOption -> updateTimer(
+                timerOption = _timerOption.value,
+                position = position
+            )
+
+            is DurationTimerOption -> Unit
+            null -> Unit
+        }
     }
 
     fun setPlaybackSpeed(factor: Float) {
@@ -163,6 +239,20 @@ class MediaRepository @Inject constructor(
 
         _playbackSpeed.postValue(speed)
         preferences.savePlaybackSpeed(speed)
+    }
+
+    fun startPreparingPlayback(book: DetailedItem) {
+        if (::mediaController.isInitialized && _playingBook.value != book) {
+            _mediaItemPosition.postValue(0.0)
+            _isPlaying.postValue(false)
+
+            val intent = Intent(context, PlaybackService::class.java).apply {
+                action = PlaybackService.ACTION_SET_PLAYBACK
+                putExtra(BOOK_EXTRA, book)
+            }
+
+            context.startService(intent)
+        }
     }
 
     private fun startUpdatingProgress(detailedItem: DetailedItem) {
@@ -189,15 +279,8 @@ class MediaRepository @Inject constructor(
         }
     }
 
-    private fun startPreparingPlayback(book: DetailedItem) {
-        _mediaItemPosition.postValue(0.0)
-        _isPlaying.postValue(false)
+    private companion object {
 
-        val intent = Intent(context, PlaybackService::class.java).apply {
-            action = PlaybackService.ACTION_SET_PLAYBACK
-            putExtra(BOOK_EXTRA, book)
-        }
-
-        context.startService(intent)
+        private const val TAG = "MediaRepository"
     }
 }

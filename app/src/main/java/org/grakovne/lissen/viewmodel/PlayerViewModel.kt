@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.DetailedItem
+import org.grakovne.lissen.domain.TimerOption
 import org.grakovne.lissen.playback.MediaRepository
 import org.grakovne.lissen.playback.service.calculateChapterIndex
 import org.grakovne.lissen.playback.service.calculateChapterPosition
@@ -26,6 +27,8 @@ class PlayerViewModel @Inject constructor(
     val book: LiveData<DetailedItem> = mediaRepository.playingBook
 
     private val mediaItemPosition: LiveData<Double> = mediaRepository.mediaItemPosition
+
+    val timerOption: LiveData<TimerOption?> = mediaRepository.timerOption
 
     private val _playingQueueExpanded = MutableLiveData(false)
     val playingQueueExpanded: LiveData<Boolean> = _playingQueueExpanded
@@ -55,6 +58,10 @@ class PlayerViewModel @Inject constructor(
 
     fun expandPlayingQueue() {
         _playingQueueExpanded.value = true
+    }
+
+    fun setTimer(option: TimerOption?) {
+        mediaRepository.updateTimer(option)
     }
 
     fun collapsePlayingQueue() {
@@ -91,7 +98,7 @@ class PlayerViewModel @Inject constructor(
             result.foldAsync(
                 onSuccess = {
                     withContext(Dispatchers.IO) {
-                        mediaRepository.startPreparingPlayingBook(it)
+                        mediaRepository.startPreparingPlayback(it)
                     }
                 },
                 onFailure = {
@@ -128,14 +135,19 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun setChapter(index: Int) {
-        val chapterStartsAt = book
-            .value
-            ?.chapters
-            ?.get(index)
-            ?.start
-            ?: 0.0
+        try {
+            val chapterStartsAt = book
+                .value
+                ?.chapters
+                ?.get(index)
+                ?.start
+                ?: 0.0
 
-        mediaRepository.seekTo(chapterStartsAt)
+            mediaRepository.seekTo(chapterStartsAt)
+        } catch (ex: Exception) {
+            Log.e(TAG, "Tried to play $index element on $book state, but index is not exist")
+            return
+        }
     }
 
     fun setPlaybackSpeed(factor: Float) = mediaRepository.setPlaybackSpeed(factor)
@@ -173,6 +185,7 @@ class PlayerViewModel @Inject constructor(
     }
 
     companion object {
+
         private const val TAG = "PlayerViewModel"
         private const val CURRENT_TRACK_REPLAY_THRESHOLD = 5
     }
