@@ -86,6 +86,30 @@ fun NavigationBarComposable(
             NavigationBarItem(
                 icon = {
                     Icon(
+                        Icons.Outlined.Book,
+                        contentDescription = stringResource(R.string.player_screen_chapter_list_navigation),
+                        modifier = Modifier.size(iconSize)
+                    )
+                },
+                label = {
+                    Text(
+                        text = stringResource(R.string.player_screen_chapter_list_navigation),
+                        style = labelStyle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                selected = playingQueueExpanded,
+                onClick = { viewModel.togglePlayingQueue() },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = colorScheme.primary,
+                    indicatorColor = colorScheme.surfaceContainer
+                )
+            )
+
+            NavigationBarItem(
+                icon = {
+                    Icon(
                         Icons.Outlined.SlowMotionVideo,
                         contentDescription = stringResource(R.string.player_screen_playback_speed_navigation),
                         modifier = Modifier.size(iconSize)
@@ -102,30 +126,6 @@ fun NavigationBarComposable(
                 selected = false,
                 onClick = { playbackSpeedExpanded = true },
                 enabled = true,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = colorScheme.primary,
-                    indicatorColor = colorScheme.surfaceContainer
-                )
-            )
-
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        Icons.Outlined.Book,
-                        contentDescription = stringResource(R.string.player_screen_chapter_list_navigation),
-                        modifier = Modifier.size(iconSize)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(R.string.player_screen_chapter_list_navigation),
-                        style = labelStyle,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                },
-                selected = playingQueueExpanded,
-                onClick = { viewModel.togglePlayingQueue() },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = colorScheme.primary,
                     indicatorColor = colorScheme.surfaceContainer
