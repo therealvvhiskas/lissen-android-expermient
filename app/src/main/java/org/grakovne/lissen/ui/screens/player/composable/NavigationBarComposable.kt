@@ -138,7 +138,7 @@ fun NavigationBarComposable(
                             null -> Icons.Outlined.Timer
                             else -> Timer_play
                         },
-                        contentDescription = "Timer",
+                        contentDescription = stringResource(R.string.player_screen_timer_navigation),
                         modifier = Modifier.size(iconSize)
                     )
                 },

@@ -58,4 +58,5 @@
     <string name="timer_option_after_minutes">%1$d minutes</string>
     <string name="timer_option_disable_timer">Disable Timer</string>
     <string name="timer_title">Sleep Timer</string>
+    <string name="player_screen_timer_navigation">Timer</string>
 </resources>
