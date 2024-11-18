@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,8 +60,27 @@ fun PlayingQueueComposable(
     val coroutineScope = rememberCoroutineScope()
 
     val book by viewModel.book.observeAsState()
-    val chapters = book?.chapters ?: emptyList()
+    val searchToken by viewModel.searchToken.observeAsState("")
+
+    val showingChapters by remember {
+        derivedStateOf {
+            when (searchToken.isEmpty()) {
+                true ->
+                    book
+                        ?.chapters
+                        ?: emptyList()
+
+                false ->
+                    book
+                        ?.chapters
+                        ?.filter { it.title.lowercase().contains(searchToken.lowercase()) }
+                        ?: emptyList()
+            }
+        }
+    }
+
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
+    val currentTrackId by remember { derivedStateOf { currentTrackIndex.let { book?.chapters?.get(it) } } }
 
     val playbackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
@@ -100,15 +120,17 @@ fun PlayingQueueComposable(
             .fillMaxSize()
             .padding(horizontal = 16.dp)
     ) {
-        Text(
-            text = stringResource(R.string.player_screen_now_playing_title),
-            fontSize = fontSize.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 6.dp)
-        )
+        if (playingQueueExpanded.not()) {
+            Text(
+                text = stringResource(R.string.player_screen_now_playing_title),
+                fontSize = fontSize.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 6.dp)
+            )
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
         LazyColumn(
             contentPadding = when (playingQueueExpanded) {
@@ -167,15 +189,15 @@ fun PlayingQueueComposable(
                 }),
             state = listState
         ) {
-            itemsIndexed(chapters) { index, track ->
+            itemsIndexed(showingChapters) { index, chapter ->
                 PlaylistItemComposable(
-                    track = track,
-                    onClick = { viewModel.setChapter(index) },
-                    isSelected = index == currentTrackIndex,
+                    track = chapter,
+                    onClick = { viewModel.setChapter(chapter) },
+                    isSelected = chapter.id == currentTrackId?.id,
                     modifier = Modifier.wrapContentWidth()
                 )
 
-                if (index < chapters.size - 1) {
+                if (index < showingChapters.size - 1) {
                     HorizontalDivider(
                         thickness = 1.dp,
                         modifier = Modifier
