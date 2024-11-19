@@ -1,11 +1,14 @@
 package org.grakovne.lissen.channel.audiobookshelf.podcast.converter
 
 import org.grakovne.lissen.channel.audiobookshelf.common.model.MediaProgressResponse
+import org.grakovne.lissen.channel.audiobookshelf.podcast.model.PodcastEpisodeResponse
 import org.grakovne.lissen.channel.audiobookshelf.podcast.model.PodcastResponse
 import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +22,7 @@ class PodcastResponseConverter @Inject constructor() {
         val orderedEpisodes = item
             .media
             .episodes
-            ?.sortedWith(compareBy({ it.season.safeToInt() }, { it.episode.safeToInt() }))
+            ?.orderEpisode()
 
         val filesAsChapters: List<BookChapter> =
             orderedEpisodes
@@ -65,6 +68,20 @@ class PodcastResponseConverter @Inject constructor() {
     }
 
     companion object {
+        private val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
+
+        private fun List<PodcastEpisodeResponse>.orderEpisode() =
+            this.sortedWith(
+                compareBy<PodcastEpisodeResponse> { item ->
+                    try {
+                        item.pubDate?.let { dateFormat.parse(it)?.time }
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                    .thenBy { it.season.safeToInt() }
+                    .thenBy { it.episode.safeToInt() }
+            )
 
         private fun String?.safeToInt(): Int? {
             val maybeNumber = this?.takeIf { it.isNotBlank() }
