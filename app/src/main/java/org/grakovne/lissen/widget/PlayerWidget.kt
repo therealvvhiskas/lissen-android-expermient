@@ -57,16 +57,19 @@ class PlayerWidget : GlanceAppWidget() {
             GlanceTheme(
                 colors = ColorProviders(
                     light = lightColorScheme(
-                        background = LightBackground
+                        background = LightBackground,
                     ),
-                    dark = darkColorScheme()
-                )
+                    dark = darkColorScheme(),
+                ),
             ) {
                 val prefs = currentState<Preferences>()
                 val maybeCover = prefs[encodedCover]?.takeIf { it.isNotBlank() }?.fromBase64()
                 val bookId = prefs[bookId] ?: ""
-                val bookTitle = prefs[title] ?: "Nothing Playing"
-                val chapterTitle = prefs[chapterTitle] ?: ""
+                val bookTitle = prefs[title] ?: ""
+                val chapterTitle = prefs[chapterTitle] ?: when (bookId) {
+                    "" -> context.getString(org.grakovne.lissen.R.string.widget_placeholder_text)
+                    else -> ""
+                }
 
                 val isPlaying = prefs[isPlaying] ?: false
 
@@ -76,13 +79,13 @@ class PlayerWidget : GlanceAppWidget() {
                         .background(GlanceTheme.colors.background)
                         .padding(16.dp)
                         .clickable(onClick = actionRunCallback<RunLissenActionCallback>()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = GlanceModifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp)
+                            .padding(bottom = 16.dp),
                     ) {
                         val cover = maybeCover
                             ?: decodeResource(context.resources, drawable.cover_fallback_png)
@@ -95,23 +98,23 @@ class PlayerWidget : GlanceAppWidget() {
                             contentDescription = null,
                             modifier = GlanceModifier
                                 .size(80.dp)
-                                .cornerRadius(8.dp)
+                                .cornerRadius(8.dp),
                         )
 
                         Column(
                             modifier = GlanceModifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp)
+                                .padding(start = 20.dp),
                         ) {
                             Text(
                                 text = chapterTitle,
                                 style = TextStyle(
                                     fontFamily = SansSerif,
                                     fontSize = 20.sp,
-                                    color = GlanceTheme.colors.onBackground
+                                    color = GlanceTheme.colors.onBackground,
                                 ),
                                 maxLines = 2,
-                                modifier = GlanceModifier.padding(bottom = 8.dp)
+                                modifier = GlanceModifier.padding(bottom = 8.dp),
                             )
 
                             Text(
@@ -119,9 +122,9 @@ class PlayerWidget : GlanceAppWidget() {
                                 style = TextStyle(
                                     fontFamily = SansSerif,
                                     fontSize = 14.sp,
-                                    color = GlanceTheme.colors.onBackground
+                                    color = GlanceTheme.colors.onBackground,
                                 ),
-                                maxLines = 1
+                                maxLines = 1,
                             )
                         }
                     }
@@ -130,23 +133,23 @@ class PlayerWidget : GlanceAppWidget() {
                         modifier = GlanceModifier
                             .fillMaxWidth()
                             .height(1.dp)
-                            .background(Color(0xFFDADADA))
+                            .background(Color(0xFFDADADA)),
                     )
 
                     Row(
                         modifier = GlanceModifier
                             .padding(top = 16.dp)
                             .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         WidgetControlButton(
                             size = 36.dp,
                             icon = ImageProvider(R.drawable.media3_icon_skip_back_10),
                             contentColor = GlanceTheme.colors.onBackground,
                             onClick = actionRunCallback<RewindActionCallback>(
-                                actionParametersOf(bookIdKey to bookId)
+                                actionParametersOf(bookIdKey to bookId),
                             ),
-                            modifier = GlanceModifier.defaultWeight()
+                            modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
@@ -154,9 +157,9 @@ class PlayerWidget : GlanceAppWidget() {
                             icon = ImageProvider(R.drawable.media3_icon_previous),
                             contentColor = GlanceTheme.colors.onBackground,
                             onClick = actionRunCallback<PreviousChapterActionCallback>(
-                                actionParametersOf(bookIdKey to bookId)
+                                actionParametersOf(bookIdKey to bookId),
                             ),
-                            modifier = GlanceModifier.defaultWeight()
+                            modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
@@ -168,9 +171,9 @@ class PlayerWidget : GlanceAppWidget() {
                             size = 48.dp,
                             contentColor = GlanceTheme.colors.onBackground,
                             onClick = actionRunCallback<PlayToggleActionCallback>(
-                                actionParametersOf(bookIdKey to bookId)
+                                actionParametersOf(bookIdKey to bookId),
                             ),
-                            modifier = GlanceModifier.defaultWeight()
+                            modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
@@ -178,9 +181,9 @@ class PlayerWidget : GlanceAppWidget() {
                             size = 48.dp,
                             contentColor = GlanceTheme.colors.onBackground,
                             onClick = actionRunCallback<NextChapterActionCallback>(
-                                actionParametersOf(bookIdKey to bookId)
+                                actionParametersOf(bookIdKey to bookId),
                             ),
-                            modifier = GlanceModifier.defaultWeight()
+                            modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
@@ -188,9 +191,9 @@ class PlayerWidget : GlanceAppWidget() {
                             size = 36.dp,
                             contentColor = GlanceTheme.colors.onBackground,
                             onClick = actionRunCallback<ForwardActionCallback>(
-                                actionParametersOf(bookIdKey to bookId)
+                                actionParametersOf(bookIdKey to bookId),
                             ),
-                            modifier = GlanceModifier.defaultWeight()
+                            modifier = GlanceModifier.defaultWeight(),
                         )
                     }
                 }
@@ -216,11 +219,11 @@ class PlayToggleActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         safelyRun(
             playingItemId = parameters[bookIdKey] ?: return,
-            context = context
+            context = context,
         ) { it.togglePlayPause() }
     }
 }
@@ -230,11 +233,11 @@ class ForwardActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         safelyRun(
             playingItemId = parameters[bookIdKey] ?: return,
-            context = context
+            context = context,
         ) { it.forward() }
     }
 }
@@ -244,11 +247,11 @@ class RewindActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         safelyRun(
             playingItemId = parameters[bookIdKey] ?: return,
-            context = context
+            context = context,
         ) { it.rewind() }
     }
 }
@@ -258,11 +261,11 @@ class NextChapterActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         safelyRun(
             playingItemId = parameters[bookIdKey] ?: return,
-            context = context
+            context = context,
         ) { it.nextTrack() }
     }
 }
@@ -272,11 +275,11 @@ class PreviousChapterActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         safelyRun(
             playingItemId = parameters[bookIdKey] ?: return,
-            context = context
+            context = context,
         ) { it.previousTrack() }
     }
 }
@@ -286,7 +289,7 @@ class RunLissenActionCallback : ActionCallback {
     override suspend fun onAction(
         context: Context,
         glanceId: GlanceId,
-        parameters: ActionParameters
+        parameters: ActionParameters,
     ) {
         val launchIntent = context
             .packageManager
@@ -296,7 +299,7 @@ class RunLissenActionCallback : ActionCallback {
         context.startActivity(
             launchIntent.apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
+            },
         )
     }
 }
@@ -304,12 +307,12 @@ class RunLissenActionCallback : ActionCallback {
 private suspend fun safelyRun(
     playingItemId: String,
     context: Context,
-    action: (WidgetPlaybackController) -> Unit
+    action: (WidgetPlaybackController) -> Unit,
 ) {
     val playbackController = EntryPointAccessors
         .fromApplication(
             context = context.applicationContext,
-            entryPoint = WidgetPlaybackControllerEntryPoint::class.java
+            entryPoint = WidgetPlaybackControllerEntryPoint::class.java,
         )
         .widgetPlaybackController()
 
