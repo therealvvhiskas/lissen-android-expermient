@@ -2,7 +2,7 @@ package org.grakovne.lissen.channel.audiobookshelf.common.model.connection
 
 data class ConnectionInfoResponse(
     val user: ConnectionInfoUserResponse,
-    val serverSettings: ConnectionInfoServerResponse,
+    val serverSettings: ConnectionInfoServerResponse?,
 )
 
 data class ConnectionInfoUserResponse(
@@ -10,6 +10,6 @@ data class ConnectionInfoUserResponse(
 )
 
 data class ConnectionInfoServerResponse(
-    val version: String,
-    val buildNumber: String,
+    val version: String?,
+    val buildNumber: String?,
 )
