@@ -29,6 +29,7 @@ fun AsyncShimmeringImage(
     onLoadingStateChanged: (Boolean) -> Unit = {},
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    onLoadingStateChanged(isLoading)
 
     Box(
         modifier = modifier,
