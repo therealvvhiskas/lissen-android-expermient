@@ -1,12 +1,16 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,9 +20,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -30,9 +39,12 @@ import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
+import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.navigation.AppNavigationService
+import org.grakovne.lissen.ui.theme.FoxOrange
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
 fun RecentBooksComposable(
@@ -40,6 +52,7 @@ fun RecentBooksComposable(
     recentBooks: List<RecentBook>,
     imageLoader: ImageLoader,
     modifier: Modifier = Modifier,
+    libraryViewModel: LibraryViewModel,
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = remember { configuration.screenWidthDp.dp }
@@ -63,6 +76,7 @@ fun RecentBooksComposable(
                     width = itemWidth,
                     imageLoader = imageLoader,
                     navController = navController,
+                    libraryViewModel = libraryViewModel,
                 )
             }
     }
@@ -74,6 +88,7 @@ fun RecentBookItemComposable(
     book: RecentBook,
     width: Dp,
     imageLoader: ImageLoader,
+    libraryViewModel: LibraryViewModel,
 ) {
     Column(
         modifier = Modifier
@@ -81,6 +96,7 @@ fun RecentBookItemComposable(
             .clickable { navController.showPlayer(book.id, book.title) },
     ) {
         val context = LocalContext.current
+        var coverLoading by remember { mutableStateOf(true) }
 
         val imageRequest = remember(book.id) {
             ImageRequest
@@ -90,17 +106,46 @@ fun RecentBookItemComposable(
                 .build()
         }
 
-        AsyncShimmeringImage(
-            imageRequest = imageRequest,
-            imageLoader = imageLoader,
-            contentDescription = "${book.title} cover",
-            contentScale = ContentScale.FillBounds,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(8.dp)),
-            error = painterResource(R.drawable.cover_fallback),
-        )
+                .clip(RoundedCornerShape(8.dp))
+                .aspectRatio(1f),
+        ) {
+            AsyncShimmeringImage(
+                imageRequest = imageRequest,
+                imageLoader = imageLoader,
+                contentDescription = "${book.title} cover",
+                contentScale = ContentScale.FillBounds,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp)),
+                error = painterResource(R.drawable.cover_fallback),
+                onLoadingStateChanged = { coverLoading = it },
+            )
+
+            if (!coverLoading && shouldShowProgress(book, libraryViewModel.fetchPreferredLibraryType())) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(4.dp)
+                        .align(Alignment.BottomCenter),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Gray.copy(alpha = 0.4f)),
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(calculateProgress(book))
+                            .fillMaxHeight()
+                            .background(FoxOrange),
+                    )
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -129,3 +174,12 @@ fun RecentBookItemComposable(
         }
     }
 }
+
+private fun calculateProgress(book: RecentBook): Float {
+    return book.listenedPercentage?.div(100.0f) ?: 0.0f
+}
+
+private fun shouldShowProgress(book: RecentBook, libraryType: LibraryType): Boolean =
+    book.listenedPercentage != null &&
+        libraryType == LibraryType.LIBRARY &&
+        book.listenedPercentage > 0
