@@ -14,6 +14,7 @@ import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.exoplayer.source.SilenceMediaSource
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import dagger.hilt.android.AndroidEntryPoint
@@ -159,7 +160,7 @@ class PlaybackService : MediaSessionService() {
 
                 val playingQueue = book
                     .files
-                    .mapNotNull { file ->
+                    .map { file ->
                         mediaChannel
                             .provideFileUri(book.id, file.id)
                             .fold(
@@ -181,7 +182,9 @@ class PlaybackService : MediaSessionService() {
                                         .Factory(sourceFactory)
                                         .createMediaSource(mediaItem)
                                 },
-                                onFailure = { null },
+                                onFailure = {
+                                    SilenceMediaSource((file.duration * 1000).toLong())
+                                },
                             )
                     }
 

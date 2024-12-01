@@ -44,7 +44,7 @@ fun PlaylistItemComposable(
         if (isSelected) {
             Icon(
                 imageVector = Icons.Outlined.Audiotrack,
-                contentDescription = stringResource(R.string.player_screen_now_playing_title),
+                contentDescription = stringResource(R.string.player_screen_library_playing_title),
                 modifier = Modifier.size(16.dp),
             )
         } else {
@@ -56,7 +56,10 @@ fun PlaylistItemComposable(
         Text(
             text = track.title,
             style = MaterialTheme.typography.bodyMedium,
-            color = colorScheme.onBackground,
+            color = when (track.available) {
+                true -> colorScheme.onBackground
+                false -> colorScheme.onBackground.copy(alpha = 0.4f)
+            },
             overflow = TextOverflow.Ellipsis,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             modifier = Modifier.weight(1f),
@@ -66,7 +69,10 @@ fun PlaylistItemComposable(
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.padding(start = 8.dp),
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-            color = colorScheme.onBackground.copy(alpha = 0.6f),
+            color = when (track.available) {
+                true -> colorScheme.onBackground.copy(alpha = 0.6f)
+                false -> colorScheme.onBackground.copy(alpha = 0.4f)
+            },
         )
     }
 }

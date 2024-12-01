@@ -41,18 +41,18 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.launch
-import org.grakovne.lissen.R
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @Composable
 fun PlayingQueueComposable(
+    libraryViewModel: LibraryViewModel,
     viewModel: PlayerViewModel,
     modifier: Modifier = Modifier,
 ) {
@@ -122,7 +122,7 @@ fun PlayingQueueComposable(
     ) {
         if (playingQueueExpanded.not()) {
             Text(
-                text = stringResource(R.string.player_screen_now_playing_title),
+                text = provideNowPlayingTitle(libraryViewModel.fetchPreferredLibraryType(), context),
                 fontSize = fontSize.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.primary,

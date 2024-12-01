@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.NotInterested
 import androidx.compose.material.icons.outlined.Podcasts
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -27,11 +28,14 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.common.ColorScheme
-import org.grakovne.lissen.ui.icons.Book
+import org.grakovne.lissen.viewmodel.PlayerViewModel
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
-fun CommonSettingsComposable(viewModel: SettingsViewModel) {
+fun CommonSettingsComposable(
+    viewModel: SettingsViewModel,
+    playerViewModel: PlayerViewModel,
+) {
     val libraries by viewModel.libraries.observeAsState(emptyList())
     val preferredLibrary by viewModel.preferredLibrary.observeAsState()
     val preferredColorScheme by viewModel.preferredColorScheme.observeAsState()
@@ -103,6 +107,7 @@ fun CommonSettingsComposable(viewModel: SettingsViewModel) {
                 libraries
                     .find { it.id == item.id }
                     ?.let { viewModel.preferLibrary(it) }
+                    ?.also { playerViewModel.clearPlayingBook() }
             },
         )
     }
@@ -138,7 +143,7 @@ private fun ColorScheme.toItem(context: Context): CommonSettingsItem {
 }
 
 private fun LibraryType.provideIcon() = when (this) {
-    LibraryType.LIBRARY -> Book
+    LibraryType.LIBRARY -> Icons.Outlined.Book
     LibraryType.PODCAST -> Icons.Outlined.Podcasts
     LibraryType.UNKNOWN -> Icons.Outlined.NotInterested
 }

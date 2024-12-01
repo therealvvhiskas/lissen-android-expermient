@@ -34,6 +34,7 @@ class PodcastResponseConverter @Inject constructor() {
                             title = file.title,
                             duration = file.audioFile.duration,
                             id = file.id,
+                            available = true,
                         ),
                     )
                     accDuration + file.audioFile.duration to chapters
@@ -46,6 +47,7 @@ class PodcastResponseConverter @Inject constructor() {
             title = item.media.metadata.title,
             libraryId = item.libraryId,
             author = item.media.metadata.author,
+            localProvided = false,
             files = orderedEpisodes
                 ?.map {
                     BookFile(

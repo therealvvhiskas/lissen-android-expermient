@@ -16,6 +16,7 @@ class CachedBookEntityDetailedConverter @Inject constructor() {
         title = entity.detailedBook.title,
         author = entity.detailedBook.author,
         libraryId = entity.detailedBook.libraryId,
+        localProvided = true,
         files = entity.files.map { fileEntity ->
             BookFile(
                 id = fileEntity.bookFileId,
@@ -30,6 +31,7 @@ class CachedBookEntityDetailedConverter @Inject constructor() {
                 start = chapterEntity.start,
                 end = chapterEntity.end,
                 title = chapterEntity.title,
+                available = chapterEntity.isCached,
                 id = chapterEntity.bookChapterId,
             )
         },

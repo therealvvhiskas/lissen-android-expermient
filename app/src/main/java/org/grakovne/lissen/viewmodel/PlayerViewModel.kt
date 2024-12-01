@@ -17,11 +17,13 @@ class PlayerViewModel @Inject constructor(
     private val mediaRepository: MediaRepository,
 ) : ViewModel() {
 
-    val book: LiveData<DetailedItem> = mediaRepository.playingBook
+    val book: LiveData<DetailedItem?> = mediaRepository.playingBook
 
     val currentChapterIndex: LiveData<Int> = mediaRepository.currentChapterIndex
     val currentChapterPosition: LiveData<Double> = mediaRepository.currentChapterPosition
+
     val currentChapterDuration: LiveData<Double> = mediaRepository.currentChapterDuration
+    val totalPosition: LiveData<Double> = mediaRepository.totalPosition
 
     val timerOption: LiveData<TimerOption?> = mediaRepository.timerOption
 
@@ -30,6 +32,7 @@ class PlayerViewModel @Inject constructor(
 
     val isPlaybackReady: LiveData<Boolean> = mediaRepository.isPlaybackReady
     val playbackSpeed: LiveData<Float> = mediaRepository.playbackSpeed
+    val preparingError: LiveData<Boolean> = mediaRepository.mediaPreparingError
 
     private val _searchRequested = MutableLiveData(false)
     val searchRequested: LiveData<Boolean> = _searchRequested
@@ -85,9 +88,13 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun setChapter(chapter: BookChapter) {
-        val index = book.value?.chapters?.indexOf(chapter) ?: -1
-        mediaRepository.setChapter(index)
+        if (chapter.available) {
+            val index = book.value?.chapters?.indexOf(chapter) ?: -1
+            mediaRepository.setChapter(index)
+        }
     }
+
+    fun clearPlayingBook() = mediaRepository.clearPlayingBook()
 
     fun setPlaybackSpeed(factor: Float) = mediaRepository.setPlaybackSpeed(factor)
 

@@ -9,6 +9,7 @@ import org.grakovne.lissen.content.cache.converter.CachedBookEntityRecentConvert
 import org.grakovne.lissen.content.cache.dao.CachedBookDao
 import org.grakovne.lissen.content.cache.entity.MediaProgressEntity
 import org.grakovne.lissen.domain.Book
+import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.PlaybackProgress
 import org.grakovne.lissen.domain.RecentBook
@@ -40,13 +41,14 @@ class CachedBookRepository @Inject constructor(
             ?.let { bookDao.deleteBook(it) }
     }
 
-    suspend fun cacheBook(book: DetailedItem) {
-        bookDao.upsertCachedBook(book)
+    suspend fun cacheBook(
+        book: DetailedItem,
+        fetchedChapters: List<BookChapter>,
+    ) {
+        bookDao.upsertCachedBook(book, fetchedChapters)
     }
 
-    suspend fun fetchCachedBooksIds() = bookDao.fetchBookIds(
-        libraryId = preferences.getPreferredLibrary()?.id,
-    )
+    fun provideCacheState(bookId: String) = bookDao.isBookCached(bookId)
 
     suspend fun fetchBooks(
         pageNumber: Int,

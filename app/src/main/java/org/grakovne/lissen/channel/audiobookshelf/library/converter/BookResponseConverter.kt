@@ -26,6 +26,7 @@ class BookResponseConverter @Inject constructor() {
                     start = it.start,
                     end = it.end,
                     title = it.title,
+                    available = true,
                     id = it.id,
                     duration = it.end - it.start,
                 )
@@ -39,6 +40,7 @@ class BookResponseConverter @Inject constructor() {
                 ?.fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
                     chapters.add(
                         BookChapter(
+                            available = true,
                             start = accDuration,
                             end = accDuration + file.duration,
                             title = file.metaTags?.tagTitle
@@ -74,6 +76,7 @@ class BookResponseConverter @Inject constructor() {
                 ?: emptyList(),
             chapters = maybeChapters ?: filesAsChapters(),
             libraryId = item.libraryId,
+            localProvided = false,
             progress = progressResponse
                 ?.let {
                     MediaProgress(

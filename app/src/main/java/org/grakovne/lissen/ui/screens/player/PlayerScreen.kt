@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.ui.icons.Search
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.ui.screens.player.composable.NavigationBarComposable
@@ -48,6 +50,9 @@ import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.PlayingQueuePlaceholderComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetailsPlaceholderComposable
+import org.grakovne.lissen.ui.screens.player.composable.provideNowPlayingTitle
+import org.grakovne.lissen.viewmodel.ContentCachingModelView
+import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,23 +63,28 @@ fun PlayerScreen(
     bookId: String,
     bookTitle: String,
 ) {
-    val viewModel: PlayerViewModel = hiltViewModel()
+    val context = LocalContext.current
+
+    val cachingModelView: ContentCachingModelView = hiltViewModel()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
+    val libraryViewModel: LibraryViewModel = hiltViewModel()
+
     val titleTextStyle = typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
 
-    val playingBook by viewModel.book.observeAsState()
-    val isPlaybackReady by viewModel.isPlaybackReady.observeAsState(false)
-    val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
-    val searchRequested by viewModel.searchRequested.observeAsState(false)
+    val playingBook by playerViewModel.book.observeAsState()
+    val isPlaybackReady by playerViewModel.isPlaybackReady.observeAsState(false)
+    val playingQueueExpanded by playerViewModel.playingQueueExpanded.observeAsState(false)
+    val searchRequested by playerViewModel.searchRequested.observeAsState(false)
 
     val screenTitle = when (playingQueueExpanded) {
-        true -> stringResource(R.string.player_screen_now_playing_title)
+        true -> provideNowPlayingTitle(libraryViewModel.fetchPreferredLibraryType(), context)
         false -> stringResource(R.string.player_screen_title)
     }
 
     fun stepBack() {
         when {
-            searchRequested -> viewModel.dismissSearch()
-            playingQueueExpanded -> viewModel.collapsePlayingQueue()
+            searchRequested -> playerViewModel.dismissSearch()
+            playingQueueExpanded -> playerViewModel.collapsePlayingQueue()
             else -> navController.showLibrary()
         }
     }
@@ -83,15 +93,15 @@ fun PlayerScreen(
         stepBack()
     }
 
-    LaunchedEffect(bookId) {
+    LaunchedEffect(Unit) {
         bookId
-            .takeIf { it != playingBook?.id }
-            ?.let { viewModel.preparePlayback(it) }
+            .takeIf { playingItemChanged(it, playingBook) || cachePolicyChanged(cachingModelView, playingBook) }
+            ?.let { playerViewModel.preparePlayback(it) }
     }
 
     LaunchedEffect(playingQueueExpanded) {
         if (playingQueueExpanded.not()) {
-            viewModel.dismissSearch()
+            playerViewModel.dismissSearch()
         }
     }
 
@@ -110,12 +120,12 @@ fun PlayerScreen(
                         ) { isSearchRequested ->
                             when (isSearchRequested) {
                                 true -> ChapterSearchActionComposable(
-                                    onSearchRequested = { viewModel.updateSearch(it) },
+                                    onSearchRequested = { playerViewModel.updateSearch(it) },
                                 )
 
                                 false -> Row {
                                     IconButton(
-                                        onClick = { viewModel.requestSearch() },
+                                        onClick = { playerViewModel.requestSearch() },
                                         modifier = Modifier.padding(end = 4.dp),
                                     ) {
                                         Icon(
@@ -149,10 +159,16 @@ fun PlayerScreen(
             )
         },
         bottomBar = {
-            NavigationBarComposable(
-                viewModel = viewModel,
-                navController = navController,
-            )
+            playingBook
+                ?.let {
+                    NavigationBarComposable(
+                        book = it,
+                        playerViewModel = playerViewModel,
+                        contentCachingModelView = cachingModelView,
+                        navController = navController,
+                        libraryType = libraryViewModel.fetchPreferredLibraryType(),
+                    )
+                }
         },
         modifier = Modifier.systemBarsPadding(),
         content = { innerPadding ->
@@ -174,13 +190,14 @@ fun PlayerScreen(
                             TrackDetailsPlaceholderComposable(bookTitle)
                         } else {
                             TrackDetailsComposable(
-                                viewModel = viewModel,
+                                viewModel = playerViewModel,
                                 imageLoader = imageLoader,
+                                libraryViewModel = libraryViewModel,
                             )
                         }
 
                         TrackControlComposable(
-                            viewModel = viewModel,
+                            viewModel = playerViewModel,
                             modifier = Modifier,
                         )
                     }
@@ -190,11 +207,13 @@ fun PlayerScreen(
 
                 if (isPlaybackReady) {
                     PlayingQueueComposable(
-                        viewModel = viewModel,
+                        libraryViewModel = libraryViewModel,
+                        viewModel = playerViewModel,
                         modifier = Modifier,
                     )
                 } else {
                     PlayingQueuePlaceholderComposable(
+                        libraryViewModel = libraryViewModel,
                         modifier = Modifier,
                     )
                 }
@@ -202,3 +221,13 @@ fun PlayerScreen(
         },
     )
 }
+
+private fun playingItemChanged(
+    item: String,
+    playingBook: DetailedItem?,
+) = item != playingBook?.id
+
+private fun cachePolicyChanged(
+    contentCachingModelView: ContentCachingModelView,
+    playingBook: DetailedItem?,
+) = contentCachingModelView.localCacheUsing() != playingBook?.localProvided

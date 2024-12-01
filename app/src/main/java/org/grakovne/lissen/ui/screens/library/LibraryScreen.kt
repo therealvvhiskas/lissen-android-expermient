@@ -66,7 +66,7 @@ import org.grakovne.lissen.ui.screens.library.composables.RecentBooksComposable
 import org.grakovne.lissen.ui.screens.library.composables.fallback.LibraryFallbackComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.LibraryPlaceholderComposable
 import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBooksPlaceholderComposable
-import org.grakovne.lissen.viewmodel.CachingModelView
+import org.grakovne.lissen.viewmodel.ContentCachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -75,8 +75,8 @@ import org.grakovne.lissen.viewmodel.PlayerViewModel
 fun LibraryScreen(
     navController: AppNavigationService,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
-    cachingModelView: CachingModelView = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
+    contentCachingModelView: ContentCachingModelView = hiltViewModel(),
     imageLoader: ImageLoader,
     networkQualityService: NetworkQualityService,
 ) {
@@ -87,18 +87,14 @@ fun LibraryScreen(
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
     val networkStatus by networkQualityService.networkStatus.collectAsState()
-    val hiddenBooks by libraryViewModel.hiddenBooks.collectAsState()
     var pullRefreshing by remember { mutableStateOf(false) }
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     val searchRequested by libraryViewModel.searchRequested.observeAsState(false)
+    val preparingError by playerViewModel.preparingError.observeAsState(false)
 
     val library = when (searchRequested) {
         true -> libraryViewModel.searchPager.collectAsLazyPagingItems()
         false -> libraryViewModel.libraryPager.collectAsLazyPagingItems()
-    }
-
-    val showingRecentBooks by remember(recentBooks, hiddenBooks) {
-        derivedStateOf { filterRecentBooks(recentBooks, libraryViewModel) }
     }
 
     BackHandler(enabled = searchRequested) {
@@ -113,7 +109,6 @@ fun LibraryScreen(
 
             withMinimumTime(500) {
                 listOf(
-                    async { libraryViewModel.dropHiddenBooks() },
                     async { libraryViewModel.refreshLibrary() },
                     async { libraryViewModel.fetchRecentListening() },
                 ).awaitAll()
@@ -137,6 +132,12 @@ fun LibraryScreen(
         refreshContent(false)
     }
 
+    LaunchedEffect(preparingError) {
+        if (preparingError) {
+            playerViewModel.clearPlayingBook()
+        }
+    }
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
         onRefresh = {
@@ -153,8 +154,8 @@ fun LibraryScreen(
     val context = LocalContext.current
 
     fun showRecent(): Boolean {
-        val fetchAvailable = networkStatus || cachingModelView.localCacheUsing()
-        val hasContent = showingRecentBooks.isEmpty().not()
+        val fetchAvailable = networkStatus || contentCachingModelView.localCacheUsing()
+        val hasContent = recentBooks.isEmpty().not()
         return !searchRequested && hasContent && fetchAvailable
     }
 
@@ -211,8 +212,8 @@ fun LibraryScreen(
 
                             false -> DefaultActionComposable(
                                 navController = navController,
-                                cachingModelView = cachingModelView,
-                                libraryViewModel = libraryViewModel,
+                                contentCachingModelView = contentCachingModelView,
+                                playerViewModel = playerViewModel,
                                 onContentRefreshing = { refreshContent(showRefreshing = false) },
                                 onSearchRequested = { libraryViewModel.requestSearch() },
                             )
@@ -270,7 +271,7 @@ fun LibraryScreen(
                             showRecent -> {
                                 RecentBooksComposable(
                                     navController = navController,
-                                    recentBooks = showingRecentBooks,
+                                    recentBooks = recentBooks,
                                     imageLoader = imageLoader,
                                     libraryViewModel = libraryViewModel,
                                 )
@@ -322,7 +323,7 @@ fun LibraryScreen(
                             item {
                                 LibraryFallbackComposable(
                                     searchRequested = searchRequested,
-                                    cachingModelView = cachingModelView,
+                                    contentCachingModelView = contentCachingModelView,
                                     networkQualityService = networkQualityService,
                                     libraryViewModel = libraryViewModel,
                                 )
@@ -331,31 +332,12 @@ fun LibraryScreen(
 
                         else -> items(count = library.itemCount, key = { "library_item_$it" }) {
                             val book = library[it] ?: return@items
-                            val isVisible = remember(hiddenBooks, book.id) {
-                                derivedStateOf { libraryViewModel.isVisible(book.id) }
-                            }
 
-                            if (isVisible.value) {
-                                BookComposable(
-                                    book = book,
-                                    imageLoader = imageLoader,
-                                    navController = navController,
-                                    cachingModelView = cachingModelView,
-                                    onRemoveBook = {
-                                        if (cachingModelView.localCacheUsing()) {
-                                            libraryViewModel.hideBook(book.id)
-
-                                            val showingBooks = (0..<library.itemCount)
-                                                .mapNotNull { index -> library[index] }
-                                                .count { book -> libraryViewModel.isVisible(book.id) }
-
-                                            if (showingBooks == 0) {
-                                                refreshContent(false)
-                                            }
-                                        }
-                                    },
-                                )
-                            }
+                            BookComposable(
+                                book = book,
+                                imageLoader = imageLoader,
+                                navController = navController,
+                            )
                         }
                     }
                 }
@@ -372,8 +354,3 @@ fun LibraryScreen(
         },
     )
 }
-
-private fun filterRecentBooks(
-    books: List<RecentBook>,
-    libraryViewModel: LibraryViewModel,
-) = books.filter { libraryViewModel.isVisible(it.id) }
