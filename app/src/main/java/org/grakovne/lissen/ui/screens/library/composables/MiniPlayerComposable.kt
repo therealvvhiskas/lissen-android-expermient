@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -199,7 +200,7 @@ fun CloseActionBackground() {
     ) {
         Icon(
             imageVector = Icons.Outlined.Close,
-            contentDescription = "Close",
+            contentDescription = stringResource(R.string.mini_player_action_close),
             tint = colorScheme.onSurface,
             modifier = Modifier.size(24.dp),
         )
@@ -207,7 +208,7 @@ fun CloseActionBackground() {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Close",
+            text = stringResource(R.string.mini_player_action_close),
             style = typography.labelSmall,
             color = colorScheme.onSurface,
         )
