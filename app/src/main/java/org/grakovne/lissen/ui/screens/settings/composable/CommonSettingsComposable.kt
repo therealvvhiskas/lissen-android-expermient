@@ -98,7 +98,7 @@ fun CommonSettingsComposable(
         }
     }
 
-    if (preferredLibraryExpanded && libraries.isNotEmpty()) {
+    if (preferredLibraryExpanded && libraries != null && libraries.isNotEmpty()) {
         CommonSettingsItemComposable(
             items = libraries.map { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
             selectedItem = preferredLibrary?.let { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
