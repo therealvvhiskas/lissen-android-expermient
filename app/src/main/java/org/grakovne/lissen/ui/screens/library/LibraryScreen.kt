@@ -38,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +52,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.ImageLoader
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
@@ -129,8 +131,12 @@ fun LibraryScreen(
         }
     }
 
-    LaunchedEffect(networkStatus) {
-        refreshContent(false)
+    LaunchedEffect(Unit) {
+        snapshotFlow { networkStatus }
+            .distinctUntilChanged()
+            .collect { status ->
+                refreshContent(false)
+            }
     }
 
     LaunchedEffect(preparingError) {
