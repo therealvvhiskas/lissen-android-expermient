@@ -41,8 +41,20 @@ nano local.properties
 ```
 5. Build and run the app on an Android device or emulator.
 
-### Demo Environment
+### Localization
 
+<a href="https://hosted.weblate.org/engage/lissen/">
+<img src="https://hosted.weblate.org/widget/lissen/android-app/287x66-grey.png" alt="Translation status" />
+</a>
+
+Help us translate Lissen into more languages! We use [Weblate](https://hosted.weblate.org/engage/lissen/) to manage translations.
+
+To contribute:
+1. Visit the [Lissen translation project](https://hosted.weblate.org/engage/lissen/).
+2. Sign up or log in to Weblate.
+3. Start translating or reviewing existing translations for your preferred language.
+
+### Demo Environment
 
 You can connect to a demo [Audiobookshelf](https://github.com/advplyr/audiobookshelf) instance through the Lissen app:
 
