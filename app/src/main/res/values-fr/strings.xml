@@ -40,7 +40,7 @@
     <string name="audiobookshelf_server_is_required">Un serveur Audiobookshelf est requis</string>
     <string name="no_internet_connection">Pas de connexion internet</string>
     <string name="app_crach_toast">Désolé pour le crash de l\'application\nLes journaux ont été transmis pour analyse</string>
-    <string name="dialog_remove_from_cache_title">Retirer du cache ?</string>
+    <string name="dialog_remove_from_cache_title">Retirer du cache?</string>
     <string name="dialog_remove_from_cache_text">Le livre reste dans la bibliothèque et peut être écouté a n\'importe quel moment</string>
     <string name="dialog_confirm_remove">Supprimer</string>
     <string name="dialog_dismiss_cancel">Annuler</string>
