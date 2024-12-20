@@ -71,7 +71,6 @@ android {
 dependencies {
 
     implementation(libs.androidx.palette.ktx)
-    //implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
