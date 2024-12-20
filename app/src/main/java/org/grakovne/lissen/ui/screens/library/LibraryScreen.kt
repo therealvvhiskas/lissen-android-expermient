@@ -30,15 +30,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -52,7 +51,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.ImageLoader
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
@@ -72,6 +70,7 @@ import org.grakovne.lissen.ui.screens.library.composables.placeholder.RecentBook
 import org.grakovne.lissen.viewmodel.ContentCachingModelView
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
+import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -79,6 +78,7 @@ fun LibraryScreen(
     navController: AppNavigationService,
     libraryViewModel: LibraryViewModel = hiltViewModel(),
     playerViewModel: PlayerViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
     contentCachingModelView: ContentCachingModelView = hiltViewModel(),
     imageLoader: ImageLoader,
     networkQualityService: NetworkQualityService,
@@ -89,7 +89,7 @@ fun LibraryScreen(
 
     val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
-    val networkStatus by networkQualityService.networkStatus.collectAsState()
+    var currentLibraryId by rememberSaveable { mutableStateOf("") }
     var pullRefreshing by remember { mutableStateOf(false) }
     val recentBookRefreshing by libraryViewModel.recentBookUpdating.observeAsState(false)
     val searchRequested by libraryViewModel.searchRequested.observeAsState(false)
@@ -131,12 +131,6 @@ fun LibraryScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { networkStatus }
-            .distinctUntilChanged()
-            .collect { _ -> refreshContent(false) }
-    }
-
     LaunchedEffect(preparingError) {
         if (preparingError) {
             playerViewModel.clearPlayingBook()
@@ -158,15 +152,18 @@ fun LibraryScreen(
     val playingBook by playerViewModel.book.observeAsState()
     val context = LocalContext.current
 
-    fun showRecent(): Boolean {
-        val fetchAvailable = networkStatus || contentCachingModelView.localCacheUsing()
+    fun isRecentVisible(): Boolean {
+        val fetchAvailable = networkQualityService.isNetworkAvailable() || contentCachingModelView.localCacheUsing()
         val hasContent = recentBooks.isEmpty().not()
         return !searchRequested && hasContent && fetchAvailable
     }
 
     LaunchedEffect(Unit) {
-        libraryViewModel.refreshRecentListening()
-        libraryViewModel.refreshLibrary()
+        if (library.itemCount == 0 || currentLibraryId != settingsViewModel.fetchPreferredLibraryId()) {
+            libraryViewModel.refreshRecentListening()
+            libraryViewModel.refreshLibrary()
+            currentLibraryId = settingsViewModel.fetchPreferredLibraryId()
+        }
     }
 
     LaunchedEffect(searchRequested) {
@@ -187,7 +184,7 @@ fun LibraryScreen(
 
     val navBarTitle by remember {
         derivedStateOf {
-            val showRecent = showRecent()
+            val showRecent = isRecentVisible()
             val recentBlockVisible = libraryListState.layoutInfo.visibleItemsInfo.firstOrNull()?.key == "recent_books"
 
             when {
@@ -267,7 +264,7 @@ fun LibraryScreen(
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) {
                     item(key = "recent_books") {
-                        val showRecent = showRecent()
+                        val showRecent = isRecentVisible()
 
                         when {
                             isPlaceholderRequired -> {
@@ -289,7 +286,7 @@ fun LibraryScreen(
                     }
 
                     item(key = "library_title") {
-                        if (!searchRequested && showRecent()) {
+                        if (!searchRequested && isRecentVisible()) {
                             AnimatedContent(
                                 targetState = navBarTitle,
                                 transitionSpec = {
