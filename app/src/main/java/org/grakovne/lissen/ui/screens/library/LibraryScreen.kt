@@ -134,9 +134,7 @@ fun LibraryScreen(
     LaunchedEffect(Unit) {
         snapshotFlow { networkStatus }
             .distinctUntilChanged()
-            .collect { status ->
-                refreshContent(false)
-            }
+            .collect { _ -> refreshContent(false) }
     }
 
     LaunchedEffect(preparingError) {
