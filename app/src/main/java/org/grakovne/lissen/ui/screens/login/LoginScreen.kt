@@ -89,7 +89,7 @@ fun LoginScreen(
             return@LaunchedEffect
         }
 
-        withMinimumTime(500) {
+        withMinimumTime(300) {
             Log.d(TAG, "Tried to log in with result $loginState and possible error is $loginError")
         }
 
@@ -122,11 +122,10 @@ fun LoginScreen(
                         style = TextStyle(
                             fontSize = 24.sp,
                             fontWeight = FontWeight.SemiBold,
-                            letterSpacing = 2.sp,
+                            letterSpacing = 1.5.sp,
                             textAlign = TextAlign.Center,
                         ),
-                        modifier = Modifier
-                            .padding(vertical = 32.dp),
+                        modifier = Modifier.padding(vertical = 32.dp),
                     )
 
                     OutlinedTextField(
@@ -234,7 +233,7 @@ fun LoginScreen(
                         color = FoxOrange,
                         strokeWidth = 4.dp,
                         modifier = Modifier
-                            .padding(vertical = 16.dp)
+                            .padding(vertical = 32.dp)
                             .alpha(if (loginState !is LoginState.Idle) 1f else 0f),
                     )
                 }
@@ -242,14 +241,14 @@ fun LoginScreen(
                 Text(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .alpha(0.5f)
+                        .alpha(0.6f)
                         .padding(bottom = 32.dp),
                     text = stringResource(R.string.audiobookshelf_server_is_required),
                     style = typography.bodySmall.copy(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Normal,
                         color = colorScheme.onBackground,
-                        letterSpacing = 0.5.sp,
+                        letterSpacing = 0.6.sp,
                         lineHeight = 32.sp,
                     ),
                     textAlign = TextAlign.Center,
