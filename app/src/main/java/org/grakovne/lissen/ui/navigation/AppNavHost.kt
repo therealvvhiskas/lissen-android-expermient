@@ -29,8 +29,8 @@ import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.ui.screens.settings.advanced.CustomHeadersSettingsScreen
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun AppNavHost(
     navController: NavHostController,
     preferences: LissenSharedPreferences,

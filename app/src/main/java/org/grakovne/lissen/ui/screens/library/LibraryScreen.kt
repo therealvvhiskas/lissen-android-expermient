@@ -104,13 +104,18 @@ fun LibraryScreen(
         libraryViewModel.dismissSearch()
     }
 
-    fun refreshContent(showRefreshing: Boolean) {
+    fun refreshContent(showPullRefreshing: Boolean) {
         coroutineScope.launch {
-            if (showRefreshing) {
+            if (showPullRefreshing) {
                 pullRefreshing = true
             }
 
-            withMinimumTime(500) {
+            val minimumTime = when (showPullRefreshing) {
+                true -> 500L
+                false -> 0L
+            }
+
+            withMinimumTime(minimumTime) {
                 listOf(
                     async { libraryViewModel.refreshLibrary() },
                     async { libraryViewModel.fetchRecentListening() },
@@ -140,7 +145,7 @@ fun LibraryScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pullRefreshing,
         onRefresh = {
-            refreshContent(showRefreshing = true)
+            refreshContent(showPullRefreshing = true)
         },
     )
 
@@ -216,7 +221,7 @@ fun LibraryScreen(
                                 navController = navController,
                                 contentCachingModelView = contentCachingModelView,
                                 playerViewModel = playerViewModel,
-                                onContentRefreshing = { refreshContent(showRefreshing = false) },
+                                onContentRefreshing = { refreshContent(showPullRefreshing = false) },
                                 onSearchRequested = { libraryViewModel.requestSearch() },
                             )
                         }
