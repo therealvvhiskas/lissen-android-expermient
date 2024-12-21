@@ -21,6 +21,10 @@ android {
     namespace = "org.grakovne.lissen"
     compileSdk = 35
 
+    lint {
+        disable.add("MissingTranslation")
+    }
+
     defaultConfig {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
