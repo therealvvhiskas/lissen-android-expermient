@@ -55,7 +55,8 @@ fun LibraryFallbackComposable(
                 searchRequested -> null
                 isLocalCache -> when (libraryViewModel.fetchPreferredLibraryType()) {
                     LibraryType.PODCAST -> stringResource(R.string.the_offline_podcasts_is_empty)
-                    else -> stringResource(R.string.the_offline_library_is_empty)
+                    LibraryType.LIBRARY -> stringResource(R.string.the_offline_library_is_empty)
+                    else -> null
                 }
                 hasNetwork.not() -> stringResource(R.string.no_internet_connection)
                 else -> stringResource(R.string.the_library_is_empty)
