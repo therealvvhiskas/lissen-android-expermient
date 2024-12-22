@@ -8,6 +8,10 @@ I have a New Year and Christmas tradition of visiting a new country each year, a
 
 Happy holidays, whatever you’re celebrating!
 
+Best regards,
+Max Grakov,
+Lissen Maintainer
+
 
 # Lissen - Clean Audiobookshelf Player
 [![Build Lissen App](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml/badge.svg)](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml)
