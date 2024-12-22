@@ -11,11 +11,6 @@ class LibrarySearchItemsConverter @Inject constructor() {
         .mapNotNull {
             val title = it.media.metadata.title ?: return@mapNotNull null
 
-            val hasMediaItems = it.media.numAudioFiles?.let { it > 0 } ?: true
-            if (hasMediaItems.not()) {
-                return@mapNotNull null
-            }
-
             Book(
                 id = it.id,
                 title = title,
