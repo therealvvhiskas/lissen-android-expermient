@@ -43,11 +43,13 @@ nano local.properties
 
 ### Localization
 
-<a href="https://hosted.weblate.org/engage/lissen/">
-<img src="https://hosted.weblate.org/widget/lissen/android-app/287x66-grey.png" alt="Translation status" />
-</a>
-
 Help us translate Lissen into more languages! We use [Weblate](https://hosted.weblate.org/engage/lissen/) to manage translations.
+
+Current localization status:
+
+<a href="https://hosted.weblate.org/engage/lissen/">
+<img src="https://hosted.weblate.org/widget/lissen/android-app/multi-auto.svg" alt="Translation status" />
+</a>
 
 To contribute:
 1. Visit the [Lissen translation project](https://hosted.weblate.org/engage/lissen/).
