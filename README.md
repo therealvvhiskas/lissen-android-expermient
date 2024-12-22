@@ -2,7 +2,7 @@
 
 Hi everyone!
 
-A huge thank you to everyone who uses and contributes to this app—I’m amazed nearly 600 people use Lissen every day!
+A huge thank you to everyone who uses and contributes to this app! I’m amazed nearly 600 people use Lissen every day!
 
 I have a New Year and Christmas tradition of visiting a new country each year, and this time I’m going to Seoul. I’ll be away from December 28 to January 10 and won’t be able to respond or work on the app during that period. I’ll be back in January to tackle any pending issues.
 
