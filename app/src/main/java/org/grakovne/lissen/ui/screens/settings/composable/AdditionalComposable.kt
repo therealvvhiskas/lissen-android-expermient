@@ -48,7 +48,7 @@ fun AdditionalComposable() {
                 .fillMaxWidth()
                 .padding(top = 8.dp)
                 .align(Alignment.CenterHorizontally),
-            text = "© 2024 Max Grakov. MIT License",
+            text = "© 2024-2025 Max Grakov. MIT License",
             style = TextStyle(
                 fontFamily = FontFamily.Monospace,
                 textAlign = TextAlign.Center,
