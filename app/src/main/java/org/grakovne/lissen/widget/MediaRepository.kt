@@ -408,6 +408,11 @@ class MediaRepository @Inject constructor(
     private fun seekTo(position: Double) {
         val book = playingBook.value ?: return
 
+        if (book.chapters.isEmpty()) {
+            Log.d(TAG, "Tried to seek on the empty book")
+            return
+        }
+
         val overallDuration = book
             .chapters
             .sumOf { it.duration }

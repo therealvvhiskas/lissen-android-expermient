@@ -226,10 +226,10 @@ class ContentCachingService @Inject constructor(
 
         return when (option) {
             AllItemsDownloadOption -> book.chapters
-            CurrentItemDownloadOption -> listOf(book.chapters[chapterIndex])
+            CurrentItemDownloadOption -> listOfNotNull(book.chapters.getOrNull(chapterIndex))
             is NumberItemDownloadOption -> book.chapters.subList(
-                fromIndex = chapterIndex,
-                toIndex = (chapterIndex + option.itemsNumber).coerceAtMost(book.chapters.size),
+                chapterIndex.coerceAtLeast(0),
+                (chapterIndex + option.itemsNumber).coerceIn(chapterIndex..book.chapters.size),
             )
         }
     }
