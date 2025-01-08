@@ -55,15 +55,15 @@
     <string name="downloads_menu_download_book">Ladda ner boken</string>
     <string name="downloads_menu_download_podcast">Ladda ner podcast</string>
     <string name="downloads_menu_download_unknown">Nedladdningar</string>
-    <string name="downloads_menu_download_option_current_chapter">Kapitel som spelas</string>
-    <string name="downloads_menu_download_option_current_episode">Avsnitt som spelas</string>
+    <string name="downloads_menu_download_option_current_chapter">Nuvarande kapitel</string>
+    <string name="downloads_menu_download_option_current_episode">Nuvarande avsnitt</string>
     <string name="downloads_menu_download_option_entire_book">Hela boken</string>
     <string name="downloads_menu_download_option_entire_podcast">Hela podden</string>
     <string name="downloads_menu_download_option_next_chapters">Nästa %1$d kapitel</string>
     <string name="downloads_menu_download_option_next_episodes">Nästa %1$d avsnitt</string>
     <string name="downloads_menu_download_option_clear_chapters">Rensa nedladdade kapitel</string>
     <string name="downloads_menu_download_option_clear_episodes">Rensa nedladdade avsnitt</string>
-    <string name="downloads_menu_download_option_clear_items">Ta bort nedladdade filer</string>
+    <string name="downloads_menu_download_option_clear_items">Rensa nedladdade filer</string>
     <string name="mini_player_action_close">Stäng</string>
     <string name="dialog_confirm_remove">Radera</string>
     <string name="custom_headers_title">Egna rubriker</string>
@@ -79,6 +79,8 @@
     <string name="login_screen_server_url_input">Server-URL</string>
     <string name="login_error_host_url_is_missing">Värd-URL saknas</string>
     <string name="login_error_host_url_shall_be_https_or_http">Värd-URL ska vara https:// eller http://</string>
-    <string name="settings_screen_custom_header_hint">Specificera huvud för server-ansöutningar</string>
+    <string name="settings_screen_custom_header_hint">Specificera rubriker för serveranslutningar</string>
     <string name="downloads_menu_download_option_current_item">Aktuell post</string>
+    <string name="downloads_menu_download_option_entire_item">Hela objektet</string>
+    <string name="downloads_menu_download_option_next_items">Nästa %1$d objekt</string>
 </resources>
