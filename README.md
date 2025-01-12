@@ -1,18 +1,3 @@
-# Project update 22 Dec '24
-
-Hi everyone!
-
-A huge thank you to everyone who uses and contributes to this app! I’m amazed nearly 600 people use Lissen every day!
-
-I have a New Year and Christmas tradition of visiting a new country each year, and this time I’m going to Seoul. I’ll be away from December 28 to January 10 and won’t be able to respond or work on the app during that period. I’ll be back in January to tackle any pending issues.
-
-Happy holidays, whatever you’re celebrating!
-
-Best regards,
-Max Grakov,
-Lissen Maintainer
-
-
 # Lissen - Clean Audiobookshelf Player
 [![Build Lissen App](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml/badge.svg)](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml)
 
