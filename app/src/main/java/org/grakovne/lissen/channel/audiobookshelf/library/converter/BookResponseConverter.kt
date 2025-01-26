@@ -3,10 +3,10 @@ package org.grakovne.lissen.channel.audiobookshelf.library.converter
 import org.grakovne.lissen.channel.audiobookshelf.common.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.library.model.BookResponse
 import org.grakovne.lissen.channel.audiobookshelf.library.model.LibraryAuthorResponse
-import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
+import org.grakovne.lissen.domain.PlayingChapter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,24 +22,25 @@ class BookResponseConverter @Inject constructor() {
             .chapters
             ?.takeIf { it.isNotEmpty() }
             ?.map {
-                BookChapter(
+                PlayingChapter(
                     start = it.start,
                     end = it.end,
                     title = it.title,
                     available = true,
                     id = it.id,
                     duration = it.end - it.start,
+                    podcastEpisodeState = null,
                 )
             }
 
-        val filesAsChapters: () -> List<BookChapter> = {
+        val filesAsChapters: () -> List<PlayingChapter> = {
             item
                 .media
                 .audioFiles
                 ?.sortedBy { it.index }
-                ?.fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
+                ?.fold(0.0 to mutableListOf<PlayingChapter>()) { (accDuration, chapters), file ->
                     chapters.add(
-                        BookChapter(
+                        PlayingChapter(
                             available = true,
                             start = accDuration,
                             end = accDuration + file.duration,
@@ -47,6 +48,7 @@ class BookResponseConverter @Inject constructor() {
                                 ?: file.metadata.filename.removeSuffix(file.metadata.ext),
                             duration = file.duration,
                             id = file.ino,
+                            podcastEpisodeState = null,
                         ),
                     )
                     accDuration + file.duration to chapters

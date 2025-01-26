@@ -1,10 +1,10 @@
 package org.grakovne.lissen.content.cache.converter
 
 import org.grakovne.lissen.content.cache.entity.CachedBookEntity
-import org.grakovne.lissen.domain.BookChapter
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
+import org.grakovne.lissen.domain.PlayingChapter
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,13 +26,14 @@ class CachedBookEntityDetailedConverter @Inject constructor() {
             )
         },
         chapters = entity.chapters.map { chapterEntity ->
-            BookChapter(
+            PlayingChapter(
                 duration = chapterEntity.duration,
                 start = chapterEntity.start,
                 end = chapterEntity.end,
                 title = chapterEntity.title,
                 available = chapterEntity.isCached,
                 id = chapterEntity.bookChapterId,
+                podcastEpisodeState = null, // currently state is not available for local mode
             )
         },
         progress = entity.progress?.let { progressEntity ->

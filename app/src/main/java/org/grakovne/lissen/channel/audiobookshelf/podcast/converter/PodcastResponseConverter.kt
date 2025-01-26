@@ -3,10 +3,11 @@ package org.grakovne.lissen.channel.audiobookshelf.podcast.converter
 import org.grakovne.lissen.channel.audiobookshelf.common.model.MediaProgressResponse
 import org.grakovne.lissen.channel.audiobookshelf.podcast.model.PodcastEpisodeResponse
 import org.grakovne.lissen.channel.audiobookshelf.podcast.model.PodcastResponse
-import org.grakovne.lissen.domain.BookChapter
+import org.grakovne.lissen.domain.BookChapterState
 import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
+import org.grakovne.lissen.domain.PlayingChapter
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -17,27 +18,40 @@ class PodcastResponseConverter @Inject constructor() {
 
     fun apply(
         item: PodcastResponse,
-        progressResponse: MediaProgressResponse? = null,
+        progressResponses: List<MediaProgressResponse> = emptyList(),
     ): DetailedItem {
         val orderedEpisodes = item
             .media
             .episodes
             ?.orderEpisode()
 
-        val filesAsChapters: List<BookChapter> =
+        val latestEpisodeMediaProgress = progressResponses
+            .maxByOrNull { it.lastUpdate }
+            ?.let {
+                MediaProgress(
+                    currentTime = it.currentTime,
+                    isFinished = it.isFinished,
+                    lastUpdate = it.lastUpdate,
+                )
+            }
+
+        val filesAsChapters: List<PlayingChapter> =
             orderedEpisodes
-                ?.fold(0.0 to mutableListOf<BookChapter>()) { (accDuration, chapters), file ->
+                ?.fold(0.0 to mutableListOf<PlayingChapter>()) { (accDuration, chapters), episode ->
                     chapters.add(
-                        BookChapter(
+                        PlayingChapter(
                             start = accDuration,
-                            end = accDuration + file.audioFile.duration,
-                            title = file.title,
-                            duration = file.audioFile.duration,
-                            id = file.id,
+                            end = accDuration + episode.audioFile.duration,
+                            title = episode.title,
+                            duration = episode.audioFile.duration,
+                            id = episode.id,
                             available = true,
+                            podcastEpisodeState = progressResponses
+                                .find { it.episodeId == episode.id }
+                                ?.let { hasFinished(it) },
                         ),
                     )
-                    accDuration + file.audioFile.duration to chapters
+                    accDuration + episode.audioFile.duration to chapters
                 }
                 ?.second
                 ?: emptyList()
@@ -59,18 +73,20 @@ class PodcastResponseConverter @Inject constructor() {
                 }
                 ?: emptyList(),
             chapters = filesAsChapters,
-            progress = progressResponse
-                ?.let {
-                    MediaProgress(
-                        currentTime = it.currentTime,
-                        isFinished = it.isFinished,
-                        lastUpdate = it.lastUpdate,
-                    )
-                },
+            progress = latestEpisodeMediaProgress,
         )
     }
 
+    private fun hasFinished(progress: MediaProgressResponse): BookChapterState? {
+        return when (progress.isFinished || progress.progress > FINISHED_PROGRESS_THRESHOLD) {
+            true -> BookChapterState.FINISHED
+            false -> null
+        }
+    }
+
     companion object {
+
+        private const val FINISHED_PROGRESS_THRESHOLD = 0.9
         private val dateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH)
 
         private fun List<PodcastEpisodeResponse>.orderEpisode() =
