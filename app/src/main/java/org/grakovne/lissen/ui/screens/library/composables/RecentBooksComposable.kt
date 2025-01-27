@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -106,53 +107,71 @@ fun RecentBookItemComposable(
                 .build()
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .aspectRatio(1f),
+        Column(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            AsyncShimmeringImage(
-                imageRequest = imageRequest,
-                imageLoader = imageLoader,
-                contentDescription = "${book.title} cover",
-                contentScale = ContentScale.FillBounds,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp)),
-                error = painterResource(R.drawable.cover_fallback),
-                onLoadingStateChanged = { coverLoading = it },
-            )
-
-            if (!coverLoading && shouldShowProgress(book, libraryViewModel.fetchPreferredLibraryType())) {
-                Box(
+                    .clip(RoundedCornerShape(8.dp))
+                    .aspectRatio(1f),
+            ) {
+                AsyncShimmeringImage(
+                    imageRequest = imageRequest,
+                    imageLoader = imageLoader,
+                    contentDescription = "${book.title} cover",
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(4.dp)
-                        .align(Alignment.BottomCenter),
+                        .clip(RoundedCornerShape(8.dp)),
+                    error = painterResource(R.drawable.cover_fallback),
+                    onLoadingStateChanged = { coverLoading = it },
+                )
+            }
+
+            if (libraryViewModel.fetchPreferredLibraryType() == LibraryType.LIBRARY) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Gray.copy(alpha = 0.4f)),
-                    )
+                            .weight(1f)
+                            .height(2.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.Gray.copy(alpha = 0.4f)),
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(calculateProgress(book))
+                                .clip(RoundedCornerShape(8.dp))
+                                .fillMaxHeight()
+                                .background(FoxOrange),
+                        )
+                    }
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(calculateProgress(book))
-                            .fillMaxHeight()
-                            .background(FoxOrange),
+                    Text(
+                        text = "${(calculateProgress(book) * 100).toInt()}%",
+                        fontSize = typography.bodySmall.fontSize,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(start = 12.dp),
                     )
                 }
+            } else {
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         Column(modifier = Modifier.padding(horizontal = 4.dp)) {
             Text(
                 text = book.title,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                style = typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -178,8 +197,3 @@ fun RecentBookItemComposable(
 private fun calculateProgress(book: RecentBook): Float {
     return book.listenedPercentage?.div(100.0f) ?: 0.0f
 }
-
-private fun shouldShowProgress(book: RecentBook, libraryType: LibraryType): Boolean =
-    book.listenedPercentage != null &&
-        libraryType == LibraryType.LIBRARY &&
-        book.listenedPercentage > 0
