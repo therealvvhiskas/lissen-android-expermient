@@ -1,4 +1,5 @@
 package org.grakovne.lissen.ui.screens.player
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -15,14 +16,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -30,13 +41,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.ImageLoader
 import org.grakovne.lissen.R
@@ -75,6 +94,8 @@ fun PlayerScreen(
     val isPlaybackReady by playerViewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by playerViewModel.playingQueueExpanded.observeAsState(false)
     val searchRequested by playerViewModel.searchRequested.observeAsState(false)
+
+    var itemDetailsSelected by remember { mutableStateOf(false) }
 
     val screenTitle = when (playingQueueExpanded) {
         true -> provideNowPlayingTitle(libraryViewModel.fetchPreferredLibraryType(), context)
@@ -134,6 +155,18 @@ fun PlayerScreen(
                                         )
                                     }
                                 }
+                            }
+                        }
+                    } else {
+                        Row {
+                            IconButton(
+                                onClick = { itemDetailsSelected = true },
+                                modifier = Modifier.padding(end = 4.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Info,
+                                    contentDescription = null,
+                                )
                             }
                         }
                     }
@@ -226,6 +259,116 @@ fun PlayerScreen(
             }
         },
     )
+
+    if (itemDetailsSelected) {
+        ModalBottomSheet(
+            onDismissRequest = { itemDetailsSelected = false },
+            containerColor = colorScheme.surface,
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(vertical = 16.dp, horizontal = 4.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Text(
+                        text = bookTitle,
+                        style = typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        color = colorScheme.onSurface,
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    playingBook
+                        ?.author
+                        ?.let {
+                            InfoRow(
+                                icon = Icons.Default.Person,
+                                label = stringResource(R.string.playing_item_details_author),
+                                textValue = it,
+                            )
+                        }
+
+                    playingBook
+                        ?.publisher
+                        ?.let {
+                            InfoRow(
+                                icon = Icons.Default.Business,
+                                label = stringResource(R.string.playing_item_details_publisher),
+                                textValue = it,
+                            )
+                        }
+
+                    playingBook
+                        ?.year
+                        ?.let {
+                            InfoRow(
+                                icon = Icons.Default.CalendarMonth,
+                                label = "Year",
+                                textValue = it,
+                            )
+                        }
+                }
+
+                playingBook
+                    ?.abstract
+                    ?.let {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(vertical = 16.dp, horizontal = 16.dp)
+                                .alpha(0.2f),
+                        )
+
+                        Text(
+                            text = it,
+                            style = typography.bodyMedium.copy(lineHeight = 22.sp),
+                            color = colorScheme.onSurface,
+                            textAlign = TextAlign.Justify,
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                        )
+                    }
+
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    textValue: String,
+) {
+    Spacer(modifier = Modifier.height(8.dp))
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = colorScheme.primary,
+            modifier = Modifier.size(20.dp),
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = "$label: ",
+            style = typography.bodyMedium,
+            color = Color.Gray,
+        )
+        Text(
+            text = textValue,
+            style = typography.bodyMedium,
+        )
+    }
 }
 
 private fun playingItemChanged(
