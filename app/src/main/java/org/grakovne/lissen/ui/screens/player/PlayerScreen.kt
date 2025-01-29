@@ -313,7 +313,7 @@ fun PlayerScreen(
                         ?.let {
                             InfoRow(
                                 icon = Icons.Default.CalendarMonth,
-                                label = "Year",
+                                label = stringResource(R.string.playing_item_details_year),
                                 textValue = it,
                             )
                         }

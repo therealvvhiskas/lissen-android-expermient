@@ -85,4 +85,5 @@
     <string name="mini_player_action_close">Zapri</string>
     <string name="playing_item_details_author">Avtor</string>
     <string name="playing_item_details_publisher">Založnik</string>
+    <string name="playing_item_details_year">Leto</string>
 </resources>

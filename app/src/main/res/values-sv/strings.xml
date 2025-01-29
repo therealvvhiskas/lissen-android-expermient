@@ -85,4 +85,5 @@
     <string name="downloads_menu_download_option_next_items">Nästa %1$d objekt</string>
     <string name="playing_item_details_author">Författare</string>
     <string name="playing_item_details_publisher">Utgivare</string>
+    <string name="playing_item_details_year">År</string>
 </resources>
