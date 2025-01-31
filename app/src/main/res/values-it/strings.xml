@@ -59,7 +59,7 @@
     <string name="timer_title">Timer di riposo</string>
     <string name="player_screen_timer_navigation">Timer</string>
     <string name="chapter_search_hint">Cerca in base al titolo del capitolo</string>
-    <string name="the_offline_podcasts_is_empty">Non ci sono ancora podcast salvati</string>
+    <string name="the_offline_podcasts_is_empty">Nessun podcast ancora salvato</string>
     <string name="player_screen_downloads_navigation">Download</string>
     <string name="downloads_menu_download_book">Scarica libro</string>
     <string name="downloads_menu_download_podcast">Scarica podcast</string>
@@ -69,4 +69,21 @@
     <string name="login_error_host_url_shall_be_https_or_http">L\'indirizzo dell\'hotel deve essere https:// o http://</string>
     <string name="widget_placeholder_text">Clicca per aprire l\'app</string>
     <string name="downloads_menu_download_unknown">Download</string>
+    <string name="no_books_listened_to_yet">Nessun libro ancora ascoltato</string>
+    <string name="downloads_menu_download_option_current_chapter">Capitolo attuale</string>
+    <string name="downloads_menu_download_option_current_episode">Episodio attuale</string>
+    <string name="downloads_menu_download_option_current_item">Elemento attuale</string>
+    <string name="downloads_menu_download_option_entire_book">Libro intero</string>
+    <string name="downloads_menu_download_option_entire_podcast">Podcast intero</string>
+    <string name="downloads_menu_download_option_entire_item">Elemento intero</string>
+    <string name="downloads_menu_download_option_next_chapters">Prossimi %1$d capitoli</string>
+    <string name="downloads_menu_download_option_next_episodes">Prossimi %1$d episodi</string>
+    <string name="downloads_menu_download_option_next_items">Prossimi %1$d elementi</string>
+    <string name="downloads_menu_download_option_clear_chapters">Cancella i capitoli scaricati</string>
+    <string name="downloads_menu_download_option_clear_episodes">Cancella gli episodi scaricati</string>
+    <string name="downloads_menu_download_option_clear_items">Cancella gli elementi scaricati</string>
+    <string name="mini_player_action_close">Chiudi</string>
+    <string name="playing_item_details_author">Autore</string>
+    <string name="playing_item_details_publisher">Editore</string>
+    <string name="playing_item_details_year">Anno</string>
 </resources>
