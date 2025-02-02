@@ -1,2 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="library_screen_library_title">Bibliotheek</string>
+    <string name="player_screen_chapter_list_navigation">Hoofdstukken</string>
+    <string name="settings_screen_connected_as_title">Verbonden als</string>
+    <string name="player_screen_now_playing_title_item_of">Item %1$d van %2$s</string>
+    <string name="library_screen_downloads_menu_item">Downloads</string>
+    <string name="login_screen_title">Verbinden naar server</string>
+    <string name="login_screen_server_url_input">Serveradres</string>
+    <string name="login_screen_login_input">Login</string>
+    <string name="login_screen_password_input">Wachtwoord</string>
+    <string name="login_screen_connect_button_text">Verbinden</string>
+    <string name="player_screen_library_navigation">Bibliotheek</string>
+    <string name="player_screen_library_playing_title">Hoofdstukken afspelen</string>
+    <string name="player_screen_podcast_playing_title">Afleveringen afspelen</string>
+    <string name="player_screen_items_playing_title">Items afspelen</string>
+    <string name="player_screen_now_playing_title_chapter_of">Hoofdstuk %1$d van %2$s</string>
+    <string name="player_screen_now_playing_title_podcast_of">Aflevering %1$d van %2$s</string>
+    <string name="settings_screen_title">Voorkeuren</string>
+    <string name="settings_screen_preferred_library_title">Voorkeursbibliotheek</string>
+    <string name="login_error_host_is_down">Host is onbereikbaar</string>
+    <string name="login_error_host_url_is_missing">Host URL ontbreekt</string>
+    <string name="login_error_password_is_missing">Wachtwoord ontbreekt</string>
+    <string name="login_error_credentials_are_invalid">Inloggegevens zijn ongeldig</string>
+    <string name="login_error_host_url_shall_be_https_or_http">De host-URL moet https:// of http:// zijn</string>
+    <string name="login_error_connection_error">Verbindings-fout</string>
+    <string name="library_screen_continue_listening_title">Verder luisteren</string>
+    <string name="login_screen_show_password_hint">Toon wachtwoord</string>
+    <string name="player_screen_preferences_navigation">Voorkeuren</string>
+    <string name="player_screen_playback_speed_navigation">Snelheid</string>
+    <string name="settings_screen_server_connection">Server verbinding</string>
+    <string name="login_error_username_is_missing">Gebruikersnaam ontbreekt</string>
+    <string name="library_screen_preferences_menu_item">Voorkeuren</string>
+</resources>
