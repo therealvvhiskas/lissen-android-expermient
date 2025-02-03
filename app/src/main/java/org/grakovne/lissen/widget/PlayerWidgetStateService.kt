@@ -15,6 +15,7 @@ import org.grakovne.lissen.common.RunningComponent
 import org.grakovne.lissen.common.toBase64
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.DetailedItem
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,23 +40,30 @@ class PlayerWidgetStateService @Inject constructor(
             ) { book: DetailedItem?, isPlaying, chapterIndex: Int? ->
                 val chapterTitle = provideChapterTitle(book, chapterIndex)
 
-                val maybeCover = when (book == null) {
-                    true -> null
-                    false -> when (playingBookId != book.id || cachedCover == null) {
-                        true ->
-                            book
-                                .let { mediaProvider.fetchBookCover(it.id) }
+                val maybeCover = when (book) {
+                    null -> null
+                    else -> when {
+                        playingBookId != book.id || cachedCover == null -> {
+                            mediaProvider.fetchBookCover(book.id)
                                 .fold(
-                                    onSuccess = {
-                                        it
-                                            .readBytes()
-                                            .also { cover -> cachedCover = cover }
-                                            .also { playingBookId = book.id }
+                                    onSuccess = { inputStream ->
+                                        inputStream.use { stream ->
+                                            val buffer = ByteArray(8192)
+                                            val output = ByteArrayOutputStream()
+                                            var bytesRead: Int
+                                            while (stream.read(buffer).also { bytesRead = it } != -1) {
+                                                output.write(buffer, 0, bytesRead)
+                                            }
+                                            output.toByteArray()
+                                        }.also { cover ->
+                                            cachedCover = cover
+                                            playingBookId = book.id
+                                        }
                                     },
                                     onFailure = { null },
                                 )
-
-                        false -> cachedCover
+                        }
+                        else -> cachedCover
                     }
                 }
 
