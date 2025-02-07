@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="library_screen_library_title">书库</string>
+    <string name="library_screen_downloads_menu_item">下载</string>
+    <string name="library_screen_continue_listening_title">继续播放</string>
+    <string name="login_screen_login_input">登录</string>
+    <string name="login_screen_title">连接服务器</string>
+    <string name="library_screen_preferences_menu_item">偏好设置</string>
+    <string name="login_screen_password_input">密码</string>
+    <string name="login_screen_show_password_hint">显示密码</string>
+    <string name="login_screen_server_url_input">服务器URL</string>
+    <string name="login_screen_connect_button_text">连接</string>
+    <string name="player_screen_library_navigation">书库</string>
+    <string name="player_screen_playback_speed_navigation">播放速度</string>
+    <string name="player_screen_chapter_list_navigation">章节</string>
+    <string name="player_screen_library_playing_title">播放章节</string>
+    <string name="settings_screen_title">设置</string>
+    <string name="login_error_connection_error">连接错误</string>
+    <string name="no_internet_connection">没有互联网连接</string>
+    <string name="playback_speed_title">播放速度</string>
+    <string name="library_screen_podcast_title">播客</string>
 </resources>
