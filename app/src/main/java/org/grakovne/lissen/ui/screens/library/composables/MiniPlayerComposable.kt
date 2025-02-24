@@ -156,21 +156,10 @@ fun MiniPlayerComposable(
                         overflow = TextOverflow.Ellipsis,
                     )
 
-                    book.subtitle?.let {
-                        Text(
-                            text = it,
-                            style = typography.bodySmall.copy(
-                                color = colorScheme.onBackground.copy(alpha = 0.6f),
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-
                     book.author?.let {
                         Text(
                             text = it,
-                            style = typography.bodySmall.copy(
+                            style = typography.bodyMedium.copy(
                                 color = colorScheme.onBackground.copy(alpha = 0.6f),
                             ),
                             maxLines = 1,
