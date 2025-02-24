@@ -74,35 +74,38 @@ fun BookComposable(
         Column(
             modifier = Modifier.weight(1f),
         ) {
-            Text(
-                text = book.title,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
 
-            if (book.subtitle != null || book.author != null) {
-                Spacer(modifier = Modifier.height(4.dp))
-            }
-
-            book.subtitle?.let {
+            Column {
                 Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                    text = book.title,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
                     ),
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
+
+                if (null != book.subtitle || null != book.author) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+
+                book.subtitle?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
 
             book.author?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     ),
                     maxLines = 1,
