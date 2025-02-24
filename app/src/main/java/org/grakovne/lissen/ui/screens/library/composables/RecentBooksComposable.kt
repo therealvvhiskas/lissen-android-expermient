@@ -176,12 +176,12 @@ fun RecentBookItemComposable(
                 overflow = TextOverflow.Ellipsis,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
 
             book.subtitle?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     ),
                     maxLines = 1,
@@ -192,7 +192,7 @@ fun RecentBookItemComposable(
             book.author?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
                     ),
                     maxLines = 1,
