@@ -74,7 +74,6 @@ fun BookComposable(
         Column(
             modifier = Modifier.weight(1f),
         ) {
-
             Column {
                 Text(
                     text = book.title,

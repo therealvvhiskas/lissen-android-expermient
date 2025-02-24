@@ -103,7 +103,7 @@ fun TrackDetailsComposable(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
         }
 
         Text(
@@ -113,7 +113,7 @@ fun TrackDetailsComposable(
                 libraryType = libraryViewModel.fetchPreferredLibraryType(),
                 context = context,
             ),
-            style = typography.bodySmall,
+            style = typography.bodyMedium,
             color = colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(),

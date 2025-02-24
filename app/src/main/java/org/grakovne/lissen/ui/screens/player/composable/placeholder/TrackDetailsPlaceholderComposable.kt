@@ -66,12 +66,12 @@ fun TrackDetailsPlaceholderComposable(
 
         bookSubtitle?.let {
             Text(
-                    text = it,
-                    style = typography.bodyMedium,
-                    color = colorScheme.onBackground.copy(alpha = 0.6f),
-                    textAlign = TextAlign.Center,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
+                text = it,
+                style = typography.bodyMedium,
+                color = colorScheme.onBackground.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
 
             Spacer(modifier = Modifier.height(4.dp))
