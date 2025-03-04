@@ -8,6 +8,7 @@ data class DetailedItem(
     val subtitle: String?,
     val author: String?,
     val publisher: String?,
+    val series: List<BookSeries>,
     val year: String?,
     val abstract: String?,
     val files: List<BookFile>,
@@ -38,6 +39,12 @@ data class PlayingChapter(
     val end: Double,
     val title: String,
     val id: String,
+) : Serializable
+
+data class BookSeries(
+    val id: String,
+    val serialNumber: Int,
+    val name: String,
 ) : Serializable
 
 enum class BookChapterState {

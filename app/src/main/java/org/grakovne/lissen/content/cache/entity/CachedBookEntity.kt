@@ -27,6 +27,12 @@ data class CachedBookEntity(
         parentColumn = "id",
         entityColumn = "bookId",
     )
+    val series: List<BookSeriesEntity>?,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "bookId",
+    )
     val progress: MediaProgressEntity?,
 )
 
@@ -104,4 +110,23 @@ data class MediaProgressEntity(
     val currentTime: Double,
     val isFinished: Boolean,
     val lastUpdate: Long,
+) : Serializable
+
+@Entity(
+    tableName = "book_series",
+    foreignKeys = [
+        ForeignKey(
+            entity = BookEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["bookId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index(value = ["bookId"])],
+)
+data class BookSeriesEntity(
+    @PrimaryKey val id: String,
+    val bookId: String,
+    val serialNumber: Int,
+    val name: String,
 ) : Serializable
