@@ -120,3 +120,30 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
         db.execSQL("CREATE INDEX index_book_series_bookId ON book_series(bookId)")
     }
 }
+
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE book_series_new (
+                id TEXT NOT NULL PRIMARY KEY,
+                bookId TEXT NOT NULL,
+                serialNumber TEXT,
+                name TEXT NOT NULL,
+                FOREIGN KEY (bookId) REFERENCES detailed_books(id) ON DELETE CASCADE
+            )
+            """.trimIndent(),
+        )
+
+        db.execSQL(
+            """
+            INSERT INTO book_series_new (id, bookId, serialNumber, name)
+            SELECT id, bookId, serialNumber, name FROM book_series
+            """.trimIndent(),
+        )
+
+        db.execSQL("DROP TABLE book_series")
+        db.execSQL("ALTER TABLE book_series_new RENAME TO book_series")
+        db.execSQL("CREATE INDEX index_book_series_bookId ON book_series(bookId)")
+    }
+}

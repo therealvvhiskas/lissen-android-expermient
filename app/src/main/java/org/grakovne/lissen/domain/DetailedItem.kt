@@ -43,7 +43,7 @@ data class PlayingChapter(
 
 data class BookSeries(
     val id: String,
-    val serialNumber: Int,
+    val serialNumber: String?,
     val name: String,
 ) : Serializable
 

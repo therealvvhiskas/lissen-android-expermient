@@ -319,8 +319,14 @@ fun PlayerScreen(
                             InfoRow(
                                 icon = Icons.AutoMirrored.Filled.LibraryBooks,
                                 label = stringResource(R.string.playing_item_details_series),
-                                textValue = it
-                                    .joinToString(", ") { series -> "${series.name} #${series.serialNumber}" },
+                                textValue = it.joinToString(", ") { series ->
+                                    buildString {
+                                        append(series.name)
+                                        series.serialNumber
+                                            ?.takeIf { it.isNotBlank() }
+                                            ?.let { serial -> append(" #$serial") }
+                                    }
+                                },
                             )
                         }
 

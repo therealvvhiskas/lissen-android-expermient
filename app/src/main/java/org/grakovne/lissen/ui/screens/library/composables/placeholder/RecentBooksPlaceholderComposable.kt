@@ -98,20 +98,7 @@ fun RecentBookItemComposable(
                     style = MaterialTheme.typography.bodySmall,
                     maxLines = 1,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(2.dp))
-                        .shimmer()
-                        .background(Color.Gray),
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
-                Text(
-                    color = Color.Transparent,
-                    text = "Fyodor Dostoevsky",
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(2.dp))
+                        .clip(RoundedCornerShape(4.dp))
                         .shimmer()
                         .background(Color.Gray),
                 )

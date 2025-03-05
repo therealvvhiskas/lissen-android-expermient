@@ -26,7 +26,7 @@ data class LibraryMetadataResponse(
 data class LibrarySeriesResponse(
     val id: String,
     val name: String,
-    val sequence: Int,
+    val sequence: String?,
 )
 
 data class LibraryAuthorResponse(

@@ -20,7 +20,7 @@ import org.grakovne.lissen.content.cache.entity.MediaProgressEntity
         CachedLibraryEntity::class,
         BookSeriesEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true,
 )
 abstract class LocalCacheStorage : RoomDatabase() {

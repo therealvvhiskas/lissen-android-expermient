@@ -127,6 +127,6 @@ data class MediaProgressEntity(
 data class BookSeriesEntity(
     @PrimaryKey val id: String,
     val bookId: String,
-    val serialNumber: Int,
+    val serialNumber: String?,
     val name: String,
 ) : Serializable
