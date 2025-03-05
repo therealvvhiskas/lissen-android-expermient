@@ -86,4 +86,5 @@
     <string name="playing_item_details_author">Autore</string>
     <string name="playing_item_details_publisher">Editore</string>
     <string name="playing_item_details_year">Anno</string>
+    <string name="playing_item_details_series">Serie</string>
 </resources>
