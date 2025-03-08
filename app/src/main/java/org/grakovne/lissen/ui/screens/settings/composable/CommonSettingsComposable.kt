@@ -115,8 +115,8 @@ fun CommonSettingsComposable(
     if (colorSchemeExpanded) {
         CommonSettingsItemComposable(
             items = listOf(
-                ColorScheme.LIGHT.toItem(context),
                 ColorScheme.FOLLOW_SYSTEM.toItem(context),
+                ColorScheme.LIGHT.toItem(context),
                 ColorScheme.DARK.toItem(context),
                 ColorScheme.BLACK.toItem(context),
             ),

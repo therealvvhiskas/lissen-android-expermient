@@ -87,4 +87,6 @@
     <string name="playing_item_details_author">Auteur</string>
     <string name="playing_item_details_publisher">Éditeur</string>
     <string name="playing_item_details_year">Année</string>
+    <string name="playing_item_details_series">Série</string>
+    <string name="color_scheme_black">Noire</string>
 </resources>

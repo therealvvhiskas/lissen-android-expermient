@@ -86,4 +86,6 @@
     <string name="playing_item_details_author">ஆசிரியர்</string>
     <string name="playing_item_details_publisher">பதிப்பாளர்</string>
     <string name="playing_item_details_year">ஆண்டு</string>
+    <string name="playing_item_details_series">தொடர்</string>
+    <string name="color_scheme_black">கருப்பு</string>
 </resources>

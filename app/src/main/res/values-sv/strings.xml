@@ -86,4 +86,6 @@
     <string name="playing_item_details_author">Författare</string>
     <string name="playing_item_details_publisher">Utgivare</string>
     <string name="playing_item_details_year">År</string>
+    <string name="playing_item_details_series">Serie</string>
+    <string name="color_scheme_black">Svart</string>
 </resources>
