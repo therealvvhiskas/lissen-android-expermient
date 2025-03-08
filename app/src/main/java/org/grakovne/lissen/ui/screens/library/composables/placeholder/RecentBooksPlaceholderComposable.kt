@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.valentinilk.shimmer.shimmer
-import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 
 @Composable
@@ -72,11 +71,7 @@ fun RecentBookItemComposable(
                 .background(Color.Gray),
         )
 
-        if (libraryViewModel.fetchPreferredLibraryType() == LibraryType.LIBRARY) {
-            Spacer(modifier = Modifier.height(14.dp))
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+        Spacer(modifier = Modifier.height(14.dp))
 
         Column(modifier = Modifier.padding(horizontal = 4.dp)) {
             Text(
@@ -89,20 +84,18 @@ fun RecentBookItemComposable(
                     .shimmer()
                     .background(Color.Gray),
             )
-            if (libraryViewModel.fetchPreferredLibraryType() == LibraryType.LIBRARY) {
-                Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    color = Color.Transparent,
-                    text = "Fyodor Dostoevsky",
-                    style = MaterialTheme.typography.bodySmall,
-                    maxLines = 1,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .shimmer()
-                        .background(Color.Gray),
-                )
-            }
+            Text(
+                color = Color.Transparent,
+                text = "Fyodor Dostoevsky",
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .shimmer()
+                    .background(Color.Gray),
+            )
         }
     }
 }
