@@ -63,6 +63,7 @@ class PlayerWidgetStateService @Inject constructor(
                                     onFailure = { null },
                                 )
                         }
+
                         else -> cachedCover
                     }
                 }
@@ -85,9 +86,9 @@ class PlayerWidgetStateService @Inject constructor(
             return null
         }
 
-        return when (book.chapters.size >= chapterIndex && chapterIndex >= 0) {
+        return when (chapterIndex in book.chapters.indices) {
             true -> book.chapters[chapterIndex].title
-            false -> book.title // as a fallback for items without chapters
+            false -> book.title
         }
     }
 
