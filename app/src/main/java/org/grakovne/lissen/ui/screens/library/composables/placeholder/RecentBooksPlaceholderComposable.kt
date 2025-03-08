@@ -76,7 +76,7 @@ fun RecentBookItemComposable(
         Column(modifier = Modifier.padding(horizontal = 4.dp)) {
             Text(
                 color = Color.Transparent,
-                text = "Crime and Punishment",
+                text = "Crime and Punishment. Novel",
                 style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold),
                 maxLines = 1,
                 modifier = Modifier
@@ -84,6 +84,7 @@ fun RecentBookItemComposable(
                     .shimmer()
                     .background(Color.Gray),
             )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
