@@ -117,7 +117,7 @@ fun MiniPlayerComposable(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(colorScheme.background)
+                    .background(colorScheme.tertiaryContainer)
                     .clickable { navController.showPlayer(book.id, book.title, book.subtitle) }
                     .padding(horizontal = 20.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,

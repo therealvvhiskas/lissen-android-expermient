@@ -12,6 +12,7 @@ private val LightColorScheme = lightColorScheme(
     primary = FoxOrange,
     secondary = Dark,
     tertiary = FoxOrange,
+    tertiaryContainer = LightBackground,
     background = LightBackground,
     surface = LightBackground,
     surfaceContainer = Color(0xFFEEEEEE),
@@ -19,12 +20,14 @@ private val LightColorScheme = lightColorScheme(
 
 private val DarkColorScheme = darkColorScheme(
     primary = FoxOrange,
+    tertiaryContainer = Color(0xFF1A1A1A),
 )
 
 private val BlackColorScheme = darkColorScheme(
     primary = FoxOrange,
     background = Black,
     surface = Black,
+    tertiaryContainer = Black,
 )
 
 @Composable
