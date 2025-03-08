@@ -267,16 +267,19 @@ class PlaybackService : MediaSessionService() {
 
                 val targetChapterIndex = cumulativeDurationsMs.indexOfFirst { it > positionMs }
 
-                if (targetChapterIndex == -1) {
-                    val lastChapterIndex = items.size - 1
-                    val lastChapterDurationMs = durationsMs.last()
-                    exoPlayer.seekTo(lastChapterIndex, lastChapterDurationMs)
-                    return
-                }
+                when (targetChapterIndex - 1 >= 0) {
+                    true -> {
+                        val chapterStartTimeMs = cumulativeDurationsMs[targetChapterIndex - 1]
+                        val chapterProgressMs = positionMs - chapterStartTimeMs
+                        exoPlayer.seekTo(targetChapterIndex - 1, chapterProgressMs)
+                    }
 
-                val chapterStartTimeMs = cumulativeDurationsMs[targetChapterIndex - 1]
-                val chapterProgressMs = positionMs - chapterStartTimeMs
-                exoPlayer.seekTo(targetChapterIndex - 1, chapterProgressMs)
+                    false -> {
+                        val lastChapterIndex = items.size - 1
+                        val lastChapterDurationMs = durationsMs.last()
+                        exoPlayer.seekTo(lastChapterIndex, lastChapterDurationMs)
+                    }
+                }
             }
         }
     }
