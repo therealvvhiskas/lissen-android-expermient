@@ -102,6 +102,10 @@ class LibraryViewModel @Inject constructor(
         viewModelScope.launch { _searchToken.emit(token) }
     }
 
+    fun fetchPreferredLibraryTitle(): String? = preferences
+        .getPreferredLibrary()
+        ?.title
+
     fun fetchPreferredLibraryType() = preferences
         .getPreferredLibrary()
         ?.type

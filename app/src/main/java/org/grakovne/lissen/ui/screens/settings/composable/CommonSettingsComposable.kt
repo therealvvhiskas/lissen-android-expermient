@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.common.ColorScheme
+import org.grakovne.lissen.ui.screens.library.PreferredLibrarySettingComposable
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
@@ -99,15 +100,13 @@ fun CommonSettingsComposable(
     }
 
     if (preferredLibraryExpanded && libraries != null && libraries.isNotEmpty()) {
-        CommonSettingsItemComposable(
-            items = libraries.map { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
-            selectedItem = preferredLibrary?.let { CommonSettingsItem(it.id, it.title, it.type.provideIcon()) },
+        PreferredLibrarySettingComposable(
+            libraries = libraries,
+            preferredLibrary = preferredLibrary,
             onDismissRequest = { preferredLibraryExpanded = false },
-            onItemSelected = { item ->
-                libraries
-                    .find { it.id == item.id }
-                    ?.let { viewModel.preferLibrary(it) }
-                    ?.also { playerViewModel.clearPlayingBook() }
+            onItemSelected = {
+                viewModel.preferLibrary(it)
+                playerViewModel.clearPlayingBook()
             },
         )
     }
@@ -144,7 +143,7 @@ private fun ColorScheme.toItem(context: Context): CommonSettingsItem {
     return CommonSettingsItem(id, name, null)
 }
 
-private fun LibraryType.provideIcon() = when (this) {
+fun LibraryType.provideIcon() = when (this) {
     LibraryType.LIBRARY -> Icons.Outlined.Book
     LibraryType.PODCAST -> Icons.Outlined.Podcasts
     LibraryType.UNKNOWN -> Icons.Outlined.NotInterested
