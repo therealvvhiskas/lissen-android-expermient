@@ -1,10 +1,14 @@
 package org.grakovne.lissen.ui.screens.library
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.NotInterested
+import androidx.compose.material.icons.outlined.Podcasts
 import androidx.compose.runtime.Composable
+import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItem
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItemComposable
-import org.grakovne.lissen.ui.screens.settings.composable.provideIcon
 
 @Composable
 fun PreferredLibrarySettingComposable(
@@ -26,4 +30,10 @@ fun PreferredLibrarySettingComposable(
             }
         },
     )
+}
+
+fun LibraryType.provideIcon() = when (this) {
+    LibraryType.LIBRARY -> Icons.Outlined.Book
+    LibraryType.PODCAST -> Icons.Outlined.Podcasts
+    LibraryType.UNKNOWN -> Icons.Outlined.NotInterested
 }
