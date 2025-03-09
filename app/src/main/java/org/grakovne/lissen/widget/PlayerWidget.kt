@@ -23,6 +23,7 @@ import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -81,7 +82,7 @@ class PlayerWidget : GlanceAppWidget() {
                         .fillMaxWidth()
                         .background(GlanceTheme.colors.background)
                         .padding(16.dp)
-                        .clickable(onClick = actionRunCallback<RunLissenActionCallback>()),
+                        .safelyRunOnClick(context),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Row(
@@ -204,6 +205,12 @@ class PlayerWidget : GlanceAppWidget() {
         }
     }
 
+    private fun GlanceModifier.safelyRunOnClick(
+        context: Context,
+    ) = provideAppLaunchIntent(context)
+        ?.let { intent -> this.clickable(onClick = actionStartActivity(intent)) }
+        ?: this
+
     companion object {
 
         val bookIdKey = ActionParameters.Key<String>("book_id")
@@ -287,25 +294,10 @@ class PreviousChapterActionCallback : ActionCallback {
     }
 }
 
-class RunLissenActionCallback : ActionCallback {
-
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters,
-    ) {
-        val launchIntent = context
-            .packageManager
-            .getLaunchIntentForPackage(context.packageName)
-            ?: return
-
-        context.startActivity(
-            launchIntent.apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            },
-        )
-    }
-}
+private fun provideAppLaunchIntent(context: Context): Intent? = context
+    .packageManager
+    .getLaunchIntentForPackage(context.packageName)
+    ?.apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP }
 
 private suspend fun safelyRun(
     playingItemId: String,
