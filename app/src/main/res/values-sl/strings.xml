@@ -88,4 +88,6 @@
     <string name="playing_item_details_year">Leto</string>
     <string name="playing_item_details_series">Serija</string>
     <string name="color_scheme_black">Črna</string>
+    <string name="settings_screen_donate_title">Podpora</string>
+    <string name="settings_screen_donate_subtitle">Hvala za vašo pomoč</string>
 </resources>

@@ -88,4 +88,6 @@
     <string name="playing_item_details_year">Jaar</string>
     <string name="playing_item_details_series">Serie</string>
     <string name="color_scheme_black">Zwart</string>
+    <string name="settings_screen_donate_title">Doneren</string>
+    <string name="settings_screen_donate_subtitle">Bedankt voor je steun</string>
 </resources>

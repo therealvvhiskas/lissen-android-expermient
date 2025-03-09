@@ -88,4 +88,6 @@
     <string name="playing_item_details_year">Year</string>
     <string name="playing_item_details_series">Series</string>
     <string name="color_scheme_black">Black</string>
+    <string name="settings_screen_donate_title">Donate</string>
+    <string name="settings_screen_donate_subtitle">Thanks for your support</string>
 </resources>

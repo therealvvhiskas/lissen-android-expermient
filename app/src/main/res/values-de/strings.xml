@@ -88,4 +88,6 @@
     <string name="downloads_menu_download_option_entire_podcast">Ganzer Podcast</string>
     <string name="downloads_menu_download_option_clear_chapters">Heruntergeladene Kapitel löschen</string>
     <string name="playing_item_details_publisher">Herausgeber</string>
+    <string name="settings_screen_donate_title">Spenden</string>
+    <string name="settings_screen_donate_subtitle">Vielen Dank für Ihre Unterstützung</string>
 </resources>

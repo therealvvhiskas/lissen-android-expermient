@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Lissen</string>
     <string name="library_screen_library_title">Bibliothèque</string>
     <string name="library_screen_continue_listening_title">Poursuivre l\'écoute</string>
     <string name="library_screen_downloads_menu_item">Téléchargements</string>
@@ -89,4 +88,6 @@
     <string name="playing_item_details_year">Année</string>
     <string name="playing_item_details_series">Série</string>
     <string name="color_scheme_black">Noire</string>
+    <string name="settings_screen_donate_title">Faire un don</string>
+    <string name="settings_screen_donate_subtitle">Merci pour votre soutien</string>
 </resources>

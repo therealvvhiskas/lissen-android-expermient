@@ -88,4 +88,6 @@
     <string name="playing_item_details_year">Год</string>
     <string name="playing_item_details_series">Серия</string>
     <string name="color_scheme_black">Черная</string>
+    <string name="settings_screen_donate_title">Поддержать</string>
+    <string name="settings_screen_donate_subtitle">Спасибо за Вашу помощь</string>
 </resources>
