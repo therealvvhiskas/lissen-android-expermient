@@ -15,6 +15,14 @@
   * Streaming Support: Stream your audiobooks directly from the cloud without needing to download them first.
   * Offline Listening: Download audiobooks to listen offline, ideal for those who want to access their collection without an internet connection.
 
+### Disclaimer
+
+Lissen is not a clone of the official Audiobookshelf app and does not aim to replicate all of its features. 
+The goal of this project is to provide a minimalistic interface and a seamless experience for listening to audiobooks and podcasts.
+
+If there’s a feature you feel is missing or would significantly improve your experience, feel free to open an issue and share your suggestion. 
+While not every feature request will be implemented, all ideas are welcome and will be thoughtfully considered.
+
 ### Screenshots
 
 <p align="center">
