@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +19,13 @@ tasks.lintKotlinMain {
     dependsOn(tasks.formatKotlinMain)
 }
 
+val localProperties = Properties().apply {
+    rootProject
+            .file("local.properties")
+            .takeIf { it.exists() }
+            ?.let { file -> file.inputStream().use { load(it) } }
+}
+
 android {
     namespace = "org.grakovne.lissen"
     compileSdk = 35
@@ -29,8 +38,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 77
-        versionName = "1.2.16"
+        versionCode = 78
+        versionName = "1.3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,6 +49,12 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
+
+        val acraReportLogin = localProperties.getProperty("acra.report.login") ?: ""
+        val acraReportPassword = localProperties.getProperty("acra.report.password") ?: ""
+
+        buildConfigField("String", "ACRA_REPORT_LOGIN", "\"$acraReportLogin\"")
+        buildConfigField("String", "ACRA_REPORT_PASSWORD", "\"$acraReportPassword\"")
     }
 
     buildTypes {
@@ -61,9 +76,6 @@ android {
         buildConfig = true
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1,MIT}"
@@ -74,8 +86,6 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.palette.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
     implementation(libs.material3)
@@ -91,7 +101,6 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
 
-    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.compose.material.icons.extended)
@@ -102,24 +111,20 @@ dependencies {
     implementation(libs.androidx.media3.datasource.okhttp)
     kapt(libs.hilt.android.compiler)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.exoplayer.hls)
-    implementation(libs.androidx.media3.ui)
 
     implementation(libs.androidx.glance)
     implementation(libs.androidx.glance.appwidget)
-    implementation (libs.androidx.glance.material3)
+    implementation(libs.androidx.glance.material3)
 
     implementation(libs.acra.core)
     implementation(libs.acra.http)
