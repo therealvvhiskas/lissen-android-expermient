@@ -90,4 +90,7 @@
     <string name="color_scheme_black">Black</string>
     <string name="settings_screen_donate_title">Donate</string>
     <string name="settings_screen_donate_subtitle">Thanks for your support</string>
+    <string name="chapters_list_empty">The book has no chapters</string>
+    <string name="episodes_list_empty">No podcast has no episodes</string>
+    <string name="items_list_empty">No available items</string>
 </resources>

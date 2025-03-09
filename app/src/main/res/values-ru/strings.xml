@@ -90,4 +90,7 @@
     <string name="color_scheme_black">Черная</string>
     <string name="settings_screen_donate_title">Поддержать</string>
     <string name="settings_screen_donate_subtitle">Спасибо за Вашу помощь</string>
+    <string name="chapters_list_empty">У книги нет глав</string>
+    <string name="episodes_list_empty">У подкаста нет выпусков</string>
+    <string name="items_list_empty">У элемента нет эпизодов</string>
 </resources>

@@ -90,4 +90,7 @@
     <string name="color_scheme_black">Črna</string>
     <string name="settings_screen_donate_title">Podpora</string>
     <string name="settings_screen_donate_subtitle">Hvala za vašo pomoč</string>
+    <string name="chapters_list_empty">Knjiga je brez poglavij</string>
+    <string name="episodes_list_empty">Podcast nima epizod</string>
+    <string name="items_list_empty">Element nima epizod</string>
 </resources>

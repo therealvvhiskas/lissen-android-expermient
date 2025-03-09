@@ -67,6 +67,7 @@ import org.grakovne.lissen.ui.screens.player.composable.NavigationBarComposable
 import org.grakovne.lissen.ui.screens.player.composable.PlayingQueueComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackControlComposable
 import org.grakovne.lissen.ui.screens.player.composable.TrackDetailsComposable
+import org.grakovne.lissen.ui.screens.player.composable.fallback.PlayingQueueFallbackComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.PlayingQueuePlaceholderComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackControlPlaceholderComposable
 import org.grakovne.lissen.ui.screens.player.composable.placeholder.TrackDetailsPlaceholderComposable
@@ -246,17 +247,27 @@ fun PlayerScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (isPlaybackReady) {
-                    PlayingQueueComposable(
-                        libraryViewModel = libraryViewModel,
-                        viewModel = playerViewModel,
-                        modifier = Modifier,
-                    )
-                } else {
-                    PlayingQueuePlaceholderComposable(
-                        libraryViewModel = libraryViewModel,
-                        modifier = Modifier,
-                    )
+                when {
+                    isPlaybackReady.not() -> {
+                        PlayingQueuePlaceholderComposable(
+                            libraryViewModel = libraryViewModel,
+                            modifier = Modifier,
+                        )
+                    }
+                    playingBook?.chapters.isNullOrEmpty() -> {
+                        PlayingQueueFallbackComposable(
+                            libraryViewModel = libraryViewModel,
+                            modifier = Modifier,
+                        )
+                    }
+
+                    else -> {
+                        PlayingQueueComposable(
+                            libraryViewModel = libraryViewModel,
+                            viewModel = playerViewModel,
+                            modifier = Modifier,
+                        )
+                    }
                 }
             }
         },
