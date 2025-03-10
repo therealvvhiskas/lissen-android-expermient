@@ -6,6 +6,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.SilenceMediaSource
 import org.grakovne.lissen.common.RunningComponent
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,10 +14,19 @@ import javax.inject.Singleton
 @OptIn(UnstableApi::class)
 class PlaybackNotificationService @Inject constructor(
     private val exoPlayer: ExoPlayer,
+    private val sharedPreferences: LissenSharedPreferences,
 ) : RunningComponent {
 
     override fun onCreate() {
         exoPlayer.addListener(object : Player.Listener {
+
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                super.onPlayWhenReadyChanged(playWhenReady, reason)
+
+                if (playWhenReady) {
+                    exoPlayer.setPlaybackSpeed(sharedPreferences.getPlaybackSpeed())
+                }
+            }
 
             override fun onPositionDiscontinuity(
                 oldPosition: Player.PositionInfo,
