@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.library.composables
 
+import android.view.View
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
@@ -42,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import coil.ImageLoader
 import coil.request.ImageRequest
 import org.grakovne.lissen.R
+import org.grakovne.lissen.common.hapticAction
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
 import org.grakovne.lissen.ui.navigation.AppNavigationService
@@ -62,6 +65,8 @@ fun MiniPlayerComposable(
     imageLoader: ImageLoader,
     playerViewModel: PlayerViewModel,
 ) {
+    val view: View = LocalView.current
+
     val isPlaying: Boolean by playerViewModel.isPlaying.observeAsState(false)
     var backgroundVisible by remember { mutableStateOf(true) }
 
@@ -175,7 +180,7 @@ fun MiniPlayerComposable(
                 ) {
                     Row {
                         IconButton(
-                            onClick = { playerViewModel.togglePlayPause() },
+                            onClick = { hapticAction(view) { playerViewModel.togglePlayPause() } },
                         ) {
                             Icon(
                                 imageVector = if (isPlaying) Icons.Outlined.PauseCircleOutline else Icons.Outlined.PlayCircle,
