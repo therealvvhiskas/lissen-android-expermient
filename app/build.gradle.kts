@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
 
-    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jmailen.kotlinter") version "3.15.0"
     id("com.google.devtools.ksp")
@@ -109,7 +108,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.media3.datasource.okhttp)
-    kapt(libs.hilt.android.compiler)
+    ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
