@@ -36,6 +36,7 @@ import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -292,6 +293,9 @@ class PlaybackService : MediaSessionService() {
     private fun createOkHttpClient(): OkHttpClient {
         return OkHttpClient
             .Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(90, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .withTrustedCertificates()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
