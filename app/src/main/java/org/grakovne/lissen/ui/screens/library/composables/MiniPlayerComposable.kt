@@ -77,7 +77,7 @@ fun MiniPlayerComposable(
                 SwipeToDismissBoxValue.EndToStart,
                 SwipeToDismissBoxValue.StartToEnd,
                 -> {
-                    backgroundVisible = false
+                    hapticAction(view) { backgroundVisible = false }
                     true
                 }
 
