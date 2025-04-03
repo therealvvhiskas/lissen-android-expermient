@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -34,9 +33,7 @@ import org.grakovne.lissen.ui.screens.settings.composable.AdditionalComposable
 import org.grakovne.lissen.ui.screens.settings.composable.AdvancedSettingsItemComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ColorSchemeSettingsComposable
 import org.grakovne.lissen.ui.screens.settings.composable.DonateLinkComposable
-import org.grakovne.lissen.ui.screens.settings.composable.PreferredLibrarySettingsComposable
 import org.grakovne.lissen.ui.screens.settings.composable.ServerSettingsComposable
-import org.grakovne.lissen.viewmodel.PlayerViewModel
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
@@ -46,12 +43,7 @@ fun SettingsScreen(
     navController: AppNavigationService,
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
-    val playerViewModel: PlayerViewModel = hiltViewModel()
     val host by viewModel.host.observeAsState("")
-
-    LaunchedEffect(Unit) {
-        viewModel.fetchLibraries()
-    }
 
     Scaffold(
         topBar = {
@@ -93,10 +85,9 @@ fun SettingsScreen(
                 ) {
                     if (host?.isNotEmpty() == true) {
                         ServerSettingsComposable(navController, viewModel)
-
-                        PreferredLibrarySettingsComposable(viewModel, playerViewModel)
-                        ColorSchemeSettingsComposable(viewModel)
                     }
+
+                    ColorSchemeSettingsComposable(viewModel)
 
                     AdvancedSettingsItemComposable(
                         title = stringResource(R.string.settings_screen_custom_headers_title),
