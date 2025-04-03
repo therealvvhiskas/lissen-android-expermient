@@ -37,8 +37,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 82
-        versionName = "1.3.4"
+        versionCode = 83
+        versionName = "1.3.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.media3.datasource.okhttp)
+    implementation(libs.androidx.lifecycle.service)
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.activity.compose)

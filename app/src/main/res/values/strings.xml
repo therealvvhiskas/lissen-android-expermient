@@ -93,4 +93,8 @@
     <string name="chapters_list_empty">The book has no chapters</string>
     <string name="episodes_list_empty">No podcast has no episodes</string>
     <string name="items_list_empty">No available items</string>
+    <string name="notification_content_caching_channel">Content Caching</string>
+    <string name="notification_content_caching_title">Content is caching</string>
+    <string name="notification_content_caching_error_title">Caching failed</string>
+    <string name="notification_content_caching_error_description">A few files weren’t saved</string>
 </resources>
