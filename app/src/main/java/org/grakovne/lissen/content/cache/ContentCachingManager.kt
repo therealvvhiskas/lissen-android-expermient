@@ -14,9 +14,11 @@ import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.DownloadOption
 import org.grakovne.lissen.domain.PlayingChapter
-import org.grakovne.lissen.viewmodel.CacheProgress
+import org.grakovne.lissen.viewmodel.CacheState
+import org.grakovne.lissen.viewmodel.CacheStatus
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.coroutines.coroutineContext
 
 @Singleton
 class ContentCachingManager @Inject constructor(
@@ -32,7 +34,8 @@ class ContentCachingManager @Inject constructor(
         channel: MediaChannel,
         currentTotalPosition: Double,
     ) = flow {
-        emit(CacheProgress.Caching)
+        val context = coroutineContext
+        emit(CacheState(CacheStatus.Caching))
 
         val requestedChapters = calculateRequestedChapters(
             book = mediaItem,
@@ -41,7 +44,13 @@ class ContentCachingManager @Inject constructor(
         )
 
         val requestedFiles = findRequestedFiles(mediaItem, requestedChapters)
-        val mediaCachingResult = cacheBookMedia(mediaItem.id, requestedFiles, channel)
+
+        val mediaCachingResult = cacheBookMedia(
+            mediaItem.id,
+            requestedFiles,
+            channel,
+        ) { withContext(context) { emit(CacheState(CacheStatus.Caching, it)) } }
+
         val coverCachingResult = cacheBookCover(mediaItem, channel)
         val librariesCachingResult = cacheLibraries(channel)
 
@@ -51,12 +60,12 @@ class ContentCachingManager @Inject constructor(
                 coverCachingResult,
                 librariesCachingResult,
             )
-                .all { it == CacheProgress.Completed } -> {
+                .all { it.status == CacheStatus.Completed } -> {
                 cacheBookInfo(mediaItem, requestedChapters)
-                emit(CacheProgress.Completed)
+                emit(CacheState(CacheStatus.Completed))
             }
 
-            else -> emit(CacheProgress.Error)
+            else -> emit(CacheState(CacheStatus.Error))
         }
     }
 
@@ -78,11 +87,12 @@ class ContentCachingManager @Inject constructor(
         bookId: String,
         files: List<BookFile>,
         channel: MediaChannel,
-    ): CacheProgress = withContext(Dispatchers.IO) {
+        onProgress: suspend (Double) -> Unit,
+    ): CacheState = withContext(Dispatchers.IO) {
         val headers = requestHeadersProvider.fetchRequestHeaders()
         val client = createOkHttpClient()
 
-        files.map { file ->
+        files.mapIndexed { index, file ->
             val uri = channel.provideFileUri(bookId, file.id)
             val requestBuilder = Request.Builder().url(uri.toString())
             headers.forEach { requestBuilder.addHeader(it.name, it.value) }
@@ -92,10 +102,10 @@ class ContentCachingManager @Inject constructor(
 
             if (!response.isSuccessful) {
                 Log.e(TAG, "Unable to cache media content: $response")
-                return@withContext CacheProgress.Error
+                return@withContext CacheState(CacheStatus.Error)
             }
 
-            val body = response.body ?: return@withContext CacheProgress.Error
+            val body = response.body ?: return@withContext CacheState(CacheStatus.Error)
             val dest = properties.provideMediaCachePatch(bookId, file.id)
             dest.parentFile?.mkdirs()
 
@@ -104,12 +114,14 @@ class ContentCachingManager @Inject constructor(
                     input.copyTo(output)
                 }
             }
+
+            onProgress(files.size.takeIf { it != 0 }?.let { index / it.toDouble() } ?: 0.0)
         }
 
-        CacheProgress.Completed
+        CacheState(CacheStatus.Completed)
     }
 
-    private suspend fun cacheBookCover(book: DetailedItem, channel: MediaChannel): CacheProgress {
+    private suspend fun cacheBookCover(book: DetailedItem, channel: MediaChannel): CacheState {
         val file = properties.provideBookCoverPath(book.id)
 
         return withContext(Dispatchers.IO) {
@@ -130,26 +142,26 @@ class ContentCachingManager @Inject constructor(
                     },
                 )
 
-            CacheProgress.Completed
+            CacheState(CacheStatus.Completed)
         }
     }
 
     private suspend fun cacheBookInfo(
         book: DetailedItem,
         fetchedChapters: List<PlayingChapter>,
-    ): CacheProgress = bookRepository
+    ): CacheState = bookRepository
         .cacheBook(book, fetchedChapters)
-        .let { CacheProgress.Completed }
+        .let { CacheState(CacheStatus.Completed) }
 
-    private suspend fun cacheLibraries(channel: MediaChannel): CacheProgress = channel
+    private suspend fun cacheLibraries(channel: MediaChannel): CacheState = channel
         .fetchLibraries()
         .foldAsync(
             onSuccess = {
                 libraryRepository.cacheLibraries(it)
-                CacheProgress.Completed
+                CacheState(CacheStatus.Completed)
             },
             onFailure = {
-                CacheProgress.Error
+                CacheState(CacheStatus.Error)
             },
         )
 

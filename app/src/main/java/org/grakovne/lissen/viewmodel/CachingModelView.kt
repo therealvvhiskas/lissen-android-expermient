@@ -26,15 +26,15 @@ class CachingModelView @Inject constructor(
     private val preferences: LissenSharedPreferences,
 ) : ViewModel() {
 
-    private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheProgress>>()
+    private val _bookCachingProgress = mutableMapOf<String, MutableStateFlow<CacheStatus>>()
 
     init {
         viewModelScope.launch {
-            contentCachingProgress.progressFlow.collect { (itemId, progress) ->
-                val flow = _bookCachingProgress.getOrPut(itemId) {
-                    MutableStateFlow(progress)
+            contentCachingProgress.statusFlow.collect { (item, progress) ->
+                val flow = _bookCachingProgress.getOrPut(item.id) {
+                    MutableStateFlow(progress.status)
                 }
-                flow.value = progress
+                flow.value = progress.status
             }
         }
     }
@@ -58,7 +58,7 @@ class CachingModelView @Inject constructor(
     }
 
     fun getProgress(bookId: String) = _bookCachingProgress
-        .getOrPut(bookId) { MutableStateFlow(CacheProgress.Idle) }
+        .getOrPut(bookId) { MutableStateFlow(CacheStatus.Idle) }
 
     fun dropCache(bookId: String) {
         viewModelScope

@@ -7,14 +7,17 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.DetailedItem
-import org.grakovne.lissen.viewmodel.CacheProgress
+import org.grakovne.lissen.viewmodel.CacheState
+import org.grakovne.lissen.viewmodel.CacheStatus
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 
 @Singleton
 class ContentCachingNotificationService @Inject constructor(
     @ApplicationContext private val context: Context,
 ) {
+
     private val service = context.getSystemService(NotificationManager::class.java)
 
     fun cancel() = context
@@ -22,17 +25,34 @@ class ContentCachingNotificationService @Inject constructor(
         .cancel(NOTIFICATION_ID)
 
     fun updateCachingNotification(
-        items: List<Pair<DetailedItem, CacheProgress>>,
-    ): Notification = Notification
-        .Builder(context, createNotificationChannel())
-        .setContentText(items.provideCachingTitles())
-        .setSubText(context.getString(R.string.notification_content_caching_title))
-        .setSmallIcon(R.drawable.ic_downloading)
-        .setOngoing(true)
-        .setOnlyAlertOnce(true)
-        .setProgress(0, 0, true)
-        .build()
-        .also { service.notify(NOTIFICATION_ID, it) }
+        items: List<Pair<DetailedItem, CacheState>>,
+    ): Notification {
+        val cachingItems = items
+            .filter { (_, state) -> listOf(CacheStatus.Caching, CacheStatus.Completed).contains(state.status) }
+
+        val itemProgress = cachingItems.sumOf { (_, state) ->
+            when (state.status) {
+                CacheStatus.Caching -> state.progress
+                CacheStatus.Completed -> 1.0
+                else -> 0.0
+            }
+        }
+
+        return Notification
+            .Builder(context, createNotificationChannel())
+            .setContentText(items.provideCachingTitles())
+            .setContentTitle(context.getString(R.string.notification_content_caching_title))
+            .setSmallIcon(R.drawable.ic_downloading)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setProgress(
+                cachingItems.size * 100,
+                (itemProgress * 100).roundToInt(),
+                cachingItems.isEmpty(),
+            )
+            .build()
+            .also { service.notify(NOTIFICATION_ID, it) }
+    }
 
     fun updateErrorNotification(): Notification = Notification
         .Builder(context, createNotificationChannel())
@@ -57,8 +77,8 @@ class ContentCachingNotificationService @Inject constructor(
 
     companion object {
 
-        private fun List<Pair<DetailedItem, CacheProgress>>.provideCachingTitles() = this
-            .filter { (_, status) -> CacheProgress.Caching == status }
+        private fun List<Pair<DetailedItem, CacheState>>.provideCachingTitles() = this
+            .filter { (_, state) -> CacheStatus.Caching == state.status }
             .joinToString(", ") { (key, _) -> key.title }
 
         const val NOTIFICATION_ID = 2042025

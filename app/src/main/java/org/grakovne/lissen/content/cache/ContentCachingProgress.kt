@@ -2,16 +2,17 @@ package org.grakovne.lissen.content.cache
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import org.grakovne.lissen.viewmodel.CacheProgress
+import org.grakovne.lissen.domain.DetailedItem
+import org.grakovne.lissen.viewmodel.CacheState
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ContentCachingProgress @Inject constructor() {
-    private val _progressFlow = MutableSharedFlow<Pair<String, CacheProgress>>(replay = 1)
-    val progressFlow = _progressFlow.asSharedFlow()
+    private val _statusFlow = MutableSharedFlow<Pair<DetailedItem, CacheState>>(replay = 1)
+    val statusFlow = _statusFlow.asSharedFlow()
 
-    suspend fun emit(itemId: String, progress: CacheProgress) {
-        _progressFlow.emit(itemId to progress)
+    suspend fun emit(item: DetailedItem, progress: CacheState) {
+        _statusFlow.emit(item to progress)
     }
 }

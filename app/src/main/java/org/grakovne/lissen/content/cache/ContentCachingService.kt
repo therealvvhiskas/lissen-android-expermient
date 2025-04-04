@@ -10,7 +10,8 @@ import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.content.cache.ContentCachingNotificationService.Companion.NOTIFICATION_ID
 import org.grakovne.lissen.domain.ContentCachingTask
 import org.grakovne.lissen.domain.DetailedItem
-import org.grakovne.lissen.viewmodel.CacheProgress
+import org.grakovne.lissen.viewmodel.CacheState
+import org.grakovne.lissen.viewmodel.CacheStatus
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -28,7 +29,7 @@ class ContentCachingService : LifecycleService() {
     @Inject
     lateinit var notificationService: ContentCachingNotificationService
 
-    private val executionStatuses = mutableMapOf<DetailedItem, CacheProgress>()
+    private val executionStatuses = mutableMapOf<DetailedItem, CacheState>()
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(
@@ -70,9 +71,9 @@ class ContentCachingService : LifecycleService() {
                 .run(mediaProvider.providePreferredChannel())
                 .collect { progress ->
                     executionStatuses[item] = progress
-                    cacheProgressBus.emit(item.id, progress)
+                    cacheProgressBus.emit(item, progress)
 
-                    Log.d(TAG, "Caching progress updated: ${executionStatuses.entries.map { (item, status) -> "${item.id}: $status" }}")
+                    Log.d(TAG, "Caching progress updated: $progress")
 
                     when (inProgress()) {
                         true ->
@@ -90,10 +91,10 @@ class ContentCachingService : LifecycleService() {
     }
 
     private fun inProgress(): Boolean =
-        executionStatuses.values.any { it == CacheProgress.Caching }
+        executionStatuses.values.any { it.status == CacheStatus.Caching }
 
     private fun hasErrors(): Boolean =
-        executionStatuses.values.any { it == CacheProgress.Error }
+        executionStatuses.values.any { it.status == CacheStatus.Error }
 
     private fun finish() {
         when (hasErrors()) {
@@ -113,7 +114,8 @@ class ContentCachingService : LifecycleService() {
     }
 
     companion object {
-        val CACHING_TASK_EXTRA = "CACHING_TASK_EXTRA"
+
+        const val CACHING_TASK_EXTRA = "CACHING_TASK_EXTRA"
         private const val TAG = "ContentCachingService"
     }
 }
