@@ -95,4 +95,6 @@
     <string name="chapters_list_empty">Il libro non ha capitoli</string>
     <string name="notification_content_caching_error_title">La memorizzazione nella cache non è riuscita</string>
     <string name="notification_content_caching_error_description">Alcuni file non sono stati salvati</string>
+    <string name="notification_content_caching_channel">Cache dei contenuti</string>
+    <string name="notification_content_caching_title">Caching dei contenuti in corso</string>
 </resources>
