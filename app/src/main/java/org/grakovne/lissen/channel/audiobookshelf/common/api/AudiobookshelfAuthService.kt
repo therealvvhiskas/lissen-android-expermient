@@ -142,7 +142,7 @@ class AudiobookshelfAuthService @Inject constructor(
                         contextCache.storeCookies(cookieHeaders)
 
                         onSuccess()
-                        openAuthInCustomTab(context, location)
+                        forwardAuthRequest(context, location)
                     } catch (ex: Exception) {
                         onFailure(examineError(ex.message ?: ""))
                     }
@@ -150,7 +150,7 @@ class AudiobookshelfAuthService @Inject constructor(
             })
     }
 
-    fun openAuthInCustomTab(context: Context, url: String) {
+    fun forwardAuthRequest(context: Context, url: String) {
         val customTabsIntent = CustomTabsIntent.Builder().build()
         customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_TASK)
         customTabsIntent.launchUrl(context, url.toUri())
