@@ -1,12 +1,11 @@
 package org.grakovne.lissen.ui.screens.player.composable
 
+import android.view.View
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,11 +23,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
+import org.grakovne.lissen.common.hapticAction
 import org.grakovne.lissen.ui.PlaybackSpeedSlider
 import java.util.Locale
 
@@ -39,6 +40,7 @@ fun PlaybackSpeedComposable(
     onSpeedChange: (Float) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
+    val view: View = LocalView.current
     var selectedPlaybackSpeed by remember { mutableFloatStateOf(currentSpeed) }
 
     ModalBottomSheet(
@@ -76,32 +78,30 @@ fun PlaybackSpeedComposable(
                     playbackSpeedPresets.forEach { value ->
                         FilledTonalButton(
                             onClick = {
-                                selectedPlaybackSpeed = value
-                                onSpeedChange(value)
+                                hapticAction(view) {
+                                    selectedPlaybackSpeed = value
+                                    onSpeedChange(value)
+                                }
                             },
                             modifier = Modifier.size(56.dp),
                             shape = CircleShape,
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = if (selectedPlaybackSpeed == value) colorScheme.primary else colorScheme.surfaceContainer,
-                                contentColor = if (selectedPlaybackSpeed == value) colorScheme.onPrimary else colorScheme.onSurfaceVariant
+                                contentColor = if (selectedPlaybackSpeed == value) colorScheme.onPrimary else colorScheme.onSurfaceVariant,
                             ),
-                            contentPadding = PaddingValues(0.dp)
+                            contentPadding = PaddingValues(0.dp),
                         ) {
                             Text(
                                 text = String.format(Locale.US, "%.2f", value),
-                                style = if (selectedPlaybackSpeed == value)
+                                style = if (selectedPlaybackSpeed == value) {
                                     typography.labelMedium.copy(fontWeight = FontWeight.Bold)
-                                else typography.labelMedium,
+                                } else typography.labelMedium,
                                 maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
                             )
                         }
                     }
                 }
-
-
-
-                Spacer(modifier = Modifier.height(8.dp))
             }
         },
     )
