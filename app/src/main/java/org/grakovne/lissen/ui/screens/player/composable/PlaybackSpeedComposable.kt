@@ -92,7 +92,7 @@ fun PlaybackSpeedComposable(
                             contentPadding = PaddingValues(0.dp),
                         ) {
                             Text(
-                                text = String.format(Locale.US, "%.2f", value),
+                                text = String.format(Locale.US, "%.1f", value),
                                 style = if (selectedPlaybackSpeed == value) {
                                     typography.labelMedium.copy(fontWeight = FontWeight.Bold)
                                 } else typography.labelMedium,
