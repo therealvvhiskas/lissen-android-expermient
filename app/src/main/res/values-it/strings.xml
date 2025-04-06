@@ -97,4 +97,7 @@
     <string name="notification_content_caching_error_description">Alcuni file non sono stati salvati</string>
     <string name="notification_content_caching_channel">Cache dei contenuti</string>
     <string name="notification_content_caching_title">Caching dei contenuti in corso</string>
+    <string name="login_error_lissen_auth_failed">Autorizzazione non riuscita. Verifica le impostazioni del server</string>
+    <string name="login_screen_open_id_button">Connetti con OpenID</string>
+    <string name="login_error_lissen_auth_scheme_must_be_whitelisted">Lo schema %1$s://%2$s non è consentito nelle impostazioni dell\'URI di reindirizzamento del server</string>
 </resources>
