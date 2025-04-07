@@ -18,16 +18,18 @@ class LissenApplication : Application() {
     @Inject
     lateinit var runningComponents: Set<@JvmSuppressWildcards RunningComponent>
 
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        initCrashReporting()
+    }
+
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
-
         runningComponents.forEach { it.onCreate() }
     }
 
-    override fun attachBaseContext(base: Context) {
-        super.attachBaseContext(base)
-
+    private fun initCrashReporting() {
         initAcra {
             buildConfigClass = BuildConfig::class.java
             reportFormat = StringFormat.JSON
