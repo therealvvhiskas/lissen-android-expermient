@@ -3,7 +3,6 @@ package org.grakovne.lissen.content.cache
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import org.grakovne.lissen.domain.DetailedItem
-import org.grakovne.lissen.viewmodel.CacheState
 import javax.inject.Inject
 import javax.inject.Singleton
 

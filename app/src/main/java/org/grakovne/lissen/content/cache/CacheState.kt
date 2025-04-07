@@ -1,4 +1,4 @@
-package org.grakovne.lissen.viewmodel
+package org.grakovne.lissen.content.cache
 
 import org.grakovne.lissen.domain.CacheStatus
 

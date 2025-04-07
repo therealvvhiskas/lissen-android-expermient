@@ -4,7 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import org.grakovne.lissen.channel.common.MediaChannel
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.DownloadOption
-import org.grakovne.lissen.viewmodel.CacheState
 
 class ContentCachingExecutor(
     private val item: DetailedItem,

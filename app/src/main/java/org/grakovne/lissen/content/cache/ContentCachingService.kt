@@ -11,7 +11,6 @@ import org.grakovne.lissen.content.cache.ContentCachingNotificationService.Compa
 import org.grakovne.lissen.domain.CacheStatus
 import org.grakovne.lissen.domain.ContentCachingTask
 import org.grakovne.lissen.domain.DetailedItem
-import org.grakovne.lissen.viewmodel.CacheState
 import javax.inject.Inject
 
 @AndroidEntryPoint

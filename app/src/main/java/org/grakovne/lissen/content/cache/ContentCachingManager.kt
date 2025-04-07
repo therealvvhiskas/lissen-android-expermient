@@ -15,7 +15,6 @@ import org.grakovne.lissen.domain.CacheStatus
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.DownloadOption
 import org.grakovne.lissen.domain.PlayingChapter
-import org.grakovne.lissen.viewmodel.CacheState
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.coroutineContext
