@@ -27,6 +27,10 @@ abstract class ChannelAuthService(
         onFailure: (String) -> Unit,
     )
 
+    abstract suspend fun fetchAuthMethods(
+        host: String,
+    ): ApiResult<List<AuthMethod>>
+
     fun persistCredentials(
         host: String,
         username: String,

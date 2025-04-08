@@ -10,12 +10,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
 import org.grakovne.lissen.channel.audiobookshelf.common.client.AudiobookshelfApiClient
+import org.grakovne.lissen.channel.audiobookshelf.common.converter.AuthMethodResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.common.converter.LoginResponseConverter
+import org.grakovne.lissen.channel.audiobookshelf.common.model.auth.AuthMethodResponse
 import org.grakovne.lissen.channel.audiobookshelf.common.model.user.CredentialsLoginRequest
 import org.grakovne.lissen.channel.audiobookshelf.common.model.user.LoggedUserResponse
 import org.grakovne.lissen.channel.audiobookshelf.common.oauth.AuthClient
@@ -24,6 +27,7 @@ import org.grakovne.lissen.channel.audiobookshelf.common.oauth.AuthScheme
 import org.grakovne.lissen.channel.common.ApiClient
 import org.grakovne.lissen.channel.common.ApiError
 import org.grakovne.lissen.channel.common.ApiResult
+import org.grakovne.lissen.channel.common.AuthMethod
 import org.grakovne.lissen.channel.common.ChannelAuthService
 import org.grakovne.lissen.channel.common.OAuthContextCache
 import org.grakovne.lissen.channel.common.randomPkce
@@ -41,6 +45,7 @@ class AudiobookshelfAuthService @Inject constructor(
     private val requestHeadersProvider: RequestHeadersProvider,
     private val preferences: LissenSharedPreferences,
     private val contextCache: OAuthContextCache,
+    private val authMethodResponseConverter: AuthMethodResponseConverter,
 ) : ChannelAuthService(preferences) {
 
     private val client = createOkHttpClient()
@@ -86,12 +91,44 @@ class AudiobookshelfAuthService @Inject constructor(
             )
     }
 
+    override suspend fun fetchAuthMethods(host: String): ApiResult<List<AuthMethod>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val url = host
+                    .toUri()
+                    .buildUpon()
+                    .appendEncodedPath("status")
+                    .build()
+
+                val client = createOkHttpClient()
+                val request = Request.Builder().url(url.toString()).get().build()
+                val response = client.newCall(request).execute()
+
+                if (!response.isSuccessful) {
+                    return@withContext ApiResult.Success(emptyList())
+                }
+
+                val body = response.body?.string()
+                    ?: return@withContext ApiResult.Success(emptyList())
+
+                val gson = Gson()
+                val authMethod = gson.fromJson(body, AuthMethodResponse::class.java)
+
+                val converted = authMethodResponseConverter.apply(authMethod)
+                ApiResult.Success(converted)
+            } catch (e: Exception) {
+                ApiResult.Success(emptyList())
+            }
+        }
+    }
+
     override suspend fun startOAuth(
         host: String,
         onSuccess: () -> Unit,
         onFailure: (ApiError) -> Unit,
     ) {
         Log.d(TAG, "Starting OAuth flow for $host")
+
         preferences.saveHost(host)
 
         val pkce = randomPkce()
