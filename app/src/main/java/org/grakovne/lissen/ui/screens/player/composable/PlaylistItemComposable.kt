@@ -37,6 +37,8 @@ fun PlaylistItemComposable(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
+            .padding(start = 6.dp)
+            .padding(end = 4.dp)
             .clickable(
                 onClick = onClick,
                 indication = null,
@@ -64,7 +66,7 @@ fun PlaylistItemComposable(
 
         Text(
             text = track.title,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.titleSmall,
             color = when (track.available) {
                 true -> colorScheme.onBackground
                 false -> colorScheme.onBackground.copy(alpha = 0.4f)
