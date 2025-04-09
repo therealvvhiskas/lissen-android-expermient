@@ -4,10 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Slider
@@ -36,18 +35,16 @@ fun TrackControlPlaceholderComposable(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 12.dp),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Slider(
                 value = 0f,
-                onValueChange = { newPosition ->
-                },
-                onValueChangeFinished = {
-                },
-                valueRange = 0f..100f,
+                onValueChange = {},
+                onValueChangeFinished = {},
+                valueRange = 0f..1f,
                 colors = SliderDefaults.colors(
                     thumbColor = colorScheme.primary,
                     activeTrackColor = colorScheme.primary,
@@ -63,7 +60,8 @@ fun TrackControlPlaceholderComposable(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 4.dp),
+                        .offset(y = (-4).dp)
+                        .padding(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
@@ -77,20 +75,18 @@ fun TrackControlPlaceholderComposable(
                         color = colorScheme.onBackground.copy(alpha = 0.6f),
                     )
                 }
-
-                Spacer(modifier = Modifier.height(64.dp))
             }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 6.dp)
                     .align(Alignment.BottomCenter),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 IconButton(
-                    onClick = {
-                    },
+                    onClick = {},
                     enabled = true,
                 ) {
                     Icon(
@@ -101,9 +97,7 @@ fun TrackControlPlaceholderComposable(
                     )
                 }
 
-                IconButton(
-                    onClick = { },
-                ) {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Rounded.Replay10,
                         contentDescription = "Rewind",
@@ -113,7 +107,7 @@ fun TrackControlPlaceholderComposable(
                 }
 
                 IconButton(
-                    onClick = { },
+                    onClick = {},
                     modifier = Modifier.size(72.dp),
                 ) {
                     Icon(
@@ -124,9 +118,7 @@ fun TrackControlPlaceholderComposable(
                     )
                 }
 
-                IconButton(
-                    onClick = { },
-                ) {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Outlined.Forward30,
                         contentDescription = "Forward",
@@ -137,10 +129,12 @@ fun TrackControlPlaceholderComposable(
 
                 IconButton(
                     onClick = {},
+                    enabled = false,
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.SkipNext,
                         contentDescription = "Next Track",
+                        tint = colorScheme.onBackground.copy(alpha = 0.3f),
                         modifier = Modifier.size(36.dp),
                     )
                 }

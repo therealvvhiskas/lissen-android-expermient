@@ -74,16 +74,17 @@ fun TrackDetailsPlaceholderComposable(
                 maxLines = 1,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp))
         }
 
         Text(
             text = stringResource(R.string.player_screen_now_playing_title_chapter_of, 100, "1000"),
-            style = typography.bodySmall,
+            style = typography.bodyMedium,
             color = Color.Transparent,
+            textAlign = TextAlign.Center,
             modifier = Modifier
-                .shimmer()
                 .clip(RoundedCornerShape(8.dp))
+                .shimmer()
                 .background(Color.Gray),
         )
     }
