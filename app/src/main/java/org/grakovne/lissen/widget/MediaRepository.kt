@@ -427,9 +427,14 @@ class MediaRepository @Inject constructor(
         var safePosition = minOf(overallDuration, maxOf(0.0, position))
 
         while (book.chapters[calculateChapterIndex(book, safePosition)].available.not()) {
-            safePosition = when (direction) {
-                ScrollingDirection.FORWARD -> book.chapters[calculateChapterIndex(book, safePosition) + 1].start
-                ScrollingDirection.BACKWARD -> book.chapters[calculateChapterIndex(book, safePosition) - 1].start
+            val chapterIndex = when (direction) {
+                ScrollingDirection.FORWARD -> calculateChapterIndex(book, safePosition) + 1
+                ScrollingDirection.BACKWARD -> calculateChapterIndex(book, safePosition) - 1
+            }
+
+            safePosition = when {
+                chapterIndex in 0..book.chapters.lastIndex -> book.chapters[chapterIndex].start
+                else -> break
             }
         }
 
