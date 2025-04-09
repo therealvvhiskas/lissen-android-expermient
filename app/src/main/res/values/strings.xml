@@ -4,7 +4,7 @@
     <string name="library_screen_continue_listening_title">Continue listening</string>
     <string name="library_screen_downloads_menu_item">Downloads</string>
     <string name="library_screen_preferences_menu_item">Preferences</string>
-    <string name="login_screen_title">Connect to Server</string>
+    <string name="login_screen_title">Connect to server</string>
     <string name="login_screen_server_url_input">Server URL</string>
     <string name="login_screen_login_input">Login</string>
     <string name="login_screen_show_password_hint">Show password</string>
