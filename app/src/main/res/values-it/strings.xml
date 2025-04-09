@@ -98,4 +98,6 @@
     <string name="login_error_lissen_auth_failed">Autorizzazione non riuscita. Verifica le impostazioni del server</string>
     <string name="login_screen_open_id_button">Connetti con OpenID</string>
     <string name="login_error_lissen_auth_scheme_must_be_whitelisted">Lo schema %1$s://%2$s non è consentito nelle impostazioni dell\'URI di reindirizzamento del server</string>
+    <string name="source_code_on_github_subtitle">Segnala problemi o suggerisci miglioramenti</string>
+    <string name="source_code_on_github_title">Codice sorgente su GitHub</string>
 </resources>
