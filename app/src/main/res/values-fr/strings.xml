@@ -11,7 +11,7 @@
     <string name="login_screen_password_input">Mot de passe</string>
     <string name="login_screen_connect_button_text">Se Connecter</string>
     <string name="player_screen_library_navigation">Bibliothèque</string>
-    <string name="player_screen_playback_speed_navigation">Vitesse de lecture</string>
+    <string name="player_screen_playback_speed_navigation">Vitesse</string>
     <string name="player_screen_chapter_list_navigation">Chapitres</string>
     <string name="player_screen_preferences_navigation">Préférences</string>
     <string name="player_screen_library_playing_title">Lecture des chapitres</string>
