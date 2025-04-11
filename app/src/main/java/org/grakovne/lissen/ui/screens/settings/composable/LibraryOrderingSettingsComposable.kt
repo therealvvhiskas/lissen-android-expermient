@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.ArrowDownward
+import androidx.compose.material.icons.outlined.ArrowUpward
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -111,8 +111,8 @@ private fun provideOrderingDirection(
 
 private fun provideSelectedImage(configuration: LibraryOrderingConfiguration) =
     when (configuration.direction) {
-        ASCENDING -> Icons.Outlined.KeyboardArrowUp
-        DESCENDING -> Icons.Outlined.KeyboardArrowDown
+        ASCENDING -> Icons.Outlined.ArrowUpward
+        DESCENDING -> Icons.Outlined.ArrowDownward
     }
 
 private fun LibraryOrderingOption.toItem(context: Context): CommonSettingsItem {
