@@ -12,6 +12,7 @@ import org.grakovne.lissen.channel.audiobookshelf.common.converter.PlaybackSessi
 import org.grakovne.lissen.channel.audiobookshelf.common.converter.RecentListeningResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.common.model.playback.DeviceInfo
 import org.grakovne.lissen.channel.audiobookshelf.common.model.playback.PlaybackStartRequest
+import org.grakovne.lissen.channel.audiobookshelf.podcast.converter.PodcastOrderingRequestConverter
 import org.grakovne.lissen.channel.audiobookshelf.podcast.converter.PodcastPageResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.podcast.converter.PodcastResponseConverter
 import org.grakovne.lissen.channel.audiobookshelf.podcast.converter.PodcastSearchItemsConverter
@@ -35,6 +36,7 @@ class PodcastAudiobookshelfChannel @Inject constructor(
     sessionResponseConverter: PlaybackSessionResponseConverter,
     libraryResponseConverter: LibraryResponseConverter,
     connectionInfoResponseConverter: ConnectionInfoResponseConverter,
+    private val podcastOrderingRequestConverter: PodcastOrderingRequestConverter,
     private val podcastPageResponseConverter: PodcastPageResponseConverter,
     private val podcastResponseConverter: PodcastResponseConverter,
     private val podcastSearchItemsConverter: PodcastSearchItemsConverter,
@@ -55,13 +57,19 @@ class PodcastAudiobookshelfChannel @Inject constructor(
         libraryId: String,
         pageSize: Int,
         pageNumber: Int,
-    ): ApiResult<PagedItems<Book>> = dataRepository
-        .fetchPodcastItems(
-            libraryId = libraryId,
-            pageSize = pageSize,
-            pageNumber = pageNumber,
-        )
-        .map { podcastPageResponseConverter.apply(it) }
+    ): ApiResult<PagedItems<Book>> {
+        val (option, direction) = podcastOrderingRequestConverter.apply(preferences.getLibraryOrdering())
+
+        return dataRepository
+            .fetchPodcastItems(
+                libraryId = libraryId,
+                pageSize = pageSize,
+                pageNumber = pageNumber,
+                sort = option,
+                direction = direction,
+            )
+            .map { podcastPageResponseConverter.apply(it) }
+    }
 
     override suspend fun searchBooks(
         libraryId: String,

@@ -2,6 +2,8 @@ package org.grakovne.lissen.content.cache.api
 
 import android.net.Uri
 import androidx.core.net.toUri
+import org.grakovne.lissen.common.LibraryOrderingDirection
+import org.grakovne.lissen.common.LibraryOrderingOption
 import org.grakovne.lissen.content.cache.CacheBookStorageProperties
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityConverter
 import org.grakovne.lissen.content.cache.converter.CachedBookEntityDetailedConverter
@@ -53,22 +55,38 @@ class CachedBookRepository @Inject constructor(
     suspend fun fetchBooks(
         pageNumber: Int,
         pageSize: Int,
-    ): List<Book> = bookDao
-        .fetchCachedBooks(
-            pageNumber = pageNumber,
-            pageSize = pageSize,
-            libraryId = preferences.getPreferredLibrary()?.id,
-        )
-        .map { cachedBookEntityConverter.apply(it) }
+    ): List<Book> {
+        val (option, direction) = buildOrdering()
+
+        val request = FetchRequestBuilder()
+            .libraryId(preferences.getPreferredLibrary()?.id)
+            .pageNumber(pageNumber)
+            .pageSize(pageSize)
+            .orderField(option)
+            .orderDirection(direction)
+            .build()
+
+        return bookDao
+            .fetchCachedBooks(request)
+            .map { cachedBookEntityConverter.apply(it) }
+    }
 
     suspend fun searchBooks(
         query: String,
-    ): List<Book> = bookDao
-        .searchCachedBooks(
-            searchQuery = query,
-            libraryId = preferences.getPreferredLibrary()?.id,
-        )
-        .map { cachedBookEntityConverter.apply(it) }
+    ): List<Book> {
+        val (option, direction) = buildOrdering()
+
+        val request = SearchRequestBuilder()
+            .searchQuery(query)
+            .libraryId(preferences.getPreferredLibrary()?.id)
+            .orderField(option)
+            .orderDirection(direction)
+            .build()
+
+        return bookDao
+            .searchBooks(request)
+            .map { cachedBookEntityConverter.apply(it) }
+    }
 
     suspend fun fetchRecentBooks(): List<RecentBook> {
         val recentBooks = bookDao.fetchRecentlyListenedCachedBooks(
@@ -101,5 +119,20 @@ class CachedBookRepository @Inject constructor(
         )
 
         bookDao.upsertMediaProgress(entity)
+    }
+
+    private fun buildOrdering(): Pair<String, String> {
+        val option = when (preferences.getLibraryOrdering().option) {
+            LibraryOrderingOption.TITLE -> "title"
+            LibraryOrderingOption.AUTHOR -> "author"
+            LibraryOrderingOption.CREATED_AT -> "createdAt"
+        }
+
+        val direction = when (preferences.getLibraryOrdering().direction) {
+            LibraryOrderingDirection.ASCENDING -> "asc"
+            LibraryOrderingDirection.DESCENDING -> "desc"
+        }
+
+        return option to direction
     }
 }

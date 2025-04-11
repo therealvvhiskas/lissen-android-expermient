@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import org.grakovne.lissen.channel.common.ChannelCode
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.common.ColorScheme
+import org.grakovne.lissen.common.LibraryOrderingConfiguration
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.Library
 import org.grakovne.lissen.domain.connection.ServerRequestHeader
@@ -99,6 +100,23 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         saveActiveLibraryId(library.id)
         saveActiveLibraryName(library.title)
         saveActiveLibraryType(library.type)
+    }
+
+    fun saveLibraryOrdering(configuration: LibraryOrderingConfiguration) {
+        sharedPreferences.edit {
+            val json = gson.toJson(configuration)
+            putString(KEY_PREFERRED_LIBRARY_ORDERING, json)
+        }
+    }
+
+    fun getLibraryOrdering(): LibraryOrderingConfiguration {
+        val json = sharedPreferences.getString(KEY_PREFERRED_LIBRARY_ORDERING, null)
+        val type = object : TypeToken<LibraryOrderingConfiguration>() {}.type
+
+        return when (json == null) {
+            true -> LibraryOrderingConfiguration.default
+            false -> gson.fromJson(json, type)
+        }
     }
 
     fun saveColorScheme(colorScheme: ColorScheme) =
@@ -237,6 +255,7 @@ class LissenSharedPreferences @Inject constructor(@ApplicationContext context: C
         private const val KEY_PREFERRED_PLAYBACK_SPEED = "preferred_playback_speed"
 
         private const val KEY_PREFERRED_COLOR_SCHEME = "preferred_color_scheme"
+        private const val KEY_PREFERRED_LIBRARY_ORDERING = "preferred_library_ordering"
 
         private const val KEY_CUSTOM_HEADERS = "custom_headers"
 
