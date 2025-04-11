@@ -1,6 +1,7 @@
 package org.grakovne.lissen.ui.screens.settings.composable
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,6 +51,7 @@ fun CommonSettingsItemComposable(
                     .padding(horizontal = 16.dp),
             ) {
                 Spacer(modifier = Modifier.height(8.dp))
+
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     itemsIndexed(items) { index, item ->
                         ListItem(
@@ -76,7 +78,10 @@ fun CommonSettingsItemComposable(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable {
+                                .clickable(
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                                ) {
                                     activeItem = item
                                     onItemSelected(item)
                                 },
