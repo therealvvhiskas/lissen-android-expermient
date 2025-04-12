@@ -2,7 +2,6 @@
     <string name="app_name" translatable="false">Lissen</string>
     <string name="library_screen_library_title">Library</string>
     <string name="library_screen_continue_listening_title">Continue listening</string>
-    <string name="library_screen_downloads_menu_item">Downloads</string>
     <string name="library_screen_preferences_menu_item">Preferences</string>
     <string name="login_screen_title">Connect to server</string>
     <string name="login_screen_server_url_input">Server URL</string>
@@ -10,10 +9,8 @@
     <string name="login_screen_show_password_hint">Show password</string>
     <string name="login_screen_password_input">Password</string>
     <string name="login_screen_connect_button_text">Connect</string>
-    <string name="player_screen_library_navigation">Library</string>
     <string name="player_screen_playback_speed_navigation">Speed</string>
     <string name="player_screen_chapter_list_navigation">Chapters</string>
-    <string name="player_screen_preferences_navigation">Preferences</string>
     <string name="player_screen_library_playing_title">Playing chapters</string>
     <string name="player_screen_podcast_playing_title">Playing episodes</string>
     <string name="player_screen_items_playing_title">Playing items</string>
@@ -21,7 +18,6 @@
     <string name="player_screen_now_playing_title_podcast_of">Episode %1$d of %2$s</string>
     <string name="player_screen_now_playing_title_item_of">Item %1$d of %2$s</string>
     <string name="settings_screen_title">Preferences</string>
-    <string name="settings_screen_preferred_library_title">Preferred library</string>
     <string name="settings_screen_connected_as_title">Connected as</string>
     <string name="settings_screen_server_connection">Server connection</string>
     <string name="login_error_host_is_down">Host is down</string>
@@ -33,22 +29,16 @@
     <string name="login_error_connection_error">Connection error</string>
     <string name="disable_offline">Turn off offline</string>
     <string name="enable_offline">Turn on offline</string>
-    <string name="no_books_listened_to_yet">No books listened to yet</string>
     <string name="the_library_is_empty">The library is empty</string>
     <string name="the_offline_library_is_empty">No saved books yet</string>
     <string name="audiobookshelf_server_is_required">Audiobookshelf server is required</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="app_crach_toast">Sorry for the application crash\nLogs have been sent for analysis</string>
-    <string name="dialog_remove_from_cache_title">Remove from cache?</string>
-    <string name="dialog_remove_from_cache_text">The book stays in the library and can be listened to anytime</string>
-    <string name="dialog_confirm_remove">Remove</string>
-    <string name="dialog_dismiss_cancel">Cancel</string>
     <string name="playback_speed_title">Playback speed</string>
     <string name="color_scheme_follow_system">System</string>
     <string name="color_scheme_light">Light</string>
     <string name="color_scheme_dark">Dark</string>
     <string name="settings_screen_color_scheme_title">Color scheme</string>
-    <string name="library_is_not_available">Library is not available</string>
     <string name="library_search_hint">Search by title or author</string>
     <string name="player_screen_title">Listening now</string>
     <string name="settings_screen_custom_headers_title">Custom Headers</string>
@@ -103,9 +93,5 @@
     <string name="settings_screen_library_ordering_title">Library sorting</string>
     <string name="settings_screen_library_ordering_title_option">Title</string>
     <string name="settings_screen_library_ordering_author_option">Author</string>
-    <string name="settings_screen_library_ordering_duration_option">Duration</string>
-    <string name="settings_screen_library_ordering_published_year_option">Published year</string>
     <string name="settings_screen_library_ordering_creation_date_option">Date of creation</string>
-    <string name="settings_screen_library_ordering_modified_at_option">Date of latest modification</string>
-    <string name="settings_screen_library_ordering_chapter_count_option">Chapters count</string>
 </resources>

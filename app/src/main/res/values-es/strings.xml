@@ -2,8 +2,6 @@
 <resources>
     <string name="player_screen_items_playing_title">Reproduciendo artículos</string>
     <string name="player_screen_now_playing_title_podcast_of">Episodio %1$d de %2$s</string>
-    <string name="library_screen_downloads_menu_item">Descargas</string>
-    <string name="player_screen_library_navigation">Biblioteca</string>
     <string name="settings_screen_title">Preferencias</string>
     <string name="player_screen_playback_speed_navigation">Velocidad</string>
     <string name="login_screen_title">Conectarse al servidor</string>
@@ -15,10 +13,8 @@
     <string name="login_screen_password_input">Contraseña</string>
     <string name="login_screen_connect_button_text">Conectar</string>
     <string name="player_screen_chapter_list_navigation">Capítulos</string>
-    <string name="player_screen_preferences_navigation">Preferences</string>
     <string name="player_screen_library_playing_title">Reproduciendo capítulos</string>
     <string name="player_screen_podcast_playing_title">Reproduciendo episodios</string>
-    <string name="settings_screen_preferred_library_title">Biblioteca preferida</string>
     <string name="settings_screen_connected_as_title">Conectado como</string>
     <string name="settings_screen_server_connection">Conexion del servidor</string>
     <string name="login_error_host_is_down">El servidor está caído</string>
@@ -28,22 +24,17 @@
     <string name="login_error_credentials_are_invalid">Las credenciales no son válidas</string>
     <string name="login_error_host_url_shall_be_https_or_http">La URL del servidor debe ser https:// o http://</string>
     <string name="login_error_connection_error">Error de conexión</string>
-    <string name="no_books_listened_to_yet">Todavía no se han escuchado libros</string>
     <string name="the_library_is_empty">La biblioteca esta vacia</string>
     <string name="the_offline_library_is_empty">Aún no hay libros guardados</string>
     <string name="app_crach_toast">Disculpen la falla de la aplicación\nLos registros se han enviado para su análisis</string>
     <string name="library_screen_continue_listening_title">Seguir escuchando</string>
     <string name="player_screen_now_playing_title_chapter_of">Capítulo %1$d de %2$s</string>
-    <string name="dialog_remove_from_cache_title">¿Eliminar del caché?</string>
     <string name="player_screen_now_playing_title_item_of">Artículo %1$d de %2$s</string>
     <string name="audiobookshelf_server_is_required">Se requiere el servidor \"Audiobookshelf\"</string>
     <string name="no_internet_connection">Sin conexión a internet</string>
     <string name="color_scheme_dark">Oscuro</string>
-    <string name="dialog_confirm_remove">Eliminar</string>
-    <string name="dialog_dismiss_cancel">Cancelar</string>
     <string name="playback_speed_title">Velocidad de reproducción</string>
     <string name="settings_screen_color_scheme_title">Esquema de color</string>
-    <string name="library_is_not_available">La biblioteca no está disponible</string>
     <string name="library_search_hint">Búsqueda por título o autor</string>
     <string name="player_screen_title">Escuchando ahora</string>
     <string name="settings_screen_custom_headers_title">Encabezados Personalizados</string>
@@ -90,7 +81,6 @@
     <string name="items_list_empty">No hay artículos disponibles</string>
     <string name="notification_content_caching_error_description">Algunos archivos no se guardaron</string>
     <string name="mini_player_action_close">Cerrar</string>
-    <string name="dialog_remove_from_cache_text">El libro permanece en la biblioteca y se puede escuchar en cualquier momento</string>
     <string name="color_scheme_follow_system">Sistema</string>
     <string name="color_scheme_light">Claro</string>
     <string name="downloads_menu_download_unknown">Descargas</string>

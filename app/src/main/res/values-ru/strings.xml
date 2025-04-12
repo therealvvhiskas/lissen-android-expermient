@@ -2,7 +2,6 @@
 <resources>
     <string name="library_screen_library_title">Библиотека</string>
     <string name="library_screen_continue_listening_title">Продолжить слушать</string>
-    <string name="library_screen_downloads_menu_item">Загрузки</string>
     <string name="library_screen_preferences_menu_item">Настройки</string>
     <string name="login_screen_title">Подключиться к серверу</string>
     <string name="login_screen_server_url_input">URL сервера</string>
@@ -10,14 +9,11 @@
     <string name="login_screen_show_password_hint">Показывать пароль</string>
     <string name="login_screen_password_input">Пароль</string>
     <string name="login_screen_connect_button_text">Подключиться</string>
-    <string name="player_screen_library_navigation">Библиотека</string>
     <string name="player_screen_playback_speed_navigation">Скорость</string>
     <string name="player_screen_chapter_list_navigation">Эпизоды</string>
-    <string name="player_screen_preferences_navigation">Настройки</string>
     <string name="player_screen_library_playing_title">"Список глав"</string>
     <string name="player_screen_now_playing_title_chapter_of">Глава %1$d из %2$s</string>
     <string name="settings_screen_title">Настройки</string>
-    <string name="settings_screen_preferred_library_title">Выбранная библиотека</string>
     <string name="settings_screen_connected_as_title">Подключен как</string>
     <string name="settings_screen_server_connection">Подключение к серверу</string>
     <string name="login_error_host_is_down">Сервер недоступен</string>
@@ -29,22 +25,16 @@
     <string name="login_error_connection_error">Ошибка подключения</string>
     <string name="disable_offline">Слушать онлайн</string>
     <string name="enable_offline">Только скачанные</string>
-    <string name="no_books_listened_to_yet">Еще нет прослушанных книг</string>
     <string name="the_library_is_empty">В библиотеке нет книг</string>
     <string name="the_offline_library_is_empty">Загруженных книг нет</string>
     <string name="audiobookshelf_server_is_required">"Для работы приложения необходим Audiobookshelf сервер"</string>
     <string name="no_internet_connection">Нет подключения к интернету</string>
     <string name="app_crach_toast">Извините за ошибку в приложении\nДанные уже отправлены для расследования</string>
-    <string name="dialog_remove_from_cache_title">Удалить из скачанных?</string>
-    <string name="dialog_remove_from_cache_text">Книга останется в библиотеке, и вы сможете её прослушать в любое время</string>
-    <string name="dialog_confirm_remove">Удалить</string>
-    <string name="dialog_dismiss_cancel">Отмена</string>
     <string name="playback_speed_title">Скорость воспроизведения</string>
     <string name="color_scheme_follow_system">Системная</string>
     <string name="color_scheme_light">Светлая</string>
     <string name="color_scheme_dark">Темная</string>
     <string name="settings_screen_color_scheme_title">Цветовая схема</string>
-    <string name="library_is_not_available">Список библиотек недоступен</string>
     <string name="library_search_hint">Поиск по автору или названию</string>
     <string name="player_screen_title">Сейчас играет</string>
     <string name="settings_screen_custom_headers_title">Прокси-заголовки</string>
@@ -103,9 +93,5 @@
     <string name="settings_screen_library_ordering_title">Сортировка библиотеки</string>
     <string name="settings_screen_library_ordering_title_option">По названию</string>
     <string name="settings_screen_library_ordering_author_option">По автору</string>
-    <string name="settings_screen_library_ordering_duration_option">По длительности</string>
-    <string name="settings_screen_library_ordering_published_year_option">По году публикации</string>
     <string name="settings_screen_library_ordering_creation_date_option">По дате добавления</string>
-    <string name="settings_screen_library_ordering_modified_at_option">По дате последнего изменения</string>
-    <string name="settings_screen_library_ordering_chapter_count_option">По количеству выпусков</string>
 </resources>

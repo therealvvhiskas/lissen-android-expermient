@@ -2,7 +2,6 @@
 <resources>
     <string name="library_screen_library_title">Bibliothèque</string>
     <string name="library_screen_continue_listening_title">Poursuivre l\'écoute</string>
-    <string name="library_screen_downloads_menu_item">Téléchargements</string>
     <string name="library_screen_preferences_menu_item">Préférences</string>
     <string name="login_screen_title">Se Connecter au Serveur</string>
     <string name="login_screen_server_url_input">Adresse URL du serveur</string>
@@ -10,10 +9,8 @@
     <string name="login_screen_show_password_hint">Afficher le mot de passe</string>
     <string name="login_screen_password_input">Mot de passe</string>
     <string name="login_screen_connect_button_text">Se Connecter</string>
-    <string name="player_screen_library_navigation">Bibliothèque</string>
     <string name="player_screen_playback_speed_navigation">Vitesse</string>
     <string name="player_screen_chapter_list_navigation">Chapitres</string>
-    <string name="player_screen_preferences_navigation">Préférences</string>
     <string name="player_screen_library_playing_title">Lecture des chapitres</string>
     <string name="player_screen_podcast_playing_title">Lecture des épisodes</string>
     <string name="player_screen_items_playing_title">Lecture des éléments</string>
@@ -21,7 +18,6 @@
     <string name="player_screen_now_playing_title_podcast_of">Episode %1$d de %2$s</string>
     <string name="player_screen_now_playing_title_item_of">Élément %1$d de %2$s</string>
     <string name="settings_screen_title">Préférences</string>
-    <string name="settings_screen_preferred_library_title">Bibliothèque préférée</string>
     <string name="settings_screen_connected_as_title">Se connecter comme</string>
     <string name="settings_screen_server_connection">Connexion au serveur</string>
     <string name="login_error_host_is_down">L\'hôte est injoignable</string>
@@ -33,22 +29,16 @@
     <string name="login_error_connection_error">Erreur de connexion</string>
     <string name="disable_offline">Désactiver la mise hors ligne</string>
     <string name="enable_offline">Activer la mise hors ligne</string>
-    <string name="no_books_listened_to_yet">Aucun livre écouté pour l\'instant</string>
     <string name="the_library_is_empty">La bibliothèque est vide</string>
     <string name="the_offline_library_is_empty">Aucun livre enregistré pour l\'instant</string>
     <string name="audiobookshelf_server_is_required">Un serveur Audiobookshelf est requis</string>
     <string name="no_internet_connection">Pas de connexion internet</string>
     <string name="app_crach_toast">Désolé pour le crash de l\'application\nLes journaux ont été transmis pour analyse</string>
-    <string name="dialog_remove_from_cache_title">Retirer du cache?</string>
-    <string name="dialog_remove_from_cache_text">Le livre reste dans la bibliothèque et peut être écouté a n\'importe quel moment</string>
-    <string name="dialog_confirm_remove">Supprimer</string>
-    <string name="dialog_dismiss_cancel">Annuler</string>
     <string name="playback_speed_title">Vitesse de lecture</string>
     <string name="color_scheme_follow_system">Système</string>
     <string name="color_scheme_light">Clair</string>
     <string name="color_scheme_dark">Sombre</string>
     <string name="settings_screen_color_scheme_title">Thème de couleur</string>
-    <string name="library_is_not_available">La bibliothèque n\'est pas disponible</string>
     <string name="library_search_hint">Rechercher par titre ou auteur</string>
     <string name="player_screen_title">En cours d\'écoute</string>
     <string name="settings_screen_custom_headers_title">Entêtes personnalisés</string>
