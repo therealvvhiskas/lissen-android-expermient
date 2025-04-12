@@ -90,4 +90,12 @@
     <string name="notification_content_caching_title">Vsebina se predpomni</string>
     <string name="notification_content_caching_channel">Predpomnjenje vsebine</string>
     <string name="login_error_lissen_auth_failed">Ni bilo mogoče pooblastiti. Preverite nastavitve strežnika</string>
+    <string name="settings_screen_library_ordering_title">Razvrščanje knjižnice</string>
+    <string name="settings_screen_library_ordering_title_option">Naslov</string>
+    <string name="settings_screen_library_ordering_author_option">Avtor</string>
+    <string name="settings_screen_library_ordering_duration_option">Trajanje</string>
+    <string name="settings_screen_library_ordering_published_year_option">Leto izida</string>
+    <string name="settings_screen_library_ordering_creation_date_option">Datum nastanka</string>
+    <string name="settings_screen_library_ordering_modified_at_option">Datum zadnje spremembe</string>
+    <string name="settings_screen_library_ordering_chapter_count_option">Število poglavij</string>
 </resources>
