@@ -47,7 +47,7 @@ class PlayerViewModel @Inject constructor(
     fun recoverMiniPlayer() {
         val playingBook = preferences.getPlayingBook()
 
-        if (playingBook?.id != null) {
+        if (playingBook?.id != null && book.value == null) {
             viewModelScope.launch {
                 mediaRepository.preparePlayback(playingBook.id)
             }
