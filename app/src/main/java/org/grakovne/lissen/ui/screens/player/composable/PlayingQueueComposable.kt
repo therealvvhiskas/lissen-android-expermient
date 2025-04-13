@@ -80,7 +80,11 @@ fun PlayingQueueComposable(
     }
 
     val currentTrackIndex by viewModel.currentChapterIndex.observeAsState(0)
-    val currentTrackId by remember { derivedStateOf { currentTrackIndex.let { book?.chapters?.get(it) } } }
+    val currentTrackId by remember {
+        derivedStateOf {
+            book?.chapters?.getOrNull(currentTrackIndex)
+        }
+    }
 
     val playbackReady by viewModel.isPlaybackReady.observeAsState(false)
     val playingQueueExpanded by viewModel.playingQueueExpanded.observeAsState(false)
