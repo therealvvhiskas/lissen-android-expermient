@@ -90,4 +90,8 @@
     <string name="login_error_lissen_auth_scheme_must_be_whitelisted">Lo schema %1$s://%2$s non è consentito nelle impostazioni dell\'URI di reindirizzamento del server</string>
     <string name="source_code_on_github_subtitle">Segnala problemi o suggerisci miglioramenti</string>
     <string name="source_code_on_github_title">Codice sorgente su GitHub</string>
+    <string name="settings_screen_library_ordering_creation_date_option">Data di creazione</string>
+    <string name="settings_screen_library_ordering_title_option">Titolo</string>
+    <string name="settings_screen_library_ordering_author_option">Autore</string>
+    <string name="settings_screen_library_ordering_title">Ordinamento della libreria</string>
 </resources>
