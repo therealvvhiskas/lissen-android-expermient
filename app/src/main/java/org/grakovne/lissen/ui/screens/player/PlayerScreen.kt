@@ -316,6 +316,7 @@ fun PlayerScreen(
 
                     playingBook
                         ?.author
+                        ?.takeIf { it.isNotEmpty() }
                         ?.let {
                             InfoRow(
                                 icon = Icons.Default.Person,
@@ -344,6 +345,7 @@ fun PlayerScreen(
 
                     playingBook
                         ?.publisher
+                        ?.takeIf { it.isNotEmpty() }
                         ?.let {
                             InfoRow(
                                 icon = Icons.Default.Business,
@@ -354,6 +356,7 @@ fun PlayerScreen(
 
                     playingBook
                         ?.year
+                        ?.takeIf { it.isNotEmpty() }
                         ?.let {
                             InfoRow(
                                 icon = Icons.Default.CalendarMonth,
@@ -365,6 +368,7 @@ fun PlayerScreen(
 
                 playingBook
                     ?.abstract
+                    ?.takeIf { it.isNotEmpty() }
                     ?.let {
                         HorizontalDivider(
                             modifier = Modifier
