@@ -8,7 +8,7 @@
     <string name="login_screen_show_password_hint">Passwort anzeigen</string>
     <string name="login_screen_password_input">Passwort</string>
     <string name="login_screen_connect_button_text">Verbinden</string>
-    <string name="login_screen_title">Verbindung zum Server</string>
+    <string name="login_screen_title">Verbinde zum Server</string>
     <string name="player_screen_library_playing_title">Kapitel</string>
     <string name="player_screen_podcast_playing_title">Episoden</string>
     <string name="player_screen_items_playing_title">Elemente</string>
@@ -83,4 +83,16 @@
     <string name="items_list_empty">Keine Elemente verfügbar</string>
     <string name="notification_content_caching_error_title">Zwischenspeicherung fehlgeschlagen</string>
     <string name="notification_content_caching_error_description">Einige Dateien wurden nicht gespeichert</string>
+    <string name="notification_content_caching_channel">Zwischenspeicherung von Inhalten</string>
+    <string name="settings_screen_library_ordering_modification_date_option">Zeitpunkt der Aktualisierung</string>
+    <string name="login_screen_open_id_button">Verbinden mit OpenID</string>
+    <string name="login_error_lissen_auth_failed">Autorisierung fehlgeschlagen. Bitte überprüfen Sie die Servereinstellungen</string>
+    <string name="notification_content_caching_title">Inhalt wird zwischengespeichert</string>
+    <string name="source_code_on_github_title">Quellcode auf GitHub</string>
+    <string name="source_code_on_github_subtitle">Probleme melden oder Verbesserungen vorschlagen</string>
+    <string name="settings_screen_library_ordering_title">Bibliothekssortierung</string>
+    <string name="settings_screen_library_ordering_title_option">Titel</string>
+    <string name="settings_screen_library_ordering_author_option">Autor</string>
+    <string name="settings_screen_library_ordering_creation_date_option">Zeitpunkt der Erstellung</string>
+    <string name="login_error_lissen_auth_scheme_must_be_whitelisted">Das Schema %1$s://%2$s ist in den Weiterleitungs-URI-Einstellungen des Servers nicht erlaubt</string>
 </resources>
