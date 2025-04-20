@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package org.grakovne.lissen.playback
 
 import android.app.PendingIntent
@@ -5,6 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_MEDIA_NEXT
+import android.view.KeyEvent.KEYCODE_MEDIA_PREVIOUS
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -20,6 +25,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.grakovne.lissen.domain.SeekTimeOption
+import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import org.grakovne.lissen.ui.activity.AppActivity
 import org.grakovne.lissen.widget.MediaRepository
 import javax.inject.Singleton
@@ -27,6 +34,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object MediaModule {
+
     @OptIn(UnstableApi::class)
     @Provides
     @Singleton
@@ -45,10 +53,12 @@ object MediaModule {
             .build()
     }
 
+    @OptIn(UnstableApi::class)
     @Provides
     @Singleton
     fun provideMediaSession(
         @ApplicationContext context: Context,
+        preferences: LissenSharedPreferences,
         mediaRepository: MediaRepository,
         exoPlayer: ExoPlayer,
     ): MediaSession {
@@ -61,6 +71,37 @@ object MediaModule {
 
         return MediaSession.Builder(context, exoPlayer)
             .setCallback(object : MediaSession.Callback {
+                override fun onMediaButtonEvent(
+                    session: MediaSession,
+                    controllerInfo: MediaSession.ControllerInfo,
+                    intent: Intent,
+                ): Boolean {
+                    Log.d(TAG, "Executing media button event from: $controllerInfo")
+
+                    val keyEvent = intent
+                        .getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+                        ?: return super.onMediaButtonEvent(session, controllerInfo, intent)
+
+                    Log.d(TAG, "Got media key event: $keyEvent")
+
+                    if (keyEvent.action != KeyEvent.ACTION_DOWN) {
+                        return super.onMediaButtonEvent(session, controllerInfo, intent)
+                    }
+
+                    when (keyEvent.keyCode) {
+                        KEYCODE_MEDIA_NEXT -> {
+                            mediaRepository.forward()
+                            return true
+                        }
+
+                        KEYCODE_MEDIA_PREVIOUS -> {
+                            mediaRepository.rewind()
+                            return true
+                        }
+
+                        else -> return super.onMediaButtonEvent(session, controllerInfo, intent)
+                    }
+                }
 
                 @OptIn(UnstableApi::class)
                 override fun onConnect(
@@ -69,6 +110,7 @@ object MediaModule {
                 ): MediaSession.ConnectionResult {
                     val rewindCommand = SessionCommand(REWIND_COMMAND, Bundle.EMPTY)
                     val forwardCommand = SessionCommand(FORWARD_COMMAND, Bundle.EMPTY)
+                    val seekTime = preferences.getSeekTime()
 
                     val sessionCommands = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon()
                         .add(rewindCommand)
@@ -76,14 +118,14 @@ object MediaModule {
                         .build()
 
                     val rewindButton = CommandButton
-                        .Builder(CommandButton.ICON_SKIP_BACK_10)
+                        .Builder(provideRewindCommand(seekTime.rewind))
                         .setSessionCommand(rewindCommand)
                         .setDisplayName("Rewind")
                         .setEnabled(true)
                         .build()
 
                     val forwardButton = CommandButton
-                        .Builder(CommandButton.ICON_SKIP_FORWARD_30)
+                        .Builder(provideForwardCommand(seekTime.forward))
                         .setSessionCommand(forwardCommand)
                         .setDisplayName("Forward")
                         .setEnabled(true)
@@ -115,6 +157,18 @@ object MediaModule {
             })
             .setSessionActivity(sessionActivityPendingIntent)
             .build()
+    }
+
+    private fun provideRewindCommand(seekTime: SeekTimeOption) = when (seekTime) {
+        SeekTimeOption.SEEK_5 -> CommandButton.ICON_SKIP_BACK_5
+        SeekTimeOption.SEEK_10 -> CommandButton.ICON_SKIP_BACK_10
+        SeekTimeOption.SEEK_30 -> CommandButton.ICON_SKIP_BACK_30
+    }
+
+    private fun provideForwardCommand(seekTime: SeekTimeOption) = when (seekTime) {
+        SeekTimeOption.SEEK_5 -> CommandButton.ICON_SKIP_FORWARD_5
+        SeekTimeOption.SEEK_10 -> CommandButton.ICON_SKIP_FORWARD_10
+        SeekTimeOption.SEEK_30 -> CommandButton.ICON_SKIP_FORWARD_30
     }
 
     private const val REWIND_COMMAND = "notification_rewind"

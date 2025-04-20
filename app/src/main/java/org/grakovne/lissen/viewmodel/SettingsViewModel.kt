@@ -11,6 +11,7 @@ import org.grakovne.lissen.common.ColorScheme
 import org.grakovne.lissen.common.LibraryOrderingConfiguration
 import org.grakovne.lissen.content.LissenMediaProvider
 import org.grakovne.lissen.domain.Library
+import org.grakovne.lissen.domain.SeekTimeOption
 import org.grakovne.lissen.domain.connection.ServerRequestHeader
 import org.grakovne.lissen.domain.connection.ServerRequestHeader.Companion.clean
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
@@ -45,6 +46,9 @@ class SettingsViewModel @Inject constructor(
 
     private val _customHeaders = MutableLiveData(preferences.getCustomHeaders())
     val customHeaders = _customHeaders
+
+    private val _seekTime = MutableLiveData(preferences.getSeekTime())
+    val seekTime = _seekTime
 
     fun logout() {
         preferences.clearPreferences()
@@ -109,6 +113,16 @@ class SettingsViewModel @Inject constructor(
     fun preferColorScheme(colorScheme: ColorScheme) {
         _preferredColorScheme.postValue(colorScheme)
         preferences.saveColorScheme(colorScheme)
+    }
+
+    fun preferForwardRewind(option: SeekTimeOption) {
+        _seekTime.value = _seekTime.value?.copy(forward = option)
+        _seekTime.value?.let { preferences.saveSeekTime(it) }
+    }
+
+    fun preferRewindRewind(option: SeekTimeOption) {
+        _seekTime.value = _seekTime.value?.copy(rewind = option)
+        _seekTime.value?.let { preferences.saveSeekTime(it) }
     }
 
     fun updateCustomHeaders(headers: List<ServerRequestHeader>) {

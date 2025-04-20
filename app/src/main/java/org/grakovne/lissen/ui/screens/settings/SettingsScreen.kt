@@ -88,8 +88,15 @@ fun SettingsScreen(
                         ServerSettingsComposable(navController, viewModel)
                     }
 
-                    LibraryOrderingSettingsComposable(viewModel)
                     ColorSchemeSettingsComposable(viewModel)
+
+                    LibraryOrderingSettingsComposable(viewModel)
+
+                    AdvancedSettingsItemComposable(
+                        title = stringResource(R.string.settings_screen_seek_time_title),
+                        description = stringResource(R.string.settings_screen_seek_time_hint),
+                        onclick = { navController.showSeekSettings() },
+                    )
 
                     AdvancedSettingsItemComposable(
                         title = stringResource(R.string.settings_screen_custom_headers_title),
