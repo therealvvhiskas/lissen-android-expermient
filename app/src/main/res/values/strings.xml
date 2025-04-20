@@ -101,5 +101,7 @@
     <string name="forward_interval">Forward interval</string>
     <string name="seek_interval_5_seconds">5 seconds</string>
     <string name="seek_interval_10_seconds">10 seconds</string>
+    <string name="seek_interval_15_seconds">15 seconds</string>
     <string name="seek_interval_30_seconds">30 seconds</string>
+    <string name="seek_interval_60_seconds">60 seconds</string>
 </resources>

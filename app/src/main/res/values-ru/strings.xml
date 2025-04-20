@@ -101,6 +101,8 @@
     <string name="forward_interval">Интервал перемотки вперёд</string>
     <string name="seek_interval_5_seconds">5 секунд</string>
     <string name="seek_interval_10_seconds">10 секунд</string>
+    <string name="seek_interval_15_seconds">15 секунд</string>
     <string name="seek_interval_30_seconds">30 секунд</string>
+    <string name="seek_interval_60_seconds">60 секунд</string>
 
 </resources>

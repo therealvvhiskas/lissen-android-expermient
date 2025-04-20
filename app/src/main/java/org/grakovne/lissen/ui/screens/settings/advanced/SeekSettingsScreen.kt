@@ -110,11 +110,7 @@ fun SeekSettingsScreen(
 
     if (rewindTimeExpanded) {
         CommonSettingsItemComposable(
-            items = listOf(
-                SeekTimeOption.SEEK_5.toSettingsItem(context),
-                SeekTimeOption.SEEK_10.toSettingsItem(context),
-                SeekTimeOption.SEEK_30.toSettingsItem(context),
-            ),
+            items = SeekTimeOption.entries.map { it.toSettingsItem(context) },
             selectedItem = preferredSeekTime?.rewind?.toSettingsItem(context),
             onDismissRequest = { rewindTimeExpanded = false },
             onItemSelected = { item ->
@@ -128,11 +124,7 @@ fun SeekSettingsScreen(
 
     if (forwardTimeExpanded) {
         CommonSettingsItemComposable(
-            items = listOf(
-                SeekTimeOption.SEEK_5.toSettingsItem(context),
-                SeekTimeOption.SEEK_10.toSettingsItem(context),
-                SeekTimeOption.SEEK_30.toSettingsItem(context),
-            ),
+            items = SeekTimeOption.entries.map { it.toSettingsItem(context) },
             selectedItem = preferredSeekTime?.forward?.toSettingsItem(context),
             onDismissRequest = { forwardTimeExpanded = false },
             onItemSelected = { item ->
@@ -183,6 +175,8 @@ private fun SeekTimeOption.toItem(context: Context): String {
     return when (this) {
         SeekTimeOption.SEEK_5 -> context.getString(R.string.seek_interval_5_seconds)
         SeekTimeOption.SEEK_10 -> context.getString(R.string.seek_interval_10_seconds)
+        SeekTimeOption.SEEK_15 -> context.getString(R.string.seek_interval_15_seconds)
         SeekTimeOption.SEEK_30 -> context.getString(R.string.seek_interval_30_seconds)
+        SeekTimeOption.SEEK_60 -> context.getString(R.string.seek_interval_60_seconds)
     }
 }

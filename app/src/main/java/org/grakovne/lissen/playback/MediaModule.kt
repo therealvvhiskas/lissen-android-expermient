@@ -159,17 +159,8 @@ object MediaModule {
             .build()
     }
 
-    private fun provideRewindCommand(seekTime: SeekTimeOption) = when (seekTime) {
-        SeekTimeOption.SEEK_5 -> CommandButton.ICON_SKIP_BACK_5
-        SeekTimeOption.SEEK_10 -> CommandButton.ICON_SKIP_BACK_10
-        SeekTimeOption.SEEK_30 -> CommandButton.ICON_SKIP_BACK_30
-    }
-
-    private fun provideForwardCommand(seekTime: SeekTimeOption) = when (seekTime) {
-        SeekTimeOption.SEEK_5 -> CommandButton.ICON_SKIP_FORWARD_5
-        SeekTimeOption.SEEK_10 -> CommandButton.ICON_SKIP_FORWARD_10
-        SeekTimeOption.SEEK_30 -> CommandButton.ICON_SKIP_FORWARD_30
-    }
+    private fun provideRewindCommand(seekTime: SeekTimeOption) = CommandButton.ICON_SKIP_BACK
+    private fun provideForwardCommand(seekTime: SeekTimeOption) = CommandButton.ICON_SKIP_FORWARD
 
     private const val REWIND_COMMAND = "notification_rewind"
     private const val FORWARD_COMMAND = "notification_forward"

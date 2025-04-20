@@ -153,19 +153,19 @@ class PlayerWidget : GlanceAppWidget() {
                     ) {
                         WidgetControlButton(
                             size = 36.dp,
-                            icon = ImageProvider(provideRewindIcon(preferences.getSeekTime().rewind)),
+                            icon = ImageProvider(R.drawable.media3_icon_previous),
                             contentColor = GlanceTheme.colors.onBackground,
-                            onClick = actionRunCallback<RewindActionCallback>(
+                            onClick = actionRunCallback<PreviousChapterActionCallback>(
                                 actionParametersOf(bookIdKey to bookId),
                             ),
                             modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
-                            size = 48.dp,
-                            icon = ImageProvider(R.drawable.media3_icon_previous),
+                            size = 36.dp,
+                            icon = ImageProvider(provideRewindIcon(preferences.getSeekTime().rewind)),
                             contentColor = GlanceTheme.colors.onBackground,
-                            onClick = actionRunCallback<PreviousChapterActionCallback>(
+                            onClick = actionRunCallback<RewindActionCallback>(
                                 actionParametersOf(bookIdKey to bookId),
                             ),
                             modifier = GlanceModifier.defaultWeight(),
@@ -186,20 +186,20 @@ class PlayerWidget : GlanceAppWidget() {
                         )
 
                         WidgetControlButton(
-                            icon = ImageProvider(R.drawable.media3_icon_next),
-                            size = 48.dp,
+                            icon = ImageProvider(provideForwardIcon(preferences.getSeekTime().forward)),
+                            size = 36.dp,
                             contentColor = GlanceTheme.colors.onBackground,
-                            onClick = actionRunCallback<NextChapterActionCallback>(
+                            onClick = actionRunCallback<ForwardActionCallback>(
                                 actionParametersOf(bookIdKey to bookId),
                             ),
                             modifier = GlanceModifier.defaultWeight(),
                         )
 
                         WidgetControlButton(
-                            icon = ImageProvider(provideForwardIcon(preferences.getSeekTime().forward)),
+                            icon = ImageProvider(R.drawable.media3_icon_next),
                             size = 36.dp,
                             contentColor = GlanceTheme.colors.onBackground,
-                            onClick = actionRunCallback<ForwardActionCallback>(
+                            onClick = actionRunCallback<NextChapterActionCallback>(
                                 actionParametersOf(bookIdKey to bookId),
                             ),
                             modifier = GlanceModifier.defaultWeight(),
@@ -218,21 +218,9 @@ class PlayerWidget : GlanceAppWidget() {
 
     companion object {
 
-        fun provideRewindIcon(option: SeekTimeOption): Int {
-            return when (option) {
-                SeekTimeOption.SEEK_5 -> R.drawable.media3_icon_skip_back_5
-                SeekTimeOption.SEEK_10 -> R.drawable.media3_icon_skip_back_10
-                SeekTimeOption.SEEK_30 -> R.drawable.media3_icon_skip_back_30
-            }
-        }
+        fun provideRewindIcon(option: SeekTimeOption): Int = R.drawable.media3_icon_rewind
 
-        fun provideForwardIcon(option: SeekTimeOption): Int {
-            return when (option) {
-                SeekTimeOption.SEEK_5 -> R.drawable.media3_icon_skip_forward_5
-                SeekTimeOption.SEEK_10 -> R.drawable.media3_icon_skip_forward_10
-                SeekTimeOption.SEEK_30 -> R.drawable.media3_icon_skip_forward_30
-            }
-        }
+        fun provideForwardIcon(option: SeekTimeOption): Int = R.drawable.media3_icon_fast_forward
 
         val bookIdKey = ActionParameters.Key<String>("book_id")
 
