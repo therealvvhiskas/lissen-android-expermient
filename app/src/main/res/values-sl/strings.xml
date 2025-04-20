@@ -95,4 +95,11 @@
     <string name="settings_screen_library_ordering_author_option">Avtor</string>
     <string name="settings_screen_library_ordering_creation_date_option">Datum nastanka</string>
     <string name="settings_screen_library_ordering_modification_date_option">Datum ažuriranja</string>
+    <string name="settings_screen_seek_time_title">Nastavitve preskoka</string>
+    <string name="rewind_interval">Interval previjanja nazaj</string>
+    <string name="forward_interval">Intervaj previjanja naprej</string>
+    <string name="seek_interval_10_seconds">10 sekund</string>
+    <string name="settings_screen_seek_time_hint">Nastavi možnosti preskoka</string>
+    <string name="seek_interval_5_seconds">5 sekund</string>
+    <string name="seek_interval_30_seconds">30 sekund</string>
 </resources>
