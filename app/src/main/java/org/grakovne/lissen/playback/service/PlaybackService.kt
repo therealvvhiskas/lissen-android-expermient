@@ -138,10 +138,7 @@ class PlaybackService : MediaSessionService() {
     }
 
     @OptIn(UnstableApi::class)
-    private suspend fun preparePlayback(
-        book: DetailedItem,
-        playOnReady: Boolean = false,
-    ) {
+    private suspend fun preparePlayback(book: DetailedItem) {
         exoPlayer.playWhenReady = false
 
         withContext(Dispatchers.IO) {
@@ -202,10 +199,6 @@ class PlaybackService : MediaSessionService() {
                     exoPlayer.prepare()
 
                     setPlaybackProgress(book.files, book.progress)
-
-                    if (playOnReady) {
-                        exoPlayer.playWhenReady = true
-                    }
                 }
             }
 
