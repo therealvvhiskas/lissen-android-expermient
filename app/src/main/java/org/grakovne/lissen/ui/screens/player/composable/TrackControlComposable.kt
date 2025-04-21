@@ -108,12 +108,12 @@ fun TrackControlComposable(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = currentTrackPosition.toInt().formatFully(),
+                        text = sliderPosition.toInt().formatFully(),
                         style = typography.bodySmall,
                         color = colorScheme.onBackground.copy(alpha = 0.6f),
                     )
                     Text(
-                        text = maxOf(0.0, currentTrackDuration - currentTrackPosition)
+                        text = maxOf(0.0, currentTrackDuration - sliderPosition)
                             .toInt()
                             .formatFully(),
                         style = typography.bodySmall,
