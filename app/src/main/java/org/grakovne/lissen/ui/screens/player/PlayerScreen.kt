@@ -86,6 +86,7 @@ fun PlayerScreen(
     bookId: String,
     bookTitle: String,
     bookSubtitle: String?,
+    playInstantly: Boolean,
 ) {
     val context = LocalContext.current
 
@@ -116,7 +117,7 @@ fun PlayerScreen(
         }
     }
 
-    BackHandler(enabled = searchRequested || playingQueueExpanded) {
+    BackHandler(enabled = searchRequested || playingQueueExpanded || playInstantly) {
         stepBack()
     }
 
@@ -124,6 +125,10 @@ fun PlayerScreen(
         bookId
             .takeIf { playingItemChanged(it, playingBook) || cachePolicyChanged(cachingModelView, playingBook) }
             ?.let { playerViewModel.preparePlayback(it) }
+
+        if (playInstantly) {
+            playerViewModel.prepareAndPlay()
+        }
     }
 
     LaunchedEffect(playingQueueExpanded) {
