@@ -113,7 +113,7 @@ fun PlayerScreen(
         when {
             searchRequested -> playerViewModel.dismissSearch()
             playingQueueExpanded -> playerViewModel.collapsePlayingQueue()
-            else -> navController.showLibrary()
+            else -> navController.showLibrary(clearHistory = true)
         }
     }
 
