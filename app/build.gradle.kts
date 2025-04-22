@@ -25,6 +25,9 @@ val localProperties = Properties().apply {
             ?.let { file -> file.inputStream().use { load(it) } }
 }
 
+val versionNameStr = project.properties["VERSION_NAME"] as String
+val (major, minor, patch) = versionNameStr.split(".").map { it.toInt() }
+
 android {
     namespace = "org.grakovne.lissen"
     compileSdk = 35
@@ -37,8 +40,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 103
-        versionName = "1.3.25"
+        versionName = versionNameStr
+        versionCode = major * 10000 + minor * 100 + patch
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
