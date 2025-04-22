@@ -102,4 +102,8 @@
     <string name="settings_screen_seek_time_hint">Nastavi možnosti preskoka</string>
     <string name="seek_interval_5_seconds">5 sekund</string>
     <string name="seek_interval_30_seconds">30 sekund</string>
+    <string name="continue_playback_shortcut_description">Nadaljuj poslušanje</string>
+    <string name="seek_interval_15_seconds">15 sekund</string>
+    <string name="seek_interval_60_seconds">60 sekund</string>
+    <string name="continue_playback_shortcut_title">Nadaljuj</string>
 </resources>
