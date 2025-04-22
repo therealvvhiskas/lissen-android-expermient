@@ -1,2 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="player_screen_chapter_list_navigation">Fejezetek</string>
+    <string name="library_screen_library_title">Könyvtár</string>
+    <string name="login_screen_server_url_input">Kiszolgáló URL</string>
+    <string name="library_screen_continue_listening_title">Hallgatás folytatása</string>
+    <string name="library_screen_preferences_menu_item">Beállítások</string>
+    <string name="login_screen_title">Csatlakozás kiszolgálóhoz</string>
+    <string name="login_screen_login_input">Bejelentkezés</string>
+    <string name="login_screen_show_password_hint">Jelszó mutatása</string>
+    <string name="login_screen_password_input">Jelszó</string>
+    <string name="login_screen_connect_button_text">Csatlakozás</string>
+    <string name="player_screen_playback_speed_navigation">Sebesség</string>
+    <string name="player_screen_library_playing_title">Fejezetek lejátszása</string>
+    <string name="player_screen_items_playing_title">Elemek lejátszása</string>
+    <string name="player_screen_podcast_playing_title">Részek lejátszása</string>
+    <string name="player_screen_now_playing_title_chapter_of">%1$d fejezet a(z) %2$s fejezetből</string>
+    <string name="player_screen_now_playing_title_podcast_of">%1$d rész a(z) %2$s részből</string>
+    <string name="player_screen_now_playing_title_item_of">%1$d elem a(z) %2$s elemből</string>
+    <string name="settings_screen_title">Beállítások</string>
+    <string name="settings_screen_connected_as_title">Csatlakozva mint</string>
+    <string name="settings_screen_server_connection">Kiszolgálókapcsolat</string>
+    <string name="login_error_host_is_down">A gazdagép nem elérhető</string>
+</resources>
