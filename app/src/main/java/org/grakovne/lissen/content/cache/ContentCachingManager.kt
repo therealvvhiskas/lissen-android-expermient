@@ -108,10 +108,14 @@ class ContentCachingManager @Inject constructor(
             val dest = properties.provideMediaCachePatch(bookId, file.id)
             dest.parentFile?.mkdirs()
 
-            dest.outputStream().use { output ->
-                body.byteStream().use { input ->
-                    input.copyTo(output)
+            try {
+                dest.outputStream().use { output ->
+                    body.byteStream().use { input ->
+                        input.copyTo(output)
+                    }
                 }
+            } catch (ex: Exception) {
+                return@withContext CacheState(CacheStatus.Error)
             }
 
             onProgress(files.size.takeIf { it != 0 }?.let { index / it.toDouble() } ?: 0.0)
