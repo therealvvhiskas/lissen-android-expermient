@@ -386,7 +386,7 @@ class MediaRepository @Inject constructor(
         book: DetailedItem,
         fromBackground: Boolean,
     ) {
-        if (::mediaController.isInitialized && _playingBook.value != book) {
+        if (_playingBook.value != book) {
             _totalPosition.postValue(0.0)
             _isPlaying.postValue(false)
 
