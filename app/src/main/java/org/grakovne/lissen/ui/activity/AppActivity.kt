@@ -32,13 +32,9 @@ class AppActivity : ComponentActivity() {
 
     private lateinit var appNavigationService: AppNavigationService
 
-    private var launchAction: AppLaunchAction = AppLaunchAction.DEFAULT
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        handleIntent(intent)
 
         setContent {
             val colorScheme by preferences
@@ -55,21 +51,14 @@ class AppActivity : ComponentActivity() {
                     preferences = preferences,
                     imageLoader = imageLoader,
                     networkQualityService = networkQualityService,
-                    appLaunchAction = launchAction,
+                    appLaunchAction = getLaunchAction(intent),
                 )
             }
         }
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        handleIntent(intent)
-    }
-
-    private fun handleIntent(intent: Intent?) {
-        launchAction = when (intent?.action) {
-            "continue_playback" -> AppLaunchAction.CONTINUE_PLAYBACK
-            else -> AppLaunchAction.DEFAULT
-        }
+    private fun getLaunchAction(intent: Intent?) = when (intent?.action) {
+        "continue_playback" -> AppLaunchAction.CONTINUE_PLAYBACK
+        else -> AppLaunchAction.DEFAULT
     }
 }
