@@ -502,12 +502,13 @@ class MediaRepository @Inject constructor(
         private const val CURRENT_TRACK_REPLAY_THRESHOLD = 5
         private const val TAG = "MediaRepository"
 
-        private fun getSeekTime(option: SeekTimeOption): Long = when (option) {
+        private fun getSeekTime(option: SeekTimeOption?): Long = when (option) {
             SeekTimeOption.SEEK_5 -> 5L
             SeekTimeOption.SEEK_10 -> 10L
             SeekTimeOption.SEEK_15 -> 15L
             SeekTimeOption.SEEK_30 -> 30L
             SeekTimeOption.SEEK_60 -> 60L
+            else -> 30L
         }
     }
 }
