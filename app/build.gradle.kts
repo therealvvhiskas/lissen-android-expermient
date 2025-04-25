@@ -25,7 +25,7 @@ val localProperties = Properties().apply {
             ?.let { file -> file.inputStream().use { load(it) } }
 }
 
-val versionNameStr = project.properties["VERSION_NAME"] as String
+val versionNameStr = project.properties["version.name"] as String
 val (major, minor, patch) = versionNameStr.split(".").map { it.toInt() }
 
 android {
