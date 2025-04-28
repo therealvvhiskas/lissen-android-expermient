@@ -285,7 +285,7 @@ class LissenMediaProvider @Inject constructor(
             """
             Merging local playback progress into channel-fetched:
                 Channel Progress: $channelProgress
-                Local Progress: $cachedProgress
+                Cached Progress: $cachedProgress
                 Final Progress: $updatedProgress
             """.trimIndent(),
         )

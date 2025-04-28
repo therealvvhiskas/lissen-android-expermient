@@ -73,7 +73,7 @@ class PlaybackSynchronizationService @Inject constructor(
         overallProgress: PlaybackProgress,
     ): Unit? {
         val currentIndex = currentBook
-            ?.let { calculateChapterIndex(it, overallProgress.currentTime) }
+            ?.let { calculateChapterIndex(it, overallProgress.currentTotalTime) }
             ?: 0
 
         if (currentIndex != currentChapterIndex) {
@@ -95,7 +95,7 @@ class PlaybackSynchronizationService @Inject constructor(
 
     private suspend fun openPlaybackSession(overallProgress: PlaybackProgress) = currentBook
         ?.let { book ->
-            val chapterIndex = calculateChapterIndex(book, overallProgress.currentTime)
+            val chapterIndex = calculateChapterIndex(book, overallProgress.currentTotalTime)
             mediaChannel
                 .startPlayback(
                     bookId = book.id,
@@ -110,11 +110,16 @@ class PlaybackSynchronizationService @Inject constructor(
         }
 
     private fun getProgress(currentElapsedMs: Long): PlaybackProgress {
-        val currentBook = exoPlayer
-            .currentMediaItem
-            ?.localConfiguration
-            ?.tag as? DetailedItem
-            ?: return PlaybackProgress(0.0, 0.0)
+        val currentBook = (
+            exoPlayer
+                .currentMediaItem
+                ?.localConfiguration
+                ?.tag as? DetailedItem
+            )
+            ?: return PlaybackProgress(
+                currentChapterTime = 0.0,
+                currentTotalTime = 0.0,
+            )
 
         val currentIndex = exoPlayer.currentMediaItemIndex
 
@@ -122,13 +127,12 @@ class PlaybackSynchronizationService @Inject constructor(
             .take(currentIndex)
             .sumOf { it.duration * 1000 }
 
-        val totalDuration = currentBook.files.sumOf { it.duration * 1000 }
-
-        val totalElapsedMs = previousDuration + currentElapsedMs
+        val currentTotalTime = (previousDuration + currentElapsedMs) / 1000.0
+        val currentChapterTime = calculateChapterPosition(currentBook, currentTotalTime)
 
         return PlaybackProgress(
-            currentTime = totalElapsedMs / 1000.0,
-            totalTime = totalDuration / 1000.0,
+            currentTotalTime = currentTotalTime,
+            currentChapterTime = currentChapterTime,
         )
     }
 
