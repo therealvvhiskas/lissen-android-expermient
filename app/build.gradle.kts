@@ -79,8 +79,8 @@ android {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 signingConfig = signingConfigs.getByName("release")
             }
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                     // Includes the default ProGuard rules files that are packaged with
                     // the Android Gradle plugin. To learn more, go to the section about
