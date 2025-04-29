@@ -50,6 +50,9 @@ class SettingsViewModel @Inject constructor(
     private val _seekTime = MutableLiveData(preferences.getSeekTime())
     val seekTime = _seekTime
 
+    private val _rewindOnPause = MutableLiveData(preferences.getRewindOnPause())
+    val rewindOnPause = _rewindOnPause
+
     fun logout() {
         preferences.clearPreferences()
     }
@@ -116,13 +119,35 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun preferForwardRewind(option: SeekTimeOption) {
-        _seekTime.value = _seekTime.value?.copy(forward = option)
-        _seekTime.value?.let { preferences.saveSeekTime(it) }
+        val current = _seekTime.value ?: return
+        val updated = current.copy(forward = option)
+
+        preferences.saveSeekTime(updated)
+        _seekTime.postValue(updated)
     }
 
     fun preferRewindRewind(option: SeekTimeOption) {
-        _seekTime.value = _seekTime.value?.copy(rewind = option)
-        _seekTime.value?.let { preferences.saveSeekTime(it) }
+        val current = _seekTime.value ?: return
+        val updated = current.copy(rewind = option)
+
+        preferences.saveSeekTime(updated)
+        _seekTime.postValue(updated)
+    }
+
+    fun preferRewindOnPause(value: Boolean) {
+        val current = _rewindOnPause.value ?: return
+        val updated = current.copy(enabled = value)
+
+        preferences.saveRewindOnPause(updated)
+        _rewindOnPause.value = updated
+    }
+
+    fun preferRewindTimeOnPause(option: SeekTimeOption) {
+        val current = _rewindOnPause.value ?: return
+        val updated = current.copy(time = option)
+
+        preferences.saveRewindOnPause(updated)
+        _rewindOnPause.value = updated
     }
 
     fun updateCustomHeaders(headers: List<ServerRequestHeader>) {

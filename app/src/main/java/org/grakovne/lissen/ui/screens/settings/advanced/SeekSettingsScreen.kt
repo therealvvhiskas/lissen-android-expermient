@@ -36,10 +36,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.grakovne.lissen.R
+import org.grakovne.lissen.domain.RewindOnPauseTime
 import org.grakovne.lissen.domain.SeekTime
 import org.grakovne.lissen.domain.SeekTimeOption
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItem
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItemComposable
+import org.grakovne.lissen.ui.screens.settings.composable.SettingsToggleItem
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
@@ -51,9 +53,11 @@ fun SeekSettingsScreen(
     val viewModel: SettingsViewModel = hiltViewModel()
 
     val preferredSeekTime by viewModel.seekTime.observeAsState()
+    val rewindOnPause by viewModel.rewindOnPause.observeAsState(RewindOnPauseTime.Default)
 
     var rewindTimeExpanded by remember { mutableStateOf(false) }
     var forwardTimeExpanded by remember { mutableStateOf(false) }
+    var rewindOnPauseTimeExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -97,12 +101,26 @@ fun SeekSettingsScreen(
                     SeekTimeOptionComposable(
                         title = stringResource(R.string.rewind_interval),
                         currentOption = preferredSeekTime?.rewind ?: SeekTime.Default.rewind,
+                        enabled = true,
                     ) { rewindTimeExpanded = true }
 
                     SeekTimeOptionComposable(
                         title = stringResource(R.string.forward_interval),
                         currentOption = preferredSeekTime?.forward ?: SeekTime.Default.forward,
+                        enabled = true,
                     ) { forwardTimeExpanded = true }
+
+                    SettingsToggleItem(
+                        title = stringResource(R.string.rewind_on_pause_title),
+                        description = stringResource(R.string.rewind_on_pause_hint),
+                        checked = rewindOnPause.enabled,
+                    ) { viewModel.preferRewindOnPause(it) }
+
+                    SeekTimeOptionComposable(
+                        title = stringResource(R.string.rewind_on_pause_time),
+                        currentOption = rewindOnPause.time,
+                        enabled = rewindOnPause.enabled,
+                    ) { rewindOnPauseTimeExpanded = true }
                 }
             }
         },
@@ -135,20 +153,36 @@ fun SeekSettingsScreen(
             },
         )
     }
+
+    if (rewindOnPauseTimeExpanded) {
+        CommonSettingsItemComposable(
+            items = SeekTimeOption.entries.map { it.toSettingsItem(context) },
+            selectedItem = rewindOnPause?.time?.toSettingsItem(context),
+            onDismissRequest = { rewindOnPauseTimeExpanded = false },
+            onItemSelected = { item ->
+                SeekTimeOption
+                    .entries
+                    .find { it.name == item.id }
+                    ?.let { viewModel.preferRewindTimeOnPause(it) }
+            },
+        )
+    }
 }
 
 @Composable
 fun SeekTimeOptionComposable(
+    enabled: Boolean,
     title: String,
     currentOption: SeekTimeOption,
     onClicked: () -> Unit,
 ) {
+    val textColor = if (enabled) colorScheme.onSurface else colorScheme.onSurface.copy(alpha = 0.6f)
     val context = LocalContext.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClicked() }
+            .clickable(enabled = enabled) { onClicked() }
             .padding(horizontal = 24.dp, vertical = 12.dp),
     ) {
         Column(
@@ -156,13 +190,17 @@ fun SeekTimeOptionComposable(
         ) {
             Text(
                 text = title,
-                style = typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                style = typography.bodyLarge.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor,
+                ),
                 modifier = Modifier.padding(bottom = 4.dp),
             )
             Text(
                 text = currentOption.toItem(context),
-                style = typography.bodyMedium,
-                color = colorScheme.onSurfaceVariant,
+                style = typography.bodyMedium.copy(
+                    color = textColor,
+                ),
             )
         }
     }

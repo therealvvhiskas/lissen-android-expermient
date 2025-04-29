@@ -122,7 +122,18 @@ class MediaRepository @Inject constructor(
                         .registerReceiver(timerExpiredReceiver, IntentFilter(TIMER_EXPIRED))
 
                     mediaController.addListener(object : Player.Listener {
+
                         override fun onIsPlayingChanged(isPlaying: Boolean) {
+                            try {
+                                val playbackPaused = _isPlaying.value == true && isPlaying.not()
+
+                                if (playbackPaused && preferences.getRewindOnPause().enabled) {
+                                    rewindOnPause()
+                                }
+                            } catch (ex: Exception) {
+                                Log.d(TAG, "Smart pause is broken due to: $ex")
+                            }
+
                             _isPlaying.value = isPlaying
                         }
 
@@ -204,6 +215,12 @@ class MediaRepository @Inject constructor(
 
             null -> cancelServiceTimer()
         }
+    }
+
+    fun rewindOnPause() {
+        totalPosition
+            .value
+            ?.let { seekTo(it - getSeekTime(preferences.getRewindOnPause().time)) }
     }
 
     fun rewind() {
