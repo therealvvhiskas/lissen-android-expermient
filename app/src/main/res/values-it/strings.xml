@@ -108,4 +108,7 @@
     <string name="continue_playback_shortcut_description">Continua ad ascoltare</string>
     <string name="playing_item_details_narrator">Narratore</string>
     <string name="playing_item_details_duration">Durata</string>
+    <string name="rewind_on_pause_title">Riavvolgi in pausa</string>
+    <string name="rewind_on_pause_hint">Torna automaticamente indietro quando messo in pausa</string>
+    <string name="rewind_on_pause_time">Riavvolgi il tempo in pausa</string>
 </resources>
