@@ -41,7 +41,6 @@ import org.grakovne.lissen.domain.SeekTime
 import org.grakovne.lissen.domain.SeekTimeOption
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItem
 import org.grakovne.lissen.ui.screens.settings.composable.CommonSettingsItemComposable
-import org.grakovne.lissen.ui.screens.settings.composable.SettingsToggleItem
 import org.grakovne.lissen.viewmodel.SettingsViewModel
 
 @Composable
@@ -109,18 +108,6 @@ fun SeekSettingsScreen(
                         currentOption = preferredSeekTime?.forward ?: SeekTime.Default.forward,
                         enabled = true,
                     ) { forwardTimeExpanded = true }
-
-                    SettingsToggleItem(
-                        title = stringResource(R.string.rewind_on_pause_title),
-                        description = stringResource(R.string.rewind_on_pause_hint),
-                        checked = rewindOnPause.enabled,
-                    ) { viewModel.preferRewindOnPause(it) }
-
-                    SeekTimeOptionComposable(
-                        title = stringResource(R.string.rewind_on_pause_time),
-                        currentOption = rewindOnPause.time,
-                        enabled = rewindOnPause.enabled,
-                    ) { rewindOnPauseTimeExpanded = true }
                 }
             }
         },
