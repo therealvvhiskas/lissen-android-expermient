@@ -78,17 +78,16 @@ class LibraryAudiobookshelfChannel @Inject constructor(
         query: String,
         limit: Int,
     ): ApiResult<List<Book>> = coroutineScope {
+        val searchResult = dataRepository.searchBooks(libraryId, query, limit)
+
         val byTitle = async {
-            dataRepository
-                .searchBooks(libraryId, query, limit)
+            searchResult
                 .map { it.book }
                 .map { it.map { response -> response.libraryItem } }
                 .map { librarySearchItemsConverter.apply(it) }
         }
 
         val byAuthor = async {
-            val searchResult = dataRepository.searchBooks(libraryId, query, limit)
-
             searchResult
                 .map { it.authors }
                 .map { authors -> authors.map { it.id } }
@@ -107,7 +106,32 @@ class LibraryAudiobookshelfChannel @Inject constructor(
                 .map { librarySearchItemsConverter.apply(it) }
         }
 
-        byTitle.await().flatMap { title -> byAuthor.await().map { author -> title + author } }
+        val bySeries = async {
+            searchResult
+                .map { result -> result.series }
+                .map { result -> result.flatMap { it.books } }
+                .map { result -> result.mapNotNull { it.media.metadata.title } }
+                .map { result -> result.map { async { dataRepository.searchBooks(libraryId, it, limit) } } }
+                .map { result -> result.awaitAll() }
+                .map { result ->
+                    result.flatMap {
+                        it.fold(
+                            onSuccess = { items -> items.book },
+                            onFailure = { emptyList() },
+                        )
+                    }
+                }
+                .map { result -> result.map { it.libraryItem } }
+                .map { result -> result.let { librarySearchItemsConverter.apply(it) } }
+        }
+
+        byTitle.await().flatMap { title ->
+            byAuthor.await().flatMap { author ->
+                bySeries.await().map { series ->
+                    (title + author + series).distinctBy { it.id }
+                }
+            }
+        }
     }
 
     override suspend fun startPlayback(
