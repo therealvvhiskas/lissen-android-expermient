@@ -97,4 +97,18 @@
     <string name="login_error_lissen_auth_scheme_must_be_whitelisted">Das Schema %1$s://%2$s ist in den Weiterleitungs-URI-Einstellungen des Servers nicht erlaubt</string>
     <string name="playing_item_details_narrator">Erzähler</string>
     <string name="playing_item_details_duration">Dauer</string>
+    <string name="settings_screen_seek_time_title">Sucheinstellungen</string>
+    <string name="settings_screen_seek_time_hint">Suchsteuerungen definieren</string>
+    <string name="rewind_interval">Rückspulintervall</string>
+    <string name="continue_playback_shortcut_title">Weitermachen</string>
+    <string name="rewind_on_pause_title">Zurückspulen bei Pause</string>
+    <string name="rewind_on_pause_hint">Springt automatisch zurück, wenn pausiert wird</string>
+    <string name="rewind_on_pause_time">Zeit bei Pause zurückspulen</string>
+    <string name="forward_interval">Vorwärtsintervall</string>
+    <string name="seek_interval_5_seconds">5 Sekunden</string>
+    <string name="seek_interval_10_seconds">10 Sekunden</string>
+    <string name="seek_interval_15_seconds">15 Sekunden</string>
+    <string name="seek_interval_30_seconds">30 Sekunden</string>
+    <string name="seek_interval_60_seconds">60 Sekunden</string>
+    <string name="continue_playback_shortcut_description">Weiterhören</string>
 </resources>
