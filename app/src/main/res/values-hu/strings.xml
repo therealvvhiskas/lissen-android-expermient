@@ -108,4 +108,7 @@
     <string name="downloads_menu_download_option_entire_item">Teljes elem</string>
     <string name="playing_item_details_narrator">Előadó</string>
     <string name="playing_item_details_duration">Időtartam</string>
+    <string name="rewind_on_pause_title">Visszatekerés szüneteltetés közben</string>
+    <string name="rewind_on_pause_hint">Szüneteltetéskor automatikusan visszaugrik</string>
+    <string name="rewind_on_pause_time">Visszatekerés szüneteltetés közben</string>
 </resources>
