@@ -197,6 +197,7 @@ fun NavigationBarComposable(
 
       if (timerExpanded) {
         TimerComposable(
+          libraryType = libraryType,
           currentOption = timerOption,
           onOptionSelected = { playerViewModel.setTimer(it) },
           onDismissRequest = { timerExpanded = false },

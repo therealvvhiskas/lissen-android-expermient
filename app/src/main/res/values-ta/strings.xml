@@ -50,6 +50,7 @@
     <string name="library_screen_podcast_title">பாட்காச்ட்கள்</string>
     <string name="settings_screen_server_version">சேவையக பதிப்பு</string>
     <string name="timer_option_after_current_episode">அத்தியாயம் முடிவடையும் போது</string>
+    <string name="timer_option_after_current_chapter">அத்தியாயம் முடிவடையும் போது</string>
     <string name="timer_option_after_minutes">%1$d நிமிடங்கள்</string>
     <string name="timer_option_disable_timer">டைமரை முடக்கு</string>
     <string name="timer_title">தூக்க நேரங்குறிகருவி</string>

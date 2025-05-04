@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
+import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.domain.CurrentEpisodeTimerOption
 import org.grakovne.lissen.domain.DurationTimerOption
 import org.grakovne.lissen.domain.TimerOption
@@ -36,6 +37,7 @@ import org.grakovne.lissen.domain.TimerOption
 @Composable
 fun TimerComposable(
   currentOption: TimerOption?,
+  libraryType: LibraryType,
   onOptionSelected: (TimerOption?) -> Unit,
   onDismissRequest: () -> Unit,
 ) {
@@ -66,7 +68,11 @@ fun TimerComposable(
               headlineContent = {
                 Row {
                   Text(
-                    text = item.makeText(context),
+                    text =
+                      item.makeText(
+                        libraryType = libraryType,
+                        context = context,
+                      ),
                     style = typography.bodyMedium,
                   )
                 }
@@ -132,8 +138,17 @@ private val TimerOptions =
     CurrentEpisodeTimerOption,
   )
 
-fun TimerOption.makeText(context: Context): String =
+fun TimerOption.makeText(
+  libraryType: LibraryType,
+  context: Context,
+): String =
   when (this) {
-    CurrentEpisodeTimerOption -> context.getString(R.string.timer_option_after_current_episode)
+    CurrentEpisodeTimerOption ->
+      when (libraryType) {
+        LibraryType.LIBRARY -> context.getString(R.string.timer_option_after_current_chapter)
+        LibraryType.PODCAST -> context.getString(R.string.timer_option_after_current_episode)
+        LibraryType.UNKNOWN -> context.getString(R.string.timer_option_after_current_episode)
+      }
+
     is DurationTimerOption -> context.getString(R.string.timer_option_after_minutes, this.duration)
   }

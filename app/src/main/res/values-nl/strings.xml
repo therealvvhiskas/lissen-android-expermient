@@ -47,6 +47,7 @@
     <string name="library_screen_podcast_title">Podcasts</string>
     <string name="settings_screen_server_version">Serverversie</string>
     <string name="timer_option_after_current_episode">Wanneer de aflevering eindigt</string>
+    <string name="timer_option_after_current_chapter">Wanneer het hoofdstuk eindigt</string>
     <string name="timer_option_disable_timer">Schakel Timer uit</string>
     <string name="chapter_search_hint">Zoek op hoofdstuktitel</string>
     <string name="the_offline_podcasts_is_empty">Nog geen opgeslagen podcasts</string>

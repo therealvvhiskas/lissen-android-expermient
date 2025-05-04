@@ -49,6 +49,7 @@
     <string name="library_screen_podcast_title">Podcasti</string>
     <string name="settings_screen_server_version">Verzija strežnika</string>
     <string name="timer_option_after_current_episode">Ko se epizoda konča</string>
+    <string name="timer_option_after_current_chapter">Ko se poglavje konča</string>
     <string name="timer_option_after_minutes">%1$d minut</string>
     <string name="timer_option_disable_timer">Onemogoči časovnik</string>
     <string name="timer_title">Časovnik za spanje</string>

@@ -50,6 +50,7 @@
     <string name="library_screen_podcast_title">Podcast\'ler</string>
     <string name="settings_screen_server_version">Sunucu Sürümü</string>
     <string name="timer_option_after_current_episode">Bölüm sona erdiğinde</string>
+    <string name="timer_option_after_current_chapter">Bölüm sona erdiğinde</string>
     <string name="timer_option_after_minutes">%1$d dakika</string>
     <string name="timer_option_disable_timer">Zamanlayıcıyı Devre Dışı Bırak</string>
     <string name="timer_title">Uyku Zamanlayıcısı</string>
