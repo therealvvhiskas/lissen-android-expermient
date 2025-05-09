@@ -36,8 +36,8 @@
     <string name="settings_screen_color_scheme_title">Ulkoasu</string>
     <string name="library_search_hint">Etsi nimen, kirjailijan tai sarjan mukaan</string>
     <string name="player_screen_title">Nyt kuunneltavana</string>
-    <string name="custom_header_hint_value">Otsakkeen arvo</string>
-    <string name="custom_header_hint_name">Otsakkeen avain</string>
+    <string name="custom_header_hint_value">Arvo</string>
+    <string name="custom_header_hint_name">Avain</string>
     <string name="library_screen_podcast_title">Podcastit</string>
     <string name="settings_screen_server_version">Palvelimen versio</string>
     <string name="timer_option_after_current_chapter">Kun kappale päättyy</string>
@@ -84,7 +84,7 @@
     <string name="player_screen_now_playing_title_chapter_of">Luku %1$d / %2$s</string>
     <string name="color_scheme_light">Vaalea</string>
     <string name="login_error_host_url_shall_be_https_or_http">Palvelimen URL-osoitteen alun tulisi olla https:// tai http://</string>
-    <string name="settings_screen_custom_header_hint">Määrittele palvelinyhteyden otsakkeet (Headerit)</string>
+    <string name="settings_screen_custom_header_hint">Määrittele palvelinyhteyden mukautetut HTTP-otsakkeet</string>
     <string name="color_scheme_dark">Tumma</string>
     <string name="custom_headers_title">Mukautetut otsakkeet</string>
     <string name="downloads_menu_download_book">Lataa kirja</string>
