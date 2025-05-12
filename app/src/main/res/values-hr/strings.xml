@@ -1,2 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="library_screen_continue_listening_title">Nastavi slušati</string>
+    <string name="library_screen_preferences_menu_item">Postavke</string>
+    <string name="login_screen_server_url_input">Server URL</string>
+    <string name="login_screen_login_input">Prijava</string>
+    <string name="login_screen_password_input">Lozinka</string>
+    <string name="player_screen_playback_speed_navigation">Brzina</string>
+    <string name="player_screen_chapter_list_navigation">Poglavlja</string>
+    <string name="player_screen_library_playing_title">Sljedeča poglavlja</string>
+    <string name="player_screen_podcast_playing_title">Sljedeće epizode</string>
+    <string name="player_screen_now_playing_title_chapter_of">Poglavlje %1$d od %2$s</string>
+    <string name="player_screen_now_playing_title_podcast_of">Epizoda %1$d od %2$s</string>
+    <string name="settings_screen_connected_as_title">Spojen kao</string>
+    <string name="settings_screen_server_connection">Server veza</string>
+    <string name="login_error_host_is_down">Host je dolje</string>
+    <string name="login_error_username_is_missing">Korisničko ime nedostaje</string>
+    <string name="login_error_password_is_missing">Lozinka nedostaje</string>
+    <string name="login_screen_show_password_hint">Pokaži lozinku</string>
+    <string name="settings_screen_title">Postavke</string>
+    <string name="login_error_host_url_shall_be_https_or_http">Host URL mora biti https:// ili http://</string>
+    <string name="login_screen_connect_button_text">Poveži</string>
+    <string name="login_error_host_url_is_missing">Host URL nedostaje</string>
+    <string name="player_screen_now_playing_title_item_of">Stavka %1$d od %2$s</string>
+    <string name="login_screen_title">Poveži se na server</string>
+    <string name="library_screen_library_title">Knjižnjica</string>
+</resources>
