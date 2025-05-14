@@ -18,8 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.grakovne.lissen.R
@@ -33,7 +39,27 @@ fun PlaylistItemComposable(
   isSelected: Boolean,
   onClick: () -> Unit,
   modifier: Modifier,
+  maxDuration: Double,
+  isCached: Boolean,
 ) {
+  val fontScale = LocalDensity.current.fontScale
+  val textMeasurer = rememberTextMeasurer()
+  val density = LocalDensity.current
+
+  val maxDurationText = remember(maxDuration) { maxDuration.toInt().formatLeadingMinutes() }
+  val bodySmallStyle = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold)
+
+  val durationColumnWidth =
+    remember(maxDurationText, density, bodySmallStyle) {
+      with(density) {
+        textMeasurer
+          .measure(AnnotatedString(maxDurationText), style = bodySmallStyle)
+          .size
+          .width
+          .toDp()
+      }
+    }
+
   Row(
     verticalAlignment = Alignment.CenterVertically,
     modifier =
@@ -76,12 +102,32 @@ fun PlaylistItemComposable(
         },
       overflow = TextOverflow.Ellipsis,
       fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-      modifier = Modifier.weight(1f),
+      modifier =
+        Modifier
+          .weight(1f)
+          .padding(end = 12.dp),
     )
+
+    if (isCached) {
+      Icon(
+        imageVector = ImageVector.vectorResource(id = R.drawable.available_offline_filled),
+        contentDescription = "Available offline",
+        modifier =
+          Modifier
+            .padding(4.dp * fontScale)
+            .size(12.dp),
+        tint =
+          colorScheme.onBackground.copy(
+            alpha = if (isSelected) 0.6f else 0.4f,
+          ),
+      )
+    }
+
     Text(
       text = track.duration.toInt().formatLeadingMinutes(),
       style = MaterialTheme.typography.bodySmall,
-      modifier = Modifier.padding(start = 8.dp),
+      modifier = Modifier.width(durationColumnWidth),
+      textAlign = TextAlign.End,
       fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
       color =
         when (track.available) {
