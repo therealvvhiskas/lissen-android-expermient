@@ -303,7 +303,7 @@ class LissenMediaProvider
     fun providePreferredChannel(): MediaChannel =
       channels[preferences.getChannel()]
         ?.provideMediaChannel()
-        ?: throw IllegalStateException("Selected auth service has been requested but not selected")
+        ?: throw IllegalStateException("Channel has been requested but not implemented")
 
     companion object {
       private const val TAG: String = "LissenMediaProvider"

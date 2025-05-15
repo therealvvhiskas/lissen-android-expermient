@@ -152,7 +152,7 @@ class PlaybackSynchronizationService
     companion object {
       private const val TAG = "PlaybackSynchronizationService"
       private const val SYNC_INTERVAL_LONG = 30_000L
-      private const val SHORT_SYNC_WINDOW = SYNC_INTERVAL_LONG * 2 - 1 // https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem descibes why -1 is important
+      private const val SHORT_SYNC_WINDOW = SYNC_INTERVAL_LONG * 2 - 1 // Nyquist-Shannon sampling theorem describes why -1 is important
 
       private const val SYNC_INTERVAL_SHORT = 1_000L
     }
