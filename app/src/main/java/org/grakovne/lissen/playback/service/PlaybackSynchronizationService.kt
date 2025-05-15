@@ -1,5 +1,6 @@
 package org.grakovne.lissen.playback.service
 
+import android.util.Log
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +32,16 @@ class PlaybackSynchronizationService
     init {
       exoPlayer.addListener(
         object : Player.Listener {
-          override fun onIsPlayingChanged(isPlaying: Boolean) {
-            if (isPlaying) {
-              scheduleSynchronization()
-            } else {
-              executeSynchronization()
+          override fun onEvents(
+            player: Player,
+            events: Player.Events,
+          ) {
+            if (
+              events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION) ||
+              events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED) ||
+              events.contains(Player.EVENT_IS_PLAYING_CHANGED)
+            ) {
+              runRepeatableSync()
             }
           }
         },
@@ -47,38 +53,45 @@ class PlaybackSynchronizationService
       currentBook = book
     }
 
-    private fun scheduleSynchronization() {
+    private fun runRepeatableSync() {
       serviceScope
         .launch {
+          runSync()
+
           if (exoPlayer.isPlaying) {
-            executeSynchronization()
-            delay(SYNC_INTERVAL)
-            scheduleSynchronization()
+            when (exoPlayer.duration - exoPlayer.currentPosition < SHORT_SYNC_WINDOW || exoPlayer.currentPosition < SHORT_SYNC_WINDOW) {
+              true -> delay(SYNC_INTERVAL_SHORT)
+              false -> delay(SYNC_INTERVAL_LONG)
+            }
+
+            runRepeatableSync()
           }
         }
     }
 
-    private fun executeSynchronization() {
+    private fun runSync() {
       val elapsedMs = exoPlayer.currentPosition
-      val overallProgress = getProgress(elapsedMs)
+      val overallProgress = getProgress(elapsedMs) ?: return
+
+      Log.d(TAG, "Trying to sync $overallProgress for ${currentBook?.id}")
 
       serviceScope
         .launch(Dispatchers.IO) {
           playbackSession
             ?.takeIf { it.bookId == currentBook?.id }
-            ?.let { synchronizeProgress(it, overallProgress) }
+            ?.let { requestSync(it, overallProgress) }
             ?: openPlaybackSession(overallProgress)
         }
     }
 
-    private suspend fun synchronizeProgress(
+    private suspend fun requestSync(
       it: PlaybackSession,
       overallProgress: PlaybackProgress,
     ): Unit? {
       val currentIndex =
         currentBook
           ?.let { calculateChapterIndex(it, overallProgress.currentTotalTime) }
-          ?: 0
+          ?: return null
 
       if (currentIndex != currentChapterIndex) {
         openPlaybackSession(overallProgress)
@@ -112,18 +125,13 @@ class PlaybackSynchronizationService
             )
         }
 
-    private fun getProgress(currentElapsedMs: Long): PlaybackProgress {
+    private fun getProgress(currentElapsedMs: Long): PlaybackProgress? {
       val currentBook =
-        (
-          exoPlayer
-            .currentMediaItem
-            ?.localConfiguration
-            ?.tag as? DetailedItem
-        )
-          ?: return PlaybackProgress(
-            currentChapterTime = 0.0,
-            currentTotalTime = 0.0,
-          )
+        exoPlayer
+          .currentMediaItem
+          ?.localConfiguration
+          ?.tag as? DetailedItem
+          ?: return null
 
       val currentIndex = exoPlayer.currentMediaItemIndex
 
@@ -142,6 +150,10 @@ class PlaybackSynchronizationService
     }
 
     companion object {
-      private const val SYNC_INTERVAL = 30_000L
+      private const val TAG = "PlaybackSynchronizationService"
+      private const val SYNC_INTERVAL_LONG = 30_000L
+      private const val SHORT_SYNC_WINDOW = SYNC_INTERVAL_LONG * 2 - 1 // https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem descibes why -1 is important
+
+      private const val SYNC_INTERVAL_SHORT = 1_000L
     }
   }
