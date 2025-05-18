@@ -66,6 +66,7 @@ fun PlaylistItemComposable(
       modifier
         .padding(start = 6.dp)
         .padding(end = 4.dp)
+        .padding(vertical = 2.dp)
         .clickable(
           onClick = onClick,
           indication = null,
