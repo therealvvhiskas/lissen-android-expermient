@@ -44,9 +44,6 @@ android {
         versionName = "1.4.16"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
