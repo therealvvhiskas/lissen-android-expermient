@@ -23,7 +23,7 @@
         android:largeHeap="true"
         android:theme="@style/Theme.Lissen"
         tools:ignore="DiscouragedApi,UnusedAttribute"
-        tools:targetApi="31">
+        tools:targetApi="35">
 
         <activity
             android:screenOrientation="portrait"
