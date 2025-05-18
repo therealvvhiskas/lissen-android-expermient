@@ -114,7 +114,7 @@ fun PlaylistItemComposable(
         contentDescription = "Available offline",
         modifier =
           Modifier
-            .padding(4.dp * fontScale)
+            .padding(horizontal = 6.dp * fontScale)
             .size(12.dp),
         tint =
           colorScheme.onBackground.copy(
