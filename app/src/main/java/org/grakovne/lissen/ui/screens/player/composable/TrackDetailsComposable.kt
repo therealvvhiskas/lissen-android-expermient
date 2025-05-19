@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -59,9 +60,8 @@ fun TrackDetailsComposable(
         .build()
     }
 
-  val windowSize = LocalWindowInfo.current.containerSize
-  val density = LocalDensity.current
-  val screenHeight = with(density) { windowSize.height.toDp() }
+  val configuration = LocalConfiguration.current
+  val screenHeight = configuration.screenHeightDp.dp
   val maxImageHeight = screenHeight * 0.33f
 
   Column(
