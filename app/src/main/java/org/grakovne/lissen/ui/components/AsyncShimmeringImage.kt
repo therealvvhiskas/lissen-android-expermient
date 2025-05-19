@@ -44,15 +44,14 @@ fun AsyncShimmeringImage(
     modifier = modifier,
     contentAlignment = Alignment.Center,
   ) {
-    if (backdropMode == BackdropMode.BLUR) {
+    if (backdropMode == BackdropMode.BLUR && painter.state is AsyncImagePainter.State.Success) {
       Image(
         painter = painter,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier =
-          Modifier
-            .fillMaxSize()
-            .blur(32.dp),
+        modifier = Modifier
+          .fillMaxSize()
+          .blur(32.dp)
       )
     }
 
