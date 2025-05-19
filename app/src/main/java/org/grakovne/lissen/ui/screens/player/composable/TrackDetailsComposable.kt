@@ -22,8 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,7 +33,6 @@ import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
-import org.grakovne.lissen.ui.components.BackdropMode
 import org.grakovne.lissen.viewmodel.LibraryViewModel
 import org.grakovne.lissen.viewmodel.PlayerViewModel
 
@@ -72,14 +69,13 @@ fun TrackDetailsComposable(
       imageRequest = imageRequest,
       imageLoader = imageLoader,
       contentDescription = "${book?.title} cover",
-      contentScale = ContentScale.Fit,
+      contentScale = ContentScale.FillBounds,
       modifier =
         Modifier
           .heightIn(max = maxImageHeight)
           .aspectRatio(1f)
           .clip(RoundedCornerShape(8.dp)),
       error = painterResource(R.drawable.cover_fallback),
-      backdropMode = BackdropMode.BLUR,
     )
 
     Spacer(modifier = Modifier.height(12.dp))

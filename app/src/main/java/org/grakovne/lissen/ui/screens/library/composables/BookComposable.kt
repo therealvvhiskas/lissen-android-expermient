@@ -30,7 +30,6 @@ import coil.request.ImageRequest
 import org.grakovne.lissen.R
 import org.grakovne.lissen.domain.Book
 import org.grakovne.lissen.ui.components.AsyncShimmeringImage
-import org.grakovne.lissen.ui.components.BackdropMode
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 
 @Composable
@@ -63,8 +62,7 @@ fun BookComposable(
       imageRequest = imageRequest,
       imageLoader = imageLoader,
       contentDescription = "${book.title} cover",
-      contentScale = ContentScale.Fit,
-      backdropMode = BackdropMode.BLUR,
+      contentScale = ContentScale.FillBounds,
       modifier =
         Modifier
           .size(64.dp)

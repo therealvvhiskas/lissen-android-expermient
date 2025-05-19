@@ -1,20 +1,20 @@
 package org.grakovne.lissen.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
 import coil.ImageLoader
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.shimmer
 
@@ -22,55 +22,44 @@ import com.valentinilk.shimmer.shimmer
 fun AsyncShimmeringImage(
   imageRequest: ImageRequest,
   imageLoader: ImageLoader,
-  contentDescription: String?,
-  modifier: Modifier = Modifier,
+  contentDescription: String,
   contentScale: ContentScale,
+  modifier: Modifier = Modifier,
   error: Painter,
-  backdropMode: BackdropMode = BackdropMode.PLAIN,
   onLoadingStateChanged: (Boolean) -> Unit = {},
 ) {
-  val painter =
-    rememberAsyncImagePainter(
-      model = imageRequest,
-      imageLoader = imageLoader,
-      error = error,
-      contentScale = contentScale,
-    )
-
-  val isLoading = painter.state is AsyncImagePainter.State.Loading
+  var isLoading by remember { mutableStateOf(true) }
   onLoadingStateChanged(isLoading)
 
   Box(
     modifier = modifier,
     contentAlignment = Alignment.Center,
   ) {
-    if (backdropMode == BackdropMode.BLUR && painter.state is AsyncImagePainter.State.Success) {
-      Image(
-        painter = painter,
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-          .fillMaxSize()
-          .blur(32.dp)
-      )
-    }
-
     if (isLoading) {
       Box(
-        Modifier
-          .fillMaxSize()
-          .background(Color.Gray)
-          .shimmer(),
+        modifier =
+          Modifier
+            .fillMaxSize()
+            .background(Color.Gray)
+            .shimmer(),
       )
     }
 
-    Image(
-      painter = painter,
+    AsyncImage(
+      model = imageRequest,
+      imageLoader = imageLoader,
       contentDescription = contentDescription,
       contentScale = contentScale,
       modifier = Modifier.fillMaxSize(),
+      onSuccess = {
+        isLoading = false
+        onLoadingStateChanged(false)
+      },
+      onError = {
+        isLoading = false
+        onLoadingStateChanged(false)
+      },
+      error = error,
     )
   }
 }
-
-enum class BackdropMode { PLAIN, BLUR }
