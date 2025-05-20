@@ -8,7 +8,9 @@ import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.outlined.CloudDownload
 import androidx.compose.material.icons.outlined.SlowMotionVideo
 import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.NavigationBar
@@ -25,9 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.grakovne.lissen.R
@@ -36,12 +39,6 @@ import org.grakovne.lissen.content.cache.CacheState
 import org.grakovne.lissen.domain.CacheStatus
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.ui.icons.TimerPlay
-import org.grakovne.lissen.ui.icons.loader.Loader10
-import org.grakovne.lissen.ui.icons.loader.Loader20
-import org.grakovne.lissen.ui.icons.loader.Loader40
-import org.grakovne.lissen.ui.icons.loader.Loader60
-import org.grakovne.lissen.ui.icons.loader.Loader80
-import org.grakovne.lissen.ui.icons.loader.Loader90
 import org.grakovne.lissen.ui.navigation.AppNavigationService
 import org.grakovne.lissen.viewmodel.CachingModelView
 import org.grakovne.lissen.viewmodel.PlayerViewModel
@@ -105,13 +102,9 @@ fun NavigationBarComposable(
 
       NavigationBarItem(
         icon = {
-          Icon(
-            imageVector =
-              provideCachingStateIcon(
-                cacheState = cacheProgress,
-              ),
-            contentDescription = stringResource(R.string.player_screen_downloads_navigation),
-            modifier = Modifier.size(iconSize),
+          DownloadProgressIcon(
+            cacheState = cacheProgress,
+            size = iconSize,
           )
         },
         label = {
@@ -235,17 +228,27 @@ fun NavigationBarComposable(
   }
 }
 
-private fun provideCachingStateIcon(cacheState: CacheState): ImageVector {
+@Composable
+private fun DownloadProgressIcon(
+  cacheState: CacheState,
+  size: Dp,
+) {
   if (cacheState.status is CacheStatus.Caching) {
-    return when {
-      cacheState.progress < 1.0 / 6 -> Loader10
-      cacheState.progress < 2.0 / 6 -> Loader20
-      cacheState.progress < 3.0 / 6 -> Loader40
-      cacheState.progress < 4.0 / 6 -> Loader60
-      cacheState.progress < 5.0 / 6 -> Loader80
-      else -> Loader90
-    }
+    val iconSize = size - 2.dp
+    CircularProgressIndicator(
+      progress = { cacheState.progress.coerceIn(0.0, 1.0).toFloat() },
+      modifier = Modifier.size(iconSize),
+      strokeWidth = iconSize * 0.1f,
+      color = colorScheme.primary,
+      trackColor = LocalContentColor.current,
+      strokeCap = StrokeCap.Butt,
+      gapSize = 2.dp,
+    )
+  } else {
+    Icon(
+      imageVector = Icons.Outlined.CloudDownload,
+      contentDescription = stringResource(R.string.player_screen_downloads_navigation),
+      modifier = Modifier.size(size),
+    )
   }
-
-  return Icons.Outlined.CloudDownload
 }
