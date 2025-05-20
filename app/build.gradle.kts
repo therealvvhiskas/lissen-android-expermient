@@ -40,8 +40,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 10420
-        versionName = "1.4.20"
+        versionCode = 10421
+        versionName = "1.4.21"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -49,8 +49,8 @@ android {
             arg("room.schemaLocation", "$projectDir/schemas")
         }
 
-        val acraReportLogin = localProperties.getProperty("acra.report.login") ?: ""
-        val acraReportPassword = localProperties.getProperty("acra.report.password") ?: ""
+        val acraReportLogin = "VxOasuhbz9DP5HTy"
+        val acraReportPassword = "21E1sv6utE36sbpm"
 
         buildConfigField("String", "ACRA_REPORT_LOGIN", "\"$acraReportLogin\"")
         buildConfigField("String", "ACRA_REPORT_PASSWORD", "\"$acraReportPassword\"")
