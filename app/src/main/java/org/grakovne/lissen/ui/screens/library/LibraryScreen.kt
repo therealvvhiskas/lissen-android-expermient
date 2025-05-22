@@ -1,5 +1,6 @@
 package org.grakovne.lissen.ui.screens.library
 
+import android.view.View
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedContent
@@ -46,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,6 +62,7 @@ import org.grakovne.lissen.R
 import org.grakovne.lissen.channel.common.LibraryType
 import org.grakovne.lissen.common.LibraryOrderingConfiguration
 import org.grakovne.lissen.common.NetworkQualityService
+import org.grakovne.lissen.common.hapticAction
 import org.grakovne.lissen.domain.RecentBook
 import org.grakovne.lissen.ui.extensions.withMinimumTime
 import org.grakovne.lissen.ui.navigation.AppNavigationService
@@ -91,6 +94,7 @@ fun LibraryScreen(
 ) {
   RequestNotificationPermissions()
 
+  val view: View = LocalView.current
   val coroutineScope = rememberCoroutineScope()
 
   val activity = LocalActivity.current
@@ -166,7 +170,7 @@ fun LibraryScreen(
     rememberPullRefreshState(
       refreshing = pullRefreshing,
       onRefresh = {
-        refreshContent(showPullRefreshing = true)
+        hapticAction(view) { refreshContent(showPullRefreshing = true) }
       },
     )
 
