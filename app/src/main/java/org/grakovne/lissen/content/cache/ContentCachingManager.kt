@@ -144,13 +144,17 @@ class ContentCachingManager
           .fetchBookCover(book.id)
           .fold(
             onSuccess = { inputStream ->
-              if (!file.exists()) {
-                file.parentFile?.mkdirs()
-                file.createNewFile()
-              }
+              try {
+                if (!file.exists()) {
+                  file.parentFile?.mkdirs()
+                  file.createNewFile()
+                }
 
-              file.outputStream().use { outputStream ->
-                inputStream.copyTo(outputStream)
+                file.outputStream().use { outputStream ->
+                  inputStream.copyTo(outputStream)
+                }
+              } catch (ex: Exception) {
+                return@fold CacheState(CacheStatus.Error)
               }
             },
             onFailure = {
