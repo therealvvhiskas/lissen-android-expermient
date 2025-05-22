@@ -223,12 +223,6 @@ class MediaRepository
       }
     }
 
-    fun rewindOnPause() {
-      totalPosition
-        .value
-        ?.let { seekTo(it - getSeekTime(preferences.getRewindOnPause().time)) }
-    }
-
     fun rewind() {
       totalPosition
         .value

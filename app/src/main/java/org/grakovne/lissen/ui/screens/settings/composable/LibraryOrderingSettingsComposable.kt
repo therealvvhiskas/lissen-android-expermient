@@ -56,7 +56,7 @@ fun LibraryOrderingSettingsComposable(viewModel: SettingsViewModel) {
         modifier = Modifier.padding(bottom = 4.dp),
       )
       Text(
-        text = configuration.option.toItem(context).name ?: "",
+        text = configuration.option.toItem(context).name,
         style = typography.bodyMedium,
         color = colorScheme.onSurfaceVariant,
       )
