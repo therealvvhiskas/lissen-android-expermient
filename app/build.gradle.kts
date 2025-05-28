@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
 
     id("com.google.dagger.hilt.android")
-    id("org.jmailen.kotlinter") version "5.0.2"
+    id("org.jmailen.kotlinter") version "5.1.0"
     id("com.google.devtools.ksp")
 }
 
@@ -40,8 +40,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 10423
-        versionName = "1.4.23"
+        versionCode = 10424
+        versionName = "1.4.24"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -143,6 +143,7 @@ dependencies {
     implementation(libs.androidx.media3.session)
     implementation(libs.androidx.media3.datasource.okhttp)
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.lifecycle.process)
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.androidx.activity.compose)

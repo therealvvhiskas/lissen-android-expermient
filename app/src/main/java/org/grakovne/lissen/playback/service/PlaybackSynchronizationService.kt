@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
@@ -28,6 +29,7 @@ class PlaybackSynchronizationService
     private var currentChapterIndex: Int? = null
     private var playbackSession: PlaybackSession? = null
     private val serviceScope = MainScope()
+    private var syncJob: Job? = null
 
     init {
       exoPlayer.addListener(
@@ -36,12 +38,8 @@ class PlaybackSynchronizationService
             player: Player,
             events: Player.Events,
           ) {
-            if (
-              events.contains(Player.EVENT_MEDIA_ITEM_TRANSITION) ||
-              events.contains(Player.EVENT_PLAYBACK_STATE_CHANGED) ||
-              events.contains(Player.EVENT_IS_PLAYING_CHANGED)
-            ) {
-              runRepeatableSync()
+            if (syncEvents.any(events::contains)) {
+              handleSyncEvent()
             }
           }
         },
@@ -53,20 +51,38 @@ class PlaybackSynchronizationService
       currentBook = book
     }
 
-    private fun runRepeatableSync() {
-      serviceScope
-        .launch {
-          runSync()
+    fun cancelSynchronization() {
+      syncJob?.cancel()
+    }
 
-          if (exoPlayer.isPlaying) {
-            when (exoPlayer.duration - exoPlayer.currentPosition < SHORT_SYNC_WINDOW || exoPlayer.currentPosition < SHORT_SYNC_WINDOW) {
-              true -> delay(SYNC_INTERVAL_SHORT)
-              false -> delay(SYNC_INTERVAL_LONG)
+    private fun handleSyncEvent() {
+      runSync()
+
+      if (syncJob?.isActive == true) return
+
+      syncJob =
+        serviceScope
+          .launch {
+            while (
+              syncJob?.isActive == true &&
+              exoPlayer.playWhenReady &&
+              exoPlayer.playbackState != Player.STATE_ENDED
+            ) {
+              val nearStart = exoPlayer.duration - exoPlayer.currentPosition < SHORT_SYNC_WINDOW
+              val nearEnd = exoPlayer.currentPosition < SHORT_SYNC_WINDOW
+
+              when (nearEnd || nearStart) {
+                true -> delay(SYNC_INTERVAL_SHORT)
+                false -> delay(SYNC_INTERVAL_LONG)
+              }
+
+              runSync()
             }
-
-            runRepeatableSync()
+          }.also { job ->
+            job.invokeOnCompletion {
+              syncJob = null
+            }
           }
-        }
     }
 
     private fun runSync() {
@@ -75,13 +91,17 @@ class PlaybackSynchronizationService
 
       Log.d(TAG, "Trying to sync $overallProgress for ${currentBook?.id}")
 
-      serviceScope
-        .launch(Dispatchers.IO) {
-          playbackSession
-            ?.takeIf { it.bookId == currentBook?.id }
-            ?.let { requestSync(it, overallProgress) }
-            ?: openPlaybackSession(overallProgress)
+      serviceScope.launch(Dispatchers.IO) {
+        try {
+          if (playbackSession == null || playbackSession?.bookId != currentBook?.id) {
+            openPlaybackSession(overallProgress)
+          }
+
+          playbackSession?.let { requestSync(it, overallProgress) }
+        } catch (e: Exception) {
+          Log.e(TAG, "Error during sync", e)
         }
+      }
     }
 
     private suspend fun requestSync(
@@ -152,8 +172,16 @@ class PlaybackSynchronizationService
     companion object {
       private const val TAG = "PlaybackSynchronizationService"
       private const val SYNC_INTERVAL_LONG = 30_000L
-      private const val SHORT_SYNC_WINDOW = SYNC_INTERVAL_LONG * 2 - 1 // Nyquist-Shannon sampling theorem describes why -1 is important
+      private const val SHORT_SYNC_WINDOW =
+        SYNC_INTERVAL_LONG * 2 - 1 // Nyquist-Shannon sampling theorem describes why -1 is important
 
       private const val SYNC_INTERVAL_SHORT = 1_000L
+
+      private val syncEvents =
+        listOf(
+          Player.EVENT_MEDIA_ITEM_TRANSITION,
+          Player.EVENT_PLAYBACK_STATE_CHANGED,
+          Player.EVENT_IS_PLAYING_CHANGED,
+        )
     }
   }
