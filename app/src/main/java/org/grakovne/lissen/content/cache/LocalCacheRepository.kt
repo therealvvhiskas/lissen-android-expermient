@@ -61,6 +61,23 @@ class LocalCacheRepository
         .searchBooks(query = query)
         .let { ApiResult.Success(it) }
 
+    suspend fun fetchDetailedItems(
+      pageSize: Int,
+      pageNumber: Int,
+    ): ApiResult<PagedItems<DetailedItem>> {
+      val items =
+        cachedBookRepository
+          .fetchCachedItems(pageNumber = pageNumber, pageSize = pageSize)
+
+      return ApiResult
+        .Success(
+          PagedItems(
+            items = items,
+            currentPage = pageNumber,
+          ),
+        )
+    }
+
     suspend fun fetchBooks(
       pageSize: Int,
       pageNumber: Int,
@@ -91,6 +108,8 @@ class LocalCacheRepository
       cachedBookRepository
         .fetchRecentBooks()
         .let { ApiResult.Success(it) }
+
+    suspend fun fetchLatestUpdate(libraryId: String) = cachedBookRepository.fetchLatestUpdate(libraryId)
 
     /**
      * Fetches a detailed book item by its ID from the cached repository.

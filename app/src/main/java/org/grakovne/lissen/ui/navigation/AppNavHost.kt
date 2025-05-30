@@ -29,6 +29,7 @@ import org.grakovne.lissen.ui.screens.player.PlayerScreen
 import org.grakovne.lissen.ui.screens.settings.SettingsScreen
 import org.grakovne.lissen.ui.screens.settings.advanced.CustomHeadersSettingsScreen
 import org.grakovne.lissen.ui.screens.settings.advanced.SeekSettingsScreen
+import org.grakovne.lissen.ui.screens.settings.advanced.cache.CachedItemsSettingsScreen
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -87,6 +88,16 @@ fun AppNavHost(
       navController = navController,
       startDestination = startDestination,
     ) {
+      composable("settings_screen/cached_items") {
+        CachedItemsSettingsScreen(
+          onBack = {
+            if (navController.previousBackStackEntry != null) {
+              navController.popBackStack()
+            }
+          },
+          imageLoader = imageLoader,
+        )
+      }
       composable("library_screen") {
         LibraryScreen(
           navController = navigationService,

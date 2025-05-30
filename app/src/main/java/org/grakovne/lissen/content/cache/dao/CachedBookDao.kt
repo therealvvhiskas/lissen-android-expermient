@@ -27,6 +27,7 @@ interface CachedBookDao {
   suspend fun upsertCachedBook(
     book: DetailedItem,
     fetchedChapters: List<PlayingChapter>,
+    droppedChapters: List<PlayingChapter>,
   ) {
     val bookEntity =
       BookEntity(
@@ -75,6 +76,16 @@ interface CachedBookDao {
       book
         .chapters
         .map { chapter ->
+          val fetched = fetchedChapters.any { it.id == chapter.id }
+          val exists = cachedBookChapters.any { it.bookChapterId == chapter.id && it.isCached }
+          val dropped = droppedChapters.any { it.id == chapter.id }
+
+          val cached =
+            when (dropped) {
+              true -> false
+              false -> fetched || exists
+            }
+
           BookChapterEntity(
             bookChapterId = chapter.id,
             duration = chapter.duration,
@@ -82,9 +93,7 @@ interface CachedBookDao {
             end = chapter.end,
             title = chapter.title,
             bookId = book.id,
-            isCached =
-              fetchedChapters.any { it.id == chapter.id } ||
-                cachedBookChapters.any { it.bookChapterId == chapter.id && it.isCached },
+            isCached = cached,
           )
         }
 
@@ -135,6 +144,19 @@ interface CachedBookDao {
 
   @Query(
     """
+    SELECT * FROM detailed_books
+    ORDER BY title ASC, libraryId ASC
+    LIMIT :pageSize
+    OFFSET (:pageNumber * :pageSize)
+    """,
+  )
+  suspend fun fetchCachedItems(
+    pageSize: Int,
+    pageNumber: Int,
+  ): List<CachedBookEntity>
+
+  @Query(
+    """
     SELECT COUNT(*) > 0
     FROM book_chapters
     WHERE bookId       = :bookId
@@ -146,6 +168,16 @@ interface CachedBookDao {
     bookId: String,
     chapterId: String,
   ): LiveData<Boolean>
+
+  @Query(
+    """
+        SELECT MAX(mp.lastUpdate)
+        FROM detailed_books AS d
+        INNER JOIN media_progress AS mp ON d.id = mp.bookId
+        WHERE (d.libraryId IS NULL OR d.libraryId = :libraryId)
+        """,
+  )
+  suspend fun fetchLatestUpdate(libraryId: String): Long?
 
   @Transaction
   @Query("SELECT * FROM detailed_books WHERE id = :bookId")

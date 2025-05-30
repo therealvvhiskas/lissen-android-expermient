@@ -101,6 +101,7 @@ fun LibraryScreen(
   val recentBooks: List<RecentBook> by libraryViewModel.recentBooks.observeAsState(emptyList())
 
   var currentLibraryId by rememberSaveable { mutableStateOf("") }
+  var localCacheUpdatedAt by rememberSaveable { mutableStateOf(0L) }
   var currentOrdering by rememberSaveable(stateSaver = LibraryOrderingConfiguration.saver) {
     mutableStateOf(LibraryOrderingConfiguration.default)
   }
@@ -113,11 +114,7 @@ fun LibraryScreen(
   val libraries by settingsViewModel.libraries.observeAsState(emptyList())
   var preferredLibraryExpanded by remember { mutableStateOf(false) }
 
-  val library =
-    when (searchRequested) {
-      true -> libraryViewModel.searchPager.collectAsLazyPagingItems()
-      false -> libraryViewModel.libraryPager.collectAsLazyPagingItems()
-    }
+  val library = libraryViewModel.getPager(searchRequested).collectAsLazyPagingItems()
 
   BackHandler {
     when (searchRequested) {
@@ -185,7 +182,8 @@ fun LibraryScreen(
   fun isRecentVisible(): Boolean {
     val fetchAvailable = networkQualityService.isNetworkAvailable() || cachingModelView.localCacheUsing()
     val hasContent = recentBooks.isEmpty().not()
-    return !searchRequested && hasContent && fetchAvailable
+
+    return searchRequested.not() && hasContent && fetchAvailable
   }
 
   LaunchedEffect(Unit) {
@@ -193,12 +191,16 @@ fun LibraryScreen(
     val libraryChanged = currentLibraryId != settingsViewModel.fetchPreferredLibraryId()
     val orderingChanged = currentOrdering != settingsViewModel.fetchLibraryOrdering()
 
-    if (emptyContent || libraryChanged || orderingChanged) {
+    val localCacheUsing = cachingModelView.localCacheUsing()
+    val localCacheUpdated = cachingModelView.fetchLatestUpdate(currentLibraryId)?.let { it > localCacheUpdatedAt } ?: true
+
+    if (emptyContent || libraryChanged || orderingChanged || (localCacheUsing && localCacheUpdated)) {
       libraryViewModel.refreshRecentListening()
       libraryViewModel.refreshLibrary()
 
       currentLibraryId = settingsViewModel.fetchPreferredLibraryId()
       currentOrdering = settingsViewModel.fetchLibraryOrdering()
+      localCacheUpdatedAt = cachingModelView.fetchLatestUpdate(currentLibraryId) ?: 0L
     }
 
     playerViewModel.recoverMiniPlayer()

@@ -15,6 +15,7 @@ import org.grakovne.lissen.domain.CacheStatus
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.DownloadOption
 import org.grakovne.lissen.domain.PlayingChapter
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.coroutineContext
@@ -70,13 +71,31 @@ class ContentCachingManager
       }
     }
 
+    suspend fun dropCache(
+      item: DetailedItem,
+      chapter: PlayingChapter,
+    ) {
+      bookRepository
+        .cacheBook(
+          book = item,
+          fetchedChapters = emptyList(),
+          droppedChapters = listOf(chapter),
+        )
+
+      findRequestedFiles(item, listOf(chapter))
+        .forEach { file ->
+          val binaryContent = properties.provideMediaCachePatch(item.id, file.id)
+
+          if (binaryContent.exists()) {
+            binaryContent.delete()
+          }
+        }
+    }
+
     suspend fun dropCache(itemId: String) {
       bookRepository.removeBook(itemId)
 
-      val cachedContent =
-        properties
-          .provideBookCache(itemId)
-          ?: return
+      val cachedContent: File = properties.provideBookCache(itemId) ?: return
 
       if (cachedContent.exists()) {
         cachedContent.deleteRecursively()
@@ -170,7 +189,7 @@ class ContentCachingManager
       fetchedChapters: List<PlayingChapter>,
     ): CacheState =
       bookRepository
-        .cacheBook(book, fetchedChapters)
+        .cacheBook(book, fetchedChapters, emptyList())
         .let { CacheState(CacheStatus.Completed) }
 
     private suspend fun cacheLibraries(channel: MediaChannel): CacheState =

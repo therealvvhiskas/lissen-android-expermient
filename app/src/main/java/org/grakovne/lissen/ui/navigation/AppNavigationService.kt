@@ -35,6 +35,8 @@ class AppNavigationService(
 
   fun showSeekSettings() = host.navigate("$ROUTE_SETTINGS/seek_settings")
 
+  fun showCachedItemsSettings() = host.navigate("$ROUTE_SETTINGS/cached_items")
+
   fun showLogin() {
     host.navigate(ROUTE_LOGIN) {
       popUpTo(0) { inclusive = true }

@@ -51,8 +51,9 @@ class CachedBookRepository
     suspend fun cacheBook(
       book: DetailedItem,
       fetchedChapters: List<PlayingChapter>,
+      droppedChapters: List<PlayingChapter>,
     ) {
-      bookDao.upsertCachedBook(book, fetchedChapters)
+      bookDao.upsertCachedBook(book, fetchedChapters, droppedChapters)
     }
 
     fun provideCacheState(bookId: String) = bookDao.isBookCached(bookId)
@@ -61,6 +62,15 @@ class CachedBookRepository
       bookId: String,
       chapterId: String,
     ) = bookDao.isBookChapterCached(bookId, chapterId)
+
+    suspend fun fetchCachedItems(
+      pageSize: Int,
+      pageNumber: Int,
+    ) = bookDao
+      .fetchCachedItems(pageSize = pageSize, pageNumber = pageNumber)
+      .map { cachedBookEntityDetailedConverter.apply(it) }
+
+    suspend fun fetchLatestUpdate(libraryId: String) = bookDao.fetchLatestUpdate(libraryId)
 
     suspend fun fetchBooks(
       pageNumber: Int,
