@@ -236,7 +236,10 @@ private fun CachedItemComposable(
         Spacer(Modifier.width(spacing))
 
         Column(modifier = Modifier.weight(1f)) {
-          Row(verticalAlignment = Alignment.CenterVertically) {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
             Text(
               text = book.title,
               style =
@@ -246,6 +249,7 @@ private fun CachedItemComposable(
                 ),
               maxLines = 2,
               overflow = TextOverflow.Ellipsis,
+              modifier = Modifier.weight(1f, fill = false),
             )
 
             Spacer(Modifier.width(4.dp))
@@ -257,6 +261,7 @@ private fun CachedItemComposable(
               tint = colorScheme.onBackground,
             )
           }
+
           book
             .author
             ?.takeIf { it.isNotBlank() }
