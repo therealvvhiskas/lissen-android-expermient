@@ -40,8 +40,8 @@ android {
         applicationId = "org.grakovne.lissen"
         minSdk = 28
         targetSdk = 35
-        versionCode = 10425
-        versionName = "1.4.25"
+        versionCode = 10426
+        versionName = "1.4.26"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -128,11 +128,11 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.okhttp)
-
     implementation(libs.androidx.browser)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.svg)
+    implementation (libs.hoko.blur)
 
     implementation(libs.androidx.paging.compose)
 

@@ -13,8 +13,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okio.buffer
-import okio.source
 import org.grakovne.lissen.channel.common.ApiResult
 import org.grakovne.lissen.content.LissenMediaProvider
 import javax.inject.Singleton
@@ -29,8 +27,7 @@ class BookCoverFetcher(
       is ApiResult.Error -> null
       is ApiResult.Success -> {
         val stream = response.data
-        val source = stream.source().buffer()
-        val imageSource = ImageSource(source, context)
+        val imageSource = ImageSource(stream, context)
 
         SourceResult(
           source = imageSource,
