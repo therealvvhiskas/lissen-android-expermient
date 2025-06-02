@@ -26,7 +26,7 @@
     <string name="no_internet_connection">Keine Internetverbindung</string>
     <string name="app_crach_toast">Entschuldigung für den Absturz der Anwendung\nDie Protokolle wurden zur Analyse gesendet</string>
     <string name="settings_screen_color_scheme_title">Farbschema</string>
-    <string name="library_search_hint">Suche nach Titel oder Autor</string>
+    <string name="library_search_hint">Suche nach Titel, Autor oder Serie</string>
     <string name="player_screen_title">Aktuelle Wiedergabe</string>
     <string name="settings_screen_custom_header_hint">Kopfzeilen für Serververbindungen festlegen</string>
     <string name="custom_header_hint_name">Schlüssel</string>
@@ -101,7 +101,7 @@
     <string name="settings_screen_seek_time_title">Sucheinstellungen</string>
     <string name="settings_screen_seek_time_hint">Suchsteuerungen definieren</string>
     <string name="rewind_interval">Rückspulintervall</string>
-    <string name="continue_playback_shortcut_title">Weitermachen</string>
+    <string name="continue_playback_shortcut_title">Weiter</string>
     <string name="rewind_on_pause_title">Zurückspulen bei Pause</string>
     <string name="rewind_on_pause_hint">Springt automatisch zurück, wenn pausiert wird</string>
     <string name="rewind_on_pause_time">Zeit bei Pause zurückspulen</string>
@@ -112,4 +112,7 @@
     <string name="seek_interval_30_seconds">30 Sekunden</string>
     <string name="seek_interval_60_seconds">60 Sekunden</string>
     <string name="continue_playback_shortcut_description">Weiterhören</string>
+    <string name="settings_screen_cached_items_hint">Verwalte heruntergeladene Inhalte</string>
+    <string name="offline_cache_is_empty">Keine heruntergeladenen Inhalte vorhanden</string>
+    <string name="settings_screen_cached_items_title">Downloads</string>
 </resources>
