@@ -1,6 +1,12 @@
 # Lissen - Clean Audiobookshelf Player
 [![Build Lissen App](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml/badge.svg)](https://github.com/GrakovNe/lissen-android/actions/workflows/build_app.yml)
 
+### Project Update 05.06.25
+Since the release of v1.5.0, a lot of feature requests have piled up — but many of them can’t just be added as-is. They require rethinking the app’s structure, screens, and overall UX.
+
+I’ll be taking some time until early July to explore ideas, sketch out alternatives, and figure out the best direction forward. Development will pick back up after that with a clearer vision.
+
+
 <p align="center"> 
   <a href="https://play.google.com/store/apps/details?id=org.grakovne.lissen"><img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" height="60"></a>&nbsp;&nbsp;&nbsp;<!--
   --><a href="https://f-droid.org/packages/org.grakovne.lissen"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Get_it_on_F-Droid_%28material_design%29.svg" alt="Get it on F-Droid" height="60"></a>
