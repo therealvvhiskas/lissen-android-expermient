@@ -115,4 +115,7 @@
     <string name="offline_cache_is_empty">Še ni shranjene vsebine</string>
     <string name="settings_screen_cached_items_title">Prenosi</string>
     <string name="settings_screen_cached_items_hint">Upravljanje shranjene vsebine</string>
+    <string name="downloads_menu_download_option_remaining_chapters">Preostala poglavja</string>
+    <string name="downloads_menu_download_option_remaining_episodes">Preostale epizode</string>
+    <string name="downloads_menu_download_option_remaining_items">Preostali elementi</string>
 </resources>
