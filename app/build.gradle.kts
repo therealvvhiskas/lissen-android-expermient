@@ -117,6 +117,11 @@ android {
 
 dependencies {
 
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.media:media:1.6.0")
+    implementation("androidx.media3:media3-session:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+
     implementation(libs.androidx.navigation.compose)
     implementation(libs.material)
     implementation(libs.material3)
