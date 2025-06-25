@@ -30,6 +30,37 @@ class PlaybackNotificationService
             if (playWhenReady) {
               exoPlayer.setPlaybackSpeed(sharedPreferences.getPlaybackSpeed())
             }
+            val context = exoPlayer.applicationLooper.thread.contextClassLoader
+                ?.loadClass("android.app.AppGlobals")
+                ?.getMethod("getInitialApplication")
+                ?.invoke(null) as? android.content.Context
+                ?: return
+            
+            val notificationManager = context.getSystemService(android.app.NotificationManager::class.java)
+            val channelId = "playback_channel"
+            
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                val channel = android.app.NotificationChannel(
+                    channelId,
+                    "Playback",
+                    android.app.NotificationManager.IMPORTANCE_LOW
+                )
+                notificationManager.createNotificationChannel(channel)
+            }
+            
+            val notification = androidx.core.app.NotificationCompat.Builder(context, channelId)
+                .setContentTitle("Lissen Player")
+                .setContentText("Playing audiobook")
+                .setSmallIcon(android.R.drawable.ic_media_play) // use a real icon if possible
+                .setStyle(
+                    androidx.media.app.NotificationCompat.MediaStyle()
+                        .setMediaSession(exoPlayer.currentMediaItem?.mediaMetadata?.extras?.getParcelable("android.media.session.MEDIA_SESSION") as? android.support.v4.media.session.MediaSessionCompat.Token)
+                        .setShowActionsInCompactView(0, 1, 2)
+                )
+                .build()
+            
+            notificationManager.notify(1, notification)
+
           }
 
           override fun onPositionDiscontinuity(
