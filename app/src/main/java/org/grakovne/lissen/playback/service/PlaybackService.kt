@@ -1,12 +1,18 @@
 package org.grakovne.lissen.playback.service
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.media.app.NotificationCompat.MediaStyle
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.util.UnstableApi
@@ -35,6 +41,7 @@ import org.grakovne.lissen.domain.MediaProgress
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import java.io.File
 import javax.inject.Inject
+
 
 const val BOOK_EXTRA = "book_extra"
 const val PLAYBACK_READY = "playback_ready"
