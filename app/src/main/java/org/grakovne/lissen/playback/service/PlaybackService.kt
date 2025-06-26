@@ -39,6 +39,7 @@ import org.grakovne.lissen.domain.BookFile
 import org.grakovne.lissen.domain.DetailedItem
 import org.grakovne.lissen.domain.MediaProgress
 import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
+import org.grakovne.lissen.playback.service.PlaybackService
 import java.io.File
 import javax.inject.Inject
 
@@ -86,10 +87,9 @@ class PlaybackService : MediaSessionService() {
         val notification = NotificationCompat.Builder(this, channelId)
             .setContentTitle("Lissen Player")
             .setContentText("Playing audiobook")
-            .setSmallIcon(R.drawable.ic_notification) // Replace with real icon if needed
+            .setSmallIcon(android.R.drawable.ic_media_play)
             .setStyle(
-                androidx.media.app.NotificationCompat.MediaStyle()
-                    .setMediaSession(mediaSession.sessionCompatToken)
+                MediaStyle()
                     .setShowActionsInCompactView(0, 1, 2)
             )
             .build()
