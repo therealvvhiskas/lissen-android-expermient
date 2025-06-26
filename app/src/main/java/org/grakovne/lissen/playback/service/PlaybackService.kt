@@ -36,6 +36,20 @@ import org.grakovne.lissen.persistence.preferences.LissenSharedPreferences
 import java.io.File
 import javax.inject.Inject
 
+const val BOOK_EXTRA = "book_extra"
+const val PLAYBACK_READY = "playback_ready"
+const val TIMER_EXPIRED = "timer_expired"
+const val TIMER_VALUE_EXTRA = "timer_value_extra"
+const val POSITION = "position"
+
+const val ACTION_SET_TIMER = "action_set_timer"
+const val ACTION_CANCEL_TIMER = "action_cancel_timer"
+const val ACTION_SET_PLAYBACK = "action_set_playback"
+const val ACTION_PLAY = "action_play"
+const val ACTION_PAUSE = "action_pause"
+const val ACTION_SEEK_TO = "action_seek_to"
+
+
 @AndroidEntryPoint
 class PlaybackService : MediaSessionService() {
 
